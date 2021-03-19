@@ -18,7 +18,6 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwareParamTagValueNode;
-use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocTagNode;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
@@ -302,9 +301,7 @@ CODE_SAMPLE
 
     private function createDataProviderTagNode(string $dataProviderMethodName): PhpDocTagNode
     {
-        return new AttributeAwarePhpDocTagNode('@dataProvider', new GenericTagValueNode(
-            $dataProviderMethodName . '()'
-        ));
+        return new PhpDocTagNode('@dataProvider', new GenericTagValueNode($dataProviderMethodName . '()'));
     }
 
     /**
