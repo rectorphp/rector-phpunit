@@ -120,6 +120,7 @@ CODE_SAMPLE
 
     /**
      * List of nodes this class checks, classes that implement @see \PhpParser\Node
+     *
      * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array
@@ -129,6 +130,7 @@ CODE_SAMPLE
 
     /**
      * Process Node of matched type
+     *
      * @param Class_ $node
      */
     public function refactor(Node $node): ?Node

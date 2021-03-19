@@ -65,8 +65,6 @@ final class TestClassResolver
             if (! Strings::endsWith($phpUnitTestCaseClass, '\\' . $testShortClassName)) {
                 continue;
             }
-
-            // 2. is namespace match
             $phpUnitTestNamespaceParts = $this->resolveNamespaceParts($phpUnitTestCaseClass);
             sort($phpUnitTestNamespaceParts);
 

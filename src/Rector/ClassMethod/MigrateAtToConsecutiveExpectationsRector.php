@@ -112,28 +112,12 @@ CODE_SAMPLE
         $variable = $expectationMockCollection->getExpectationMocks()[0]
             ->getExpectationVariable();
 
-        // 0,1,2,3,4
-        // min = 0 ; max = 4 ; count = 5
-        // OK
-
-        // 1,2,3,4
-        // min = 1 ; max = 4 ; count = 4
-        // ADD 0
-
         // OR
-
-        // 3
-        // min = 3; max = 3 ; count = 1
-        // 0,1,2
         if ($expectationMockCollection->getLowestAtIndex() !== 0) {
             for ($i = 0; $i < $expectationMockCollection->getLowestAtIndex(); ++$i) {
                 $expectationMockCollection->add(new ExpectationMock($variable, [], $i, null, [], null));
             }
         }
-
-        // 0,1,2,4
-        // min = 0 ; max = 4 ; count = 4
-        // ADD 3
         if ($expectationMockCollection->isMissingAtIndexBetweenHighestAndLowest()) {
             $existingIndexes = array_column($expectationMockCollection->getExpectationMocks(), 'index');
             for ($i = 1; $i < $expectationMockCollection->getHighestAtIndex(); ++$i) {

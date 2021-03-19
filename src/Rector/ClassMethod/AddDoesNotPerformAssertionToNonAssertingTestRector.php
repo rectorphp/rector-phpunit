@@ -33,8 +33,8 @@ final class AddDoesNotPerformAssertionToNonAssertingTestRector extends AbstractR
     private const MAX_LOOKING_FOR_ASSERT_METHOD_CALL_NESTING_LEVEL = 3;
 
     /**
-     * This should prevent segfaults while going too deep into to parsed code.
-     * Without it, it might end-up with segfault
+     * This should prevent segfaults while going too deep into to parsed code. Without it, it might end-up with segfault
+     *
      * @var int
      */
     private $classMethodNestingLevel = 0;

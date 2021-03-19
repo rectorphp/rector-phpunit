@@ -144,6 +144,7 @@ final class AssertCompareToSpecificMethodRector extends AbstractRector
 
     /**
      * Handles custom error messages to not be overwrite by function with multiple args.
+     *
      * @param StaticCall|MethodCall $node
      */
     private function moveFunctionArgumentsUp(Node $node, FuncCall $funcCall, Arg $requiredArg): void

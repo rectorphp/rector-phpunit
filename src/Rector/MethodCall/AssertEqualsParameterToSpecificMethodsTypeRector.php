@@ -103,14 +103,10 @@ CODE_SAMPLE
 
         // 2. refactor to "assertEqualsCanonicalizing()"
         $this->processAssertEqualsCanonicalizing($node);
-
-        // 3. remove $maxDepth
         if (isset($node->args[4])) {
             // add new node only in case of non-default value
             unset($node->args[4]);
         }
-
-        // 4. refactor $delta to "assertEqualsWithDelta()"
         $this->processAssertEqualsWithDelta($node);
 
         return $node;
