@@ -100,15 +100,15 @@ CODE_SAMPLE
 
     private function buildNewExpectation(ExpectationMockCollection $expectationMockCollection): MethodCall
     {
-        $expectationMockCollection = $this->fillMissingAtIndexes($expectationMockCollection);
+        $this->fillMissingAtIndexes($expectationMockCollection);
+
         return $this->consecutiveAssertionFactory->createAssertionFromExpectationMockCollection(
             $expectationMockCollection
         );
     }
 
-    private function fillMissingAtIndexes(
-        ExpectationMockCollection $expectationMockCollection
-    ): ExpectationMockCollection {
+    private function fillMissingAtIndexes(ExpectationMockCollection $expectationMockCollection): void
+    {
         $variable = $expectationMockCollection->getExpectationMocks()[0]
             ->getExpectationVariable();
 
@@ -118,6 +118,7 @@ CODE_SAMPLE
                 $expectationMockCollection->add(new ExpectationMock($variable, [], $i, null, [], null));
             }
         }
+
         if ($expectationMockCollection->isMissingAtIndexBetweenHighestAndLowest()) {
             $existingIndexes = array_column($expectationMockCollection->getExpectationMocks(), 'index');
             for ($i = 1; $i < $expectationMockCollection->getHighestAtIndex(); ++$i) {
@@ -126,7 +127,6 @@ CODE_SAMPLE
                 }
             }
         }
-        return $expectationMockCollection;
     }
 
     private function replaceExpectationNodes(ExpectationMockCollection $expectationMockCollection): void

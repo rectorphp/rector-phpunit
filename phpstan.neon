@@ -24,8 +24,28 @@ parameters:
             path: '*Rector.php'
 
         -
-            message: '#Parameter "expr" cannot be nullable#'
+            message: '#Parameter "(.*?)" cannot be nullable#'
             path: src/ValueObject/*
 
         # fixed in dev symplify
         - '#Constant string value need to only have small letters, _, \-, \. and numbers#'
+
+        # fix to nicer foreach readable code
+        -
+            message: '#Parameter "expr" cannot be nullable#'
+            path: src/NodeFactory/ConsecutiveAssertionFactory.php
+
+        # bug
+        - '#Method Rector\\PHPUnit\\Rector\\Class_\\AddSeeTestAnnotationRector\:\:removeNonExistingClassSeeAnnotation\(\) has parameter \$phpDocInfo with generic class Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo but does not specify its types\: TNode#'
+        - '#Method Rector\\PHPUnit\\Rector\\Class_\\AddSeeTestAnnotationRector\:\:hasAlreadySeeAnnotation\(\) has parameter \$phpDocInfo with generic class Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo but does not specify its types\: TNode#'
+
+        # should be resolved in phpdoc-parser 0.5
+        - '#Parameter \#1 \$phpDocTagNodes of method Rector\\PHPUnit\\NodeFactory\\ExpectExceptionMethodCallFactory\:\:createFromTagValueNodes\(\) expects array<PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTagNode\>, array<PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTagNode\|Rector\\BetterPhpDocParser\\Contract\\PhpDocNode\\AttributeAwareNodeInterface\> given#'
+
+        # bug - fix in symplify
+        -
+            message: '#Use value object over return of values#'
+            path: 'src/Composer/ComposerAutoloadedDirectoryProvider.php'
+
+        # not sure
+        - '#Parameter \#1 \$expr of class PhpParser\\Node\\Stmt\\Expression constructor expects PhpParser\\Node\\Expr, PhpParser\\Node\\Expr\|PhpParser\\Node\\Stmt given#'

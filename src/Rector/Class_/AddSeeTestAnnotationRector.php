@@ -134,16 +134,18 @@ CODE_SAMPLE
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
-        $seeTags = $phpDocInfo->getTagsByName(self::SEE);
+
+        /** @var PhpDocTagNode[] $seePhpDocTagNodes */
+        $seePhpDocTagNodes = $phpDocInfo->getTagsByName(self::SEE);
 
         // is the @see annotation already added
-        foreach ($seeTags as $seeTag) {
-            if (! $seeTag->value instanceof GenericTagValueNode) {
+        foreach ($seePhpDocTagNodes as $seePhpDocTagNode) {
+            if (! $seePhpDocTagNode->value instanceof GenericTagValueNode) {
                 continue;
             }
 
             /** @var GenericTagValueNode $genericTagValueNode */
-            $genericTagValueNode = $seeTag->value;
+            $genericTagValueNode = $seePhpDocTagNode->value;
 
             $seeTagClass = ltrim($genericTagValueNode->value, '\\');
             if ($seeTagClass === $testCaseClassName) {
@@ -161,6 +163,7 @@ CODE_SAMPLE
 
     private function hasAlreadySeeAnnotation(PhpDocInfo $phpDocInfo, string $testCaseClassName): bool
     {
+        /** @var PhpDocTagNode[] $seePhpDocTagNodes */
         $seePhpDocTagNodes = $phpDocInfo->getTagsByName(self::SEE);
 
         foreach ($seePhpDocTagNodes as $seePhpDocTagNode) {
@@ -183,6 +186,7 @@ CODE_SAMPLE
     {
         $seePhpDocTagNodes = $phpDocInfo->getTagsByName(self::SEE);
 
+        /** @var PhpDocTagNode[] $seePhpDocTagNodes */
         foreach ($seePhpDocTagNodes as $seePhpDocTagNode) {
             if (! $seePhpDocTagNode->value instanceof GenericTagValueNode) {
                 continue;
