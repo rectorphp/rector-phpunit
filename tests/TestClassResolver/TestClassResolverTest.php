@@ -20,7 +20,9 @@ final class TestClassResolverTest extends AbstractKernelTestCase
 
     protected function setUp(): void
     {
-        $this->bootKernel(RectorKernel::class);
+        $this->bootKernelWithConfigs(RectorKernel::class, [
+            __DIR__ . '/../../config/config.php'
+        ]);
         $this->testClassResolver = $this->getService(TestClassResolver::class);
     }
 
