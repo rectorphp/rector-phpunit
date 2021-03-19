@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\TestClassResolver;
 
-use Nette\Loaders\RobotLoader;
 use Rector\PHPUnit\Composer\ComposerAutoloadedDirectoryProvider;
+use Rector\PHPUnit\RobotLoader\RobotLoaderFactory;
 
 final class PHPUnitTestCaseClassesProvider
 {
@@ -19,9 +19,17 @@ final class PHPUnitTestCaseClassesProvider
      */
     private $composerAutoloadedDirectoryProvider;
 
-    public function __construct(ComposerAutoloadedDirectoryProvider $composerAutoloadedDirectoryProvider)
-    {
+    /**
+     * @var RobotLoaderFactory
+     */
+    private $robotLoaderFactory;
+
+    public function __construct(
+        ComposerAutoloadedDirectoryProvider $composerAutoloadedDirectoryProvider,
+        RobotLoaderFactory $robotLoaderFactory
+    ) {
         $this->composerAutoloadedDirectoryProvider = $composerAutoloadedDirectoryProvider;
+        $this->robotLoaderFactory = $robotLoaderFactory;
     }
 
     /**
@@ -33,7 +41,8 @@ final class PHPUnitTestCaseClassesProvider
             return $this->phpUnitTestCaseClasses;
         }
 
-        $robotLoader = $this->createRobotLoadForDirectories();
+        $directories = $this->composerAutoloadedDirectoryProvider->provide();
+        $robotLoader = $this->robotLoaderFactory->createFromDirectories($directories);
         $robotLoader->rebuild();
 
         foreach (array_keys($robotLoader->getIndexedClasses()) as $className) {
@@ -41,21 +50,5 @@ final class PHPUnitTestCaseClassesProvider
         }
 
         return $this->phpUnitTestCaseClasses;
-    }
-
-    private function createRobotLoadForDirectories(): RobotLoader
-    {
-        $robotLoader = new RobotLoader();
-        $robotLoader->setTempDirectory(sys_get_temp_dir() . '/tests_add_see_rector_tests');
-
-        $directories = $this->composerAutoloadedDirectoryProvider->provide();
-        $robotLoader->addDirectory(...$directories);
-
-        $robotLoader->acceptFiles = ['*Test.php'];
-        $robotLoader->ignoreDirs[] = '*Expected*';
-        $robotLoader->ignoreDirs[] = '*Fixture*';
-        $robotLoader->ignoreDirs[] = 'templates';
-
-        return $robotLoader;
     }
 }
