@@ -6,7 +6,6 @@ final class MyEqualsTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
-        $this->assertFalse($expected === $anything);
         $this->assertTrue(count($something) > 2);
         $this->assertTrue($something[0]['foo'] > $something[1]['foo']);
         $this->assertTrue(__DIR__ <> $something, 'message');
@@ -27,7 +26,6 @@ final class MyEqualsTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
-        $this->assertNotSame($expected, $anything);
         $this->assertGreaterThan(2, count($something));
         $this->assertGreaterThan($something[1]['foo'], $something[0]['foo']);
         $this->assertNotEquals(__DIR__, $something, 'message');
