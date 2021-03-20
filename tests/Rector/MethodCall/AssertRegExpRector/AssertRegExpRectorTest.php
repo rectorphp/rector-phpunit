@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\PHPUnit\Rector\MethodCall\AssertRegExpRector;
+namespace Rector\PHPUnit\Tests\Rector\MethodCall\AssertRegExpRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;

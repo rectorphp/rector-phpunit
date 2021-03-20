@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\PHPUnit\Rector\MethodCall\DelegateExceptionArgumentsRector;
+namespace Rector\PHPUnit\Tests\Rector\MethodCall\DelegateExceptionArgumentsRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;

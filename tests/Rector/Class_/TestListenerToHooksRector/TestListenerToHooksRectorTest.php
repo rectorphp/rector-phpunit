@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\PHPUnit\Rector\Class_\TestListenerToHooksRector;
+namespace Rector\PHPUnit\Tests\Rector\Class_\TestListenerToHooksRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;

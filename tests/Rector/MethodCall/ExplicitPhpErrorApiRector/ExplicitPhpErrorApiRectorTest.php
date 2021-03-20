@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\PHPUnit\Rector\MethodCall\ExplicitPhpErrorApiRector;
+namespace Rector\PHPUnit\Tests\Rector\MethodCall\ExplicitPhpErrorApiRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;

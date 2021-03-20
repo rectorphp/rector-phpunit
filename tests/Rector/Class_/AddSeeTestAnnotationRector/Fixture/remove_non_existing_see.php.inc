@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\PHPUnit\Rector\Class_\AddSeeTestAnnotationRector\Fixture;
+namespace Rector\PHPUnit\Tests\Rector\Class_\AddSeeTestAnnotationRector\Fixture;
 
 /**
  * @see \SomeRandom\MissingTest
@@ -17,10 +17,10 @@ class RemoveNonExistingSeeTest
 -----
 <?php
 
-namespace Rector\Tests\PHPUnit\Rector\Class_\AddSeeTestAnnotationRector\Fixture;
+namespace Rector\PHPUnit\Tests\Rector\Class_\AddSeeTestAnnotationRector\Fixture;
 
 /**
- * @see \Rector\Tests\PHPUnit\Rector\Class_\AddSeeTestAnnotationRector\Fixture\RemoveNonExistingSeeTest
+ * @see \Rector\PHPUnit\Tests\Rector\Class_\AddSeeTestAnnotationRector\Fixture\RemoveNonExistingSeeTest
  */
 final class RemoveNonExistingSee
 {

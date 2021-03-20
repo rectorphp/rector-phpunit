@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\PHPUnit\Rector\StaticCall\GetMockRector;
+namespace Rector\PHPUnit\Tests\Rector\StaticCall\GetMockRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;

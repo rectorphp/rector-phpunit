@@ -10,7 +10,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
 
 /**
- * @see \Rector\Tests\PHPUnit\TestClassResolver\TestClassResolverTest
+ * @see \Rector\PHPUnit\Tests\TestClassResolver\TestClassResolverTest
  */
 final class TestClassResolver
 {
