@@ -1,9 +1,9 @@
 <?php
 
-namespace Rector\Tests\PHPUnit\Rector\ClassMethod\ExceptionAnnotationRector\Fixture;
+namespace Rector\PHPUnit\Tests\Rector\ClassMethod\ExceptionAnnotationRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
-use Rector\Tests\PHPUnit\Rector\ClassMethod\ExceptionAnnotationRector\Source\SomeConstant;
+use Rector\PHPUnit\Tests\Rector\ClassMethod\ExceptionAnnotationRector\Source\SomeConstant;
 
 final class ConstantCode extends TestCase
 {
@@ -19,10 +19,10 @@ final class ConstantCode extends TestCase
 -----
 <?php
 
-namespace Rector\Tests\PHPUnit\Rector\ClassMethod\ExceptionAnnotationRector\Fixture;
+namespace Rector\PHPUnit\Tests\Rector\ClassMethod\ExceptionAnnotationRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
-use Rector\Tests\PHPUnit\Rector\ClassMethod\ExceptionAnnotationRector\Source\SomeConstant;
+use Rector\PHPUnit\Tests\Rector\ClassMethod\ExceptionAnnotationRector\Source\SomeConstant;
 
 final class ConstantCode extends TestCase
 {

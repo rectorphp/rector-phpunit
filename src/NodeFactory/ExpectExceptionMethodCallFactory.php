@@ -14,10 +14,10 @@ use PhpParser\Node\Stmt\Expression;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
-use Rector\BetterPhpDocParser\ValueObject\PhpDocNode\PHPUnit\PHPUnitExpectedExceptionTagValueNode;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\NodeFactory;
+use Rector\PHPUnit\PhpDoc\Node\PHPUnitExpectedExceptionTagValueNode;
 use Rector\PHPUnit\PhpDoc\PhpDocValueToNodeMapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 

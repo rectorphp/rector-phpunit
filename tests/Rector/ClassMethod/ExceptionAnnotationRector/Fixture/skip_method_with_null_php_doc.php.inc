@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\PHPUnit\Rector\ClassMethod\ExceptionAnnotationRector\Fixture;
+namespace Rector\PHPUnit\Tests\Rector\ClassMethod\ExceptionAnnotationRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 

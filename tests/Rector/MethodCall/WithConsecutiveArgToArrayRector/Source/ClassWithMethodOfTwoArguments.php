@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\PHPUnit\Rector\MethodCall\WithConsecutiveArgToArrayRector\Source;
+namespace Rector\PHPUnit\Tests\Rector\MethodCall\WithConsecutiveArgToArrayRector\Source;
 
 final class ClassWithMethodOfTwoArguments
 {

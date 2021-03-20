@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\PHPUnit\Rector\MethodCall\AssertResourceToClosedResourceRector;
+namespace Rector\PHPUnit\Tests\Rector\MethodCall\AssertResourceToClosedResourceRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;

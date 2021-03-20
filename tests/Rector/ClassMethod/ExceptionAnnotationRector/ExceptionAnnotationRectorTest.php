@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\PHPUnit\Rector\ClassMethod\ExceptionAnnotationRector;
+namespace Rector\PHPUnit\Tests\Rector\ClassMethod\ExceptionAnnotationRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;

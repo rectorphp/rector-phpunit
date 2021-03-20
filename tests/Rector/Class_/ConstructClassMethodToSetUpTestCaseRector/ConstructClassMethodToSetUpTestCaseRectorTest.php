@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\PHPUnit\Rector\Class_\ConstructClassMethodToSetUpTestCaseRector;
+namespace Rector\PHPUnit\Tests\Rector\Class_\ConstructClassMethodToSetUpTestCaseRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;

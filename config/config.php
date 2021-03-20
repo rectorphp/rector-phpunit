@@ -13,5 +13,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ->autoconfigure();
 
     $services->load('Rector\\PHPUnit\\', __DIR__ . '/../src')
-        ->exclude([__DIR__ . '/../src/{Rector,ValueObject}']);
+        ->exclude([__DIR__ . '/../src/{Rector,ValueObject,PhpDoc/Node}']);
 };

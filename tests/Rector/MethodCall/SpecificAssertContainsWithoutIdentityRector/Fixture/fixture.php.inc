@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\PHPUnit\Rector\MethodCall\SpecificAssertContainsWithoutIdentityRector\Fixture;
+namespace Rector\PHPUnit\Tests\Rector\MethodCall\SpecificAssertContainsWithoutIdentityRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -19,7 +19,7 @@ final class SomeTest extends TestCase
 -----
 <?php
 
-namespace Rector\Tests\PHPUnit\Rector\MethodCall\SpecificAssertContainsWithoutIdentityRector\Fixture;
+namespace Rector\PHPUnit\Tests\Rector\MethodCall\SpecificAssertContainsWithoutIdentityRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 use stdClass;

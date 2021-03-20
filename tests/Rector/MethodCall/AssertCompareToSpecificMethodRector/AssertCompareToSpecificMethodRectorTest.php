@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\PHPUnit\Rector\MethodCall\AssertCompareToSpecificMethodRector;
+namespace Rector\PHPUnit\Tests\Rector\MethodCall\AssertCompareToSpecificMethodRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
