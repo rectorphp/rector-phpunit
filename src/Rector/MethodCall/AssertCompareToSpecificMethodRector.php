@@ -82,7 +82,7 @@ final class AssertCompareToSpecificMethodRector extends AbstractRector
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodNames(
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames(
             $node,
             ['assertSame', 'assertNotSame', 'assertEquals', 'assertNotEquals']
         )) {

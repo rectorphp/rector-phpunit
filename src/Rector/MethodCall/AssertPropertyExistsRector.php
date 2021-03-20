@@ -84,7 +84,7 @@ final class AssertPropertyExistsRector extends AbstractRector
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodNames($node, ['assertTrue', 'assertFalse'])) {
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, ['assertTrue', 'assertFalse'])) {
             return null;
         }
 

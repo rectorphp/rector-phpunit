@@ -98,7 +98,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodNames($node, ['expectException'])) {
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, ['expectException'])) {
             return null;
         }
 

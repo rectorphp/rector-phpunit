@@ -76,7 +76,7 @@ final class TestsNodeAnalyzer
         return $phpDocInfo->hasByName('test');
     }
 
-    public function isPHPUnitMethodName(Node $node, string $name): bool
+    public function isPHPUnitMethodCallName(Node $node, string $name): bool
     {
         if (! $this->isPHPUnitTestCaseCall($node)) {
             return false;
@@ -86,19 +86,10 @@ final class TestsNodeAnalyzer
         return $this->nodeNameResolver->isName($node->name, $name);
     }
 
-    public function isPHPUnitTestCaseCall(Node $node): bool
-    {
-        if (! $this->isInTestClass($node)) {
-            return false;
-        }
-
-        return $node instanceof MethodCall || $node instanceof StaticCall;
-    }
-
     /**
      * @param string[] $names
      */
-    public function isPHPUnitMethodNames(Node $node, array $names): bool
+    public function isPHPUnitMethodCallNames(Node $node, array $names): bool
     {
         if (! $this->isPHPUnitTestCaseCall($node)) {
             return false;
@@ -106,5 +97,14 @@ final class TestsNodeAnalyzer
 
         /** @var MethodCall|StaticCall $node */
         return $this->nodeNameResolver->isNames($node->name, $names);
+    }
+
+    public function isPHPUnitTestCaseCall(Node $node): bool
+    {
+        if (! $this->isInTestClass($node)) {
+            return false;
+        }
+
+        return $node instanceof MethodCall || $node instanceof StaticCall;
     }
 }

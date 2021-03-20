@@ -55,7 +55,7 @@ final class GetMockRector extends AbstractRector
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodNames(
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames(
             $node,
             ['getMock', 'getMockWithoutInvokingTheOriginalConstructor']
         )) {

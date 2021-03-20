@@ -77,7 +77,7 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodNames($node, [self::ASSERT_TRUE, self::ASSERT_FALSE])) {
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, [self::ASSERT_TRUE, self::ASSERT_FALSE])) {
             return null;
         }
 

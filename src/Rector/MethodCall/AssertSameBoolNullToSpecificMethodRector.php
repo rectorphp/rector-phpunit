@@ -81,7 +81,7 @@ final class AssertSameBoolNullToSpecificMethodRector extends AbstractRector
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodNames($node, ['assertSame', 'assertNotSame'])) {
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, ['assertSame', 'assertNotSame'])) {
             return null;
         }
         $firstArgumentValue = $node->args[0]->value;

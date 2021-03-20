@@ -8,6 +8,8 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 
 final class ExpectExceptionMessageFactory
 {
@@ -26,19 +28,33 @@ final class ExpectExceptionMessageFactory
      */
     private $argumentShiftingFactory;
 
+    /**
+     * @var NodeTypeResolver
+     */
+    private $nodeTypeResolver;
+
+    /**
+     * @var TestsNodeAnalyzer
+     */
+    private $testsNodeAnalyzer;
+
     public function __construct(
         NodeNameResolver $nodeNameResolver,
         ArgumentShiftingFactory $argumentShiftingFactory,
-        NodeComparator $nodeComparator
+        NodeComparator $nodeComparator,
+        NodeTypeResolver $nodeTypeResolver,
+        TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
         $this->nodeNameResolver = $nodeNameResolver;
         $this->argumentShiftingFactory = $argumentShiftingFactory;
         $this->nodeComparator = $nodeComparator;
+        $this->nodeTypeResolver = $nodeTypeResolver;
+        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
     }
 
     public function create(MethodCall $methodCall, Variable $exceptionVariable): ?MethodCall
     {
-        if (! $this->nodeNameResolver->isLocalMethodCallsNamed($methodCall, ['assertSame', 'assertEquals'])) {
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($methodCall, ['assertSame', 'assertEquals'])) {
             return null;
         }
 

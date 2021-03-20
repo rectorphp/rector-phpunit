@@ -84,7 +84,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodNames(
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames(
             $node,
             ['assertSame', 'assertEqual', 'assertNotSame', 'assertNotEqual']
         )) {

@@ -7,6 +7,7 @@ namespace Rector\PHPUnit\NodeFactory;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 
 final class ExpectExceptionCodeFactory
 {
@@ -20,17 +21,24 @@ final class ExpectExceptionCodeFactory
      */
     private $argumentShiftingFactory;
 
+    /**
+     * @var TestsNodeAnalyzer
+     */
+    private $testsNodeAnalyzer;
+
     public function __construct(
         NodeNameResolver $nodeNameResolver,
-        ArgumentShiftingFactory $argumentShiftingFactory
+        ArgumentShiftingFactory $argumentShiftingFactory,
+        TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
         $this->nodeNameResolver = $nodeNameResolver;
         $this->argumentShiftingFactory = $argumentShiftingFactory;
+        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
     }
 
     public function create(MethodCall $methodCall, Variable $exceptionVariable): ?MethodCall
     {
-        if (! $this->nodeNameResolver->isLocalMethodCallsNamed($methodCall, ['assertSame', 'assertEquals'])) {
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($methodCall, ['assertSame', 'assertEquals'])) {
             return null;
         }
 

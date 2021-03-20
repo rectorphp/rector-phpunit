@@ -96,7 +96,7 @@ final class AssertTrueFalseInternalTypeToSpecificMethodRector extends AbstractRe
     public function refactor(Node $node): ?Node
     {
         $oldMethods = array_keys(self::RENAME_METHODS_MAP);
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodNames($node, $oldMethods)) {
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, $oldMethods)) {
             return null;
         }
 

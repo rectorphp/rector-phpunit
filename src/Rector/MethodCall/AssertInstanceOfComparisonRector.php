@@ -76,7 +76,7 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
     public function refactor(Node $node): ?Node
     {
         $oldMethodNames = array_keys(self::RENAME_METHODS_MAP);
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodNames($node, $oldMethodNames)) {
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, $oldMethodNames)) {
             return null;
         }
 

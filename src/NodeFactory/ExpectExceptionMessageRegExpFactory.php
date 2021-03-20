@@ -27,19 +27,26 @@ final class ExpectExceptionMessageRegExpFactory
      */
     private $nodeComparator;
 
+    /**
+     * @var \Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer
+     */
+    private $testsNodeAnalyzer;
+
     public function __construct(
         NodeNameResolver $nodeNameResolver,
         ArgumentShiftingFactory $argumentShiftingFactory,
-        NodeComparator $nodeComparator
+        NodeComparator $nodeComparator,
+        \Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
         $this->nodeNameResolver = $nodeNameResolver;
         $this->argumentShiftingFactory = $argumentShiftingFactory;
         $this->nodeComparator = $nodeComparator;
+        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
     }
 
     public function create(MethodCall $methodCall, Variable $exceptionVariable): ?MethodCall
     {
-        if (! $this->nodeNameResolver->isLocalMethodCallNamed($methodCall, 'assertContains')) {
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallName($methodCall, 'assertContains')) {
             return null;
         }
 

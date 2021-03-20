@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Core\NodeManipulator\ClassInsertManipulator;
 use Rector\Core\NodeManipulator\ClassManipulator;
@@ -127,7 +128,11 @@ CODE_SAMPLE
     private function hasProphesizeMethodCall(Class_ $class): bool
     {
         return (bool) $this->betterNodeFinder->findFirst($class, function (Node $node): bool {
-            return $this->nodeNameResolver->isLocalMethodCallNamed($node, 'prophesize');
+            if (! $node instanceof MethodCall) {
+                return false;
+            }
+
+            return $this->nodeNameResolver->isName($node->name, 'prophesize');
         });
     }
 }

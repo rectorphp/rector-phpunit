@@ -83,7 +83,7 @@ final class AssertRegExpRector extends AbstractRector
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodNames(
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames(
             $node,
             [self::ASSERT_SAME, self::ASSERT_EQUALS, self::ASSERT_NOT_SAME, self::ASSERT_NOT_EQUALS]
         )) {

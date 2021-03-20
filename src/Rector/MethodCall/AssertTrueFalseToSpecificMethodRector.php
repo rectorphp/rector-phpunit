@@ -77,7 +77,7 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodNames(
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames(
             $node,
             ['assertTrue', 'assertFalse', 'assertNotTrue', 'assertNotFalse']
         )) {
