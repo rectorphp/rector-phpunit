@@ -39,3 +39,9 @@ parameters:
 
         # not sure
         - '#Parameter \#1 \$expr of class PhpParser\\Node\\Stmt\\Expression constructor expects PhpParser\\Node\\Expr, PhpParser\\Node\\Expr\|PhpParser\\Node\\Stmt given#'
+
+        # tracy debugger config
+        -
+             message: '#Do not use static property#'
+             paths:
+                 -  tests/bootstrap.php

@@ -46,7 +46,7 @@ final class ExpectExceptionMessageRegExpFactory
 
     public function create(MethodCall $methodCall, Variable $exceptionVariable): ?MethodCall
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallName($methodCall, 'assertContains')) {
+        if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($methodCall, 'assertContains')) {
             return null;
         }
 

@@ -81,7 +81,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallName($node, 'assertArraySubset')) {
+        if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($node, 'assertArraySubset')) {
             return null;
         }
 

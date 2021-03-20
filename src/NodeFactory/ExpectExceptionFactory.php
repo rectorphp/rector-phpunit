@@ -29,7 +29,7 @@ final class ExpectExceptionFactory
 
     public function create(MethodCall $methodCall, Variable $variable): ?MethodCall
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallName($methodCall, 'assertInstanceOf')) {
+        if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($methodCall, 'assertInstanceOf')) {
             return null;
         }
 

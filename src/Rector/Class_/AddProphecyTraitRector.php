@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\Rector\Class_;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Core\NodeManipulator\ClassInsertManipulator;
 use Rector\Core\NodeManipulator\ClassManipulator;
@@ -113,26 +112,14 @@ CODE_SAMPLE
 
     private function shouldSkipClass(Class_ $class): bool
     {
-        if (! $this->testsNodeAnalyzer->isInTestClass($class)) {
-            return true;
-        }
+        $hasProphesizeMethodCall = (bool) $this->betterNodeFinder->findFirst($class, function (Node $node): bool {
+            return $this->testsNodeAnalyzer->isAssertMethodCallName($node, 'prophesize');
+        });
 
-        $hasProphesizeMethodCall = $this->hasProphesizeMethodCall($class);
         if (! $hasProphesizeMethodCall) {
             return true;
         }
 
         return $this->classManipulator->hasTrait($class, self::PROPHECY_TRAIT);
-    }
-
-    private function hasProphesizeMethodCall(Class_ $class): bool
-    {
-        return (bool) $this->betterNodeFinder->findFirst($class, function (Node $node): bool {
-            if (! $node instanceof MethodCall) {
-                return false;
-            }
-
-            return $this->nodeNameResolver->isName($node->name, 'prophesize');
-        });
     }
 }

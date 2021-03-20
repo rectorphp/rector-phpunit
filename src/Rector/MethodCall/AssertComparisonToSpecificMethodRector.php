@@ -7,7 +7,6 @@ namespace Rector\PHPUnit\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Greater;
@@ -17,10 +16,8 @@ use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BinaryOp\Smaller;
 use PhpParser\Node\Expr\BinaryOp\SmallerOrEqual;
-use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Scalar;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\ConstantScalarType;
 use Rector\Core\Rector\AbstractRector;
@@ -173,23 +170,5 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
         }
 
         return $staticType instanceof ConstantArrayType;
-
-//        dump($staticType);
-//
-//        $nodeClass = get_class($expr);
-//        if (in_array($nodeClass, [Array_::class, ConstFetch::class], true)) {
-//            return true;
-//        }
-//
-//        if (is_subclass_of($expr, Scalar::class)) {
-//            return true;
-//        }
-//
-//        return false;
-//
-//        var_dump($expr);
-//        die;
-//
-//        return $this->nodeNameResolver->isVariableName($expr, 'exp*');
     }
 }

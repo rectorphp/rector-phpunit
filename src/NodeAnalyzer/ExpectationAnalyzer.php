@@ -58,7 +58,7 @@ final class ExpectationAnalyzer
             /** @var MethodCall $expr */
             $expr = $stmt->expr;
             $method = $this->getMethod($expr);
-            if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallName($method, 'method')) {
+            if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($method, 'method')) {
                 continue;
             }
 
@@ -101,7 +101,7 @@ final class ExpectationAnalyzer
 
     public function isValidExpectsCall(MethodCall $methodCall): bool
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallName($methodCall, 'expects')) {
+        if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($methodCall, 'expects')) {
             return false;
         }
 
@@ -114,7 +114,7 @@ final class ExpectationAnalyzer
 
     public function isValidAtCall(MethodCall $methodCall): bool
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallName($methodCall, 'at')) {
+        if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($methodCall, 'at')) {
             return false;
         }
 
@@ -148,7 +148,7 @@ final class ExpectationAnalyzer
 
     private function getExpects(Expr $expr, MethodCall $methodCall): Expr
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallName($expr, 'with')) {
+        if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($expr, 'with')) {
             return $methodCall->var;
         }
         if (! $expr instanceof MethodCall) {
@@ -162,7 +162,7 @@ final class ExpectationAnalyzer
      */
     private function getWithArgs(Expr $expr): array
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallName($expr, 'with')) {
+        if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($expr, 'with')) {
             return [null];
         }
         if (! $expr instanceof MethodCall) {

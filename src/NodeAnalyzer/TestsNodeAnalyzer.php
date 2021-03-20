@@ -76,7 +76,27 @@ final class TestsNodeAnalyzer
         return $phpDocInfo->hasByName('test');
     }
 
-    public function isPHPUnitMethodCallName(Node $node, string $name): bool
+    public function isAssertMethodCallName(Node $node, string $name): bool
+    {
+        if ($node instanceof StaticCall) {
+            $callerType = $this->nodeTypeResolver->resolve($node->class);
+        } elseif ($node instanceof MethodCall) {
+            $callerType = $this->nodeTypeResolver->resolve($node->var);
+        } else {
+            return false;
+        }
+
+        $assertObjectType = new ObjectType('PHPUnit\Framework\Assert');
+        if (! $assertObjectType->isSuperTypeOf($callerType)
+            ->yes()) {
+            return false;
+        }
+
+        /** @var StaticCall|MethodCall $node */
+        return $this->nodeNameResolver->isName($node->name, $name);
+    }
+
+    public function isInPHPUnitMethodCallName(Node $node, string $name): bool
     {
         if (! $this->isPHPUnitTestCaseCall($node)) {
             return false;
