@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Sets;
+namespace Rector\PHPUnit\Set;
 
 use Rector\Set\Contract\SetListInterface;
 
