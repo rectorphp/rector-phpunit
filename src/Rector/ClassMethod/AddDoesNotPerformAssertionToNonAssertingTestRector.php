@@ -14,7 +14,6 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ClassMethodReflectionFactory;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
-use Rector\PHPUnit\PhpDoc\Node\PHPUnitExpectedExceptionTagValueNode;
 use ReflectionMethod;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -146,7 +145,7 @@ CODE_SAMPLE
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-        if ($phpDocInfo->hasByNames(['doesNotPerformAssertion', 'expectedException'])) {
+        if ($phpDocInfo->hasByNames(['doesNotPerformAssertions', 'expectedException'])) {
             return true;
         }
 
