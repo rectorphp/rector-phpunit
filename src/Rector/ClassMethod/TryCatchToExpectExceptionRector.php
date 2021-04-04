@@ -121,7 +121,7 @@ CODE_SAMPLE
             $this->nodeRemover->removeStmt($node, $key);
         }
 
-        $node->stmts = array_merge($node->stmts, (array) $proccesed);
+        $node->stmts = array_merge((array) $node->stmts, (array) $proccesed);
 
         return $node;
     }

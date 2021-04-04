@@ -235,6 +235,7 @@ CODE_SAMPLE
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
         $phpDocInfo->addPhpDocTagNode($dataProviderTagNode);
+        $phpDocInfo->makeMultiLined();
     }
 
     /**
