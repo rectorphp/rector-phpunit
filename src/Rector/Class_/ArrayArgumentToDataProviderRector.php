@@ -208,6 +208,9 @@ CODE_SAMPLE
         $methodCall->name = new Identifier($arrayArgumentToDataProvider->getNewMethod());
 
         $dataProviderMethodName = $this->createDataProviderMethodName($methodCall);
+        if ($dataProviderMethodName === null) {
+            return;
+        }
 
         $this->dataProviderClassMethodRecipes[] = new DataProviderClassMethodRecipe(
             $dataProviderMethodName,
@@ -265,12 +268,19 @@ CODE_SAMPLE
         return $this->isName($methodCall->name, $arrayArgumentToDataProvider->getOldMethod());
     }
 
-    private function createDataProviderMethodName(MethodCall $methodCall): string
+    private function createDataProviderMethodName(MethodCall $methodCall): ?string
     {
-        /** @var string $methodName */
-        $methodName = $methodCall->getAttribute(AttributeKey::METHOD_NAME);
+        $methodNode = $methodCall->getAttribute(AttributeKey::METHOD_NODE);
+        if (! $methodNode instanceof ClassMethod) {
+            return null;
+        }
 
-        return 'provideDataFor' . ucfirst($methodName);
+        $classMethodName = $this->getName($methodNode);
+        if ($classMethodName === null) {
+            return null;
+        }
+
+        return 'provideDataFor' . ucfirst($classMethodName);
     }
 
     /**
