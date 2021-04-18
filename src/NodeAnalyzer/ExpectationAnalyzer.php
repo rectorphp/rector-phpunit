@@ -148,10 +148,11 @@ final class ExpectationAnalyzer
 
     private function getExpects(Expr $expr, MethodCall $methodCall): Expr
     {
-        if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($expr, 'with')) {
-            return $methodCall->var;
-        }
         if (! $expr instanceof MethodCall) {
+            return $methodCall;
+        }
+
+        if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($expr, 'with')) {
             return $methodCall->var;
         }
         return $expr->var;
