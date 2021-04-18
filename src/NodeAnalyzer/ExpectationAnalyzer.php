@@ -7,6 +7,7 @@ namespace Rector\PHPUnit\NodeAnalyzer;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\Expression;
@@ -80,7 +81,7 @@ final class ExpectationAnalyzer
             if (! $atValue instanceof LNumber) {
                 continue;
             }
-            if (! $expects->var instanceof Variable) {
+            if (! ($expects->var instanceof Variable || $expects->var instanceof PropertyFetch) ) {
                 continue;
             }
 
