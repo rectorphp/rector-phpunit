@@ -6,8 +6,8 @@ namespace Rector\PHPUnit\ValueObject;
 
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Expression;
 
 final class ExpectationMock
