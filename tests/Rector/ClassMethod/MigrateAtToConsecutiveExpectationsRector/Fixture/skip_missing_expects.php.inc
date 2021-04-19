@@ -15,7 +15,7 @@ final class SkipMissingExpects extends \PHPUnit\Framework\TestCase
         $mock = $this->createMock(Foo::class);
 
         $mock
-            ->method('someOtherMethod')
+            ->method('someMethod')
             ->willReturn(1);
     }
 }
