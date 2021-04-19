@@ -6,6 +6,7 @@ namespace Rector\PHPUnit\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
@@ -179,6 +180,13 @@ CODE_SAMPLE
         $groupedByVariable = [];
         foreach ($expectationMockCollection->getExpectationMocks() as $expectationMock) {
             $variable = $expectationMock->getExpectationVariable();
+
+            // The $variable->name will be a string if the mock object is stored as a local variable (Expr\Variable)
+            // The $variable->name will be Identifier object when the mock object is stored as a class property (Expr\PropertyFetch).
+            if ($variable->name instanceof Identifier) {
+                $variable = $variable->name;
+            }
+
             if (! is_string($variable->name)) {
                 continue;
             }
