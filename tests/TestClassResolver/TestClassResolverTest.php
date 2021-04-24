@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\Tests\TestClassResolver;
 
 use Iterator;
-use Rector\Core\HttpKernel\RectorKernel;
 use Rector\PHPUnit\TestClassResolver\TestClassResolver;
 use Rector\PHPUnit\Tests\TestClassResolver\Source\SeeSomeClass;
 use Rector\PHPUnit\Tests\TestClassResolver\Source\SeeSomeClassTest;
-use Symplify\PackageBuilder\Testing\AbstractKernelTestCase;
+use Rector\Testing\PHPUnit\AbstractTestCase;
+use Symplify\SmartFileSystem\SmartFileInfo;
 
-final class TestClassResolverTest extends AbstractKernelTestCase
+final class TestClassResolverTest extends AbstractTestCase
 {
     /**
      * @var TestClassResolver
@@ -20,7 +20,7 @@ final class TestClassResolverTest extends AbstractKernelTestCase
 
     protected function setUp(): void
     {
-        $this->bootKernelWithConfigs(RectorKernel::class, [__DIR__ . '/../../config/config.php']);
+        $this->bootFromConfigFileInfos([new SmartFileInfo(__DIR__ . '/../../config/config.php')]);
         $this->testClassResolver = $this->getService(TestClassResolver::class);
     }
 
