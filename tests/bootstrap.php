@@ -1,7 +1,5 @@
 <?php
 
-use Tracy\Debugger;
+declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
-
-Debugger::$maxDepth = 2;

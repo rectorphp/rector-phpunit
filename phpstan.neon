@@ -1,7 +1,3 @@
-includes:
-    - vendor/symplify/phpstan-extensions/config/config.neon
-    - vendor/symplify/phpstan-rules/config/symplify-rules.neon
-
 parameters:
     level: max
 
@@ -19,29 +15,9 @@ parameters:
 
 
     ignoreErrors:
-        -
-            message: '#Parameter "(.*?)" cannot be nullable#'
-            path: src/ValueObject/*
-
-        # fix to nicer foreach readable code
-        -
-            message: '#Parameter "expr" cannot be nullable#'
-            path: src/NodeFactory/ConsecutiveAssertionFactory.php
-
         # bug
         - '#Method Rector\\PHPUnit\\Rector\\Class_\\AddSeeTestAnnotationRector\:\:removeNonExistingClassSeeAnnotation\(\) has parameter \$phpDocInfo with generic class Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo but does not specify its types\: TNode#'
         - '#Method Rector\\PHPUnit\\Rector\\Class_\\AddSeeTestAnnotationRector\:\:hasAlreadySeeAnnotation\(\) has parameter \$phpDocInfo with generic class Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo but does not specify its types\: TNode#'
 
-        # bug - fix in symplify
-        -
-            message: '#Use value object over return of values#'
-            path: 'src/Composer/ComposerAutoloadedDirectoryProvider.php'
-
         # not sure
         - '#Parameter \#1 \$expr of class PhpParser\\Node\\Stmt\\Expression constructor expects PhpParser\\Node\\Expr, PhpParser\\Node\\Expr\|PhpParser\\Node\\Stmt given#'
-
-        # tracy debugger config
-        -
-             message: '#Do not use static property#'
-             paths:
-                 -  tests/bootstrap.php
