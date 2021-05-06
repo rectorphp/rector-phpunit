@@ -60,8 +60,9 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
                 new CodeSample(
                     '$this->assertFalse(isset($anything["foo"]), "message");',
                     '$this->assertArrayNotHasKey("foo", $anything, "message");'
-            ),
-            ]);
+                ),
+            ]
+        );
     }
 
     /**

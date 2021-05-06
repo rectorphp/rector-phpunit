@@ -63,7 +63,7 @@ class SomeClass extends TestCase
     }
 }
 CODE_SAMPLE
-            ),
+                ),
             ]
         );
     }
@@ -85,7 +85,9 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->nodeFactory->createStaticCall('DMS\PHPUnitExtensions\ArraySubset\Assert', 'assertArraySubset',
+        return $this->nodeFactory->createStaticCall(
+            'DMS\PHPUnitExtensions\ArraySubset\Assert',
+            'assertArraySubset',
             $node->args
         );
     }

@@ -43,8 +43,9 @@ foreach ($foos as $foo) {
 CODE_SAMPLE
                     ,
                     '$this->assertContainsOnlyInstancesOf(\SplFileInfo::class, $foos);'
-            ),
-            ]);
+                ),
+            ]
+        );
     }
 
     /**

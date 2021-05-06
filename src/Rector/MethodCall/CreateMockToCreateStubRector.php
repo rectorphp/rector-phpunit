@@ -89,8 +89,9 @@ class MyTest extends TestCase
     }
 }
 CODE_SAMPLE
-            ),
-            ]);
+                ),
+            ]
+        );
     }
 
     /**

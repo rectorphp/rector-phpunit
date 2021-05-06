@@ -78,9 +78,9 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
             'Turns comparison operations to their method name alternatives in PHPUnit TestCase',
             [
                 new CodeSample(
-                        '$this->assertTrue($foo === $bar, "message");',
-                        '$this->assertSame($bar, $foo, "message");'
-                    ),
+                    '$this->assertTrue($foo === $bar, "message");',
+                    '$this->assertSame($bar, $foo, "message");'
+                ),
                 new CodeSample(
                     '$this->assertFalse($foo >= $bar, "message");',
                     '$this->assertLessThanOrEqual($bar, $foo, "message");'

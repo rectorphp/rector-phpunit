@@ -62,7 +62,8 @@ class SomeClass extends TestCase
 }
 CODE_SAMPLE
                 ),
-            ]);
+            ]
+        );
     }
 
     /**

@@ -84,8 +84,9 @@ final class ExampleTest extends TestCase
     }
 }
 CODE_SAMPLE
-            ),
-            ]);
+                ),
+            ]
+        );
     }
 
     /**

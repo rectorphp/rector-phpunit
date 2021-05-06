@@ -57,7 +57,6 @@ CODE_SAMPLE
 $mock = $this->createMock(Foo::class);
 $mock->method('someMethod')->withConsecutive(['0'], ['1'])->willReturnOnConsecutiveCalls('1', '2');
 CODE_SAMPLE
-
                 ),
             ]
         );
