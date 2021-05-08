@@ -6,7 +6,6 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\VoidType;
 use Rector\Core\ValueObject\MethodName;
 use Rector\PHPUnit\Rector\MethodCall\AssertEqualsParameterToSpecificMethodsTypeRector;
-use Rector\PHPUnit\Rector\MethodCall\ReplaceAssertArraySubsetWithDmsPolyfillRector;
 use Rector\PHPUnit\Rector\MethodCall\SpecificAssertContainsRector;
 use Rector\PHPUnit\Rector\MethodCall\SpecificAssertInternalTypeRector;
 use Rector\Renaming\Rector\Name\RenameClassRector;
@@ -56,6 +55,4 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 new AddReturnTypeDeclaration('PHPUnit\Framework\TestCase', 'onNotSuccessfulTest', new VoidType()),
             ]),
         ]]);
-
-    $services->set(ReplaceAssertArraySubsetWithDmsPolyfillRector::class);
 };
