@@ -28,7 +28,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                     'expectExceptionMessageRegExp',
                     'expectExceptionMessageMatches'
                 ),
-                new MethodCallRename('PHPUnit\Framework\TestCase', 'assertRegExp', 'assertMatchesRegularExpression'),
             ]),
         ]]);
 };
