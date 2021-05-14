@@ -13,7 +13,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Rector\AbstractRector;
-use Rector\PHPUnit\TestClassResolver\TestClassResolver;
+use Rector\PHPUnit\Naming\TestClassNameResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -28,11 +28,6 @@ final class AddSeeTestAnnotationRector extends AbstractRector
     private const SEE = 'see';
 
     /**
-     * @var TestClassResolver
-     */
-    private $testClassResolver;
-
-    /**
      * @var ReflectionProvider
      */
     private $reflectionProvider;
@@ -42,14 +37,19 @@ final class AddSeeTestAnnotationRector extends AbstractRector
      */
     private $phpDocTagRemover;
 
+    /**
+     * @var TestClassNameResolver
+     */
+    private $testClassNameResolver;
+
     public function __construct(
-        TestClassResolver $testClassResolver,
         ReflectionProvider $reflectionProvider,
-        PhpDocTagRemover $phpDocTagRemover
+        PhpDocTagRemover $phpDocTagRemover,
+        TestClassNameResolver $testClassNameResolver
     ) {
-        $this->testClassResolver = $testClassResolver;
         $this->reflectionProvider = $reflectionProvider;
         $this->phpDocTagRemover = $phpDocTagRemover;
+        $this->testClassNameResolver = $testClassNameResolver;
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -102,29 +102,35 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $testCaseClassName = $this->testClassResolver->resolveFromClass($node);
-        if ($testCaseClassName === null) {
+        $className = $this->getName($node);
+        if ($className === null) {
             return null;
         }
 
-        if ($this->shouldSkipClass($node, $testCaseClassName)) {
+        $possibleTestClassNames = $this->testClassNameResolver->resolve($className);
+        $matchingTestClassName = $this->matchExistingClassName($possibleTestClassNames);
+
+        if ($this->shouldSkipClass($node)) {
             return null;
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        if ($this->hasAlreadySeeAnnotation($phpDocInfo, $testCaseClassName)) {
-            return null;
-        }
 
         $this->removeNonExistingClassSeeAnnotation($phpDocInfo);
 
-        $newSeeTagNode = $this->createSeePhpDocTagNode($testCaseClassName);
-        $phpDocInfo->addPhpDocTagNode($newSeeTagNode);
+        if ($matchingTestClassName !== null) {
+            if ($this->hasAlreadySeeAnnotation($phpDocInfo, $matchingTestClassName)) {
+                return null;
+            }
+
+            $newSeeTagNode = $this->createSeePhpDocTagNode($matchingTestClassName);
+            $phpDocInfo->addPhpDocTagNode($newSeeTagNode);
+        }
 
         return $node;
     }
 
-    private function shouldSkipClass(Class_ $class, string $testCaseClassName): bool
+    private function shouldSkipClass(Class_ $class): bool
     {
         // we are in the test case
         if ($this->isName($class, '*Test')) {
@@ -146,7 +152,8 @@ CODE_SAMPLE
             $genericTagValueNode = $seePhpDocTagNode->value;
 
             $seeTagClass = ltrim($genericTagValueNode->value, '\\');
-            if ($seeTagClass === $testCaseClassName) {
+
+            if ($this->reflectionProvider->hasClass($seeTagClass)) {
                 return true;
             }
         }
@@ -211,5 +218,21 @@ CODE_SAMPLE
         }
 
         return Strings::endsWith($possibleClassName, 'Test');
+    }
+
+    /**
+     * @param string[] $classNames
+     */
+    private function matchExistingClassName(array $classNames): ?string
+    {
+        foreach ($classNames as $possibleTestClassName) {
+            if (! $this->reflectionProvider->hasClass($possibleTestClassName)) {
+                continue;
+            }
+
+            return $possibleTestClassName;
+        }
+
+        return null;
     }
 }
