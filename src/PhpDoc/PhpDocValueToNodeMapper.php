@@ -13,20 +13,10 @@ use Rector\Core\PhpParser\Node\NodeFactory;
 
 final class PhpDocValueToNodeMapper
 {
-    /**
-     * @var NodeFactory
-     */
-    private $nodeFactory;
-
-    /**
-     * @var ReflectionProvider
-     */
-    private $reflectionProvider;
-
-    public function __construct(NodeFactory $nodeFactory, ReflectionProvider $reflectionProvider)
-    {
-        $this->nodeFactory = $nodeFactory;
-        $this->reflectionProvider = $reflectionProvider;
+    public function __construct(
+        private NodeFactory $nodeFactory,
+        private ReflectionProvider $reflectionProvider
+    ) {
     }
 
     public function mapGenericTagValueNode(GenericTagValueNode $genericTagValueNode): Expr

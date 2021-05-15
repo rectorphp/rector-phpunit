@@ -20,14 +20,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class SimplifyForeachInstanceOfRector extends AbstractRector
 {
-    /**
-     * @var ForeachManipulator
-     */
-    private $foreachManipulator;
-
-    public function __construct(ForeachManipulator $foreachManipulator)
-    {
-        $this->foreachManipulator = $foreachManipulator;
+    public function __construct(
+        private ForeachManipulator $foreachManipulator
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition

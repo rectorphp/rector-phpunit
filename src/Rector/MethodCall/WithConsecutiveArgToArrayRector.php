@@ -27,20 +27,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class WithConsecutiveArgToArrayRector extends AbstractRector
 {
-    /**
-     * @var MethodCallManipulator
-     */
-    private $methodCallManipulator;
-
-    /**
-     * @var ReflectionProvider
-     */
-    private $reflectionProvider;
-
-    public function __construct(MethodCallManipulator $methodCallManipulator, ReflectionProvider $reflectionProvider)
-    {
-        $this->methodCallManipulator = $methodCallManipulator;
-        $this->reflectionProvider = $reflectionProvider;
+    public function __construct(
+        private MethodCallManipulator $methodCallManipulator,
+        private ReflectionProvider $reflectionProvider
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition

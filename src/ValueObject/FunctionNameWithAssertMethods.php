@@ -6,26 +6,11 @@ namespace Rector\PHPUnit\ValueObject;
 
 final class FunctionNameWithAssertMethods
 {
-    /**
-     * @var string
-     */
-    private $functionName;
-
-    /**
-     * @var string
-     */
-    private $assetMethodName;
-
-    /**
-     * @var string
-     */
-    private $notAssertMethodName;
-
-    public function __construct(string $functionName, string $assetMethodName, string $notAssertMethodName)
-    {
-        $this->functionName = $functionName;
-        $this->assetMethodName = $assetMethodName;
-        $this->notAssertMethodName = $notAssertMethodName;
+    public function __construct(
+        private string $functionName,
+        private string $assetMethodName,
+        private string $notAssertMethodName
+    ) {
     }
 
     public function getFunctionName(): string

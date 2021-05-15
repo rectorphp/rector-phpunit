@@ -55,29 +55,11 @@ final class ArrayArgumentToDataProviderRector extends AbstractRector implements 
      */
     private $dataProviderClassMethodRecipes = [];
 
-    /**
-     * @var DataProviderClassMethodFactory
-     */
-    private $dataProviderClassMethodFactory;
-
-    /**
-     * @var ParamAndArgFromArrayResolver
-     */
-    private $paramAndArgFromArrayResolver;
-
-    /**
-     * @var TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
     public function __construct(
-        DataProviderClassMethodFactory $dataProviderClassMethodFactory,
-        ParamAndArgFromArrayResolver $paramAndArgFromArrayResolver,
-        TestsNodeAnalyzer $testsNodeAnalyzer
+        private DataProviderClassMethodFactory $dataProviderClassMethodFactory,
+        private ParamAndArgFromArrayResolver $paramAndArgFromArrayResolver,
+        private TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
-        $this->dataProviderClassMethodFactory = $dataProviderClassMethodFactory;
-        $this->paramAndArgFromArrayResolver = $paramAndArgFromArrayResolver;
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
     }
 
     public function getRuleDefinition(): RuleDefinition

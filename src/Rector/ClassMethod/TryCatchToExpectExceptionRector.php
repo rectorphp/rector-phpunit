@@ -24,43 +24,13 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class TryCatchToExpectExceptionRector extends AbstractRector
 {
-    /**
-     * @var TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
-    /**
-     * @var ExpectExceptionCodeFactory
-     */
-    private $expectExceptionCodeFactory;
-
-    /**
-     * @var ExpectExceptionMessageRegExpFactory
-     */
-    private $expectExceptionMessageRegExpFactory;
-
-    /**
-     * @var ExpectExceptionFactory
-     */
-    private $expectExceptionFactory;
-
-    /**
-     * @var ExpectExceptionMessageFactory
-     */
-    private $expectExceptionMessageFactory;
-
     public function __construct(
-        TestsNodeAnalyzer $testsNodeAnalyzer,
-        ExpectExceptionCodeFactory $expectExceptionCodeFactory,
-        ExpectExceptionMessageRegExpFactory $expectExceptionMessageRegExpFactory,
-        ExpectExceptionFactory $expectExceptionFactory,
-        ExpectExceptionMessageFactory $expectExceptionMessageFactory
+        private TestsNodeAnalyzer $testsNodeAnalyzer,
+        private ExpectExceptionCodeFactory $expectExceptionCodeFactory,
+        private ExpectExceptionMessageRegExpFactory $expectExceptionMessageRegExpFactory,
+        private ExpectExceptionFactory $expectExceptionFactory,
+        private ExpectExceptionMessageFactory $expectExceptionMessageFactory
     ) {
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
-        $this->expectExceptionCodeFactory = $expectExceptionCodeFactory;
-        $this->expectExceptionMessageRegExpFactory = $expectExceptionMessageRegExpFactory;
-        $this->expectExceptionFactory = $expectExceptionFactory;
-        $this->expectExceptionMessageFactory = $expectExceptionMessageFactory;
     }
 
     public function getRuleDefinition(): RuleDefinition

@@ -37,20 +37,10 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
      */
     private $binaryOpWithAssertMethods = [];
 
-    /**
-     * @var IdentifierManipulator
-     */
-    private $identifierManipulator;
-
-    /**
-     * @var TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
-    public function __construct(IdentifierManipulator $identifierManipulator, TestsNodeAnalyzer $testsNodeAnalyzer)
-    {
-        $this->identifierManipulator = $identifierManipulator;
-
+    public function __construct(
+        private IdentifierManipulator $identifierManipulator,
+        private TestsNodeAnalyzer $testsNodeAnalyzer
+    ) {
         $this->binaryOpWithAssertMethods = [
             new BinaryOpWithAssertMethod(Identical::class, 'assertSame', 'assertNotSame'),
             new BinaryOpWithAssertMethod(NotIdentical::class, 'assertNotSame', 'assertSame'),
@@ -69,7 +59,6 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
                 'assertGreaterThanOrEqual'
             ),
         ];
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
     }
 
     public function getRuleDefinition(): RuleDefinition

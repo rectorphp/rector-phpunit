@@ -13,43 +13,13 @@ use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 
 final class ExpectExceptionMessageFactory
 {
-    /**
-     * @var NodeNameResolver
-     */
-    private $nodeNameResolver;
-
-    /**
-     * @var NodeComparator
-     */
-    private $nodeComparator;
-
-    /**
-     * @var ArgumentShiftingFactory
-     */
-    private $argumentShiftingFactory;
-
-    /**
-     * @var NodeTypeResolver
-     */
-    private $nodeTypeResolver;
-
-    /**
-     * @var TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
     public function __construct(
-        NodeNameResolver $nodeNameResolver,
-        ArgumentShiftingFactory $argumentShiftingFactory,
-        NodeComparator $nodeComparator,
-        NodeTypeResolver $nodeTypeResolver,
-        TestsNodeAnalyzer $testsNodeAnalyzer
+        private NodeNameResolver $nodeNameResolver,
+        private ArgumentShiftingFactory $argumentShiftingFactory,
+        private NodeComparator $nodeComparator,
+        private NodeTypeResolver $nodeTypeResolver,
+        private TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
-        $this->nodeNameResolver = $nodeNameResolver;
-        $this->argumentShiftingFactory = $argumentShiftingFactory;
-        $this->nodeComparator = $nodeComparator;
-        $this->nodeTypeResolver = $nodeTypeResolver;
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
     }
 
     public function create(MethodCall $methodCall, Variable $exceptionVariable): ?MethodCall

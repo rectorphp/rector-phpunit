@@ -27,13 +27,9 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
      */
     private $functionNameWithAssertMethods = [];
 
-    /**
-     * @var TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
-    public function __construct(TestsNodeAnalyzer $testsNodeAnalyzer)
-    {
+    public function __construct(
+        private TestsNodeAnalyzer $testsNodeAnalyzer
+    ) {
         $this->functionNameWithAssertMethods = [
             new FunctionNameWithAssertMethods('is_readable', 'assertIsReadable', 'assertNotIsReadable'),
             new FunctionNameWithAssertMethods('array_key_exists', 'assertArrayHasKey', 'assertArrayNotHasKey'),
@@ -48,7 +44,6 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
             new FunctionNameWithAssertMethods('is_nan', 'assertNan', ''),
             new FunctionNameWithAssertMethods('is_a', 'assertInstanceOf', 'assertNotInstanceOf'),
         ];
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
     }
 
     public function getRuleDefinition(): RuleDefinition

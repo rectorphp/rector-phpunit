@@ -40,20 +40,10 @@ final class SpecificAssertInternalTypeRector extends AbstractRector
         'null' => ['assertNull', 'assertNotNull'],
     ];
 
-    /**
-     * @var TypeAnalyzer
-     */
-    private $typeAnalyzer;
-
-    /**
-     * @var TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
-    public function __construct(TypeAnalyzer $typeAnalyzer, TestsNodeAnalyzer $testsNodeAnalyzer)
-    {
-        $this->typeAnalyzer = $typeAnalyzer;
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
+    public function __construct(
+        private TypeAnalyzer $typeAnalyzer,
+        private TestsNodeAnalyzer $testsNodeAnalyzer
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition

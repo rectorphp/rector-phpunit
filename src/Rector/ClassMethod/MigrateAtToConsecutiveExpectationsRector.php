@@ -23,22 +23,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class MigrateAtToConsecutiveExpectationsRector extends AbstractRector
 {
-    /**
-     * @var ConsecutiveAssertionFactory
-     */
-    private $consecutiveAssertionFactory;
-
-    /**
-     * @var ExpectationAnalyzer
-     */
-    private $expectationAnalyzer;
-
     public function __construct(
-        ConsecutiveAssertionFactory $consecutiveAssertionFactory,
-        ExpectationAnalyzer $expectationAnalyzer
+        private ConsecutiveAssertionFactory $consecutiveAssertionFactory,
+        private ExpectationAnalyzer $expectationAnalyzer
     ) {
-        $this->consecutiveAssertionFactory = $consecutiveAssertionFactory;
-        $this->expectationAnalyzer = $expectationAnalyzer;
     }
 
     public function getRuleDefinition(): RuleDefinition

@@ -24,29 +24,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ConstructClassMethodToSetUpTestCaseRector extends AbstractRector
 {
-    /**
-     * @var SetUpClassMethodNodeManipulator
-     */
-    private $setUpClassMethodNodeManipulator;
-
-    /**
-     * @var StaticCallAnalyzer
-     */
-    private $staticCallAnalyzer;
-
-    /**
-     * @var TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
     public function __construct(
-        SetUpClassMethodNodeManipulator $setUpClassMethodNodeManipulator,
-        StaticCallAnalyzer $staticCallAnalyzer,
-        TestsNodeAnalyzer $testsNodeAnalyzer
+        private SetUpClassMethodNodeManipulator $setUpClassMethodNodeManipulator,
+        private StaticCallAnalyzer $staticCallAnalyzer,
+        private TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
-        $this->setUpClassMethodNodeManipulator = $setUpClassMethodNodeManipulator;
-        $this->staticCallAnalyzer = $staticCallAnalyzer;
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
     }
 
     public function getRuleDefinition(): RuleDefinition

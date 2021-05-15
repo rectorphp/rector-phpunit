@@ -33,29 +33,11 @@ final class ExceptionAnnotationRector extends AbstractRector
         'expectedException' => 'expectException',
     ];
 
-    /**
-     * @var ExpectExceptionMethodCallFactory
-     */
-    private $expectExceptionMethodCallFactory;
-
-    /**
-     * @var PhpDocTagRemover
-     */
-    private $phpDocTagRemover;
-
-    /**
-     * @var TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
     public function __construct(
-        ExpectExceptionMethodCallFactory $expectExceptionMethodCallFactory,
-        PhpDocTagRemover $phpDocTagRemover,
-        TestsNodeAnalyzer $testsNodeAnalyzer
+        private ExpectExceptionMethodCallFactory $expectExceptionMethodCallFactory,
+        private PhpDocTagRemover $phpDocTagRemover,
+        private TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
-        $this->expectExceptionMethodCallFactory = $expectExceptionMethodCallFactory;
-        $this->phpDocTagRemover = $phpDocTagRemover;
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
     }
 
     public function getRuleDefinition(): RuleDefinition

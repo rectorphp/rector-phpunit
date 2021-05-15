@@ -12,36 +12,12 @@ use Rector\NodeNameResolver\NodeNameResolver;
 
 final class ExpectExceptionMessageRegExpFactory
 {
-    /**
-     * @var NodeNameResolver
-     */
-    private $nodeNameResolver;
-
-    /**
-     * @var ArgumentShiftingFactory
-     */
-    private $argumentShiftingFactory;
-
-    /**
-     * @var NodeComparator
-     */
-    private $nodeComparator;
-
-    /**
-     * @var \Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
     public function __construct(
-        NodeNameResolver $nodeNameResolver,
-        ArgumentShiftingFactory $argumentShiftingFactory,
-        NodeComparator $nodeComparator,
-        \Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer $testsNodeAnalyzer
+        private NodeNameResolver $nodeNameResolver,
+        private ArgumentShiftingFactory $argumentShiftingFactory,
+        private NodeComparator $nodeComparator,
+        private \Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
-        $this->nodeNameResolver = $nodeNameResolver;
-        $this->argumentShiftingFactory = $argumentShiftingFactory;
-        $this->nodeComparator = $nodeComparator;
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
     }
 
     public function create(MethodCall $methodCall, Variable $exceptionVariable): ?MethodCall

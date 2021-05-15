@@ -6,14 +6,8 @@ namespace Rector\PHPUnit\Tests\Rector\ClassMethod\AddDoesNotPerformAssertionToNo
 
 final class Denormalizer
 {
-    /**
-     * @var DenormalizerInterface
-     */
-    private $denormalizer;
-
-    public function __construct(DenormalizerInterface $denormalizer)
+    public function __construct(private DenormalizerInterface $denormalizer)
     {
-        $this->denormalizer = $denormalizer;
     }
 
     public function handle(array $data, string $type): ?array

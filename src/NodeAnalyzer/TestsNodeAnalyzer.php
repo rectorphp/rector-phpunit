@@ -18,34 +18,15 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 final class TestsNodeAnalyzer
 {
     /**
-     * @var NodeTypeResolver
-     */
-    private $nodeTypeResolver;
-
-    /**
-     * @var NodeNameResolver
-     */
-    private $nodeNameResolver;
-
-    /**
-     * @var PhpDocInfoFactory
-     */
-    private $phpDocInfoFactory;
-
-    /**
      * @var ObjectType[]
      */
     private $testCaseObjectTypes = [];
 
     public function __construct(
-        NodeTypeResolver $nodeTypeResolver,
-        NodeNameResolver $nodeNameResolver,
-        PhpDocInfoFactory $phpDocInfoFactory
+        private NodeTypeResolver $nodeTypeResolver,
+        private NodeNameResolver $nodeNameResolver,
+        private PhpDocInfoFactory $phpDocInfoFactory
     ) {
-        $this->nodeTypeResolver = $nodeTypeResolver;
-        $this->nodeNameResolver = $nodeNameResolver;
-        $this->phpDocInfoFactory = $phpDocInfoFactory;
-
         $this->testCaseObjectTypes = [
             new ObjectType('PHPUnit\Framework\TestCase'),
             new ObjectType('PHPUnit_Framework_TestCase'),

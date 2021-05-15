@@ -24,20 +24,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class CreateMockToCreateStubRector extends AbstractRector
 {
-    /**
-     * @var MethodCallManipulator
-     */
-    private $methodCallManipulator;
-
-    /**
-     * @var TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
-    public function __construct(MethodCallManipulator $methodCallManipulator, TestsNodeAnalyzer $testsNodeAnalyzer)
-    {
-        $this->methodCallManipulator = $methodCallManipulator;
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
+    public function __construct(
+        private MethodCallManipulator $methodCallManipulator,
+        private TestsNodeAnalyzer $testsNodeAnalyzer
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition

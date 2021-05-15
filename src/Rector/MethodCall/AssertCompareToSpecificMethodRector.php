@@ -36,13 +36,9 @@ final class AssertCompareToSpecificMethodRector extends AbstractRector
      */
     private $functionNamesWithAssertMethods = [];
 
-    /**
-     * @var TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
-    public function __construct(TestsNodeAnalyzer $testsNodeAnalyzer)
-    {
+    public function __construct(
+        private TestsNodeAnalyzer $testsNodeAnalyzer
+    ) {
         $this->functionNamesWithAssertMethods = [
             new FunctionNameWithAssertMethods('count', self::ASSERT_COUNT, self::ASSERT_NOT_COUNT),
             new FunctionNameWithAssertMethods('sizeof', self::ASSERT_COUNT, self::ASSERT_NOT_COUNT),
@@ -50,7 +46,6 @@ final class AssertCompareToSpecificMethodRector extends AbstractRector
             new FunctionNameWithAssertMethods('gettype', 'assertInternalType', 'assertNotInternalType'),
             new FunctionNameWithAssertMethods('get_class', 'assertInstanceOf', 'assertNotInstanceOf'),
         ];
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
     }
 
     public function getRuleDefinition(): RuleDefinition
