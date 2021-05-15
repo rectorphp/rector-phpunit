@@ -9,20 +9,10 @@ use PHPStan\Type\Type;
 
 final class ParamAndArg
 {
-    /**
-     * @var Variable
-     */
-    private $variable;
-
-    /**
-     * @var Type|null
-     */
-    private $type;
-
-    public function __construct(Variable $variable, ?Type $type)
-    {
-        $this->variable = $variable;
-        $this->type = $type;
+    public function __construct(
+        private Variable $variable,
+        private ?\PHPStan\Type\Type $type
+    ) {
     }
 
     public function getVariable(): Variable

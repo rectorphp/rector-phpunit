@@ -15,29 +15,11 @@ use Symplify\Astral\ValueObject\NodeBuilder\MethodBuilder;
 
 final class SetUpClassMethodFactory
 {
-    /**
-     * @var PHPUnitTypeDeclarationDecorator
-     */
-    private $phpUnitTypeDeclarationDecorator;
-
-    /**
-     * @var StmtManipulator
-     */
-    private $stmtManipulator;
-
-    /**
-     * @var SetUpFactory
-     */
-    private $setUpFactory;
-
     public function __construct(
-        PHPUnitTypeDeclarationDecorator $phpUnitTypeDeclarationDecorator,
-        StmtManipulator $stmtManipulator,
-        SetUpFactory $setUpFactory
+        private PHPUnitTypeDeclarationDecorator $phpUnitTypeDeclarationDecorator,
+        private StmtManipulator $stmtManipulator,
+        private SetUpFactory $setUpFactory
     ) {
-        $this->phpUnitTypeDeclarationDecorator = $phpUnitTypeDeclarationDecorator;
-        $this->stmtManipulator = $stmtManipulator;
-        $this->setUpFactory = $setUpFactory;
     }
 
     /**

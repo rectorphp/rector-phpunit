@@ -17,36 +17,12 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class ExpectExceptionMethodCallFactory
 {
-    /**
-     * @var NodeFactory
-     */
-    private $nodeFactory;
-
-    /**
-     * @var PhpDocValueToNodeMapper
-     */
-    private $phpDocValueToNodeMapper;
-
-    /**
-     * @var StaticTypeMapper
-     */
-    private $staticTypeMapper;
-
-    /**
-     * @var CurrentNodeProvider
-     */
-    private $currentNodeProvider;
-
     public function __construct(
-        NodeFactory $nodeFactory,
-        PhpDocValueToNodeMapper $phpDocValueToNodeMapper,
-        StaticTypeMapper $staticTypeMapper,
-        CurrentNodeProvider $currentNodeProvider
+        private NodeFactory $nodeFactory,
+        private PhpDocValueToNodeMapper $phpDocValueToNodeMapper,
+        private StaticTypeMapper $staticTypeMapper,
+        private CurrentNodeProvider $currentNodeProvider
     ) {
-        $this->nodeFactory = $nodeFactory;
-        $this->phpDocValueToNodeMapper = $phpDocValueToNodeMapper;
-        $this->staticTypeMapper = $staticTypeMapper;
-        $this->currentNodeProvider = $currentNodeProvider;
     }
 
     /**

@@ -6,26 +6,11 @@ namespace Rector\PHPUnit\ValueObject;
 
 final class ConstantWithAssertMethods
 {
-    /**
-     * @var string
-     */
-    private $constant;
-
-    /**
-     * @var string
-     */
-    private $assetMethodName;
-
-    /**
-     * @var string
-     */
-    private $notAssertMethodName;
-
-    public function __construct(string $constant, string $assetMethodName, string $notAssertMethodName)
-    {
-        $this->constant = $constant;
-        $this->assetMethodName = $assetMethodName;
-        $this->notAssertMethodName = $notAssertMethodName;
+    public function __construct(
+        private string $constant,
+        private string $assetMethodName,
+        private string $notAssertMethodName
+    ) {
     }
 
     public function getConstant(): string

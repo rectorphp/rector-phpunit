@@ -9,22 +9,12 @@ use PhpParser\Node\Arg;
 final class DataProviderClassMethodRecipe
 {
     /**
-     * @var string
-     */
-    private $methodName;
-
-    /**
-     * @var Arg[]
-     */
-    private $args = [];
-
-    /**
      * @param Arg[] $args
      */
-    public function __construct(string $methodName, array $args)
-    {
-        $this->methodName = $methodName;
-        $this->args = $args;
+    public function __construct(
+        private string $methodName,
+        private array $args
+    ) {
     }
 
     public function getMethodName(): string

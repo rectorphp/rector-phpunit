@@ -45,33 +45,15 @@ final class AddDoesNotPerformAssertionToNonAssertingTestRector extends AbstractR
     private $containsAssertCallByClassMethod = [];
 
     /**
-     * @var FileInfoParser
-     */
-    private $fileInfoParser;
-
-    /**
-     * @var ClassMethodReflectionFactory
-     */
-    private $classMethodReflectionFactory;
-
-    /**
      * @var ClassMethod[][]|null[][]
      */
     private $analyzedMethodsInFileName = [];
 
-    /**
-     * @var TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
     public function __construct(
-        TestsNodeAnalyzer $testsNodeAnalyzer,
-        ClassMethodReflectionFactory $classMethodReflectionFactory,
-        FileInfoParser $fileInfoParser
+        private TestsNodeAnalyzer $testsNodeAnalyzer,
+        private ClassMethodReflectionFactory $classMethodReflectionFactory,
+        private FileInfoParser $fileInfoParser
     ) {
-        $this->fileInfoParser = $fileInfoParser;
-        $this->classMethodReflectionFactory = $classMethodReflectionFactory;
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
     }
 
     public function getRuleDefinition(): RuleDefinition

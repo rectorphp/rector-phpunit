@@ -11,20 +11,10 @@ use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 
 final class ExpectExceptionFactory
 {
-    /**
-     * @var NodeNameResolver
-     */
-    private $nodeNameResolver;
-
-    /**
-     * @var TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
-    public function __construct(NodeNameResolver $nodeNameResolver, TestsNodeAnalyzer $testsNodeAnalyzer)
-    {
-        $this->nodeNameResolver = $nodeNameResolver;
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
+    public function __construct(
+        private NodeNameResolver $nodeNameResolver,
+        private TestsNodeAnalyzer $testsNodeAnalyzer
+    ) {
     }
 
     public function create(MethodCall $methodCall, Variable $variable): ?MethodCall

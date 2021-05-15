@@ -33,20 +33,10 @@ final class ExplicitPhpErrorApiRector extends AbstractRector
         'PHPUnit\Framework\TestCase\Warning' => 'expectWarning',
     ];
 
-    /**
-     * @var AssertCallFactory
-     */
-    private $assertCallFactory;
-
-    /**
-     * @var TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
-    public function __construct(AssertCallFactory $assertCallFactory, TestsNodeAnalyzer $testsNodeAnalyzer)
-    {
-        $this->assertCallFactory = $assertCallFactory;
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
+    public function __construct(
+        private AssertCallFactory $assertCallFactory,
+        private TestsNodeAnalyzer $testsNodeAnalyzer
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition

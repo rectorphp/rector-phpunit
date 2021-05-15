@@ -12,22 +12,10 @@ use Rector\PHPUnit\NodeFactory\SetUpClassMethodFactory;
 
 final class SetUpClassMethodNodeManipulator
 {
-    /**
-     * @var SetUpClassMethodFactory
-     */
-    private $setUpClassMethodFactory;
-
-    /**
-     * @var StmtManipulator
-     */
-    private $stmtManipulator;
-
     public function __construct(
-        SetUpClassMethodFactory $setUpClassMethodFactory,
-        StmtManipulator $stmtManipulator
+        private SetUpClassMethodFactory $setUpClassMethodFactory,
+        private StmtManipulator $stmtManipulator
     ) {
-        $this->setUpClassMethodFactory = $setUpClassMethodFactory;
-        $this->stmtManipulator = $stmtManipulator;
     }
 
     /**

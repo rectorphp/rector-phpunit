@@ -13,54 +13,18 @@ use PhpParser\Node\Stmt\Expression;
 final class ExpectationMock
 {
     /**
-     * @var Variable|PropertyFetch
-     */
-    private $expectationVariable;
-
-    /**
-     * @var Arg[]
-     */
-    private $methodArguments = [];
-
-    /**
-     * @var int
-     */
-    private $index;
-
-    /**
-     * @var ?Expr
-     */
-    private $expr;
-
-    /**
-     * @var array<int, null|Expr>
-     */
-    private $withArguments = [];
-
-    /**
-     * @var Expression|null
-     */
-    private $originalExpression;
-
-    /**
      * @param Variable|PropertyFetch $expectationVariable
      * @param Arg[] $methodArguments
      * @param array<int, null|Expr> $withArguments
      */
     public function __construct(
-        Expr $expectationVariable,
-        array $methodArguments,
-        int $index,
-        ?Expr $expr,
-        array $withArguments,
-        ?Expression $originalExpression
+        private Expr $expectationVariable,
+        private array $methodArguments,
+        private int $index,
+        private ?\PhpParser\Node\Expr $expr,
+        private array $withArguments,
+        private ?\PhpParser\Node\Stmt\Expression $originalExpression
     ) {
-        $this->expectationVariable = $expectationVariable;
-        $this->methodArguments = $methodArguments;
-        $this->index = $index;
-        $this->expr = $expr;
-        $this->withArguments = $withArguments;
-        $this->originalExpression = $originalExpression;
     }
 
     /**

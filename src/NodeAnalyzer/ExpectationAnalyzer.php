@@ -31,22 +31,10 @@ final class ExpectationAnalyzer
         'willThrowException',
     ];
 
-    /**
-     * @var TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
-    /**
-     * @var ConsecutiveAssertionFactory
-     */
-    private $consecutiveAssertionFactory;
-
     public function __construct(
-        TestsNodeAnalyzer $testsNodeAnalyzer,
-        ConsecutiveAssertionFactory $consecutiveAssertionFactory
+        private TestsNodeAnalyzer $testsNodeAnalyzer,
+        private ConsecutiveAssertionFactory $consecutiveAssertionFactory
     ) {
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
-        $this->consecutiveAssertionFactory = $consecutiveAssertionFactory;
     }
 
     /**

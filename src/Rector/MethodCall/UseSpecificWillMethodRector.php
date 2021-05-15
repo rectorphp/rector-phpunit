@@ -33,14 +33,9 @@ final class UseSpecificWillMethodRector extends AbstractRector
         'throwException' => 'willThrowException',
     ];
 
-    /**
-     * @var TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
-    public function __construct(TestsNodeAnalyzer $testsNodeAnalyzer)
-    {
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
+    public function __construct(
+        private TestsNodeAnalyzer $testsNodeAnalyzer
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition

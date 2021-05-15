@@ -18,20 +18,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AssertSameTrueFalseToAssertTrueFalseRector extends AbstractRector
 {
-    /**
-     * @var ArgumentMover
-     */
-    private $argumentMover;
-
-    /**
-     * @var TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
-    public function __construct(ArgumentMover $argumentMover, TestsNodeAnalyzer $testsNodeAnalyzer)
-    {
-        $this->argumentMover = $argumentMover;
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
+    public function __construct(
+        private ArgumentMover $argumentMover,
+        private TestsNodeAnalyzer $testsNodeAnalyzer
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition

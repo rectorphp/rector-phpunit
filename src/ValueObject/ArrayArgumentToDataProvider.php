@@ -8,32 +8,12 @@ use PHPStan\Type\ObjectType;
 
 final class ArrayArgumentToDataProvider
 {
-    /**
-     * @var string
-     */
-    private $class;
-
-    /**
-     * @var string
-     */
-    private $oldMethod;
-
-    /**
-     * @var string
-     */
-    private $newMethod;
-
-    /**
-     * @var string
-     */
-    private $variableName;
-
-    public function __construct(string $class, string $oldMethod, string $newMethod, string $variableName)
-    {
-        $this->class = $class;
-        $this->oldMethod = $oldMethod;
-        $this->newMethod = $newMethod;
-        $this->variableName = $variableName;
+    public function __construct(
+        private string $class,
+        private string $oldMethod,
+        private string $newMethod,
+        private string $variableName
+    ) {
     }
 
     public function getObjectType(): ObjectType

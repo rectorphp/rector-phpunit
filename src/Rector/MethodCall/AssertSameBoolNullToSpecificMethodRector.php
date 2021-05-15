@@ -26,35 +26,16 @@ final class AssertSameBoolNullToSpecificMethodRector extends AbstractRector
      */
     private $constantWithAssertMethods = [];
 
-    /**
-     * @var IdentifierManipulator
-     */
-    private $identifierManipulator;
-
-    /**
-     * @var ArgumentMover
-     */
-    private $argumentMover;
-
-    /**
-     * @var TestsNodeAnalyzer
-     */
-    private $testsNodeAnalyzer;
-
     public function __construct(
-        IdentifierManipulator $identifierManipulator,
-        ArgumentMover $argumentMover,
-        TestsNodeAnalyzer $testsNodeAnalyzer
+        private IdentifierManipulator $identifierManipulator,
+        private ArgumentMover $argumentMover,
+        private TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
-        $this->identifierManipulator = $identifierManipulator;
-
         $this->constantWithAssertMethods = [
             new ConstantWithAssertMethods('null', 'assertNull', 'assertNotNull'),
             new ConstantWithAssertMethods('true', 'assertTrue', 'assertNotTrue'),
             new ConstantWithAssertMethods('false', 'assertFalse', 'assertNotFalse'),
         ];
-        $this->argumentMover = $argumentMover;
-        $this->testsNodeAnalyzer = $testsNodeAnalyzer;
     }
 
     public function getRuleDefinition(): RuleDefinition
