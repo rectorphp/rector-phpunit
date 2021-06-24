@@ -10,8 +10,10 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use Rector\Core\PHPStan\Reflection\CallReflectionResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ClassMethodReflectionFactory;
+use Rector\Core\Reflection\FunctionLikeReflectionParser;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use ReflectionMethod;
@@ -52,7 +54,9 @@ final class AddDoesNotPerformAssertionToNonAssertingTestRector extends AbstractR
     public function __construct(
         private TestsNodeAnalyzer $testsNodeAnalyzer,
         private ClassMethodReflectionFactory $classMethodReflectionFactory,
-        private FileInfoParser $fileInfoParser
+        private FileInfoParser $fileInfoParser,
+        private CallReflectionResolver $callReflectionResolver,
+        private FunctionLikeReflectionParser $functionLikeReflectionParser
     ) {
     }
 
@@ -206,7 +210,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            $classMethod = $this->findClassMethod($node);
+            $classMethod = $this->findClassMethodByParsingReflection($node);
 
             // skip circular self calls
             if ($currentClassMethod === $classMethod) {
@@ -219,27 +223,6 @@ CODE_SAMPLE
 
             return false;
         });
-    }
-
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function findClassMethod(Node $node): ?ClassMethod
-    {
-        if ($node instanceof MethodCall) {
-            $classMethod = $this->nodeRepository->findClassMethodByMethodCall($node);
-            if ($classMethod !== null) {
-                return $classMethod;
-            }
-        } elseif ($node instanceof StaticCall) {
-            $classMethod = $this->nodeRepository->findClassMethodByStaticCall($node);
-            if ($classMethod !== null) {
-                return $classMethod;
-            }
-        }
-
-        // in 3rd-party code
-        return $this->findClassMethodByParsingReflection($node);
     }
 
     /**
