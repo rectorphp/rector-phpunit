@@ -13,7 +13,6 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
-use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -43,14 +42,8 @@ final class AddDoesNotPerformAssertionToNonAssertingTestRector extends AbstractR
      */
     private $containsAssertCallByClassMethod = [];
 
-//    /**
-//     * @var ClassMethod[][]|null[][]
-//     */
-//    private $analyzedMethodsInFileName = [];
-
     public function __construct(
         private TestsNodeAnalyzer $testsNodeAnalyzer,
-//        private FileInfoParser $fileInfoParser,
         private AstResolver $astResolver
     ) {
     }
@@ -238,9 +231,6 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->astResolver->resolveClassMethod(
-            $objectType->getClassName(),
-            $methodName
-        );
+        return $this->astResolver->resolveClassMethod($objectType->getClassName(), $methodName);
     }
 }
