@@ -10,16 +10,13 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
-use Rector\Core\PHPStan\Reflection\CallReflectionResolver;
+use PHPStan\Type\TypeWithClassName;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\Reflection\ClassMethodReflectionFactory;
-use Rector\Core\Reflection\FunctionLikeReflectionParser;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
-use ReflectionMethod;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
  * @see https://phpunit.readthedocs.io/en/7.3/annotations.html#doesnotperformassertions
@@ -46,17 +43,15 @@ final class AddDoesNotPerformAssertionToNonAssertingTestRector extends AbstractR
      */
     private $containsAssertCallByClassMethod = [];
 
-    /**
-     * @var ClassMethod[][]|null[][]
-     */
-    private $analyzedMethodsInFileName = [];
+//    /**
+//     * @var ClassMethod[][]|null[][]
+//     */
+//    private $analyzedMethodsInFileName = [];
 
     public function __construct(
         private TestsNodeAnalyzer $testsNodeAnalyzer,
-        private ClassMethodReflectionFactory $classMethodReflectionFactory,
-        private FileInfoParser $fileInfoParser,
-        private CallReflectionResolver $callReflectionResolver,
-        private FunctionLikeReflectionParser $functionLikeReflectionParser
+//        private FileInfoParser $fileInfoParser,
+        private AstResolver $astResolver
     ) {
     }
 
@@ -210,7 +205,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            $classMethod = $this->findClassMethodByParsingReflection($node);
+            $classMethod = $this->resolveClassMethodFromCall($node);
 
             // skip circular self calls
             if ($currentClassMethod === $classMethod) {
@@ -225,67 +220,27 @@ CODE_SAMPLE
         });
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function findClassMethodByParsingReflection(Node $node): ?ClassMethod
+    private function resolveClassMethodFromCall(StaticCall | MethodCall $call): ?ClassMethod
     {
-        $methodName = $this->getName($node->name);
+        if ($call instanceof MethodCall) {
+            $objectType = $this->getObjectType($call->var);
+        } else {
+            // StaticCall
+            $objectType = $this->getObjectType($call->class);
+        }
+
+        if (! $objectType instanceof TypeWithClassName) {
+            return null;
+        }
+
+        $methodName = $this->getName($call->name);
         if ($methodName === null) {
             return null;
         }
 
-        if ($node instanceof MethodCall) {
-            $objectType = $this->getObjectType($node->var);
-        } else {
-            // StaticCall
-            $objectType = $this->getObjectType($node->class);
-        }
-
-        $reflectionMethod = $this->classMethodReflectionFactory->createFromPHPStanTypeAndMethodName(
-            $objectType,
+        return $this->astResolver->resolveClassMethod(
+            $objectType->getClassName(),
             $methodName
         );
-
-        if (! $reflectionMethod instanceof ReflectionMethod) {
-            return null;
-        }
-
-        $fileName = $reflectionMethod->getFileName();
-        if (! $fileName) {
-            return null;
-        }
-        if (! file_exists($fileName)) {
-            return null;
-        }
-
-        return $this->findClassMethodInFile($fileName, $methodName);
-    }
-
-    private function findClassMethodInFile(string $fileName, string $methodName): ?ClassMethod
-    {
-        // skip already anayzed method to prevent cycling
-        if (isset($this->analyzedMethodsInFileName[$fileName][$methodName])) {
-            return $this->analyzedMethodsInFileName[$fileName][$methodName];
-        }
-
-        $smartFileInfo = new SmartFileInfo($fileName);
-        $examinedMethodNodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($smartFileInfo);
-
-        /** @var ClassMethod|null $examinedClassMethod */
-        $examinedClassMethod = $this->betterNodeFinder->findFirst(
-            $examinedMethodNodes,
-            function (Node $node) use ($methodName): bool {
-                if (! $node instanceof ClassMethod) {
-                    return false;
-                }
-
-                return $this->isName($node, $methodName);
-            }
-        );
-
-        $this->analyzedMethodsInFileName[$fileName][$methodName] = $examinedClassMethod;
-
-        return $examinedClassMethod;
     }
 }

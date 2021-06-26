@@ -25,3 +25,6 @@ parameters:
 
         # non on PHP 8 yet
         - '#This property type might be inlined to PHP\. Do you have confidence it is correct\? Put it here#'
+
+        # phpstan false positive
+        - '#Parameter \#1 \$className of method Rector\\Core\\PhpParser\\AstResolver\:\:resolveClassMethod\(\) expects class\-string, string given#'
