@@ -22,6 +22,7 @@ use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFactory\DataProviderClassMethodFactory;
 use Rector\PHPUnit\NodeManipulator\ParamAndArgFromArrayResolver;
@@ -326,7 +327,7 @@ CODE_SAMPLE
             return;
         }
 
-        $phpNodeType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($staticType);
+        $phpNodeType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($staticType, TypeKind::PARAM());
         if ($phpNodeType === null) {
             return;
         }
