@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Scalar\String_;
+use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Renaming\NodeManipulator\IdentifierManipulator;
@@ -87,22 +88,43 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
         $issetNodeArg = $issetNode->vars[0];
 
         if ($issetNodeArg instanceof PropertyFetch) {
-            $this->refactorPropertyFetchNode($node, $issetNodeArg);
-        } elseif ($issetNodeArg instanceof ArrayDimFetch) {
-            $this->refactorArrayDimFetchNode($node, $issetNodeArg);
+            if ($this->hasMagicIsset($issetNodeArg->var)) {
+                return null;
+            }
+
+            return $this->refactorPropertyFetchNode($node, $issetNodeArg);
+        }
+
+        if ($issetNodeArg instanceof ArrayDimFetch) {
+            return $this->refactorArrayDimFetchNode($node, $issetNodeArg);
         }
 
         return $node;
     }
 
+    private function hasMagicIsset(Node $node): bool
+    {
+        $resolved = $this->nodeTypeResolver->resolve($node);
+
+        if (! $resolved instanceof TypeWithClassName) {
+            return false;
+        }
+
+        $reflection = $resolved->getClassReflection();
+        if ($reflection === null) {
+            return false;
+        }
+        return $reflection->hasMethod('__isset');
+    }
+
     /**
      * @param MethodCall|StaticCall $node
      */
-    private function refactorPropertyFetchNode(Node $node, PropertyFetch $propertyFetch): void
+    private function refactorPropertyFetchNode(Node $node, PropertyFetch $propertyFetch): ?Node
     {
         $name = $this->getName($propertyFetch);
         if ($name === null) {
-            return;
+            return null;
         }
 
         $this->identifierManipulator->renameNodeWithMap($node, [
@@ -115,12 +137,13 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
 
         $newArgs = $this->nodeFactory->createArgs([new String_($name), $propertyFetch->var]);
         $node->args = $this->appendArgs($newArgs, $oldArgs);
+        return $node;
     }
 
     /**
      * @param MethodCall|StaticCall $node
      */
-    private function refactorArrayDimFetchNode(Node $node, ArrayDimFetch $arrayDimFetch): void
+    private function refactorArrayDimFetchNode(Node $node, ArrayDimFetch $arrayDimFetch): ?Node
     {
         $this->identifierManipulator->renameNodeWithMap($node, [
             self::ASSERT_TRUE => 'assertArrayHasKey',
@@ -132,5 +155,6 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
         unset($oldArgs[0]);
 
         $node->args = array_merge($this->nodeFactory->createArgs([$arrayDimFetch->dim, $arrayDimFetch->var]), $oldArgs);
+        return $node;
     }
 }

@@ -6,12 +6,6 @@ final class CustomIsset {
     public function __isset($property) {
         return false;
     }
-    public function __set($property, $value) {
-        return false;
-    }
-    public function __get($property) {
-        return null;
-    }
 }
 
 final class SkipCustomIsset extends \PHPUnit\Framework\TestCase
