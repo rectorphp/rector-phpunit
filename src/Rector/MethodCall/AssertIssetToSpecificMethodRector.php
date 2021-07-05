@@ -143,7 +143,7 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
     /**
      * @param MethodCall|StaticCall $node
      */
-    private function refactorArrayDimFetchNode(Node $node, ArrayDimFetch $arrayDimFetch): ?Node
+    private function refactorArrayDimFetchNode(Node $node, ArrayDimFetch $arrayDimFetch): Node
     {
         $this->identifierManipulator->renameNodeWithMap($node, [
             self::ASSERT_TRUE => 'assertArrayHasKey',
