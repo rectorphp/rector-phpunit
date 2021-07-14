@@ -6,6 +6,7 @@ namespace Rector\PHPUnit\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
@@ -99,7 +100,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->areAllArgArrayTypes($node)) {
+        if ($this->hasArrayArgType($node)) {
             return null;
         }
 
@@ -119,14 +120,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($mockClass);
-        $classReflection = $classReflection->getNativeReflection();
-
-        $reflectionMethod = $classReflection->getMethod($mockMethod);
-        $numberOfParameters = $reflectionMethod->getNumberOfParameters();
+        $numberOfParameters = $this->resolveNumberOfRequiredParameters($mockClass, $mockMethod);
 
         $values = [];
         foreach ($node->args as $arg) {
+            // already an array
             $values[] = $arg->value;
         }
 
@@ -146,18 +144,20 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function areAllArgArrayTypes(MethodCall $methodCall): bool
+    private function hasArrayArgType(MethodCall $methodCall): bool
     {
         foreach ($methodCall->args as $arg) {
-            $argumentStaticType = $this->getStaticType($arg->value);
-            if ($argumentStaticType instanceof ArrayType) {
-                continue;
+            if ($arg->value instanceof Array_) {
+                return true;
             }
 
-            return false;
+            $argumentStaticType = $this->getStaticType($arg->value);
+            if ($argumentStaticType instanceof ArrayType) {
+                return true;
+            }
         }
 
-        return true;
+        return false;
     }
 
     private function inferMockedClassName(MethodCall $methodCall): ?string
@@ -215,5 +215,14 @@ CODE_SAMPLE
         }
 
         return $currentMethodCallee;
+    }
+
+    private function resolveNumberOfRequiredParameters(string $mockClass, string $mockMethod): int
+    {
+        $classReflection = $this->reflectionProvider->getClass($mockClass);
+        $nativeClassReflection = $classReflection->getNativeReflection();
+
+        $reflectionMethod = $nativeClassReflection->getMethod($mockMethod);
+        return $reflectionMethod->getNumberOfParameters();
     }
 }
