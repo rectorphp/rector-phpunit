@@ -207,7 +207,7 @@ CODE_SAMPLE
         throw new ShouldNotHappenException();
     }
 
-    private function findRootVariableOfChainCall(MethodCall $methodCall): ?Variable
+    private function findRootVariableOfChainCall(MethodCall $methodCall): Variable
     {
         $currentMethodCallee = $methodCall->var;
         while (! $currentMethodCallee instanceof Variable) {
