@@ -113,7 +113,7 @@ CODE_SAMPLE
                 $newMethodCall->args[0] = $node->args[0];
                 $newMethodCall->args[1] = $node->args[1];
                 $newMethodCall->args[2] = $node->args[2];
-                $this->addNodeAfterNode($newMethodCall, $node);
+                $this->nodesToAddCollector->addNodeAfterNode($newMethodCall, $node);
             }
 
             unset($node->args[6]);
@@ -132,7 +132,7 @@ CODE_SAMPLE
                 $newMethodCall->args[0] = $node->args[0];
                 $newMethodCall->args[1] = $node->args[1];
                 $newMethodCall->args[2] = $node->args[2];
-                $this->addNodeAfterNode($newMethodCall, $node);
+                $this->nodesToAddCollector->addNodeAfterNode($newMethodCall, $node);
             }
 
             unset($node->args[5]);
@@ -152,7 +152,7 @@ CODE_SAMPLE
                 $newMethodCall->args[1] = $node->args[1];
                 $newMethodCall->args[2] = $node->args[3];
                 $newMethodCall->args[3] = $node->args[2];
-                $this->addNodeAfterNode($newMethodCall, $node);
+                $this->nodesToAddCollector->addNodeAfterNode($newMethodCall, $node);
             }
 
             unset($node->args[3]);
