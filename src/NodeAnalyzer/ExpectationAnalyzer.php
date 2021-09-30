@@ -158,8 +158,6 @@ final class ExpectationAnalyzer
         if (! $expr instanceof MethodCall) {
             return [null];
         }
-        return array_map(static function (Arg $arg): Expr {
-            return $arg->value;
-        }, $expr->args);
+        return array_map(static fn (Arg $arg): Expr => $arg->value, $expr->args);
     }
 }

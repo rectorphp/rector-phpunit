@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Core\Configuration\Option;
+use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -18,11 +19,22 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         // for tests
         '*/Source/*',
         '*/Fixture/*',
+
+        // object types
+        \Rector\Php55\Rector\String_\StringClassNameToClassConstantRector::class => [
+            __DIR__ . '/src/Rector/MethodCall/WithConsecutiveArgToArrayRector.php',
+            __DIR__ . '/src/Rector/MethodCall/UseSpecificWillMethodRector.php',
+            __DIR__ . '/src/Rector/Class_/TestListenerToHooksRector.php',
+            __DIR__ . '/src/NodeFactory/ConsecutiveAssertionFactory.php',
+            __DIR__ . '/src/NodeAnalyzer/TestsNodeAnalyzer.php',
+            __DIR__ . '/src/NodeFactory/DataProviderClassMethodFactory.php'
+        ],
     ]);
 
-    $containerConfigurator->import(SetList::PHP_80);
-    $containerConfigurator->import(SetList::PHP_74);
-    $containerConfigurator->import(SetList::PHP_73);
+    // needed for DEAD_CODE list, just in split package like this
+    $containerConfigurator->import(__DIR__ . '/config/config.php');
+
+    $containerConfigurator->import(LevelSetList::UP_TO_PHP_80);
     $containerConfigurator->import(SetList::DEAD_CODE);
 };
 

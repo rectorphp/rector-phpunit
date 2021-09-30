@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\NodeFactory;
 
-use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 
 final class AssertCallFactory
 {
-    /**
-     * @param StaticCall|MethodCall $node
-     * @return StaticCall|MethodCall
-     */
-    public function createCallWithName(Node $node, string $name): Node
+    public function createCallWithName(StaticCall|MethodCall $node, string $name): StaticCall|MethodCall
     {
-        return $node instanceof MethodCall ? new MethodCall($node->var, $name) : new StaticCall($node->class, $name);
+        if ($node instanceof MethodCall) {
+            return new MethodCall($node->var, $name);
+        }
+
+        return new StaticCall($node->class, $name);
     }
 }

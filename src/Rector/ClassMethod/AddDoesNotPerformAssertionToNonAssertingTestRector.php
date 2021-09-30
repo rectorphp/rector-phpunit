@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Type\TypeWithClassName;
+use PHPUnit\Framework\MockObject\MockBuilder;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -165,7 +166,7 @@ CODE_SAMPLE
         return (bool) $this->betterNodeFinder->findFirst((array) $classMethod->stmts, function (Node $node): bool {
             if ($node instanceof MethodCall) {
                 $type = $this->nodeTypeResolver->getType($node->var);
-                if ($type instanceof FullyQualifiedObjectType && $type->getClassName() === 'PHPUnit\Framework\MockObject\MockBuilder') {
+                if ($type instanceof FullyQualifiedObjectType && $type->getClassName() === MockBuilder::class) {
                     return true;
                 }
 

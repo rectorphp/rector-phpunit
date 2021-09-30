@@ -34,7 +34,7 @@ final class AssertCompareToSpecificMethodRector extends AbstractRector
     /**
      * @var FunctionNameWithAssertMethods[]
      */
-    private $functionNamesWithAssertMethods = [];
+    private array $functionNamesWithAssertMethods = [];
 
     public function __construct(
         private TestsNodeAnalyzer $testsNodeAnalyzer
@@ -107,11 +107,13 @@ final class AssertCompareToSpecificMethodRector extends AbstractRector
     }
 
     /**
-     * @param MethodCall|StaticCall $node
      * @return MethodCall|StaticCall|null
      */
-    private function processFuncCallArgumentValue(Node $node, FuncCall $funcCall, Arg $requiredArg): ?Node
-    {
+    private function processFuncCallArgumentValue(
+        MethodCall|StaticCall $node,
+        FuncCall $funcCall,
+        Arg $requiredArg
+    ): ?Node {
         foreach ($this->functionNamesWithAssertMethods as $functionNameWithAssertMethod) {
             if (! $this->isName($funcCall, $functionNameWithAssertMethod->getFunctionName())) {
                 continue;
@@ -126,11 +128,10 @@ final class AssertCompareToSpecificMethodRector extends AbstractRector
         return null;
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function renameMethod(Node $node, FunctionNameWithAssertMethods $functionNameWithAssertMethods): void
-    {
+    private function renameMethod(
+        MethodCall|StaticCall $node,
+        FunctionNameWithAssertMethods $functionNameWithAssertMethods
+    ): void {
         if ($this->isNames($node->name, ['assertSame', 'assertEquals'])) {
             $node->name = new Identifier($functionNameWithAssertMethods->getAssetMethodName());
         } elseif ($this->isNames($node->name, ['assertNotSame', 'assertNotEquals'])) {
@@ -140,10 +141,8 @@ final class AssertCompareToSpecificMethodRector extends AbstractRector
 
     /**
      * Handles custom error messages to not be overwrite by function with multiple args.
-     *
-     * @param StaticCall|MethodCall $node
      */
-    private function moveFunctionArgumentsUp(Node $node, FuncCall $funcCall, Arg $requiredArg): void
+    private function moveFunctionArgumentsUp(StaticCall|MethodCall $node, FuncCall $funcCall, Arg $requiredArg): void
     {
         $node->args[1] = $funcCall->args[0];
         $node->args[0] = $requiredArg;

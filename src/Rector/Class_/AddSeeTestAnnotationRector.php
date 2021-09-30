@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\Rector\Class_;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
@@ -195,11 +194,11 @@ CODE_SAMPLE
 
     private function isSeeTestCaseClass(string $possibleClassName): bool
     {
-        if (! Strings::startsWith($possibleClassName, '\\')) {
+        if (! \str_starts_with($possibleClassName, '\\')) {
             return false;
         }
 
-        return Strings::endsWith($possibleClassName, 'Test');
+        return \str_ends_with($possibleClassName, 'Test');
     }
 
     /**

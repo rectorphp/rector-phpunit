@@ -8,7 +8,6 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 
 final class ExpectExceptionMessageFactory
@@ -17,7 +16,6 @@ final class ExpectExceptionMessageFactory
         private NodeNameResolver $nodeNameResolver,
         private ArgumentShiftingFactory $argumentShiftingFactory,
         private NodeComparator $nodeComparator,
-        private NodeTypeResolver $nodeTypeResolver,
         private TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }

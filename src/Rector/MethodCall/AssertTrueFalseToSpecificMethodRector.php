@@ -25,7 +25,7 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
     /**
      * @var FunctionNameWithAssertMethods[]
      */
-    private $functionNameWithAssertMethods = [];
+    private array $functionNameWithAssertMethods = [];
 
     public function __construct(
         private TestsNodeAnalyzer $testsNodeAnalyzer
@@ -107,11 +107,10 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
         return null;
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function renameMethod(Node $node, FunctionNameWithAssertMethods $functionNameWithAssertMethods): void
-    {
+    private function renameMethod(
+        MethodCall|StaticCall $node,
+        FunctionNameWithAssertMethods $functionNameWithAssertMethods
+    ): void {
         /** @var Identifier $identifierNode */
         $identifierNode = $node->name;
         $oldMethodName = $identifierNode->toString();
@@ -138,10 +137,8 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
      *
      * After:
      * - $this->assertArrayHasKey('...', ['...'], 'second argument');
-     *
-     * @param MethodCall|StaticCall $node
      */
-    private function moveFunctionArgumentsUp(Node $node): void
+    private function moveFunctionArgumentsUp(MethodCall|StaticCall $node): void
     {
         $funcCallOrEmptyNode = $node->args[0]->value;
         if ($funcCallOrEmptyNode instanceof FuncCall) {

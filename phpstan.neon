@@ -29,13 +29,11 @@ parameters:
         # phpstan false positive
         - '#Parameter \#1 \$className of method Rector\\Core\\PhpParser\\AstResolver\:\:resolveClassMethod\(\) expects class\-string, string given#'
 
-<<<<<<< HEAD
         - '#PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\:\:\$value#'
         - '#array<PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\> given#'
         - '#array<int, PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\> given#'
         - '#PhpParser\\Node\\VariadicPlaceholder given#'
-=======
+
         # waits for phpstan compatible with php-parser 4.13
         - '#Access to an undefined property PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\:\:\$value#'
         - '#(.*?)PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder#'
->>>>>>> setup run

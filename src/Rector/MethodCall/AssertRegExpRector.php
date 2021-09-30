@@ -123,10 +123,7 @@ final class AssertRegExpRector extends AbstractRector
         throw new ShouldNotHappenException();
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function renameMethod(Node $node, string $oldMethodName, int $oldCondition): void
+    private function renameMethod(MethodCall|StaticCall $node, string $oldMethodName, int $oldCondition): void
     {
         if (in_array($oldMethodName, [self::ASSERT_SAME, self::ASSERT_EQUALS], true) && $oldCondition === 1
             || in_array($oldMethodName, [self::ASSERT_NOT_SAME, self::ASSERT_NOT_EQUALS], true) && $oldCondition === 0
@@ -141,10 +138,7 @@ final class AssertRegExpRector extends AbstractRector
         }
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function moveFunctionArgumentsUp(Node $node): void
+    private function moveFunctionArgumentsUp(MethodCall|StaticCall $node): void
     {
         $oldArguments = $node->args;
 

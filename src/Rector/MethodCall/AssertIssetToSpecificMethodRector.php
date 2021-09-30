@@ -78,7 +78,7 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
         if (! $firstArgumentValue instanceof Isset_) {
             return null;
         }
-        $variableNodeClass = get_class($firstArgumentValue->vars[0]);
+        $variableNodeClass = $firstArgumentValue->vars[0]::class;
         if (! in_array($variableNodeClass, [ArrayDimFetch::class, PropertyFetch::class], true)) {
             return null;
         }
@@ -117,10 +117,7 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
         return $reflection->hasMethod('__isset');
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function refactorPropertyFetchNode(Node $node, PropertyFetch $propertyFetch): ?Node
+    private function refactorPropertyFetchNode(MethodCall|StaticCall $node, PropertyFetch $propertyFetch): ?Node
     {
         $name = $this->getName($propertyFetch);
         if ($name === null) {
@@ -140,10 +137,7 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
         return $node;
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function refactorArrayDimFetchNode(Node $node, ArrayDimFetch $arrayDimFetch): Node
+    private function refactorArrayDimFetchNode(MethodCall|StaticCall $node, ArrayDimFetch $arrayDimFetch): Node
     {
         $this->identifierManipulator->renameNodeWithMap($node, [
             self::ASSERT_TRUE => 'assertArrayHasKey',

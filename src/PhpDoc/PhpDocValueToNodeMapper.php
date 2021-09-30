@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\PhpDoc;
 
-use Nette\Utils\Strings;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
@@ -21,7 +20,7 @@ final class PhpDocValueToNodeMapper
 
     public function mapGenericTagValueNode(GenericTagValueNode $genericTagValueNode): Expr
     {
-        if (Strings::contains($genericTagValueNode->value, '::')) {
+        if (\str_contains($genericTagValueNode->value, '::')) {
             [$class, $constant] = explode('::', $genericTagValueNode->value);
             return $this->nodeFactory->createShortClassConstFetch($class, $constant);
         }

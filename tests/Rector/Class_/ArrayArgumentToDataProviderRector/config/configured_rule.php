@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\TestCase;
+
 use Rector\PHPUnit\Rector\Class_\ArrayArgumentToDataProviderRector;
 use Rector\PHPUnit\ValueObject\ArrayArgumentToDataProvider;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -15,12 +17,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(ArrayArgumentToDataProviderRector::class)
         ->call('configure', [[
             ArrayArgumentToDataProviderRector::ARRAY_ARGUMENTS_TO_DATA_PROVIDERS => ValueObjectInliner::inline([
-                new ArrayArgumentToDataProvider(
-                    'PHPUnit\Framework\TestCase',
-                    'doTestMultiple',
-                    'doTestSingle',
-                    'variable'
-                ),
+                new ArrayArgumentToDataProvider(TestCase::class, 'doTestMultiple', 'doTestSingle', 'variable'),
             ]),
         ]]);
 };

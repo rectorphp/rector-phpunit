@@ -81,7 +81,7 @@ CODE_SAMPLE
         }
 
         /** @var MethodCall|StaticCall $matchedNode */
-        $callClass = get_class($matchedNode);
+        $callClass = $matchedNode::class;
 
         return new $callClass(
             $this->resolveVar($matchedNode),
@@ -90,10 +90,7 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function resolveVar(Node $node): Node
+    private function resolveVar(MethodCall|StaticCall $node): Node
     {
         if ($node instanceof MethodCall) {
             return $node->var;

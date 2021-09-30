@@ -18,6 +18,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
+use PHPUnit\Framework\TestCase;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
@@ -49,12 +50,12 @@ final class ArrayArgumentToDataProviderRector extends AbstractRector implements 
     /**
      * @var ArrayArgumentToDataProvider[]
      */
-    private $arrayArgumentsToDataProviders = [];
+    private array $arrayArgumentsToDataProviders = [];
 
     /**
      * @var DataProviderClassMethodRecipe[]
      */
-    private $dataProviderClassMethodRecipes = [];
+    private array $dataProviderClassMethodRecipes = [];
 
     public function __construct(
         private DataProviderClassMethodFactory $dataProviderClassMethodFactory,
@@ -105,7 +106,7 @@ CODE_SAMPLE
                 [
                     self::ARRAY_ARGUMENTS_TO_DATA_PROVIDERS => [
                         new ArrayArgumentToDataProvider(
-                            'PHPUnit\Framework\TestCase',
+                            TestCase::class,
                             'doTestMultiple',
                             'doTestSingle',
                             'number'

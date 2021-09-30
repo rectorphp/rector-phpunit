@@ -24,7 +24,7 @@ final class AssertSameBoolNullToSpecificMethodRector extends AbstractRector
     /**
      * @var ConstantWithAssertMethods[]
      */
-    private $constantWithAssertMethods = [];
+    private array $constantWithAssertMethods = [];
 
     public function __construct(
         private IdentifierManipulator $identifierManipulator,
@@ -84,11 +84,10 @@ final class AssertSameBoolNullToSpecificMethodRector extends AbstractRector
         return null;
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function renameMethod(Node $node, ConstantWithAssertMethods $constantWithAssertMethods): void
-    {
+    private function renameMethod(
+        MethodCall|StaticCall $node,
+        ConstantWithAssertMethods $constantWithAssertMethods
+    ): void {
         $this->identifierManipulator->renameNodeWithMap($node, [
             'assertSame' => $constantWithAssertMethods->getAssetMethodName(),
             'assertNotSame' => $constantWithAssertMethods->getNotAssertMethodName(),

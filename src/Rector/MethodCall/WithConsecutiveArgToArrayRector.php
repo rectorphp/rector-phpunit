@@ -163,9 +163,6 @@ CODE_SAMPLE
     private function inferMockedClassName(MethodCall $methodCall): ?string
     {
         $variable = $this->findRootVariableOfChainCall($methodCall);
-        if (! $variable instanceof Variable) {
-            return null;
-        }
 
         // look for "$this->createMock(X)"
         $assignToVariable = $this->methodCallManipulator->findAssignToVariable($variable);

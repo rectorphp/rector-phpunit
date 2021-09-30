@@ -107,10 +107,7 @@ final class AssertTrueFalseInternalTypeToSpecificMethodRector extends AbstractRe
         return $this->moveFunctionArgumentsUp($node);
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function moveFunctionArgumentsUp(Node $node): Node
+    private function moveFunctionArgumentsUp(MethodCall|StaticCall $node): Node
     {
         /** @var FuncCall $isFunctionNode */
         $isFunctionNode = $node->args[0]->value;
