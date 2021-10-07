@@ -98,7 +98,8 @@ CODE_SAMPLE
 
     private function isPossiblyStringType(Expr $expr): bool
     {
-        $exprType = $this->getStaticType($expr);
+        $exprType = $this->getType($expr);
+
         if ($exprType instanceof UnionType) {
             foreach ($exprType->getTypes() as $unionedType) {
                 if ($unionedType instanceof StringType) {

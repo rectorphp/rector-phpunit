@@ -60,9 +60,9 @@ final class TestsNodeAnalyzer
     public function isAssertMethodCallName(Node $node, string $name): bool
     {
         if ($node instanceof StaticCall) {
-            $callerType = $this->nodeTypeResolver->resolve($node->class);
+            $callerType = $this->nodeTypeResolver->getType($node->class);
         } elseif ($node instanceof MethodCall) {
-            $callerType = $this->nodeTypeResolver->resolve($node->var);
+            $callerType = $this->nodeTypeResolver->getType($node->var);
         } else {
             return false;
         }

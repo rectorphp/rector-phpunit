@@ -151,7 +151,7 @@ CODE_SAMPLE
                 return true;
             }
 
-            $argumentStaticType = $this->getStaticType($arg->value);
+            $argumentStaticType = $this->getType($arg->value);
             if ($argumentStaticType instanceof ArrayType) {
                 return true;
             }

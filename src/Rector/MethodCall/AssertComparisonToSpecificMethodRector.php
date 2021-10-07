@@ -153,7 +153,7 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
 
     private function isConstantValue(Expr $expr): bool
     {
-        $staticType = $this->nodeTypeResolver->getStaticType($expr);
+        $staticType = $this->nodeTypeResolver->getType($expr);
         if ($staticType instanceof ConstantScalarType) {
             return true;
         }

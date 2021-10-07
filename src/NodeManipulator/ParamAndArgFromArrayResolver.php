@@ -74,7 +74,7 @@ final class ParamAndArgFromArrayResolver
 
                 $variable = new Variable($variableName . ($i === 1 ? '' : $i));
 
-                $itemsStaticType = $this->nodeTypeResolver->getStaticType($nestedArrayItem->value);
+                $itemsStaticType = $this->nodeTypeResolver->getType($nestedArrayItem->value);
                 $paramAndArgs[] = new ParamAndArg($variable, $itemsStaticType);
                 ++$i;
             }
@@ -91,7 +91,7 @@ final class ParamAndArgFromArrayResolver
                     continue;
                 }
 
-                $staticTypes[] = $this->nodeTypeResolver->getStaticType($arrayItem->value);
+                $staticTypes[] = $this->nodeTypeResolver->getType($arrayItem->value);
             }
         }
 
