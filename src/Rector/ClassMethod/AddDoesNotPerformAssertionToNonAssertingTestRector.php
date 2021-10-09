@@ -11,7 +11,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Type\TypeWithClassName;
-use PHPStan\Type\ThisType;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -34,15 +33,13 @@ final class AddDoesNotPerformAssertionToNonAssertingTestRector extends AbstractR
 
     /**
      * This should prevent segfaults while going too deep into to parsed code. Without it, it might end-up with segfault
-     *
-     * @var int
      */
-    private $classMethodNestingLevel = 0;
+    private int $classMethodNestingLevel = 0;
 
     /**
      * @var bool[]
      */
-    private $containsAssertCallByClassMethod = [];
+    private array $containsAssertCallByClassMethod = [];
 
     public function __construct(
         private TestsNodeAnalyzer $testsNodeAnalyzer,
