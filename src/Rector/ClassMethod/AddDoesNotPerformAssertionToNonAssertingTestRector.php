@@ -14,6 +14,7 @@ use PHPStan\Type\TypeWithClassName;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -32,15 +33,13 @@ final class AddDoesNotPerformAssertionToNonAssertingTestRector extends AbstractR
 
     /**
      * This should prevent segfaults while going too deep into to parsed code. Without it, it might end-up with segfault
-     *
-     * @var int
      */
-    private $classMethodNestingLevel = 0;
+    private int $classMethodNestingLevel = 0;
 
     /**
      * @var bool[]
      */
-    private $containsAssertCallByClassMethod = [];
+    private array $containsAssertCallByClassMethod = [];
 
     public function __construct(
         private TestsNodeAnalyzer $testsNodeAnalyzer,
@@ -165,6 +164,11 @@ CODE_SAMPLE
     {
         return (bool) $this->betterNodeFinder->findFirst((array) $classMethod->stmts, function (Node $node): bool {
             if ($node instanceof MethodCall) {
+                $type = $this->nodeTypeResolver->getType($node->var);
+                if ($type instanceof FullyQualifiedObjectType && $type->getClassName() === 'PHPUnit\Framework\MockObject\MockBuilder') {
+                    return true;
+                }
+
                 return $this->isNames($node->name, [
                     // phpunit
                     '*assert',
