@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Core\Configuration\Option;
+use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -21,7 +22,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         '*/Fixture/*',
 
         // object types
-        \Rector\Php55\Rector\String_\StringClassNameToClassConstantRector::class => [
+        StringClassNameToClassConstantRector::class => [
             __DIR__ . '/src/Rector/MethodCall/WithConsecutiveArgToArrayRector.php',
             __DIR__ . '/src/Rector/MethodCall/UseSpecificWillMethodRector.php',
             __DIR__ . '/src/Rector/Class_/TestListenerToHooksRector.php',
