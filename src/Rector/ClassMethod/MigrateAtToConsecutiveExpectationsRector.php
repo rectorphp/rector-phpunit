@@ -68,9 +68,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $expressions = array_filter($stmts, function (Stmt $expr): bool {
-            return $expr instanceof Expression && $expr->expr instanceof MethodCall;
-        });
+        $expressions = array_filter(
+            $stmts,
+            fn (Stmt $expr): bool => $expr instanceof Expression && $expr->expr instanceof MethodCall
+        );
 
         $expectationMockCollection = $this->expectationAnalyzer->getExpectationsFromExpressions($expressions);
 

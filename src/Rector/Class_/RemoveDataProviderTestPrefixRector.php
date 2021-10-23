@@ -25,7 +25,7 @@ final class RemoveDataProviderTestPrefixRector extends AbstractRector
     /**
      * @var array<string, string>
      */
-    private $providerMethodNamesToNewNames = [];
+    private array $providerMethodNamesToNewNames = [];
 
     public function __construct(
         private TestsNodeAnalyzer $testsNodeAnalyzer
@@ -120,7 +120,7 @@ CODE_SAMPLE
 
                 $oldMethodName = $dataProviderTagValueNode->value->value;
 
-                if (! Strings::startsWith($oldMethodName, 'test')) {
+                if (! \str_starts_with($oldMethodName, 'test')) {
                     continue;
                 }
 

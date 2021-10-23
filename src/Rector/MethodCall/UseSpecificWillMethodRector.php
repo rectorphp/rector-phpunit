@@ -113,10 +113,9 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall|StaticCall $node
      * @return MethodCall|StaticCall
      */
-    private function processWithCall(Node $node): Node
+    private function processWithCall(MethodCall|StaticCall $node): Node
     {
         foreach ($node->args as $i => $argNode) {
             if (! $argNode->value instanceof MethodCall) {
@@ -135,10 +134,9 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall|StaticCall $node
      * @return MethodCall|StaticCall|null
      */
-    private function processWillCall(Node $node): ?Node
+    private function processWillCall(MethodCall|StaticCall $node): ?Node
     {
         if (! $node->args[0]->value instanceof MethodCall) {
             return null;

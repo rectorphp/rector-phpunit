@@ -35,7 +35,7 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
     /**
      * @var BinaryOpWithAssertMethod[]
      */
-    private $binaryOpWithAssertMethods = [];
+    private array $binaryOpWithAssertMethods = [];
 
     public function __construct(
         private IdentifierManipulator $identifierManipulator,
@@ -103,12 +103,9 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
         return $this->processCallWithBinaryOp($node, $firstArgumentValue);
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function processCallWithBinaryOp(Node $node, BinaryOp $binaryOp): ?Node
+    private function processCallWithBinaryOp(MethodCall|StaticCall $node, BinaryOp $binaryOp): ?Node
     {
-        $binaryOpClass = get_class($binaryOp);
+        $binaryOpClass = $binaryOp::class;
 
         foreach ($this->binaryOpWithAssertMethods as $binaryOpWithAssertMethod) {
             if ($binaryOpClass !== $binaryOpWithAssertMethod->getBinaryOpClass()) {
@@ -128,10 +125,7 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
         return null;
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function changeArgumentsOrder(Node $node): void
+    private function changeArgumentsOrder(MethodCall|StaticCall $node): void
     {
         $oldArguments = $node->args;
 

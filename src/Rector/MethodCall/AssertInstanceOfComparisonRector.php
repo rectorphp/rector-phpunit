@@ -80,10 +80,7 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
         return $node;
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function changeArgumentsOrder(Node $node): void
+    private function changeArgumentsOrder(MethodCall|StaticCall $node): void
     {
         $oldArguments = $node->args;
         /** @var Instanceof_ $comparison */

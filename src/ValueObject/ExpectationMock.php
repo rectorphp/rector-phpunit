@@ -21,9 +21,9 @@ final class ExpectationMock
         private Expr $expectationVariable,
         private array $methodArguments,
         private int $index,
-        private ?\PhpParser\Node\Expr $expr,
+        private ?Expr $expr,
         private array $withArguments,
-        private ?\PhpParser\Node\Stmt\Expression $originalExpression
+        private ?Expression $originalExpression
     ) {
     }
 

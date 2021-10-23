@@ -102,10 +102,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function processAssertEqualsIgnoringCase(Node $node): void
+    private function processAssertEqualsIgnoringCase(MethodCall|StaticCall $node): void
     {
         if (isset($node->args[6])) {
             if ($this->valueResolver->isTrue($node->args[6]->value)) {
@@ -120,10 +117,7 @@ CODE_SAMPLE
         }
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function processAssertEqualsCanonicalizing(Node $node): void
+    private function processAssertEqualsCanonicalizing(MethodCall|StaticCall $node): void
     {
         if (isset($node->args[5])) {
             // add new node only in case of non-default value
@@ -139,10 +133,7 @@ CODE_SAMPLE
         }
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function processAssertEqualsWithDelta(Node $node): void
+    private function processAssertEqualsWithDelta(MethodCall|StaticCall $node): void
     {
         if (isset($node->args[3])) {
             // add new node only in case of non-default value

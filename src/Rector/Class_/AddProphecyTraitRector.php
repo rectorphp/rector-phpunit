@@ -95,9 +95,10 @@ CODE_SAMPLE
 
     private function shouldSkipClass(Class_ $class): bool
     {
-        $hasProphesizeMethodCall = (bool) $this->betterNodeFinder->findFirst($class, function (Node $node): bool {
-            return $this->testsNodeAnalyzer->isAssertMethodCallName($node, 'prophesize');
-        });
+        $hasProphesizeMethodCall = (bool) $this->betterNodeFinder->findFirst(
+            $class,
+            fn (Node $node): bool => $this->testsNodeAnalyzer->isAssertMethodCallName($node, 'prophesize')
+        );
 
         if (! $hasProphesizeMethodCall) {
             return true;

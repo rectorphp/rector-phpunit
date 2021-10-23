@@ -102,11 +102,11 @@ CODE_SAMPLE
         return $node;
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function replaceExceptionWith(Node $node, string $exceptionClass, string $explicitMethod): ?Node
-    {
+    private function replaceExceptionWith(
+        MethodCall|StaticCall $node,
+        string $exceptionClass,
+        string $explicitMethod
+    ): ?Node {
         if (! isset($node->args[0])) {
             return null;
         }

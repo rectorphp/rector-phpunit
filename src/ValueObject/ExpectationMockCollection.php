@@ -37,9 +37,10 @@ final class ExpectationMockCollection
             return 0;
         }
 
-        $indexes = array_map(static function (ExpectationMock $expectationMock): int {
-            return $expectationMock->getIndex();
-        }, $this->expectationMocks);
+        $indexes = array_map(
+            static fn (ExpectationMock $expectationMock): int => $expectationMock->getIndex(),
+            $this->expectationMocks
+        );
         return max($indexes) ?: 0;
     }
 
@@ -49,9 +50,10 @@ final class ExpectationMockCollection
             return 0;
         }
 
-        $indexes = array_map(static function (ExpectationMock $expectationMock): int {
-            return $expectationMock->getIndex();
-        }, $this->expectationMocks);
+        $indexes = array_map(
+            static fn (ExpectationMock $expectationMock): int => $expectationMock->getIndex(),
+            $this->expectationMocks
+        );
         return min($indexes) ?: 0;
     }
 

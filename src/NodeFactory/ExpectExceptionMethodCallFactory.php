@@ -9,19 +9,15 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
-use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\PHPUnit\PhpDoc\PhpDocValueToNodeMapper;
-use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class ExpectExceptionMethodCallFactory
 {
     public function __construct(
         private NodeFactory $nodeFactory,
-        private PhpDocValueToNodeMapper $phpDocValueToNodeMapper,
-        private StaticTypeMapper $staticTypeMapper,
-        private CurrentNodeProvider $currentNodeProvider
+        private PhpDocValueToNodeMapper $phpDocValueToNodeMapper
     ) {
     }
 

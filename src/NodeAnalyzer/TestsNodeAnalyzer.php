@@ -20,7 +20,7 @@ final class TestsNodeAnalyzer
     /**
      * @var ObjectType[]
      */
-    private $testCaseObjectTypes = [];
+    private array $testCaseObjectTypes = [];
 
     public function __construct(
         private NodeTypeResolver $nodeTypeResolver,

@@ -11,7 +11,7 @@ final class ParamAndArg
 {
     public function __construct(
         private Variable $variable,
-        private ?\PHPStan\Type\Type $type
+        private ?Type $type
     ) {
     }
 

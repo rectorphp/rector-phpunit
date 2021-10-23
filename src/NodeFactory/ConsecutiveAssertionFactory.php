@@ -119,9 +119,12 @@ final class ConsecutiveAssertionFactory
      */
     private function createReturnArgs(array $expectationMocks): array
     {
-        return array_map(static function (ExpectationMock $expectationMock): Arg {
-            return new Arg($expectationMock->getReturn() ?: new ConstFetch(new Name('null')));
-        }, $expectationMocks);
+        return array_map(
+            static fn (ExpectationMock $expectationMock): Arg => new Arg(
+                $expectationMock->getReturn() ?: new ConstFetch(new Name('null'))
+            ),
+            $expectationMocks
+        );
     }
 
     /**
@@ -131,9 +134,10 @@ final class ConsecutiveAssertionFactory
     private function createWithArgs(array $expectationMocks): array
     {
         return array_map(static function (ExpectationMock $expectationMock): Arg {
-            $arrayItems = array_map(static function (?Expr $expr): ArrayItem {
-                return new ArrayItem($expr ?: new ConstFetch(new Name('null')));
-            }, $expectationMock->getWithArguments());
+            $arrayItems = array_map(
+                static fn (?Expr $expr): ArrayItem => new ArrayItem($expr ?: new ConstFetch(new Name('null'))),
+                $expectationMock->getWithArguments()
+            );
             return new Arg(new Array_($arrayItems));
         }, $expectationMocks);
     }
@@ -176,9 +180,7 @@ final class ConsecutiveAssertionFactory
     {
         usort(
             $expectationMocks,
-            static function (ExpectationMock $expectationMockA, ExpectationMock $expectationMockB): int {
-                return $expectationMockA->getIndex() > $expectationMockB->getIndex() ? 1 : -1;
-            }
+            static fn (ExpectationMock $expectationMockA, ExpectationMock $expectationMockB): int => $expectationMockA->getIndex() > $expectationMockB->getIndex() ? 1 : -1
         );
         return $expectationMocks;
     }
