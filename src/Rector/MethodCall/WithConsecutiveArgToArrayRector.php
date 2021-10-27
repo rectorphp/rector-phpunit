@@ -160,7 +160,7 @@ CODE_SAMPLE
         return false;
     }
 
-    private function inferMockedClassName(MethodCall $methodCall): ?string
+    private function inferMockedClassName(MethodCall $methodCall): mixed
     {
         $variable = $this->findRootVariableOfChainCall($methodCall);
 
