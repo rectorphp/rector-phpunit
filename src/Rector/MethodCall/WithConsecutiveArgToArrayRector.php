@@ -160,7 +160,7 @@ CODE_SAMPLE
         return false;
     }
 
-    private function inferMockedClassName(MethodCall $methodCall): mixed
+    private function inferMockedClassName(MethodCall $methodCall): ?string
     {
         $variable = $this->findRootVariableOfChainCall($methodCall);
 
@@ -178,7 +178,10 @@ CODE_SAMPLE
                 'createMock'
             )) {
                 $firstArgumentValue = $assignedMethodCall->args[0]->value;
-                return $this->valueResolver->getValue($firstArgumentValue);
+                $resolvedValue = $this->valueResolver->getValue($firstArgumentValue);
+                if (is_string($resolvedValue)) {
+                    return $resolvedValue;
+                }
             }
         }
 
