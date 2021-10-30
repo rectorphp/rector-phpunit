@@ -19,7 +19,7 @@ namespace Rector\PHPUnit\Tests\Rector\Class_\ArrayArgumentToDataProviderRector\F
 class VariousTypesTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @param int|string|float $variable
+     * @param float|int|string $variable
      * @dataProvider provideDataForTest()
      */
     public function test($variable)
