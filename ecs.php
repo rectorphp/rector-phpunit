@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\EasyCodingStandard\ValueObject\Option;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
+use PhpCsFixer\Fixer\ReturnNotation\ReturnAssignmentFixer;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->import(SetList::PSR_12);
@@ -26,7 +27,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         '*/Source/*', '*/Fixture/*',
 
         // breaks annotated code - removed on symplify dev-main
-        \PhpCsFixer\Fixer\ReturnNotation\ReturnAssignmentFixer::class,
+        ReturnAssignmentFixer::class,
     ]);
     $parameters->set(Option::LINE_ENDING, "\n");
 };
