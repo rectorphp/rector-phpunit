@@ -13,7 +13,7 @@ parameters:
         - */Source/*
         - *Source/*
 
-    reportUnmatchedIgnoredErrors: false
+#    reportUnmatchedIgnoredErrors: false
 
     ignoreErrors:
         # bug
@@ -33,7 +33,4 @@ parameters:
         - '#array<PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\> given#'
         - '#array<int, PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\> given#'
         - '#PhpParser\\Node\\VariadicPlaceholder given#'
-
-        # waits for phpstan compatible with php-parser 4.13
-        - '#Access to an undefined property PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\:\:\$value#'
         - '#(.*?)PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder#'
