@@ -36,7 +36,10 @@ final class TestsNodeAnalyzer
 
     public function isInTestClass(Node $node): bool
     {
-        $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
+        $classLike = $node instanceof ClassLike
+            ? $node
+            : $this->betterNodeFinder->findParentType($node, ClassLike::class);
+
         if (! $classLike instanceof ClassLike) {
             return false;
         }
