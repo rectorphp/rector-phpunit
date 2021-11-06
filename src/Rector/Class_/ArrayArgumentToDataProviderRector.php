@@ -22,7 +22,6 @@ use PHPUnit\Framework\TestCase;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFactory\DataProviderClassMethodFactory;
