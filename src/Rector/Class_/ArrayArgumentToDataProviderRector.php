@@ -212,8 +212,10 @@ CODE_SAMPLE
             $methodCall->args[] = new Arg($paramAndArg->getVariable());
         }
 
-        /** @var ClassMethod $classMethod */
-        $classMethod = $methodCall->getAttribute(AttributeKey::METHOD_NODE);
+        $classMethod = $this->betterNodeFinder->findParentType($methodCall, ClassMethod::class);
+        if (! $classMethod instanceof ClassMethod) {
+            return;
+        }
 
         $this->refactorTestClassMethodParams($classMethod, $paramAndArgs);
 
@@ -254,7 +256,7 @@ CODE_SAMPLE
 
     private function createDataProviderMethodName(MethodCall $methodCall): ?string
     {
-        $methodNode = $methodCall->getAttribute(AttributeKey::METHOD_NODE);
+        $methodNode = $this->betterNodeFinder->findParentType($methodCall, ClassMethod::class);
         if (! $methodNode instanceof ClassMethod) {
             return null;
         }
