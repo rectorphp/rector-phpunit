@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -25,7 +26,8 @@ final class TestsNodeAnalyzer
     public function __construct(
         private NodeTypeResolver $nodeTypeResolver,
         private NodeNameResolver $nodeNameResolver,
-        private PhpDocInfoFactory $phpDocInfoFactory
+        private PhpDocInfoFactory $phpDocInfoFactory,
+        private BetterNodeFinder $betterNodeFinder,
     ) {
         $this->testCaseObjectTypes = [
             new ObjectType('PHPUnit\Framework\TestCase'),
@@ -35,7 +37,7 @@ final class TestsNodeAnalyzer
 
     public function isInTestClass(Node $node): bool
     {
-        $classLike = $node->getAttribute(AttributeKey::CLASS_NODE);
+        $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
         if (! $classLike instanceof ClassLike) {
             return false;
         }
