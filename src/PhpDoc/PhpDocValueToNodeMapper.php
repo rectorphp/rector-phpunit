@@ -22,7 +22,11 @@ final class PhpDocValueToNodeMapper
     {
         if (\str_contains($genericTagValueNode->value, '::')) {
             [$class, $constant] = explode('::', $genericTagValueNode->value);
-            return $this->nodeFactory->createShortClassConstFetch($class, $constant);
+            if (! str_contains($class, ' ')) {
+                return $this->nodeFactory->createShortClassConstFetch($class, $constant);
+            }
+
+            return new String_($genericTagValueNode->value);
         }
 
         $reference = ltrim($genericTagValueNode->value, '\\');

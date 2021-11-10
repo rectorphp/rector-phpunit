@@ -17,7 +17,7 @@ class Fixture5Test extends TestCase
 }
 
 ?>
-    -----
+-----
 <?php
 
 namespace Rector\PHPUnit\Tests\Rector\ClassMethod\ExceptionAnnotationRector\Fixture;
