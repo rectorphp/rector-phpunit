@@ -42,7 +42,7 @@ final class ExpectExceptionMethodCallFactory
             throw new ShouldNotHappenException();
         }
 
-        $node = $this->phpDocValueToNodeMapper->mapGenericTagValueNode($phpDocTagNode->value);
+        $node = $this->phpDocValueToNodeMapper->mapGenericTagValueNode($phpDocTagNode);
         return $this->nodeFactory->createMethodCall('this', $methodName, [new Arg($node)]);
     }
 }
