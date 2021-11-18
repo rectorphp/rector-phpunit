@@ -221,10 +221,10 @@ CODE_SAMPLE
     private function resolveClassMethodFromCall(StaticCall | MethodCall $call): ?ClassMethod
     {
         if ($call instanceof MethodCall) {
-            $objectType = $this->getObjectType($call->var);
+            $objectType = $this->nodeTypeResolver->getType($call->var);
         } else {
             // StaticCall
-            $objectType = $this->getObjectType($call->class);
+            $objectType = $this->nodeTypeResolver->getType($call->class);
         }
 
         if (! $objectType instanceof TypeWithClassName) {
