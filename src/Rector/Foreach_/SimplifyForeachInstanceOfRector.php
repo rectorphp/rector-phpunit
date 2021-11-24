@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Foreach_;
 use Rector\Core\NodeManipulator\ForeachManipulator;
 use Rector\Core\Rector\AbstractRector;
@@ -83,11 +82,9 @@ CODE_SAMPLE
         /** @var MethodCall|StaticCall $matchedNode */
         $callClass = $matchedNode::class;
 
-        return new $callClass(
-            $this->resolveVar($matchedNode),
-            new Name('assertContainsOnlyInstancesOf'),
-            [$matchedNode->args[0], new Arg($node->expr)]
-        );
+        $args = [$matchedNode->args[0], new Arg($node->expr)];
+
+        return new $callClass($this->resolveVar($matchedNode), 'assertContainsOnlyInstancesOf', $args);
     }
 
     private function resolveVar(MethodCall|StaticCall $node): Node
