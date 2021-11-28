@@ -9,7 +9,6 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
-use Rector\Core\Php\TypeAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -28,8 +27,10 @@ final class SpecificAssertInternalTypeRector extends AbstractRector
     private const TYPE_TO_METHOD = [
         'array' => ['assertIsArray', 'assertIsNotArray'],
         'bool' => ['assertIsBool', 'assertIsNotBool'],
+        'boolean' => ['assertIsBool', 'assertIsNotBool'],
         'float' => ['assertIsFloat', 'assertIsNotFloat'],
         'int' => ['assertIsInt', 'assertIsNotInt'],
+        'integer' => ['assertIsInt', 'assertIsNotInt'],
         'numeric' => ['assertIsNumeric', 'assertIsNotNumeric'],
         'object' => ['assertIsObject', 'assertIsNotObject'],
         'resource' => ['assertIsResource', 'assertIsNotResource'],
@@ -41,7 +42,6 @@ final class SpecificAssertInternalTypeRector extends AbstractRector
     ];
 
     public function __construct(
-        private TypeAnalyzer $typeAnalyzer,
         private TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
@@ -105,7 +105,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $type = $this->typeAnalyzer->normalizeType($typeNode->value);
+        $type = $typeNode->value;
         if (! isset(self::TYPE_TO_METHOD[$type])) {
             return null;
         }
