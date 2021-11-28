@@ -121,7 +121,9 @@ final class ConsecutiveAssertionFactory
     {
         return array_map(
             static fn (ExpectationMock $expectationMock): Arg => new Arg(
-                $expectationMock->getReturn() ?: new ConstFetch(new Name('null'))
+                $expectationMock->getReturn() instanceof Expr ? $expectationMock->getReturn() : new ConstFetch(new Name(
+                    'null'
+                ))
             ),
             $expectationMocks
         );
@@ -135,7 +137,9 @@ final class ConsecutiveAssertionFactory
     {
         return array_map(static function (ExpectationMock $expectationMock): Arg {
             $arrayItems = array_map(
-                static fn (?Expr $expr): ArrayItem => new ArrayItem($expr ?: new ConstFetch(new Name('null'))),
+                static fn (?Expr $expr): ArrayItem => new ArrayItem($expr instanceof Expr ? $expr : new ConstFetch(
+                    new Name('null')
+                )),
                 $expectationMock->getWithArguments()
             );
             return new Arg(new Array_($arrayItems));

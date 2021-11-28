@@ -41,7 +41,7 @@ final class ExpectationMockCollection
             static fn (ExpectationMock $expectationMock): int => $expectationMock->getIndex(),
             $this->expectationMocks
         );
-        return max($indexes) ?: 0;
+        return (int) max($indexes);
     }
 
     public function getLowestAtIndex(): int
@@ -54,7 +54,8 @@ final class ExpectationMockCollection
             static fn (ExpectationMock $expectationMock): int => $expectationMock->getIndex(),
             $this->expectationMocks
         );
-        return min($indexes) ?: 0;
+
+        return (int) min($indexes);
     }
 
     public function isMissingAtIndexBetweenHighestAndLowest(): bool
@@ -120,7 +121,8 @@ final class ExpectationMockCollection
         $previousMethod = '';
         foreach ($this->expectationMocks as $expectationMock) {
             $methodArgument = $expectationMock->getMethodArguments()[0];
-            if ($methodArgument !== null && $methodArgument->value instanceof String_) {
+
+            if ($methodArgument->value instanceof String_) {
                 if ($previousMethod === '') {
                     $previousMethod = $methodArgument->value->value;
                 }
