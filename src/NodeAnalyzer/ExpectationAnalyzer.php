@@ -69,7 +69,7 @@ final class ExpectationAnalyzer
             if (! $atValue instanceof LNumber) {
                 continue;
             }
-            if (! ($expects->var instanceof Variable || $expects->var instanceof PropertyFetch)) {
+            if (! $expects->var instanceof Variable && ! $expects->var instanceof PropertyFetch) {
                 continue;
             }
 

@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Scalar\String_;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\IdentifierManipulator;
@@ -111,7 +112,7 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
         }
 
         $reflection = $resolved->getClassReflection();
-        if ($reflection === null) {
+        if (! $reflection instanceof ClassReflection) {
             return false;
         }
         return $reflection->hasMethod('__isset');
