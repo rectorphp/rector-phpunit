@@ -159,12 +159,15 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<string, ArrayArgumentToDataProvider[]> $arrayArgumentsToDataProviders
+     * @param mixed[] $configuration
      */
-    public function configure(array $arrayArgumentsToDataProviders): void
+    public function configure(array $configuration): void
     {
-        $arrayArgumentsToDataProviders = $arrayArgumentsToDataProviders[self::ARRAY_ARGUMENTS_TO_DATA_PROVIDERS] ?? [];
-        Assert::allIsInstanceOf($arrayArgumentsToDataProviders, ArrayArgumentToDataProvider::class);
+        $arrayArgumentsToDataProviders = $configuration[self::ARRAY_ARGUMENTS_TO_DATA_PROVIDERS] ?? $configuration;
+
+        Assert::isArray($arrayArgumentsToDataProviders);
+        Assert::allIsAOf($arrayArgumentsToDataProviders, ArrayArgumentToDataProvider::class);
+
         $this->arrayArgumentsToDataProviders = $arrayArgumentsToDataProviders;
     }
 

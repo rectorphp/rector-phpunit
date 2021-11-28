@@ -214,6 +214,10 @@ CODE_SAMPLE
             $currentMethodCallee = $currentMethodCallee->var;
         }
 
+        if (! $currentMethodCallee instanceof Variable) {
+            throw new ShouldNotHappenException();
+        }
+
         return $currentMethodCallee;
     }
 
