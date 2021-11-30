@@ -8,7 +8,6 @@ use Rector\PHPUnit\Rector\MethodCall\SpecificAssertContainsWithoutIdentityRector
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
@@ -20,14 +19,12 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(SpecificAssertContainsWithoutIdentityRector::class);
 
     $services->set(RenameMethodRector::class)
-        ->call('configure', [[
+        ->configure([
             // see https://github.com/sebastianbergmann/phpunit/issues/3957
-            RenameMethodRector::METHOD_CALL_RENAMES => ValueObjectInliner::inline([
-                new MethodCallRename(
-                    'PHPUnit\Framework\TestCase',
-                    'expectExceptionMessageRegExp',
-                    'expectExceptionMessageMatches'
-                ),
-            ]),
-        ]]);
+            new MethodCallRename(
+                'PHPUnit\Framework\TestCase',
+                'expectExceptionMessageRegExp',
+                'expectExceptionMessageMatches'
+            ),
+        ]);
 };

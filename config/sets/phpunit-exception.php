@@ -7,7 +7,6 @@ use Rector\PHPUnit\Rector\MethodCall\DelegateExceptionArgumentsRector;
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
@@ -18,10 +17,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(ExceptionAnnotationRector::class);
 
     $services->set(RenameMethodRector::class)
-        ->call('configure', [[
-            RenameMethodRector::METHOD_CALL_RENAMES => ValueObjectInliner::inline([
-                new MethodCallRename('PHPUnit\Framework\TestClass', 'setExpectedException', 'expectedException'),
-                new MethodCallRename('PHPUnit\Framework\TestClass', 'setExpectedExceptionRegExp', 'expectedException'),
-            ]),
-        ]]);
+        ->configure([
+            new MethodCallRename('PHPUnit\Framework\TestClass', 'setExpectedException', 'expectedException'),
+            new MethodCallRename('PHPUnit\Framework\TestClass', 'setExpectedExceptionRegExp', 'expectedException'),
+        ]);
 };
