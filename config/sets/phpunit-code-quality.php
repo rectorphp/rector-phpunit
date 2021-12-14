@@ -6,6 +6,8 @@ use Rector\CodingStyle\Rector\ClassMethod\ReturnArrayClassMethodToYieldRector;
 use Rector\CodingStyle\ValueObject\ReturnArrayClassMethodToYield;
 use Rector\PHPUnit\Rector\Class_\AddSeeTestAnnotationRector;
 use Rector\PHPUnit\Rector\Class_\ConstructClassMethodToSetUpTestCaseRector;
+use Rector\PHPUnit\Rector\MethodCall\AssertCompareToSpecificMethodRector;
+use Rector\PHPUnit\Rector\MethodCall\AssertComparisonToSpecificMethodRector;
 use Rector\PHPUnit\Rector\MethodCall\AssertEqualsToSameRector;
 use Rector\PHPUnit\Rector\MethodCall\AssertSameTrueFalseToAssertTrueFalseRector;
 use Rector\PHPUnit\Rector\MethodCall\RemoveExpectAnyFromMockRector;
@@ -25,4 +27,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(ConstructClassMethodToSetUpTestCaseRector::class);
     $services->set(AssertSameTrueFalseToAssertTrueFalseRector::class);
     $services->set(AssertEqualsToSameRector::class);
+    $services->set(AssertCompareToSpecificMethodRector::class);
+    $services->set(AssertComparisonToSpecificMethodRector::class);
 };
