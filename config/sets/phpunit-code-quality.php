@@ -6,6 +6,7 @@ use Rector\CodingStyle\Rector\ClassMethod\ReturnArrayClassMethodToYieldRector;
 use Rector\CodingStyle\ValueObject\ReturnArrayClassMethodToYield;
 use Rector\PHPUnit\Rector\Class_\AddSeeTestAnnotationRector;
 use Rector\PHPUnit\Rector\Class_\ConstructClassMethodToSetUpTestCaseRector;
+use Rector\PHPUnit\Rector\MethodCall\AssertEqualsToSameRector;
 use Rector\PHPUnit\Rector\MethodCall\AssertSameTrueFalseToAssertTrueFalseRector;
 use Rector\PHPUnit\Rector\MethodCall\RemoveExpectAnyFromMockRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -23,4 +24,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services->set(ConstructClassMethodToSetUpTestCaseRector::class);
     $services->set(AssertSameTrueFalseToAssertTrueFalseRector::class);
+    $services->set(AssertEqualsToSameRector::class);
 };
