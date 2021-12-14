@@ -27,6 +27,7 @@ final class AssertEqualsToSameRector extends AbstractRector
      */
     private const RENAME_METHODS_MAP = [
         'assertEquals' => 'assertSame',
+        'assertNotEquals' => 'assertNotSame',
     ];
 
     /**
