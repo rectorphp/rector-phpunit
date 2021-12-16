@@ -126,6 +126,8 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
             return true;
         }
 
+        // reflection->getParents() got empty array when
+        // extends class not found by PHPStan
         $className = $reflection->getName();
         $class = $this->astResolver->resolveClassFromName($className);
 
