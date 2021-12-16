@@ -114,13 +114,9 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
     {
         $resolved = $this->nodeTypeResolver->getType($node);
 
-        // object not found, skip
-        if ($resolved instanceof ObjectWithoutClassType) {
-            return true;
-        }
-
         if (! $resolved instanceof TypeWithClassName) {
-            return false;
+            // object not found, skip
+            return $resolved instanceof ObjectWithoutClassType;
         }
 
         $reflection = $resolved->getClassReflection();
