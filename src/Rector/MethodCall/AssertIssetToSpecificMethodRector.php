@@ -10,9 +10,14 @@ use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\TypeWithClassName;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\IdentifierManipulator;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -36,7 +41,9 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
 
     public function __construct(
         private IdentifierManipulator $identifierManipulator,
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private TestsNodeAnalyzer $testsNodeAnalyzer,
+        private AstResolver $astResolver,
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -108,14 +115,34 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
         $resolved = $this->nodeTypeResolver->getType($node);
 
         if (! $resolved instanceof TypeWithClassName) {
-            return false;
+            // object not found, skip
+            return $resolved instanceof ObjectWithoutClassType;
         }
 
         $reflection = $resolved->getClassReflection();
         if (! $reflection instanceof ClassReflection) {
             return false;
         }
-        return $reflection->hasMethod('__isset');
+
+        if ($reflection->hasMethod('__isset')) {
+            return true;
+        }
+
+        // reflection->getParents() got empty array when
+        // extends class not found by PHPStan
+        $className = $reflection->getName();
+        $class = $this->astResolver->resolveClassFromName($className);
+
+        if (! $class instanceof Class_) {
+            return false;
+        }
+
+        if (! $class->extends instanceof FullyQualified) {
+            return false;
+        }
+
+        // if parent class not detected by PHPStan, assume it has __isset
+        return ! $this->reflectionProvider->hasClass($class->extends->toString());
     }
 
     private function refactorPropertyFetchNode(MethodCall|StaticCall $node, PropertyFetch $propertyFetch): ?Node
