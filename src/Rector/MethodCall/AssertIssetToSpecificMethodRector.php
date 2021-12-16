@@ -126,11 +126,6 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
             return true;
         }
 
-        $parents = $reflection->getParents();
-        if ($parents !== []) {
-            return false;
-        }
-
         $className = $reflection->getName();
         $class = $this->astResolver->resolveClassFromName($className);
 
