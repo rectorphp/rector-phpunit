@@ -11,7 +11,7 @@ final class ExpectationMockCollection
     /**
      * @var ExpectationMock[]
      */
-    private $expectationMocks = [];
+    private array $expectationMocks = [];
 
     /**
      * @return ExpectationMock[]
