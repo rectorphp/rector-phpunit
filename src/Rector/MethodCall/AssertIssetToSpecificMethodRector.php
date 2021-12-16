@@ -15,6 +15,7 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
@@ -112,6 +113,11 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
     private function hasMagicIsset(Node $node): bool
     {
         $resolved = $this->nodeTypeResolver->getType($node);
+
+        // object not found, skip
+        if ($resolved instanceof ObjectWithoutClassType) {
+            return true;
+        }
 
         if (! $resolved instanceof TypeWithClassName) {
             return false;
