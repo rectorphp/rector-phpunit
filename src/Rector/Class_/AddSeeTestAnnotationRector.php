@@ -99,14 +99,16 @@ CODE_SAMPLE
 
         $this->removeNonExistingClassSeeAnnotation($phpDocInfo);
 
-        if ($matchingTestClassName !== null) {
-            if ($this->hasAlreadySeeAnnotation($phpDocInfo, $matchingTestClassName)) {
-                return null;
-            }
-
-            $newSeeTagNode = $this->createSeePhpDocTagNode($matchingTestClassName);
-            $phpDocInfo->addPhpDocTagNode($newSeeTagNode);
+        if ($matchingTestClassName === null) {
+            return null;
         }
+
+        if ($this->hasAlreadySeeAnnotation($phpDocInfo, $matchingTestClassName)) {
+            return null;
+        }
+
+        $newSeeTagNode = $this->createSeePhpDocTagNode($matchingTestClassName);
+        $phpDocInfo->addPhpDocTagNode($newSeeTagNode);
 
         return $node;
     }
