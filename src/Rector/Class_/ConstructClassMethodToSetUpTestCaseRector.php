@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Nette\NodeAnalyzer\StaticCallAnalyzer;
@@ -27,7 +28,8 @@ final class ConstructClassMethodToSetUpTestCaseRector extends AbstractRector
     public function __construct(
         private SetUpClassMethodNodeManipulator $setUpClassMethodNodeManipulator,
         private StaticCallAnalyzer $staticCallAnalyzer,
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private TestsNodeAnalyzer $testsNodeAnalyzer,
+        private ClassAnalyzer $classAnalyzer
     ) {
     }
 
@@ -92,6 +94,10 @@ CODE_SAMPLE
 
         $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
         if (! $constructClassMethod instanceof ClassMethod) {
+            return null;
+        }
+
+        if ($this->classAnalyzer->isAnonymousClass($node)) {
             return null;
         }
 
