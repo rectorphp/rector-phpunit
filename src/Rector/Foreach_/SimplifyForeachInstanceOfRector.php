@@ -20,7 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class SimplifyForeachInstanceOfRector extends AbstractRector
 {
     public function __construct(
-        private ForeachManipulator $foreachManipulator
+        private readonly ForeachManipulator $foreachManipulator
     ) {
     }
 

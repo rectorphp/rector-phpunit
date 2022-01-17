@@ -44,7 +44,7 @@ final class ArrayArgumentToDataProviderRector extends AbstractRector implements 
      * @api
      * @var string
      */
-    public const ARRAY_ARGUMENTS_TO_DATA_PROVIDERS = 'array_arguments_to_data_providers';
+    final public const ARRAY_ARGUMENTS_TO_DATA_PROVIDERS = 'array_arguments_to_data_providers';
 
     /**
      * @var ArrayArgumentToDataProvider[]
@@ -57,9 +57,9 @@ final class ArrayArgumentToDataProviderRector extends AbstractRector implements 
     private array $dataProviderClassMethodRecipes = [];
 
     public function __construct(
-        private DataProviderClassMethodFactory $dataProviderClassMethodFactory,
-        private ParamAndArgFromArrayResolver $paramAndArgFromArrayResolver,
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly DataProviderClassMethodFactory $dataProviderClassMethodFactory,
+        private readonly ParamAndArgFromArrayResolver $paramAndArgFromArrayResolver,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 

@@ -13,8 +13,8 @@ use Rector\PHPUnit\NodeFactory\SetUpClassMethodFactory;
 final class SetUpClassMethodNodeManipulator
 {
     public function __construct(
-        private SetUpClassMethodFactory $setUpClassMethodFactory,
-        private StmtManipulator $stmtManipulator
+        private readonly SetUpClassMethodFactory $setUpClassMethodFactory,
+        private readonly StmtManipulator $stmtManipulator
     ) {
     }
 

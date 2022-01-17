@@ -34,7 +34,7 @@ final class UseSpecificWillMethodRector extends AbstractRector
     ];
 
     public function __construct(
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 

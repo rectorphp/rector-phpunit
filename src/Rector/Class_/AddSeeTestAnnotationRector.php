@@ -27,9 +27,9 @@ final class AddSeeTestAnnotationRector extends AbstractRector
     private const SEE = 'see';
 
     public function __construct(
-        private ReflectionProvider $reflectionProvider,
-        private PhpDocTagRemover $phpDocTagRemover,
-        private TestClassNameResolver $testClassNameResolver
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly PhpDocTagRemover $phpDocTagRemover,
+        private readonly TestClassNameResolver $testClassNameResolver
     ) {
     }
 

@@ -9,10 +9,10 @@ use PHPStan\Type\ObjectType;
 final class ArrayArgumentToDataProvider
 {
     public function __construct(
-        private string $class,
-        private string $oldMethod,
-        private string $newMethod,
-        private string $variableName
+        private readonly string $class,
+        private readonly string $oldMethod,
+        private readonly string $newMethod,
+        private readonly string $variableName
     ) {
     }
 

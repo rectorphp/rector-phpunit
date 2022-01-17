@@ -24,8 +24,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class MigrateAtToConsecutiveExpectationsRector extends AbstractRector
 {
     public function __construct(
-        private ConsecutiveAssertionFactory $consecutiveAssertionFactory,
-        private ExpectationAnalyzer $expectationAnalyzer
+        private readonly ConsecutiveAssertionFactory $consecutiveAssertionFactory,
+        private readonly ExpectationAnalyzer $expectationAnalyzer
     ) {
     }
 

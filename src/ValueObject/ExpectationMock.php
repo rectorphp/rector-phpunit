@@ -18,12 +18,12 @@ final class ExpectationMock
      * @param array<int, null|Expr> $withArguments
      */
     public function __construct(
-        private Expr $expectationVariable,
-        private array $methodArguments,
-        private int $index,
-        private ?Expr $expr,
-        private array $withArguments,
-        private ?Expression $originalExpression
+        private readonly Expr $expectationVariable,
+        private readonly array $methodArguments,
+        private readonly int $index,
+        private readonly ?Expr $expr,
+        private readonly array $withArguments,
+        private readonly ?Expression $originalExpression
     ) {
     }
 

@@ -28,8 +28,8 @@ final class DelegateExceptionArgumentsRector extends AbstractRector
     ];
 
     public function __construct(
-        private AssertCallFactory $assertCallFactory,
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly AssertCallFactory $assertCallFactory,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 

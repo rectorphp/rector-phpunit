@@ -35,7 +35,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     // needed for DEAD_CODE list, just in split package like this
     $containerConfigurator->import(__DIR__ . '/config/config.php');
 
-    $containerConfigurator->import(LevelSetList::UP_TO_PHP_80);
+    $containerConfigurator->import(LevelSetList::UP_TO_PHP_81);
     $containerConfigurator->import(SetList::DEAD_CODE);
     $containerConfigurator->import(SetList::CODE_QUALITY);
 };

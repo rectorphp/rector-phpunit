@@ -21,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReplaceAssertArraySubsetWithDmsPolyfillRector extends AbstractRector
 {
     public function __construct(
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 

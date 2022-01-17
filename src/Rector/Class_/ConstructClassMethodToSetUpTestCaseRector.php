@@ -26,10 +26,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ConstructClassMethodToSetUpTestCaseRector extends AbstractRector
 {
     public function __construct(
-        private SetUpClassMethodNodeManipulator $setUpClassMethodNodeManipulator,
-        private StaticCallAnalyzer $staticCallAnalyzer,
-        private TestsNodeAnalyzer $testsNodeAnalyzer,
-        private ClassAnalyzer $classAnalyzer
+        private readonly SetUpClassMethodNodeManipulator $setUpClassMethodNodeManipulator,
+        private readonly StaticCallAnalyzer $staticCallAnalyzer,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly ClassAnalyzer $classAnalyzer
     ) {
     }
 

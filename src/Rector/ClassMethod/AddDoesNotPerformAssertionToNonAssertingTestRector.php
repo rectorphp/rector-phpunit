@@ -43,8 +43,8 @@ final class AddDoesNotPerformAssertionToNonAssertingTestRector extends AbstractR
     private array $containsAssertCallByClassMethod = [];
 
     public function __construct(
-        private TestsNodeAnalyzer $testsNodeAnalyzer,
-        private AstResolver $astResolver
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly AstResolver $astResolver
     ) {
     }
 

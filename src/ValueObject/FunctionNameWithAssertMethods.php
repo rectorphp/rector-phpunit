@@ -7,9 +7,9 @@ namespace Rector\PHPUnit\ValueObject;
 final class FunctionNameWithAssertMethods
 {
     public function __construct(
-        private string $functionName,
-        private string $assetMethodName,
-        private string $notAssertMethodName
+        private readonly string $functionName,
+        private readonly string $assetMethodName,
+        private readonly string $notAssertMethodName
     ) {
     }
 

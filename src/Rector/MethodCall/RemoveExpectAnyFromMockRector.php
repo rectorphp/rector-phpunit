@@ -18,7 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveExpectAnyFromMockRector extends AbstractRector
 {
     public function __construct(
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 

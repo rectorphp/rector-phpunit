@@ -25,8 +25,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class CreateMockToCreateStubRector extends AbstractRector
 {
     public function __construct(
-        private MethodCallManipulator $methodCallManipulator,
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly MethodCallManipulator $methodCallManipulator,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 

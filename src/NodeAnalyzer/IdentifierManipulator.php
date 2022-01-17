@@ -22,7 +22,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 final class IdentifierManipulator
 {
     public function __construct(
-        private NodeNameResolver $nodeNameResolver
+        private readonly NodeNameResolver $nodeNameResolver
     ) {
     }
 

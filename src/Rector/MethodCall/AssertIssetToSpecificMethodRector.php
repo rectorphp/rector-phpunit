@@ -40,10 +40,10 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
     private const ASSERT_FALSE = 'assertFalse';
 
     public function __construct(
-        private IdentifierManipulator $identifierManipulator,
-        private TestsNodeAnalyzer $testsNodeAnalyzer,
-        private AstResolver $astResolver,
-        private ReflectionProvider $reflectionProvider
+        private readonly IdentifierManipulator $identifierManipulator,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly AstResolver $astResolver,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 

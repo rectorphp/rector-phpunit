@@ -40,8 +40,8 @@ final class AssertEqualsToSameRector extends AbstractRector
     private const SCALAR_TYPES = [FloatType::class, IntegerType::class, StringType::class];
 
     public function __construct(
-        private IdentifierManipulator $identifierManipulator,
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly IdentifierManipulator $identifierManipulator,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 

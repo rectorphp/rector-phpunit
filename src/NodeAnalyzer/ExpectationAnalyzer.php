@@ -32,8 +32,8 @@ final class ExpectationAnalyzer
     ];
 
     public function __construct(
-        private TestsNodeAnalyzer $testsNodeAnalyzer,
-        private ConsecutiveAssertionFactory $consecutiveAssertionFactory
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly ConsecutiveAssertionFactory $consecutiveAssertionFactory
     ) {
     }
 

@@ -28,7 +28,7 @@ final class RemoveDataProviderTestPrefixRector extends AbstractRector
     private array $providerMethodNamesToNewNames = [];
 
     public function __construct(
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 
