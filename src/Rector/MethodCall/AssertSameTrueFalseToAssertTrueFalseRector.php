@@ -19,8 +19,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class AssertSameTrueFalseToAssertTrueFalseRector extends AbstractRector
 {
     public function __construct(
-        private ArgumentMover $argumentMover,
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly ArgumentMover $argumentMover,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 

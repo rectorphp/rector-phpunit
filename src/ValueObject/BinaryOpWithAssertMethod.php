@@ -7,9 +7,9 @@ namespace Rector\PHPUnit\ValueObject;
 final class BinaryOpWithAssertMethod
 {
     public function __construct(
-        private string $binaryOpClass,
-        private string $assetMethodName,
-        private string $notAssertMethodName
+        private readonly string $binaryOpClass,
+        private readonly string $assetMethodName,
+        private readonly string $notAssertMethodName
     ) {
     }
 

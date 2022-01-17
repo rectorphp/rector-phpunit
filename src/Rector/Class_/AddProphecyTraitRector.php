@@ -28,9 +28,9 @@ final class AddProphecyTraitRector extends AbstractRector
     private const PROPHECY_TRAIT = 'Prophecy\PhpUnit\ProphecyTrait';
 
     public function __construct(
-        private ClassInsertManipulator $classInsertManipulator,
-        private ClassManipulator $classManipulator,
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly ClassInsertManipulator $classInsertManipulator,
+        private readonly ClassManipulator $classManipulator,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 

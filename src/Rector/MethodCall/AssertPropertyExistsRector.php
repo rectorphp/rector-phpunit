@@ -39,8 +39,8 @@ final class AssertPropertyExistsRector extends AbstractRector
     ];
 
     public function __construct(
-        private IdentifierManipulator $identifierManipulator,
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly IdentifierManipulator $identifierManipulator,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 

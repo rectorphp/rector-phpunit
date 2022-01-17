@@ -44,7 +44,7 @@ final class AssertRegExpRector extends AbstractRector
     private const ASSERT_NOT_EQUALS = 'assertNotEquals';
 
     public function __construct(
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 

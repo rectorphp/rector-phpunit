@@ -10,8 +10,8 @@ use PHPStan\Type\Type;
 final class ParamAndArg
 {
     public function __construct(
-        private Variable $variable,
-        private ?Type $type
+        private readonly Variable $variable,
+        private readonly ?Type $type
     ) {
     }
 

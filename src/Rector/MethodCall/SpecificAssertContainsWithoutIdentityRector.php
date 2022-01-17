@@ -31,7 +31,7 @@ final class SpecificAssertContainsWithoutIdentityRector extends AbstractRector
     ];
 
     public function __construct(
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 

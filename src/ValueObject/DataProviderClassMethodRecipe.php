@@ -12,8 +12,8 @@ final class DataProviderClassMethodRecipe
      * @param Arg[] $args
      */
     public function __construct(
-        private string $methodName,
-        private array $args
+        private readonly string $methodName,
+        private readonly array $args
     ) {
     }
 

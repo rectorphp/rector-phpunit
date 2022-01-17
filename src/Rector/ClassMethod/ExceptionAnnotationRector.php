@@ -34,9 +34,9 @@ final class ExceptionAnnotationRector extends AbstractRector
     ];
 
     public function __construct(
-        private ExpectExceptionMethodCallFactory $expectExceptionMethodCallFactory,
-        private PhpDocTagRemover $phpDocTagRemover,
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly ExpectExceptionMethodCallFactory $expectExceptionMethodCallFactory,
+        private readonly PhpDocTagRemover $phpDocTagRemover,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 

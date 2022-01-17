@@ -15,8 +15,8 @@ use Rector\PHPUnit\ValueObject\ParamAndArg;
 final class ParamAndArgFromArrayResolver
 {
     public function __construct(
-        private NodeTypeResolver $nodeTypeResolver,
-        private TypeFactory $typeFactory
+        private readonly NodeTypeResolver $nodeTypeResolver,
+        private readonly TypeFactory $typeFactory
     ) {
     }
 

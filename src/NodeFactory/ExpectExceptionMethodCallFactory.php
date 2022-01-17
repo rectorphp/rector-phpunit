@@ -17,8 +17,8 @@ use Rector\PHPUnit\PhpDoc\PhpDocValueToNodeMapper;
 final class ExpectExceptionMethodCallFactory
 {
     public function __construct(
-        private NodeFactory $nodeFactory,
-        private PhpDocValueToNodeMapper $phpDocValueToNodeMapper
+        private readonly NodeFactory $nodeFactory,
+        private readonly PhpDocValueToNodeMapper $phpDocValueToNodeMapper
     ) {
     }
 

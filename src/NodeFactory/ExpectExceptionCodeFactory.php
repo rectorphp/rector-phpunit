@@ -12,9 +12,9 @@ use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 final class ExpectExceptionCodeFactory
 {
     public function __construct(
-        private NodeNameResolver $nodeNameResolver,
-        private ArgumentShiftingFactory $argumentShiftingFactory,
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly ArgumentShiftingFactory $argumentShiftingFactory,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 

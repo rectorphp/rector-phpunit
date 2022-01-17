@@ -23,10 +23,10 @@ final class TestsNodeAnalyzer
     private array $testCaseObjectTypes = [];
 
     public function __construct(
-        private NodeTypeResolver $nodeTypeResolver,
-        private NodeNameResolver $nodeNameResolver,
-        private PhpDocInfoFactory $phpDocInfoFactory,
-        private BetterNodeFinder $betterNodeFinder,
+        private readonly NodeTypeResolver $nodeTypeResolver,
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
         $this->testCaseObjectTypes = [
             new ObjectType('PHPUnit\Framework\TestCase'),

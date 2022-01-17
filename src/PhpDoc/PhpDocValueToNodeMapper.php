@@ -13,8 +13,8 @@ use Rector\Core\PhpParser\Node\NodeFactory;
 final class PhpDocValueToNodeMapper
 {
     public function __construct(
-        private NodeFactory $nodeFactory,
-        private ReflectionProvider $reflectionProvider
+        private readonly NodeFactory $nodeFactory,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 

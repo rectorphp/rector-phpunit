@@ -38,8 +38,8 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
     private array $binaryOpWithAssertMethods = [];
 
     public function __construct(
-        private IdentifierManipulator $identifierManipulator,
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly IdentifierManipulator $identifierManipulator,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
         $this->binaryOpWithAssertMethods = [
             new BinaryOpWithAssertMethod(Identical::class, 'assertSame', 'assertNotSame'),

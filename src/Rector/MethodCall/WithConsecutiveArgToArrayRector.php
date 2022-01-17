@@ -29,8 +29,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class WithConsecutiveArgToArrayRector extends AbstractRector
 {
     public function __construct(
-        private MethodCallManipulator $methodCallManipulator,
-        private ReflectionProvider $reflectionProvider
+        private readonly MethodCallManipulator $methodCallManipulator,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 

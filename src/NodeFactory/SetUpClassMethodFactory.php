@@ -18,9 +18,9 @@ use Symplify\Astral\ValueObject\NodeBuilder\MethodBuilder;
 final class SetUpClassMethodFactory
 {
     public function __construct(
-        private PHPUnitTypeDeclarationDecorator $phpUnitTypeDeclarationDecorator,
-        private StmtManipulator $stmtManipulator,
-        private NodeFactory $nodeFactory,
+        private readonly PHPUnitTypeDeclarationDecorator $phpUnitTypeDeclarationDecorator,
+        private readonly StmtManipulator $stmtManipulator,
+        private readonly NodeFactory $nodeFactory,
     ) {
     }
 

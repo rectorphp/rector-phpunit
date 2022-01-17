@@ -12,8 +12,8 @@ use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 final class ExpectExceptionFactory
 {
     public function __construct(
-        private NodeNameResolver $nodeNameResolver,
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 

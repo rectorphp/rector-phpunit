@@ -37,7 +37,7 @@ final class AssertCompareToSpecificMethodRector extends AbstractRector
     private array $functionNamesWithAssertMethods = [];
 
     public function __construct(
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
         $this->functionNamesWithAssertMethods = [
             new FunctionNameWithAssertMethods('count', self::ASSERT_COUNT, self::ASSERT_NOT_COUNT),

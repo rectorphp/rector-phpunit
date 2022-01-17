@@ -28,7 +28,7 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
     private array $functionNameWithAssertMethods = [];
 
     public function __construct(
-        private TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
         $this->functionNameWithAssertMethods = [
             new FunctionNameWithAssertMethods('is_readable', 'assertIsReadable', 'assertNotIsReadable'),

@@ -25,11 +25,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class TryCatchToExpectExceptionRector extends AbstractRector
 {
     public function __construct(
-        private TestsNodeAnalyzer $testsNodeAnalyzer,
-        private ExpectExceptionCodeFactory $expectExceptionCodeFactory,
-        private ExpectExceptionMessageRegExpFactory $expectExceptionMessageRegExpFactory,
-        private ExpectExceptionFactory $expectExceptionFactory,
-        private ExpectExceptionMessageFactory $expectExceptionMessageFactory
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly ExpectExceptionCodeFactory $expectExceptionCodeFactory,
+        private readonly ExpectExceptionMessageRegExpFactory $expectExceptionMessageRegExpFactory,
+        private readonly ExpectExceptionFactory $expectExceptionFactory,
+        private readonly ExpectExceptionMessageFactory $expectExceptionMessageFactory
     ) {
     }
 
