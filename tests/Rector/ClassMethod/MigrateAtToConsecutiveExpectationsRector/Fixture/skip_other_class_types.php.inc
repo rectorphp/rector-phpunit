@@ -4,11 +4,11 @@ namespace Rector\PHPUnit\Tests\Rector\ClassMethod\MigrateAtToConsecutiveExpectat
 
 use PHPUnit\Framework\TestCase;
 
-final class SkipStaticCallSelf extends TestCase
+final class SkipOtherClassTypes extends TestCase
 {
-    public function testSuccessfulBuildFoundEntity(): void
+    public function testSuccessfulBuildFoundEntity($expecataiton): void
     {
         $entity = $this->createMock(TestCase::class);
-        $entity->expects(self::once())->method('getId')->willReturn(1);
+        $entity->expects($expecataiton)->method('getId');
     }
 }

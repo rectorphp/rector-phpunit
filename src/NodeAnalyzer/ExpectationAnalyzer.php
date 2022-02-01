@@ -58,14 +58,15 @@ final class ExpectationAnalyzer
                 continue;
             }
 
-            $expectsArg = $expects->args[0];
-            /** @var MethodCall $expectsValue */
+            $expectsArg = $expects->getArgs()[0];
+
             $expectsValue = $expectsArg->value;
             if (! $this->isValidAtCall($expectsValue)) {
                 continue;
             }
 
-            $atArg = $expectsValue->args[0];
+            /** @var MethodCall|StaticCall $expectsValue */
+            $atArg = $expectsValue->getArgs()[0];
             $atValue = $atArg->value;
             if (! $atValue instanceof LNumber) {
                 continue;
@@ -99,13 +100,17 @@ final class ExpectationAnalyzer
         return count($call->getArgs()) === 1;
     }
 
-    public function isValidAtCall(MethodCall|StaticCall $call): bool
+    public function isValidAtCall(Expr $expr): bool
     {
-        if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($call, 'at')) {
+        if (! $expr instanceof StaticCall && ! $expr instanceof MethodCall) {
             return false;
         }
 
-        return count($call->getArgs()) === 1;
+        if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($expr, 'at')) {
+            return false;
+        }
+
+        return count($expr->getArgs()) === 1;
     }
 
     private function getMethod(MethodCall $methodCall): MethodCall
