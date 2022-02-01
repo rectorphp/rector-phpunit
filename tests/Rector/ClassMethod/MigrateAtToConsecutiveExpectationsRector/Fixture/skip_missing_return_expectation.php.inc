@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Rector\PHPUnit\Tests\Rector\ClassMethod\MigrateAtToConsecutiveExpectationsRector\Fixture;
 
 class Foo
