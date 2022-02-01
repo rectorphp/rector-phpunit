@@ -2,20 +2,13 @@
 
 namespace Rector\PHPUnit\Tests\Rector\ClassMethod\MigrateAtToConsecutiveExpectationsRector\Fixture;
 
-class Foo
-{
-    public function someMethod()
-    {
-    }
-    public function someOtherMethod()
-    {
-    }
-}
+use Rector\PHPUnit\Tests\Rector\ClassMethod\MigrateAtToConsecutiveExpectationsRector\Source\SomeObject;
+
 final class SkipMissingReturnExpectation extends \PHPUnit\Framework\TestCase
 {
     public function test(): void
     {
-        $mock = $this->createMock(Foo::class);
+        $mock = $this->createMock(SomeObject::class);
         $mock
             ->expects($this->at(0))
             ->method('someMethod')
@@ -33,4 +26,3 @@ final class SkipMissingReturnExpectation extends \PHPUnit\Framework\TestCase
 }
 
 ?>
-
