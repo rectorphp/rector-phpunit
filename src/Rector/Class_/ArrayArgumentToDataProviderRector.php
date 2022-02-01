@@ -44,7 +44,7 @@ final class ArrayArgumentToDataProviderRector extends AbstractRector implements 
      * @api
      * @var string
      */
-    final public const ARRAY_ARGUMENTS_TO_DATA_PROVIDERS = 'array_arguments_to_data_providers';
+    public const ARRAY_ARGUMENTS_TO_DATA_PROVIDERS = 'array_arguments_to_data_providers';
 
     /**
      * @var ArrayArgumentToDataProvider[]

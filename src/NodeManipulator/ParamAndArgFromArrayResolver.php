@@ -79,6 +79,7 @@ final class ParamAndArgFromArrayResolver
                 ++$i;
             }
         }
+
         return $paramAndArgs;
     }
 

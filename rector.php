@@ -40,5 +40,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->import(LevelSetList::UP_TO_PHP_81);
     $containerConfigurator->import(SetList::DEAD_CODE);
     $containerConfigurator->import(SetList::CODE_QUALITY);
+    $containerConfigurator->import(SetList::CODING_STYLE);
+    $containerConfigurator->import(SetList::EARLY_RETURN);
 };
 

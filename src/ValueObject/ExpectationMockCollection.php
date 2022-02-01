@@ -70,6 +70,7 @@ final class ExpectationMockCollection
         if ($this->getLowestAtIndex() !== 0) {
             return true;
         }
+
         return $this->isMissingAtIndexBetweenHighestAndLowest();
     }
 
@@ -126,11 +127,13 @@ final class ExpectationMockCollection
                 if ($previousMethod === '') {
                     $previousMethod = $methodArgument->value->value;
                 }
+
                 if ($previousMethod !== $methodArgument->value->value) {
                     return false;
                 }
             }
         }
+
         return true;
     }
 }

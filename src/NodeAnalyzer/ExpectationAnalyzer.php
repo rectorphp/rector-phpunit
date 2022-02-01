@@ -8,6 +8,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\Expression;
@@ -69,6 +70,7 @@ final class ExpectationAnalyzer
             if (! $atValue instanceof LNumber) {
                 continue;
             }
+
             if (! $expects->var instanceof Variable && ! $expects->var instanceof PropertyFetch) {
                 continue;
             }
@@ -88,30 +90,22 @@ final class ExpectationAnalyzer
         return $expectationMockCollection;
     }
 
-    public function isValidExpectsCall(MethodCall $methodCall): bool
+    public function isValidExpectsCall(MethodCall|StaticCall $call): bool
     {
-        if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($methodCall, 'expects')) {
+        if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($call, 'expects')) {
             return false;
         }
 
-        if (count($methodCall->args) !== 1) {
-            return false;
-        }
-
-        return true;
+        return count($call->getArgs()) === 1;
     }
 
-    public function isValidAtCall(MethodCall $methodCall): bool
+    public function isValidAtCall(MethodCall|StaticCall $call): bool
     {
-        if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($methodCall, 'at')) {
+        if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($call, 'at')) {
             return false;
         }
 
-        if (count($methodCall->args) !== 1) {
-            return false;
-        }
-
-        return true;
+        return count($call->getArgs()) === 1;
     }
 
     private function getMethod(MethodCall $methodCall): MethodCall
@@ -144,6 +138,7 @@ final class ExpectationAnalyzer
         if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($expr, 'with')) {
             return $methodCall->var;
         }
+
         return $expr->var;
     }
 
@@ -155,9 +150,11 @@ final class ExpectationAnalyzer
         if (! $this->testsNodeAnalyzer->isInPHPUnitMethodCallName($expr, 'with')) {
             return [null];
         }
+
         if (! $expr instanceof MethodCall) {
             return [null];
         }
+
         return array_map(static fn (Arg $arg): Expr => $arg->value, $expr->args);
     }
 }

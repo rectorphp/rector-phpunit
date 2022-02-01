@@ -11,30 +11,30 @@ final class PHPUnitLevelSetList implements SetListInterface
     /**
      * @var string
      */
-    final public const UP_TO_PHPUNIT_50 = __DIR__ . '/../../config/sets/level/up-to-phpunit-50.php';
+    public const UP_TO_PHPUNIT_50 = __DIR__ . '/../../config/sets/level/up-to-phpunit-50.php';
 
     /**
      * @var string
      */
-    final public const UP_TO_PHPUNIT_60 = __DIR__ . '/../../config/sets/level/up-to-phpunit-60.php';
+    public const UP_TO_PHPUNIT_60 = __DIR__ . '/../../config/sets/level/up-to-phpunit-60.php';
 
     /**
      * @var string
      */
-    final public const UP_TO_PHPUNIT_70 = __DIR__ . '/../../config/sets/level/up-to-phpunit-70.php';
+    public const UP_TO_PHPUNIT_70 = __DIR__ . '/../../config/sets/level/up-to-phpunit-70.php';
 
     /**
      * @var string
      */
-    final public const UP_TO_PHPUNIT_80 = __DIR__ . '/../../config/sets/level/up-to-phpunit-80.php';
+    public const UP_TO_PHPUNIT_80 = __DIR__ . '/../../config/sets/level/up-to-phpunit-80.php';
 
     /**
      * @var string
      */
-    final public const UP_TO_PHPUNIT_90 = __DIR__ . '/../../config/sets/level/up-to-phpunit-90.php';
+    public const UP_TO_PHPUNIT_90 = __DIR__ . '/../../config/sets/level/up-to-phpunit-90.php';
 
     /**
      * @var string
      */
-    final public const UP_TO_PHPUNIT_100 = __DIR__ . '/../../config/sets/level/up-to-phpunit-100.php';
+    public const UP_TO_PHPUNIT_100 = __DIR__ . '/../../config/sets/level/up-to-phpunit-100.php';
 }

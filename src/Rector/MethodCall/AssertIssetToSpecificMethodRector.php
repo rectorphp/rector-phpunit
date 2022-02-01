@@ -86,10 +86,12 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
         if (! $firstArgumentValue instanceof Isset_) {
             return null;
         }
+
         $variableNodeClass = $firstArgumentValue->vars[0]::class;
         if (! in_array($variableNodeClass, [ArrayDimFetch::class, PropertyFetch::class], true)) {
             return null;
         }
+
         /** @var Isset_ $issetNode */
         $issetNode = $node->args[0]->value;
 

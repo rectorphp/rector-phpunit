@@ -118,12 +118,15 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
         if (in_array($oldMethodName, ['assertTrue', 'assertNotFalse'], true)) {
             $node->name = new Identifier($functionNameWithAssertMethods->getAssetMethodName());
         }
+
         if ($functionNameWithAssertMethods->getNotAssertMethodName() === '') {
             return;
         }
+
         if (! in_array($oldMethodName, ['assertFalse', 'assertNotTrue'], true)) {
             return;
         }
+
         $node->name = new Identifier($functionNameWithAssertMethods->getNotAssertMethodName());
     }
 

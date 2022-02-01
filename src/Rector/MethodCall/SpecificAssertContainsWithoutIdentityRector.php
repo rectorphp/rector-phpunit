@@ -91,10 +91,12 @@ CODE_SAMPLE
         if ($secondArgType instanceof StringType) {
             return null;
         }
+
         //when less then 5 arguments given: do nothing
         if (! isset($node->args[4])) {
             return null;
         }
+
         if ($node->args[4]->value === null) {
             return null;
         }

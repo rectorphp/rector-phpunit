@@ -74,6 +74,7 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
         if (! $firstArgumentValue instanceof Instanceof_) {
             return null;
         }
+
         $this->identifierManipulator->renameNodeWithMap($node, self::RENAME_METHODS_MAP);
         $this->changeArgumentsOrder($node);
 
