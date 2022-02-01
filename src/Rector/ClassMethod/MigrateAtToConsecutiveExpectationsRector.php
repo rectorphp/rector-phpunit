@@ -135,6 +135,7 @@ CODE_SAMPLE
             if (! $originalExpression instanceof Expression) {
                 continue;
             }
+
             if ($max > $originalExpression->getEndLine()) {
                 $this->removeNode($originalExpression);
             } else {
@@ -156,6 +157,7 @@ CODE_SAMPLE
         if ($expectationMockCollection->hasMissingAtIndexes()) {
             return true;
         }
+
         return $expectationMockCollection->hasMissingReturnValues();
     }
 
@@ -178,9 +180,11 @@ CODE_SAMPLE
             if (! is_string($variable->name)) {
                 continue;
             }
+
             if (! isset($groupedByVariable[$variable->name])) {
                 $groupedByVariable[$variable->name] = new ExpectationMockCollection();
             }
+
             $groupedByVariable[$variable->name]->add($expectationMock);
         }
 

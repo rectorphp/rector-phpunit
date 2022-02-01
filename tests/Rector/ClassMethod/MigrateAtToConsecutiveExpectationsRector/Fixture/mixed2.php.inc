@@ -2,17 +2,13 @@
 
 namespace Rector\PHPUnit\Tests\Rector\ClassMethod\MigrateAtToConsecutiveExpectationsRector\Fixture;
 
-class Foo
-{
-    public function someMethod()
-    {
-    }
-}
+use Rector\PHPUnit\Tests\Rector\ClassMethod\MigrateAtToConsecutiveExpectationsRector\Source\SomeObject;
+
 final class Mixed2 extends \PHPUnit\Framework\TestCase
 {
     public function test(): void
     {
-        $mock = $this->createMock(Foo::class);
+        $mock = $this->createMock(SomeObject::class);
         $mock
             ->expects($this->exactly(2))
             ->method('someMethod');
@@ -35,17 +31,13 @@ final class Mixed2 extends \PHPUnit\Framework\TestCase
 
 namespace Rector\PHPUnit\Tests\Rector\ClassMethod\MigrateAtToConsecutiveExpectationsRector\Fixture;
 
-class Foo
-{
-    public function someMethod()
-    {
-    }
-}
+use Rector\PHPUnit\Tests\Rector\ClassMethod\MigrateAtToConsecutiveExpectationsRector\Source\SomeObject;
+
 final class Mixed2 extends \PHPUnit\Framework\TestCase
 {
     public function test(): void
     {
-        $mock = $this->createMock(Foo::class);
+        $mock = $this->createMock(SomeObject::class);
         $mock
             ->expects($this->exactly(2))
             ->method('someMethod');

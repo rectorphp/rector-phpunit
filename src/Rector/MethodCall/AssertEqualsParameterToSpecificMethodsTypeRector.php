@@ -97,6 +97,7 @@ CODE_SAMPLE
             // add new node only in case of non-default value
             unset($node->args[4]);
         }
+
         $this->processAssertEqualsWithDelta($node);
 
         return $node;

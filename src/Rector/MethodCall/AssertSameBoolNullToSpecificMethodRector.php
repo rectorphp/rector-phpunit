@@ -65,6 +65,7 @@ final class AssertSameBoolNullToSpecificMethodRector extends AbstractRector
         if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, ['assertSame', 'assertNotSame'])) {
             return null;
         }
+
         $firstArgumentValue = $node->args[0]->value;
         if (! $firstArgumentValue instanceof ConstFetch) {
             return null;

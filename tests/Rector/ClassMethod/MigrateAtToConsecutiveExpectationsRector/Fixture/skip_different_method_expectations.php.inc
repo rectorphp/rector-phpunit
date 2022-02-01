@@ -3,6 +3,8 @@
 
 namespace Rector\PHPUnit\Tests\Rector\ClassMethod\MigrateAtToConsecutiveExpectationsRector\Fixture;
 
+use Rector\PHPUnit\Tests\Rector\ClassMethod\MigrateAtToConsecutiveExpectationsRector\Source\SomeObject;
+
 class Foo
 {
     public function someMethod()
@@ -16,7 +18,7 @@ final class SkipDifferentMethodExpectations extends \PHPUnit\Framework\TestCase
 {
     public function test(): void
     {
-        $mock = $this->createMock(Foo::class);
+        $mock = $this->createMock(SomeObject::class);
         $mock
             ->expects($this->at(0))
             ->method('someMethod')

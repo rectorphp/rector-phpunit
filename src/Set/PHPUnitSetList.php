@@ -11,70 +11,70 @@ final class PHPUnitSetList implements SetListInterface
     /**
      * @var string
      */
-    final public const PHPUNIT80_DMS = __DIR__ . '/../../config/sets/phpunit80-dms.php';
+    public const PHPUNIT80_DMS = __DIR__ . '/../../config/sets/phpunit80-dms.php';
 
     /**
      * @var string
      */
-    final public const PHPUNIT_40 = __DIR__ . '/../../config/sets/phpunit40.php';
+    public const PHPUNIT_40 = __DIR__ . '/../../config/sets/phpunit40.php';
 
     /**
      * @var string
      */
-    final public const PHPUNIT_50 = __DIR__ . '/../../config/sets/phpunit50.php';
+    public const PHPUNIT_50 = __DIR__ . '/../../config/sets/phpunit50.php';
 
     /**
      * @var string
      */
-    final public const PHPUNIT_60 = __DIR__ . '/../../config/sets/phpunit60.php';
+    public const PHPUNIT_60 = __DIR__ . '/../../config/sets/phpunit60.php';
 
     /**
      * @var string
      */
-    final public const PHPUNIT_70 = __DIR__ . '/../../config/sets/phpunit70.php';
+    public const PHPUNIT_70 = __DIR__ . '/../../config/sets/phpunit70.php';
 
     /**
      * @var string
      */
-    final public const PHPUNIT_75 = __DIR__ . '/../../config/sets/phpunit75.php';
+    public const PHPUNIT_75 = __DIR__ . '/../../config/sets/phpunit75.php';
 
     /**
      * @var string
      */
-    final public const PHPUNIT_80 = __DIR__ . '/../../config/sets/phpunit80.php';
+    public const PHPUNIT_80 = __DIR__ . '/../../config/sets/phpunit80.php';
 
     /**
      * @var string
      */
-    final public const PHPUNIT_90 = __DIR__ . '/../../config/sets/phpunit90.php';
+    public const PHPUNIT_90 = __DIR__ . '/../../config/sets/phpunit90.php';
 
     /**
      * @var string
      */
-    final public const PHPUNIT_91 = __DIR__ . '/../../config/sets/phpunit91.php';
+    public const PHPUNIT_91 = __DIR__ . '/../../config/sets/phpunit91.php';
 
     /**
      * @var string
      */
-    final public const PHPUNIT_CODE_QUALITY = __DIR__ . '/../../config/sets/phpunit-code-quality.php';
+    public const PHPUNIT_CODE_QUALITY = __DIR__ . '/../../config/sets/phpunit-code-quality.php';
 
     /**
      * @var string
      */
-    final public const PHPUNIT_EXCEPTION = __DIR__ . '/../../config/sets/phpunit-exception.php';
+    public const PHPUNIT_EXCEPTION = __DIR__ . '/../../config/sets/phpunit-exception.php';
 
     /**
      * @var string
      */
-    final public const PHPUNIT_MOCK = __DIR__ . '/../../config/sets/phpunit-mock.php';
+    public const PHPUNIT_MOCK = __DIR__ . '/../../config/sets/phpunit-mock.php';
 
     /**
      * @var string
      */
-    final public const PHPUNIT_SPECIFIC_METHOD = __DIR__ . '/../../config/sets/phpunit-specific-method.php';
+    public const PHPUNIT_SPECIFIC_METHOD = __DIR__ . '/../../config/sets/phpunit-specific-method.php';
 
     /**
      * @var string
      */
-    final public const PHPUNIT_YIELD_DATA_PROVIDER = __DIR__ . '/../../config/sets/phpunit-yield-data-provider.php';
+    public const PHPUNIT_YIELD_DATA_PROVIDER = __DIR__ . '/../../config/sets/phpunit-yield-data-provider.php';
 }

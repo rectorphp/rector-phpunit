@@ -178,6 +178,7 @@ CODE_SAMPLE
                     'setExpectedException*',
                 ]);
             }
+
             if ($node instanceof StaticCall) {
                 return $this->isNames($node->name, [
                     // phpunit
@@ -187,6 +188,7 @@ CODE_SAMPLE
                     'setExpectedException*',
                 ]);
             }
+
             return false;
         });
     }

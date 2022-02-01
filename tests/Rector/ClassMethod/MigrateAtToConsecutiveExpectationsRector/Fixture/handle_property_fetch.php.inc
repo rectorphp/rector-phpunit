@@ -2,12 +2,8 @@
 
 namespace Rector\PHPUnit\Tests\Rector\ClassMethod\MigrateAtToConsecutiveExpectationsRector\Fixture;
 
-class Foo
-{
-    public function someMethod()
-    {
-    }
-}
+use Rector\PHPUnit\Tests\Rector\ClassMethod\MigrateAtToConsecutiveExpectationsRector\Source\SomeObject;
+
 final class HandlePropertyFetch extends \PHPUnit\Framework\TestCase
 {
     protected $mock;
@@ -16,7 +12,7 @@ final class HandlePropertyFetch extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->mock = $this->createMock(Foo::class);
+        $this->mock = $this->createMock(SomeObject::class);
     }
 
     public function test(): void
@@ -39,12 +35,8 @@ final class HandlePropertyFetch extends \PHPUnit\Framework\TestCase
 
 namespace Rector\PHPUnit\Tests\Rector\ClassMethod\MigrateAtToConsecutiveExpectationsRector\Fixture;
 
-class Foo
-{
-    public function someMethod()
-    {
-    }
-}
+use Rector\PHPUnit\Tests\Rector\ClassMethod\MigrateAtToConsecutiveExpectationsRector\Source\SomeObject;
+
 final class HandlePropertyFetch extends \PHPUnit\Framework\TestCase
 {
     protected $mock;
@@ -53,7 +45,7 @@ final class HandlePropertyFetch extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->mock = $this->createMock(Foo::class);
+        $this->mock = $this->createMock(SomeObject::class);
     }
 
     public function test(): void
