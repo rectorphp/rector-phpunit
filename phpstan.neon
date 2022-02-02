@@ -34,3 +34,4 @@ parameters:
 
         # rector co-variant
         - '#Parameter \#1 \$node \(PhpParser\\Node\\(.*?) of method Rector\\(.*?)\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\PhpRectorInterface\:\:refactor\(\)#'
+        - '#Parameter \#2 \$length of function array_chunk expects int<1, max\>, int given#'
