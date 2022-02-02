@@ -14,3 +14,22 @@ final class IgnoringWithComplex extends TestCase
         )->willReturn(Money::USD(120));
     }
 }
+?>
+-----
+<?php
+
+namespace Rector\PHPUnit\Tests\Rector\ClassMethod\MigrateAtToConsecutiveExpectationsRector\Fixture;
+
+use PHPUnit\Framework\TestCase;
+
+final class IgnoringWithComplex extends TestCase
+{
+    public function barTest()
+    {
+        $mocks[MyClass::class]->method('convert')->with(
+            Money::EUR(100),
+            new Currency('USD')
+        )->willReturnOnConsecutiveCalls(Money::USD(120));
+    }
+}
+?>
