@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\Rector\ClassMethod;
 
+use PhpParser\Comment;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
@@ -37,7 +38,7 @@ class SomeTest extends \PHPUnit\Framework\TestCase
     }
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 class SomeTest extends \PHPUnit\Framework\TestCase
 {
@@ -75,14 +76,27 @@ CODE_SAMPLE
             return null;
         }
 
-        foreach ($node->getComments() as $comment) {
-            if (str_contains($comment->getText(), '@test')) {
-                $node->name->name = 'test' . ucfirst($node->name->name);
-
-                return $node;
-            }
+        $docComment = $node->getDocComment();
+        if (! $docComment instanceof Comment\Doc) {
+            return null;
         }
 
-        return null;
+        if (! str_contains($docComment->getText(), '@test')) {
+            return null;
+        }
+
+        $node->name->name = 'test' . ucfirst($node->name->name);
+        $docComment = new Comment\Doc(
+            str_replace('@test', '', $docComment->getText()),
+            $docComment->getStartLine(),
+            $docComment->getStartFilePos(),
+            $docComment->getStartTokenPos(),
+            $docComment->getEndLine(),
+            $docComment->getEndFilePos(),
+            $docComment->getEndTokenPos()
+        );
+        $node->setDocComment($docComment);
+
+        return $node;
     }
 }

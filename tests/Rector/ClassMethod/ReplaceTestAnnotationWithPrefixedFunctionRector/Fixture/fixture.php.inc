@@ -5,7 +5,7 @@ namespace Rector\PHPUnit\Tests\Rector\ClassMethod\ReplaceTestAnnotationWithPrefi
 class SomeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @test
+     *@test
      */
     public function onePlusOneShouldBeTwo()
     {
@@ -22,7 +22,7 @@ namespace Rector\PHPUnit\Tests\Rector\ClassMethod\ReplaceTestAnnotationWithPrefi
 class SomeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @test
+     *
      */
     public function testOnePlusOneShouldBeTwo()
     {
