@@ -18,7 +18,8 @@ final class ReplaceTestAnnotationWithPrefixedFunctionRector extends AbstractRect
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer
-    ){}
+    ) {
+    }
 
     public function getRuleDefinition(): RuleDefinition
     {
