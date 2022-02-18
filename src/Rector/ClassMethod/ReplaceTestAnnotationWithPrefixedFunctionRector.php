@@ -16,6 +16,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ReplaceTestAnnotationWithPrefixedFunctionRector extends AbstractRector
 {
+    public function __construct(
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
+    ){}
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Replace @test with prefixed function', [
@@ -62,20 +66,21 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
+            return null;
+        }
+
         if ($this->isName($node->name, 'test*')) {
             return null;
         }
+
         foreach ($node->getComments() as $comment) {
-            if (strpos($comment->getText(), '@test') !== false) {
+            if (str_contains($comment->getText(), '@test')) {
                 $node->name->name = 'test' . ucfirst($node->name->name);
 
                 return $node;
             }
         }
-        // Search for comments
-        // If no comments -> return null
-        // if comments to not contain @test -> return null
-        // else -> rename function
 
         return null;
     }
