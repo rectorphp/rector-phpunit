@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\Rector\ClassMethod;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Comment;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -77,7 +78,7 @@ CODE_SAMPLE
         }
 
         $docComment = $node->getDocComment();
-        if (! $docComment instanceof Comment\Doc) {
+        if (! $docComment instanceof Doc) {
             return null;
         }
 
@@ -86,7 +87,7 @@ CODE_SAMPLE
         }
 
         $node->name->name = 'test' . ucfirst($node->name->name);
-        $docComment = new Comment\Doc(
+        $docComment = new Doc(
             str_replace('@test', '', $docComment->getText()),
             $docComment->getStartLine(),
             $docComment->getStartFilePos(),
