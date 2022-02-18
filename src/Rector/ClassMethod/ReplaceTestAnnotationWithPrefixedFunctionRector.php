@@ -43,7 +43,7 @@ CODE_SAMPLE
 class SomeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @test
+     * 
      */
     public function testOnePlusOneShouldBeTwo()
     {
