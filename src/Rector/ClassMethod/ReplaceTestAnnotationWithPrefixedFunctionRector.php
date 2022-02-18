@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\Rector\ClassMethod;
 
 use PhpParser\Comment\Doc;
-use PhpParser\Comment;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
