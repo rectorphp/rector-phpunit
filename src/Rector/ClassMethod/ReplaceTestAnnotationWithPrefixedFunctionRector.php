@@ -62,15 +62,20 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->isName($node->name, 'test')) {
+        if ($this->isName($node->name, 'test*')) {
             return null;
+        }
+        foreach ($node->getComments() as $comment) {
+            if (strpos($comment->getText(), '@test') !== false) {
+                $node->name->name = 'test' . ucfirst($node->name->name);
+
+                return $node;
+            }
         }
         // Search for comments
         // If no comments -> return null
         // if comments to not contain @test -> return null
         // else -> rename function
-
-        $node->name->name = 'test' . ucfirst($node->name->name);
 
         return null;
     }
