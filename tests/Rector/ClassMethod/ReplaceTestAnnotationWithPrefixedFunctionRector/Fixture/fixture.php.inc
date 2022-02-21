@@ -21,9 +21,6 @@ namespace Rector\PHPUnit\Tests\Rector\ClassMethod\ReplaceTestAnnotationWithPrefi
 
 class SomeTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     *
-     */
     public function testOnePlusOneShouldBeTwo()
     {
         $this->assertSame(2, 1+1);
