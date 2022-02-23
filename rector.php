@@ -42,5 +42,15 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->import(SetList::CODE_QUALITY);
     $containerConfigurator->import(SetList::CODING_STYLE);
     $containerConfigurator->import(SetList::EARLY_RETURN);
+
+    $services = $containerConfigurator->services();
+
+    $services->set(StringClassNameToClassConstantRector::class)
+        ->configure([
+            // keep unprefixed to protected from downgrade
+            'PHPUnit\Framework\MockObject\MockBuilder',
+            'PHPUnit\Framework\MockObject\MockObject',
+            'Prophecy\Prophet',
+        ]);
 };
 
