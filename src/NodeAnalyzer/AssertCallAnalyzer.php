@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\PrettyPrinter\Standard;
 use PHPStan\Type\TypeWithClassName;
-use PHPUnit\Framework\MockObject\MockBuilder;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -35,11 +34,11 @@ final class AssertCallAnalyzer
     private int $classMethodNestingLevel = 0;
 
     public function __construct(
-        private AstResolver $astResolver,
-        private Standard $printerStandard,
-        private BetterNodeFinder $betterNodeFinder,
-        private NodeNameResolver $nodeNameResolver,
-        private NodeTypeResolver $nodeTypeResolver,
+        private readonly AstResolver $astResolver,
+        private readonly Standard $printerStandard,
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly NodeTypeResolver $nodeTypeResolver,
     ) {
     }
 
@@ -82,7 +81,12 @@ final class AssertCallAnalyzer
         return (bool) $this->betterNodeFinder->findFirst((array) $classMethod->stmts, function (Node $node): bool {
             if ($node instanceof MethodCall) {
                 $type = $this->nodeTypeResolver->getType($node->var);
-                if ($type instanceof FullyQualifiedObjectType && $type->getClassName() === MockBuilder::class) {
+
+                if ($type instanceof FullyQualifiedObjectType && in_array(
+                    $type->getClassName(),
+                    ['PHPUnit\Framework\MockObject\MockBuilder', 'Prophecy\Prophet'],
+                    true
+                )) {
                     return true;
                 }
 

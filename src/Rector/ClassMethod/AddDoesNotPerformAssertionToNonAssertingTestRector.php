@@ -10,8 +10,8 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\AssertCallAnalyzer;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -28,7 +28,7 @@ final class AddDoesNotPerformAssertionToNonAssertingTestRector extends AbstractR
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private AssertCallAnalyzer $assertCallAnalyzer,
+        private readonly AssertCallAnalyzer $assertCallAnalyzer,
     ) {
     }
 
@@ -125,12 +125,13 @@ CODE_SAMPLE
     {
         $doesContainMock = false;
 
-        $this->traverseNodesWithCallable($classMethod, function (\PhpParser\Node $node) use (&$doesContainMock) {
+        $this->traverseNodesWithCallable($classMethod, function (Node $node) use (&$doesContainMock) {
             if (! $node instanceof PropertyFetch && ! $node instanceof Variable) {
                 return null;
             }
+
             $variableType = $this->getType($node);
-            if (! $variableType instanceof TypeWithClassName) {
+            if ($variableType instanceof MixedType) {
                 return null;
             }
 
