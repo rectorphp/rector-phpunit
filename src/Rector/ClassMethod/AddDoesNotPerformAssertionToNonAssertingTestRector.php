@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeWithClassName;
-use PHPUnit\Framework\MockObject\MockBuilder;
-use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
+use Rector\PHPUnit\NodeAnalyzer\AssertCallAnalyzer;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
-use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -27,24 +26,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AddDoesNotPerformAssertionToNonAssertingTestRector extends AbstractRector
 {
-    /**
-     * @var int
-     */
-    private const MAX_LOOKING_FOR_ASSERT_METHOD_CALL_NESTING_LEVEL = 3;
-
-    /**
-     * This should prevent segfaults while going too deep into to parsed code. Without it, it might end-up with segfault
-     */
-    private int $classMethodNestingLevel = 0;
-
-    /**
-     * @var bool[]
-     */
-    private array $containsAssertCallByClassMethod = [];
-
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly AstResolver $astResolver
+        private AssertCallAnalyzer $assertCallAnalyzer,
     ) {
     }
 
@@ -98,8 +82,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $this->classMethodNestingLevel = 0;
-
         if ($this->shouldSkipClassMethod($node)) {
             return null;
         }
@@ -124,7 +106,13 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->containsAssertCall($classMethod);
+        $this->assertCallAnalyzer->resetNesting();
+
+        if ($this->assertCallAnalyzer->containsAssertCall($classMethod)) {
+            return true;
+        }
+
+        return $this->containsMockAsUsedVariable($classMethod);
     }
 
     private function addDoesNotPerformAssertions(ClassMethod $classMethod): void
@@ -133,111 +121,26 @@ CODE_SAMPLE
         $phpDocInfo->addPhpDocTagNode(new PhpDocTagNode('@doesNotPerformAssertions', new GenericTagValueNode('')));
     }
 
-    private function containsAssertCall(ClassMethod $classMethod): bool
+    private function containsMockAsUsedVariable(ClassMethod $classMethod): bool
     {
-        ++$this->classMethodNestingLevel;
+        $doesContainMock = false;
 
-        // probably no assert method in the end
-        if ($this->classMethodNestingLevel > self::MAX_LOOKING_FOR_ASSERT_METHOD_CALL_NESTING_LEVEL) {
-            return false;
-        }
-
-        $cacheHash = md5($this->print($classMethod));
-        if (isset($this->containsAssertCallByClassMethod[$cacheHash])) {
-            return $this->containsAssertCallByClassMethod[$cacheHash];
-        }
-
-        // A. try "->assert" shallow search first for performance
-        $hasDirectAssertCall = $this->hasDirectAssertCall($classMethod);
-        if ($hasDirectAssertCall) {
-            $this->containsAssertCallByClassMethod[$cacheHash] = $hasDirectAssertCall;
-            return true;
-        }
-
-        // B. look for nested calls
-        $hasNestedAssertCall = $this->hasNestedAssertCall($classMethod);
-        $this->containsAssertCallByClassMethod[$cacheHash] = $hasNestedAssertCall;
-
-        return $hasNestedAssertCall;
-    }
-
-    private function hasDirectAssertCall(ClassMethod $classMethod): bool
-    {
-        return (bool) $this->betterNodeFinder->findFirst((array) $classMethod->stmts, function (Node $node): bool {
-            if ($node instanceof MethodCall) {
-                $type = $this->nodeTypeResolver->getType($node->var);
-                if ($type instanceof FullyQualifiedObjectType && $type->getClassName() === MockBuilder::class) {
-                    return true;
-                }
-
-                return $this->isNames($node->name, [
-                    // phpunit
-                    '*assert',
-                    'assert*',
-                    'expectException*',
-                    'setExpectedException*',
-                ]);
+        $this->traverseNodesWithCallable($classMethod, function (\PhpParser\Node $node) use (&$doesContainMock) {
+            if (! $node instanceof PropertyFetch && ! $node instanceof Variable) {
+                return null;
+            }
+            $variableType = $this->getType($node);
+            if (! $variableType instanceof TypeWithClassName) {
+                return null;
             }
 
-            if ($node instanceof StaticCall) {
-                return $this->isNames($node->name, [
-                    // phpunit
-                    '*assert',
-                    'assert*',
-                    'expectException*',
-                    'setExpectedException*',
-                ]);
+            if ($variableType->isSuperTypeOf(new ObjectType('PHPUnit\Framework\MockObject\MockObject'))->yes()) {
+                $doesContainMock = true;
             }
 
-            return false;
-        });
-    }
-
-    private function hasNestedAssertCall(ClassMethod $classMethod): bool
-    {
-        $currentClassMethod = $classMethod;
-
-        // over and over the same method :/
-        return (bool) $this->betterNodeFinder->findFirst((array) $classMethod->stmts, function (Node $node) use (
-            $currentClassMethod
-        ): bool {
-            if (! $node instanceof MethodCall && ! $node instanceof StaticCall) {
-                return false;
-            }
-
-            $classMethod = $this->resolveClassMethodFromCall($node);
-
-            // skip circular self calls
-            if ($currentClassMethod === $classMethod) {
-                return false;
-            }
-
-            if ($classMethod !== null) {
-                return $this->containsAssertCall($classMethod);
-            }
-
-            return false;
-        });
-    }
-
-    private function resolveClassMethodFromCall(StaticCall | MethodCall $call): ?ClassMethod
-    {
-        if ($call instanceof MethodCall) {
-            $objectType = $this->nodeTypeResolver->getType($call->var);
-        } else {
-            // StaticCall
-            $objectType = $this->nodeTypeResolver->getType($call->class);
-        }
-
-        if (! $objectType instanceof TypeWithClassName) {
             return null;
-        }
+        });
 
-        $methodName = $this->getName($call->name);
-        if ($methodName === null) {
-            return null;
-        }
-
-        return $this->astResolver->resolveClassMethod($objectType->getClassName(), $methodName);
+        return $doesContainMock;
     }
 }
