@@ -16,8 +16,8 @@ use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 final class MockedVariableAnalyzer
 {
     public function __construct(
-        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private NodeTypeResolver $nodeTypeResolver
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private readonly NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
