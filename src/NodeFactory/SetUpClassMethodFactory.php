@@ -11,14 +11,14 @@ use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\ValueObject\MethodName;
-use Rector\PhpSpecToPHPUnit\PHPUnitTypeDeclarationDecorator;
+use Rector\PHPUnit\NodeAnalyzer\SetUpMethodDecorator;
 use Rector\PHPUnit\NodeManipulator\StmtManipulator;
 use Symplify\Astral\ValueObject\NodeBuilder\MethodBuilder;
 
 final class SetUpClassMethodFactory
 {
     public function __construct(
-        private readonly PHPUnitTypeDeclarationDecorator $phpUnitTypeDeclarationDecorator,
+        private readonly SetUpMethodDecorator $setUpMethodDecorator,
         private readonly StmtManipulator $stmtManipulator,
         private readonly NodeFactory $nodeFactory,
     ) {
@@ -38,7 +38,7 @@ final class SetUpClassMethodFactory
         $classMethodBuilder->addStmts($stmts);
 
         $classMethod = $classMethodBuilder->getNode();
-        $this->phpUnitTypeDeclarationDecorator->decorate($classMethod);
+        $this->setUpMethodDecorator->decorate($classMethod);
 
         return $classMethod;
     }
