@@ -5,15 +5,12 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
-use PHPStan\Type\MixedType;
-use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\AssertCallAnalyzer;
+use Rector\PHPUnit\NodeAnalyzer\MockedVariableAnalyzer;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -29,6 +26,7 @@ final class AddDoesNotPerformAssertionToNonAssertingTestRector extends AbstractR
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly AssertCallAnalyzer $assertCallAnalyzer,
+        private readonly MockedVariableAnalyzer $mockedVariableAnalyzer,
     ) {
     }
 
@@ -112,36 +110,12 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->containsMockAsUsedVariable($classMethod);
+        return $this->mockedVariableAnalyzer->containsMockAsUsedVariable($classMethod);
     }
 
     private function addDoesNotPerformAssertions(ClassMethod $classMethod): void
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
         $phpDocInfo->addPhpDocTagNode(new PhpDocTagNode('@doesNotPerformAssertions', new GenericTagValueNode('')));
-    }
-
-    private function containsMockAsUsedVariable(ClassMethod $classMethod): bool
-    {
-        $doesContainMock = false;
-
-        $this->traverseNodesWithCallable($classMethod, function (Node $node) use (&$doesContainMock) {
-            if (! $node instanceof PropertyFetch && ! $node instanceof Variable) {
-                return null;
-            }
-
-            $variableType = $this->getType($node);
-            if ($variableType instanceof MixedType) {
-                return null;
-            }
-
-            if ($variableType->isSuperTypeOf(new ObjectType('PHPUnit\Framework\MockObject\MockObject'))->yes()) {
-                $doesContainMock = true;
-            }
-
-            return null;
-        });
-
-        return $doesContainMock;
     }
 }
