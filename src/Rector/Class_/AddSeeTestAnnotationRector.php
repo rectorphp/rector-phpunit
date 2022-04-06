@@ -12,7 +12,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Rector\AbstractRector;
-use Rector\PHPUnit\Naming\TestClassNameResolver;
+use Rector\PHPUnit\Naming\TestClassNameResolverInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -29,7 +29,7 @@ final class AddSeeTestAnnotationRector extends AbstractRector
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
         private readonly PhpDocTagRemover $phpDocTagRemover,
-        private readonly TestClassNameResolver $testClassNameResolver
+        private readonly TestClassNameResolverInterface $testClassNameResolver
     ) {
     }
 
