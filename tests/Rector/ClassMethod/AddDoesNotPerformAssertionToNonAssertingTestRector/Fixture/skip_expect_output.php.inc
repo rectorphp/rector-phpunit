@@ -13,7 +13,7 @@ class SkipExpectOutputTest extends \PHPUnit\Framework\TestCase
 
     public function testExpectOutputRegex()
     {
-        $this->expectOutputString('#^Hello world!$#');
+        $this->expectOutputRegex('#^Hello world!$#');
 
         print 'Hello world!';
     }
