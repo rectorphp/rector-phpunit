@@ -48,6 +48,7 @@ return static function (\Rector\Config\RectorConfig $containerConfigurator): voi
     $services->set(StringClassNameToClassConstantRector::class)
         ->configure([
             // keep unprefixed to protected from downgrade
+            'PHPUnit\Framework\Assert',
             'PHPUnit\Framework\MockObject\*',
             'PHPUnit\Framework\TestCase',
             'Prophecy\Prophet',
