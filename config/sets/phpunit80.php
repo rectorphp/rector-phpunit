@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Rector\Config\RectorConfig;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\VoidType;
+use Rector\Config\RectorConfig;
 use Rector\Core\ValueObject\MethodName;
 use Rector\PHPUnit\Rector\MethodCall\AssertEqualsParameterToSpecificMethodsTypeRector;
 use Rector\PHPUnit\Rector\MethodCall\SpecificAssertContainsRector;
