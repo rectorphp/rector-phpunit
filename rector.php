@@ -8,8 +8,8 @@ use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 
-return static function (RectorConfig $containerConfigurator): void {
-    $parameters = $containerConfigurator->parameters();
+return static function (RectorConfig $rectorConfig): void {
+    $parameters = $rectorConfig->parameters();
 
     $parameters->set(Option::AUTO_IMPORT_NAMES, true);
     $parameters->set(Option::PARALLEL, true);
@@ -33,15 +33,16 @@ return static function (RectorConfig $containerConfigurator): void {
     ]);
 
     // needed for DEAD_CODE list, just in split package like this
-    $containerConfigurator->import(__DIR__ . '/config/config.php');
+    $rectorConfig->import(__DIR__ . '/config/config.php');
 
-    $containerConfigurator->import(LevelSetList::UP_TO_PHP_81);
-    $containerConfigurator->import(SetList::DEAD_CODE);
-    $containerConfigurator->import(SetList::CODE_QUALITY);
-    $containerConfigurator->import(SetList::CODING_STYLE);
-    $containerConfigurator->import(SetList::EARLY_RETURN);
+    $rectorConfig->import(LevelSetList::UP_TO_PHP_81);
+    $rectorConfig->import(SetList::DEAD_CODE);
+    $rectorConfig->import(SetList::CODE_QUALITY);
+    $rectorConfig->import(SetList::CODING_STYLE);
+    $rectorConfig->import(SetList::EARLY_RETURN);
+    $rectorConfig->import(SetList::NAMING);
 
-    $services = $containerConfigurator->services();
+    $services = $rectorConfig->services();
 
     $services->set(StringClassNameToClassConstantRector::class)
         ->configure([

@@ -7,10 +7,10 @@ use Rector\PHPUnit\Rector\Class_\RemoveDataProviderTestPrefixRector;
 use Rector\Renaming\Rector\ClassMethod\RenameAnnotationRector;
 use Rector\Renaming\ValueObject\RenameAnnotationByType;
 
-return static function (RectorConfig $containerConfigurator): void {
-    $containerConfigurator->import(__DIR__ . '/phpunit-exception.php');
+return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->import(__DIR__ . '/phpunit-exception.php');
 
-    $services = $containerConfigurator->services();
+    $services = $rectorConfig->services();
 
     $services->set(RenameAnnotationRector::class)
         ->configure([new RenameAnnotationByType('PHPUnit\Framework\TestCase', 'scenario', 'test')]);

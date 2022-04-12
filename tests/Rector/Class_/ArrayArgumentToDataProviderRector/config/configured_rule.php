@@ -9,10 +9,10 @@ use Rector\Config\RectorConfig;
 use Rector\PHPUnit\Rector\Class_\ArrayArgumentToDataProviderRector;
 use Rector\PHPUnit\ValueObject\ArrayArgumentToDataProvider;
 
-return static function (RectorConfig $containerConfigurator): void {
-    $containerConfigurator->import(__DIR__ . '/../../../../../config/config.php');
+return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->import(__DIR__ . '/../../../../../config/config.php');
 
-    $services = $containerConfigurator->services();
+    $services = $rectorConfig->services();
 
     $services->set(ArrayArgumentToDataProviderRector::class)
         ->configure([
