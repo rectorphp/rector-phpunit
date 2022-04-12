@@ -2,19 +2,21 @@
 
 declare(strict_types=1);
 
+use Rector\Config\RectorConfig;
 use Rector\Core\Configuration\Option;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (RectorConfig $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
 
     $parameters->set(Option::AUTO_IMPORT_NAMES, true);
     $parameters->set(Option::PARALLEL, true);
 
     $parameters->set(Option::PATHS, [
+        __DIR__ . '/rector.php',
+        __DIR__ . '/config',
         __DIR__ . '/src',
         __DIR__ . '/tests',
     ]);
@@ -30,7 +32,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             __DIR__ . '/src/Rector/Class_/TestListenerToHooksRector.php',
             __DIR__ . '/src/NodeFactory/ConsecutiveAssertionFactory.php',
             __DIR__ . '/src/NodeAnalyzer/TestsNodeAnalyzer.php',
-            __DIR__ . '/src/NodeFactory/DataProviderClassMethodFactory.php'
+            __DIR__ . '/src/NodeFactory/DataProviderClassMethodFactory.php',
         ],
     ]);
 
@@ -48,9 +50,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(StringClassNameToClassConstantRector::class)
         ->configure([
             // keep unprefixed to protected from downgrade
+            'PHPUnit\Framework\Assert',
             'PHPUnit\Framework\MockObject\*',
             'PHPUnit\Framework\TestCase',
             'Prophecy\Prophet',
         ]);
 };
-

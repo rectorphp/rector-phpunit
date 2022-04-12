@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
+use Rector\Config\RectorConfig;
 use Rector\PHPUnit\Rector\Class_\TestListenerToHooksRector;
 use Rector\PHPUnit\Rector\MethodCall\ExplicitPhpErrorApiRector;
 use Rector\PHPUnit\Rector\MethodCall\SpecificAssertContainsWithoutIdentityRector;
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (RectorConfig $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(TestListenerToHooksRector::class);

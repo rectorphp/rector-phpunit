@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use PHPStan\Type\MixedType;
 use PHPStan\Type\VoidType;
+use Rector\Config\RectorConfig;
 use Rector\Core\ValueObject\MethodName;
 use Rector\PHPUnit\Rector\MethodCall\AssertEqualsParameterToSpecificMethodsTypeRector;
 use Rector\PHPUnit\Rector\MethodCall\SpecificAssertContainsRector;
@@ -13,9 +14,8 @@ use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector;
 use Rector\TypeDeclaration\ValueObject\AddParamTypeDeclaration;
 use Rector\TypeDeclaration\ValueObject\AddReturnTypeDeclaration;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (RectorConfig $containerConfigurator): void {
     $containerConfigurator->import(__DIR__ . '/phpunit-exception.php');
 
     $services = $containerConfigurator->services();

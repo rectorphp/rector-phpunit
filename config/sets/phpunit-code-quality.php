@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\ClassMethod\ReturnArrayClassMethodToYieldRector;
 use Rector\CodingStyle\ValueObject\ReturnArrayClassMethodToYield;
+use Rector\Config\RectorConfig;
 use Rector\PHPUnit\Rector\Class_\AddSeeTestAnnotationRector;
 use Rector\PHPUnit\Rector\Class_\ConstructClassMethodToSetUpTestCaseRector;
 use Rector\PHPUnit\Rector\MethodCall\AssertCompareToSpecificMethodRector;
@@ -11,9 +12,8 @@ use Rector\PHPUnit\Rector\MethodCall\AssertComparisonToSpecificMethodRector;
 use Rector\PHPUnit\Rector\MethodCall\AssertEqualsToSameRector;
 use Rector\PHPUnit\Rector\MethodCall\AssertSameTrueFalseToAssertTrueFalseRector;
 use Rector\PHPUnit\Rector\MethodCall\RemoveExpectAnyFromMockRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (RectorConfig $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(RemoveExpectAnyFromMockRector::class);
     $services->set(AddSeeTestAnnotationRector::class);
