@@ -33,6 +33,7 @@ return static function (RectorConfig $containerConfigurator): void {
             __DIR__ . '/src/NodeFactory/ConsecutiveAssertionFactory.php',
             __DIR__ . '/src/NodeAnalyzer/TestsNodeAnalyzer.php',
             __DIR__ . '/src/NodeFactory/DataProviderClassMethodFactory.php',
+            __DIR__ . '/config',
         ],
     ]);
 
