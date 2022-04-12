@@ -15,6 +15,7 @@ return static function (\Rector\Config\RectorConfig $containerConfigurator): voi
     $parameters->set(Option::PARALLEL, true);
 
     $parameters->set(Option::PATHS, [
+        __DIR__ . '/config',
         __DIR__ . '/src',
         __DIR__ . '/tests',
     ]);

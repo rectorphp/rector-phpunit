@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Rector\Config\RectorConfig;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\VoidType;
 use Rector\Core\ValueObject\MethodName;
@@ -13,9 +14,8 @@ use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector;
 use Rector\TypeDeclaration\ValueObject\AddParamTypeDeclaration;
 use Rector\TypeDeclaration\ValueObject\AddReturnTypeDeclaration;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
+return static function (RectorConfig $containerConfigurator): void {
     $containerConfigurator->import(__DIR__ . '/phpunit-exception.php');
 
     $services = $containerConfigurator->services();
