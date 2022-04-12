@@ -224,9 +224,9 @@ CODE_SAMPLE
     private function resolveNumberOfRequiredParameters(string $mockClass, string $mockMethod): int
     {
         $classReflection = $this->reflectionProvider->getClass($mockClass);
-        $nativeClassReflection = $classReflection->getNativeReflection();
+        $reflectionClass = $classReflection->getNativeReflection();
 
-        $reflectionMethod = $nativeClassReflection->getMethod($mockMethod);
+        $reflectionMethod = $reflectionClass->getMethod($mockMethod);
         return $reflectionMethod->getNumberOfParameters();
     }
 }

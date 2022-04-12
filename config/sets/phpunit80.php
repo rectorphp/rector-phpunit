@@ -15,10 +15,10 @@ use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector;
 use Rector\TypeDeclaration\ValueObject\AddParamTypeDeclaration;
 use Rector\TypeDeclaration\ValueObject\AddReturnTypeDeclaration;
 
-return static function (RectorConfig $containerConfigurator): void {
-    $containerConfigurator->import(__DIR__ . '/phpunit-exception.php');
+return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->import(__DIR__ . '/phpunit-exception.php');
 
-    $services = $containerConfigurator->services();
+    $services = $rectorConfig->services();
 
     $services->set(AddParamTypeDeclarationRector::class)
         ->configure([

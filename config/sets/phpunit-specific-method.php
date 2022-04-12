@@ -16,8 +16,8 @@ use Rector\PHPUnit\Rector\MethodCall\AssertSameBoolNullToSpecificMethodRector;
 use Rector\PHPUnit\Rector\MethodCall\AssertTrueFalseInternalTypeToSpecificMethodRector;
 use Rector\PHPUnit\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector;
 
-return static function (RectorConfig $containerConfigurator): void {
-    $services = $containerConfigurator->services();
+return static function (RectorConfig $rectorConfig): void {
+    $services = $rectorConfig->services();
 
     $services->set(AssertNotOperatorRector::class);
 

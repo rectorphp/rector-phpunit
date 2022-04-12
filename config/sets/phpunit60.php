@@ -11,10 +11,10 @@ use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
 use Rector\Renaming\ValueObject\PseudoNamespaceToNamespace;
 
-return static function (RectorConfig $containerConfigurator): void {
-    $containerConfigurator->import(__DIR__ . '/phpunit-exception.php');
+return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->import(__DIR__ . '/phpunit-exception.php');
 
-    $services = $containerConfigurator->services();
+    $services = $rectorConfig->services();
 
     $services->set(RenameMethodRector::class)
         ->configure([new MethodCallRename('PHPUnit\Framework\TestCase', 'createMockBuilder', 'getMockBuilder')]);

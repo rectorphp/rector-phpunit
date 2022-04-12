@@ -13,8 +13,8 @@ use Rector\PHPUnit\Rector\MethodCall\AssertEqualsToSameRector;
 use Rector\PHPUnit\Rector\MethodCall\AssertSameTrueFalseToAssertTrueFalseRector;
 use Rector\PHPUnit\Rector\MethodCall\RemoveExpectAnyFromMockRector;
 
-return static function (RectorConfig $containerConfigurator): void {
-    $services = $containerConfigurator->services();
+return static function (RectorConfig $rectorConfig): void {
+    $services = $rectorConfig->services();
     $services->set(RemoveExpectAnyFromMockRector::class);
     $services->set(AddSeeTestAnnotationRector::class);
 

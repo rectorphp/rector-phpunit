@@ -107,8 +107,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $newSeeTagNode = $this->createSeePhpDocTagNode($matchingTestClassName);
-        $phpDocInfo->addPhpDocTagNode($newSeeTagNode);
+        $phpDocTagNode = $this->createSeePhpDocTagNode($matchingTestClassName);
+        $phpDocInfo->addPhpDocTagNode($phpDocTagNode);
 
         return $node;
     }
@@ -208,12 +208,12 @@ CODE_SAMPLE
      */
     private function matchExistingClassName(array $classNames): ?string
     {
-        foreach ($classNames as $possibleTestClassName) {
-            if (! $this->reflectionProvider->hasClass($possibleTestClassName)) {
+        foreach ($classNames as $className) {
+            if (! $this->reflectionProvider->hasClass($className)) {
                 continue;
             }
 
-            return $possibleTestClassName;
+            return $className;
         }
 
         return null;

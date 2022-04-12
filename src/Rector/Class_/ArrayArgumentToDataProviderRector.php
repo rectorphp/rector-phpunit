@@ -140,8 +140,8 @@ CODE_SAMPLE
                 return null;
             }
 
-            foreach ($this->arrayArgumentsToDataProviders as $arrayArgumentsToDataProvider) {
-                $this->refactorMethodCallWithConfiguration($node, $arrayArgumentsToDataProvider);
+            foreach ($this->arrayArgumentsToDataProviders as $arrayArgumentToDataProvider) {
+                $this->refactorMethodCallWithConfiguration($node, $arrayArgumentToDataProvider);
             }
 
             return null;
@@ -222,10 +222,10 @@ CODE_SAMPLE
         $this->refactorTestClassMethodParams($classMethod, $paramAndArgs);
 
         // add data provider annotation
-        $dataProviderTagNode = $this->createDataProviderTagNode($dataProviderMethodName);
+        $phpDocTagNode = $this->createDataProviderTagNode($dataProviderMethodName);
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-        $phpDocInfo->addPhpDocTagNode($dataProviderTagNode);
+        $phpDocInfo->addPhpDocTagNode($phpDocTagNode);
         $phpDocInfo->makeMultiLined();
     }
 

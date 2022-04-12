@@ -58,7 +58,7 @@ CODE_SAMPLE
         /** @var MethodCall|StaticCall|null $matchedNode */
         $matchedNode = $this->foreachManipulator->matchOnlyStmt(
             $node,
-            function (Node $node, Foreach_ $foreachNode): ?Node {
+            function (Node $node, Foreach_ $foreach): ?Node {
                 if (! $node instanceof MethodCall && ! $node instanceof StaticCall) {
                     return null;
                 }
@@ -67,7 +67,7 @@ CODE_SAMPLE
                     return null;
                 }
 
-                if (! $this->nodeComparator->areNodesEqual($foreachNode->valueVar, $node->args[1]->value)) {
+                if (! $this->nodeComparator->areNodesEqual($foreach->valueVar, $node->args[1]->value)) {
                     return null;
                 }
 
