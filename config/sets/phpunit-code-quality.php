@@ -13,7 +13,7 @@ use Rector\PHPUnit\Rector\MethodCall\AssertSameTrueFalseToAssertTrueFalseRector;
 use Rector\PHPUnit\Rector\MethodCall\RemoveExpectAnyFromMockRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(RemoveExpectAnyFromMockRector::class);
     $services->set(AddSeeTestAnnotationRector::class);

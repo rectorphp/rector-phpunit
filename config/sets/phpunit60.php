@@ -11,7 +11,7 @@ use Rector\Renaming\ValueObject\MethodCallRename;
 use Rector\Renaming\ValueObject\PseudoNamespaceToNamespace;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $containerConfigurator->import(__DIR__ . '/phpunit-exception.php');
 
     $services = $containerConfigurator->services();
