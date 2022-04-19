@@ -4,13 +4,12 @@ namespace Rector\PHPUnit\Tests\Rector\MethodCall\AssertEqualsParameterToSpecific
 
 use PHPUnit\Framework\TestCase;
 
-final class RefactorIgnoreCase extends TestCase
+final class RefactorDeltaWithEmptyMessage extends TestCase
 {
     public function test()
     {
         $value = 'value';
-
-        $this->assertEquals('string', $value, '', 0.0, 10, false, true);
+        $this->assertEquals('string', $value, '', 5.0);
     }
 }
 
@@ -22,13 +21,12 @@ namespace Rector\PHPUnit\Tests\Rector\MethodCall\AssertEqualsParameterToSpecific
 
 use PHPUnit\Framework\TestCase;
 
-final class RefactorIgnoreCase extends TestCase
+final class RefactorDeltaWithEmptyMessage extends TestCase
 {
     public function test()
     {
         $value = 'value';
-
-        $this->assertEqualsIgnoringCase('string', $value);
+        $this->assertEqualsWithDelta('string', $value, 5.0);
     }
 }
 

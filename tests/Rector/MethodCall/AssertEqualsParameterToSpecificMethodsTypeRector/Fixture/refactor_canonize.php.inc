@@ -28,7 +28,6 @@ final class RefactorCanonize extends TestCase
     {
         $value = 'value';
 
-        $this->assertEquals('string', $value, 'message');
         $this->assertEqualsCanonicalizing('string', $value, 'message');
     }
 }
