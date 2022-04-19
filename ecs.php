@@ -3,20 +3,13 @@
 declare(strict_types=1);
 
 use PhpCsFixer\Fixer\ReturnNotation\ReturnAssignmentFixer;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symplify\EasyCodingStandard\ValueObject\Option;
+use Symplify\EasyCodingStandard\Config\ECSConfig as ECSConfigAlias;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
-    $containerConfigurator->import(SetList::PSR_12);
-    $containerConfigurator->import(SetList::SYMPLIFY);
-    $containerConfigurator->import(SetList::COMMON);
-    $containerConfigurator->import(SetList::CLEAN_CODE);
+return static function (ECSConfigAlias $ecsConfig): void {
+    $ecsConfig->sets([SetList::SYMPLIFY, SetList::COMMON, SetList::CLEAN_CODE, SetList::PSR_12]);
 
-    $parameters = $containerConfigurator->parameters();
-    $parameters->set(Option::PARALLEL, true);
-
-    $parameters->set(Option::PATHS, [
+    $ecsConfig->paths([
         __DIR__ . '/src',
         __DIR__ . '/tests',
         __DIR__ . '/config',
@@ -24,11 +17,12 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         __DIR__ . '/rector.php',
     ]);
 
-    $parameters->set(Option::SKIP, [
+    $ecsConfig->skip([
         '*/Source/*', '*/Fixture/*',
 
         // breaks annotated code - removed on symplify dev-main
         ReturnAssignmentFixer::class,
     ]);
-    $parameters->set(Option::LINE_ENDING, "\n");
+
+    $ecsConfig->lineEnding("\n");
 };

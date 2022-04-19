@@ -14,7 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see https://github.com/sebastianbergmann/phpunit/blob/master/ChangeLog-8.0.md
+ * @changelog https://github.com/sebastianbergmann/phpunit/blob/master/ChangeLog-8.0.md
  * @see https://github.com/sebastianbergmann/phpunit/commit/90e9e0379584bdf34220322e202617cd56d8ba65
  * @see https://github.com/sebastianbergmann/phpunit/commit/a4b60a5c625ff98a52bb3222301d223be7367483
  *
@@ -100,8 +100,6 @@ CODE_SAMPLE
         }
 
         return $this->processAssertEqualsWithDelta($node);
-//
-//        return $node;
     }
 
     private function processAssertEqualsIgnoringCase(MethodCall|StaticCall $node): void
@@ -154,7 +152,13 @@ CODE_SAMPLE
         $newMethodCall->args[0] = $call->args[0];
         $newMethodCall->args[1] = $call->args[1];
         $newMethodCall->args[2] = $thirdArg;
-        $newMethodCall->args[3] = $call->args[2];
+
+        $secondArg = $args[2];
+
+        // keep only non empty message
+        if (! $this->valueResolver->isValue($secondArg->value, '')) {
+            $newMethodCall->args[3] = $secondArg;
+        }
 
         return $newMethodCall;
     }
