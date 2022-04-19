@@ -14,35 +14,31 @@ use Rector\Renaming\ValueObject\PseudoNamespaceToNamespace;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->import(__DIR__ . '/phpunit-exception.php');
 
-    $services = $rectorConfig->services();
+    $rectorConfig->ruleWithConfiguration(RenameMethodRector::class, [
+        new MethodCallRename('PHPUnit\Framework\TestCase', 'createMockBuilder', 'getMockBuilder'),
+    ]);
 
-    $services->set(RenameMethodRector::class)
-        ->configure([new MethodCallRename('PHPUnit\Framework\TestCase', 'createMockBuilder', 'getMockBuilder')]);
+    $rectorConfig->ruleWithConfiguration(RenameClassRector::class, [
+        'PHPUnit_Framework_MockObject_Stub' => 'PHPUnit\Framework\MockObject\Stub',
+        'PHPUnit_Framework_MockObject_Stub_Return' => 'PHPUnit\Framework\MockObject\Stub\ReturnStub',
+        'PHPUnit_Framework_MockObject_Matcher_Parameters' => 'PHPUnit\Framework\MockObject\Matcher\Parameters',
+        'PHPUnit_Framework_MockObject_Matcher_Invocation' => 'PHPUnit\Framework\MockObject\Matcher\Invocation',
+        'PHPUnit_Framework_MockObject_MockObject' => 'PHPUnit\Framework\MockObject\MockObject',
+        'PHPUnit_Framework_MockObject_Invocation_Object' => 'PHPUnit\Framework\MockObject\Invocation\ObjectInvocation',
+    ]);
 
-    $services->set(RenameClassRector::class)
-        ->configure([
-            'PHPUnit_Framework_MockObject_Stub' => 'PHPUnit\Framework\MockObject\Stub',
-            'PHPUnit_Framework_MockObject_Stub_Return' => 'PHPUnit\Framework\MockObject\Stub\ReturnStub',
-            'PHPUnit_Framework_MockObject_Matcher_Parameters' => 'PHPUnit\Framework\MockObject\Matcher\Parameters',
-            'PHPUnit_Framework_MockObject_Matcher_Invocation' => 'PHPUnit\Framework\MockObject\Matcher\Invocation',
-            'PHPUnit_Framework_MockObject_MockObject' => 'PHPUnit\Framework\MockObject\MockObject',
-            'PHPUnit_Framework_MockObject_Invocation_Object' => 'PHPUnit\Framework\MockObject\Invocation\ObjectInvocation',
-        ]);
+    $rectorConfig->ruleWithConfiguration(PseudoNamespaceToNamespaceRector::class, [
+        // ref. https://github.com/sebastianbergmann/phpunit/compare/5.7.9...6.0.0
+        new PseudoNamespaceToNamespace('PHPUnit_', [
+            'PHPUnit_Framework_MockObject_MockObject',
+            'PHPUnit_Framework_MockObject_Invocation_Object',
+            'PHPUnit_Framework_MockObject_Matcher_Invocation',
+            'PHPUnit_Framework_MockObject_Matcher_Parameters',
+            'PHPUnit_Framework_MockObject_Stub_Return',
+            'PHPUnit_Framework_MockObject_Stub',
+        ]),
+    ]);
 
-    $services->set(PseudoNamespaceToNamespaceRector::class)
-        ->configure([
-            // ref. https://github.com/sebastianbergmann/phpunit/compare/5.7.9...6.0.0
-            new PseudoNamespaceToNamespace('PHPUnit_', [
-                'PHPUnit_Framework_MockObject_MockObject',
-                'PHPUnit_Framework_MockObject_Invocation_Object',
-                'PHPUnit_Framework_MockObject_Matcher_Invocation',
-                'PHPUnit_Framework_MockObject_Matcher_Parameters',
-                'PHPUnit_Framework_MockObject_Stub_Return',
-                'PHPUnit_Framework_MockObject_Stub',
-            ]),
-        ]);
-
-    $services->set(AddDoesNotPerformAssertionToNonAssertingTestRector::class);
-
-    $services->set(GetMockBuilderGetMockToCreateMockRector::class);
+    $rectorConfig->rule(AddDoesNotPerformAssertionToNonAssertingTestRector::class);
+    $rectorConfig->rule(GetMockBuilderGetMockToCreateMockRector::class);
 };

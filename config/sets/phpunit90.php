@@ -10,21 +10,16 @@ use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
 
 return static function (RectorConfig $rectorConfig): void {
-    $services = $rectorConfig->services();
+    $rectorConfig->rule(TestListenerToHooksRector::class);
+    $rectorConfig->rule(ExplicitPhpErrorApiRector::class);
+    $rectorConfig->rule(SpecificAssertContainsWithoutIdentityRector::class);
 
-    $services->set(TestListenerToHooksRector::class);
-
-    $services->set(ExplicitPhpErrorApiRector::class);
-
-    $services->set(SpecificAssertContainsWithoutIdentityRector::class);
-
-    $services->set(RenameMethodRector::class)
-        ->configure([
-            // see https://github.com/sebastianbergmann/phpunit/issues/3957
-            new MethodCallRename(
-                'PHPUnit\Framework\TestCase',
-                'expectExceptionMessageRegExp',
-                'expectExceptionMessageMatches'
-            ),
-        ]);
+    $rectorConfig->ruleWithConfiguration(RenameMethodRector::class, [
+        // see https://github.com/sebastianbergmann/phpunit/issues/3957
+        new MethodCallRename(
+            'PHPUnit\Framework\TestCase',
+            'expectExceptionMessageRegExp',
+            'expectExceptionMessageMatches'
+        ),
+    ]);
 };

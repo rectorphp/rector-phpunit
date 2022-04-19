@@ -32,12 +32,10 @@ final class RefactorDelta extends TestCase
     {
         $value = 'value';
 
-        $this->assertEquals('string', $value, 'message');
         $this->assertEqualsWithDelta('string', $value, 5.0, 'message');
 
         $this->assertEquals('string', $value, 'message');
 
-        $this->assertEquals('string', $value, 'message');
         $this->assertEqualsWithDelta('string', $value, 20.0, 'message');
     }
 }

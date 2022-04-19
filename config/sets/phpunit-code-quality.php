@@ -14,19 +14,17 @@ use Rector\PHPUnit\Rector\MethodCall\AssertSameTrueFalseToAssertTrueFalseRector;
 use Rector\PHPUnit\Rector\MethodCall\RemoveExpectAnyFromMockRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $services = $rectorConfig->services();
-    $services->set(RemoveExpectAnyFromMockRector::class);
-    $services->set(AddSeeTestAnnotationRector::class);
+    $rectorConfig->rule(RemoveExpectAnyFromMockRector::class);
+    $rectorConfig->rule(AddSeeTestAnnotationRector::class);
 
-    $services->set(ReturnArrayClassMethodToYieldRector::class)
-        ->configure([
-            new ReturnArrayClassMethodToYield('PHPUnit\Framework\TestCase', 'provide*'),
-            new ReturnArrayClassMethodToYield('PHPUnit\Framework\TestCase', 'dataProvider*'),
-        ]);
+    $rectorConfig->ruleWithConfiguration(ReturnArrayClassMethodToYieldRector::class, [
+        new ReturnArrayClassMethodToYield('PHPUnit\Framework\TestCase', 'provide*'),
+        new ReturnArrayClassMethodToYield('PHPUnit\Framework\TestCase', 'dataProvider*'),
+    ]);
 
-    $services->set(ConstructClassMethodToSetUpTestCaseRector::class);
-    $services->set(AssertSameTrueFalseToAssertTrueFalseRector::class);
-    $services->set(AssertEqualsToSameRector::class);
-    $services->set(AssertCompareToSpecificMethodRector::class);
-    $services->set(AssertComparisonToSpecificMethodRector::class);
+    $rectorConfig->rule(ConstructClassMethodToSetUpTestCaseRector::class);
+    $rectorConfig->rule(AssertSameTrueFalseToAssertTrueFalseRector::class);
+    $rectorConfig->rule(AssertEqualsToSameRector::class);
+    $rectorConfig->rule(AssertCompareToSpecificMethodRector::class);
+    $rectorConfig->rule(AssertComparisonToSpecificMethodRector::class);
 };

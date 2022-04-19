@@ -10,10 +10,9 @@ use Rector\Renaming\ValueObject\RenameAnnotationByType;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->import(__DIR__ . '/phpunit-exception.php');
 
-    $services = $rectorConfig->services();
+    $rectorConfig->ruleWithConfiguration(RenameAnnotationRector::class, [
+        new RenameAnnotationByType('PHPUnit\Framework\TestCase', 'scenario', 'test'),
+    ]);
 
-    $services->set(RenameAnnotationRector::class)
-        ->configure([new RenameAnnotationByType('PHPUnit\Framework\TestCase', 'scenario', 'test')]);
-
-    $services->set(RemoveDataProviderTestPrefixRector::class);
+    $rectorConfig->rule(RemoveDataProviderTestPrefixRector::class);
 };

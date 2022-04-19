@@ -42,14 +42,11 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->import(SetList::EARLY_RETURN);
     $rectorConfig->import(SetList::NAMING);
 
-    $services = $rectorConfig->services();
-
-    $services->set(StringClassNameToClassConstantRector::class)
-        ->configure([
-            // keep unprefixed to protected from downgrade
-            'PHPUnit\Framework\Assert',
-            'PHPUnit\Framework\MockObject\*',
-            'PHPUnit\Framework\TestCase',
-            'Prophecy\Prophet',
-        ]);
+    $rectorConfig->ruleWithConfiguration(StringClassNameToClassConstantRector::class, [
+        // keep unprefixed to protected from downgrade
+        'PHPUnit\Framework\Assert',
+        'PHPUnit\Framework\MockObject\*',
+        'PHPUnit\Framework\TestCase',
+        'Prophecy\Prophet',
+    ]);
 };

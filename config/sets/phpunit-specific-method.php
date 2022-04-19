@@ -17,29 +17,27 @@ use Rector\PHPUnit\Rector\MethodCall\AssertTrueFalseInternalTypeToSpecificMethod
 use Rector\PHPUnit\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $services = $rectorConfig->services();
+    $rectorConfig->rule(AssertNotOperatorRector::class);
 
-    $services->set(AssertNotOperatorRector::class);
+    $rectorConfig->rule(AssertComparisonToSpecificMethodRector::class);
 
-    $services->set(AssertComparisonToSpecificMethodRector::class);
+    $rectorConfig->rule(AssertTrueFalseToSpecificMethodRector::class);
 
-    $services->set(AssertTrueFalseToSpecificMethodRector::class);
+    $rectorConfig->rule(AssertSameBoolNullToSpecificMethodRector::class);
 
-    $services->set(AssertSameBoolNullToSpecificMethodRector::class);
+    $rectorConfig->rule(AssertFalseStrposToContainsRector::class);
 
-    $services->set(AssertFalseStrposToContainsRector::class);
+    $rectorConfig->rule(AssertTrueFalseInternalTypeToSpecificMethodRector::class);
 
-    $services->set(AssertTrueFalseInternalTypeToSpecificMethodRector::class);
+    $rectorConfig->rule(AssertCompareToSpecificMethodRector::class);
 
-    $services->set(AssertCompareToSpecificMethodRector::class);
+    $rectorConfig->rule(AssertIssetToSpecificMethodRector::class);
 
-    $services->set(AssertIssetToSpecificMethodRector::class);
+    $rectorConfig->rule(AssertInstanceOfComparisonRector::class);
 
-    $services->set(AssertInstanceOfComparisonRector::class);
+    $rectorConfig->rule(AssertPropertyExistsRector::class);
 
-    $services->set(AssertPropertyExistsRector::class);
+    $rectorConfig->rule(AssertRegExpRector::class);
 
-    $services->set(AssertRegExpRector::class);
-
-    $services->set(SimplifyForeachInstanceOfRector::class);
+    $rectorConfig->rule(SimplifyForeachInstanceOfRector::class);
 };

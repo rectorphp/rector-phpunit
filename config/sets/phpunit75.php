@@ -6,7 +6,5 @@ use Rector\Config\RectorConfig;
 use Rector\PHPUnit\Rector\MethodCall\WithConsecutiveArgToArrayRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $services = $rectorConfig->services();
-
-    $services->set(WithConsecutiveArgToArrayRector::class);
+    $rectorConfig->rule(WithConsecutiveArgToArrayRector::class);
 };
