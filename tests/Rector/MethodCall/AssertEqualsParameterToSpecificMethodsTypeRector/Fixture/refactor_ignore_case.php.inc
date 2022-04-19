@@ -10,7 +10,7 @@ final class RefactorIgnoreCase extends TestCase
     {
         $value = 'value';
 
-        $this->assertEquals('string', $value, 'message', 0.0, 10, false, true);
+        $this->assertEquals('string', $value, '', 0.0, 10, false, true);
     }
 }
 
@@ -28,8 +28,7 @@ final class RefactorIgnoreCase extends TestCase
     {
         $value = 'value';
 
-        $this->assertEquals('string', $value, 'message');
-        $this->assertEqualsIgnoringCase('string', $value, 'message');
+        $this->assertEqualsIgnoringCase('string', $value);
     }
 }
 
