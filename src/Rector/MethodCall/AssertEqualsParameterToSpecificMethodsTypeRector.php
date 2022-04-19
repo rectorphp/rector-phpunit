@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @see https://github.com/sebastianbergmann/phpunit/blob/master/ChangeLog-8.0.md
  * @see https://github.com/sebastianbergmann/phpunit/commit/90e9e0379584bdf34220322e202617cd56d8ba65
  * @see https://github.com/sebastianbergmann/phpunit/commit/a4b60a5c625ff98a52bb3222301d223be7367483
+ *
  * @see \Rector\PHPUnit\Tests\Rector\MethodCall\AssertEqualsParameterToSpecificMethodsTypeRector\AssertEqualsParameterToSpecificMethodsTypeRectorTest
  */
 final class AssertEqualsParameterToSpecificMethodsTypeRector extends AbstractRector
@@ -98,9 +99,9 @@ CODE_SAMPLE
             unset($node->args[4]);
         }
 
-        $this->processAssertEqualsWithDelta($node);
-
-        return $node;
+        return $this->processAssertEqualsWithDelta($node);
+//
+//        return $node;
     }
 
     private function processAssertEqualsIgnoringCase(MethodCall|StaticCall $node): void
@@ -134,20 +135,27 @@ CODE_SAMPLE
         }
     }
 
-    private function processAssertEqualsWithDelta(MethodCall|StaticCall $node): void
+    private function processAssertEqualsWithDelta(MethodCall|StaticCall $call): MethodCall|StaticCall|null
     {
-        if (isset($node->args[3])) {
-            // add new node only in case of non-default value
-            if (! $this->valueResolver->isValue($node->args[3]->value, 0.0)) {
-                $newMethodCall = $this->assertCallFactory->createCallWithName($node, 'assertEqualsWithDelta');
-                $newMethodCall->args[0] = $node->args[0];
-                $newMethodCall->args[1] = $node->args[1];
-                $newMethodCall->args[2] = $node->args[3];
-                $newMethodCall->args[3] = $node->args[2];
-                $this->nodesToAddCollector->addNodeAfterNode($newMethodCall, $node);
-            }
-
-            unset($node->args[3]);
+        $args = $call->getArgs();
+        if (! isset($args[3])) {
+            return null;
         }
+
+        // add new node only in case of non-default value
+        $thirdArg = $call->getArgs()[3];
+        unset($call->args[3]);
+
+        if ($this->valueResolver->isValue($thirdArg->value, 0.0)) {
+            return null;
+        }
+
+        $newMethodCall = $this->assertCallFactory->createCallWithName($call, 'assertEqualsWithDelta');
+        $newMethodCall->args[0] = $call->args[0];
+        $newMethodCall->args[1] = $call->args[1];
+        $newMethodCall->args[2] = $thirdArg;
+        $newMethodCall->args[3] = $call->args[2];
+
+        return $newMethodCall;
     }
 }
