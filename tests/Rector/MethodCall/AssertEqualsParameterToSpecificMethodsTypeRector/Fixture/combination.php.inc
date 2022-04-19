@@ -32,10 +32,9 @@ final class RefactorCombination extends TestCase
 
         // $expected, $actual, string $message = '',
         // float $delta = 0.0, int $maxDepth = 10, bool $canonicalize = false, bool $ignoreCase = false)
-        $this->assertEquals('string', $value, 'message');
+        $this->assertEqualsWithDelta('string', $value, 100.0, 'message');
         $this->assertEqualsIgnoringCase('string', $value, 'message');
         $this->assertEqualsCanonicalizing('string', $value, 'message');
-        $this->assertEqualsWithDelta('string', $value, 100.0, 'message');
     }
 }
 
