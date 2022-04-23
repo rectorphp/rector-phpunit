@@ -22,7 +22,6 @@ return static function (RectorConfig $rectorConfig): void {
 
         // object types
         StringClassNameToClassConstantRector::class => [
-            __DIR__ . '/src/Rector/MethodCall/WithConsecutiveArgToArrayRector.php',
             __DIR__ . '/src/Rector/MethodCall/UseSpecificWillMethodRector.php',
             __DIR__ . '/src/Rector/Class_/TestListenerToHooksRector.php',
             __DIR__ . '/src/NodeFactory/ConsecutiveAssertionFactory.php',
