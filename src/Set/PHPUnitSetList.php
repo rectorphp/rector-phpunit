@@ -36,11 +36,6 @@ final class PHPUnitSetList implements SetListInterface
     /**
      * @var string
      */
-    public const PHPUNIT_75 = __DIR__ . '/../../config/sets/phpunit75.php';
-
-    /**
-     * @var string
-     */
     public const PHPUNIT_80 = __DIR__ . '/../../config/sets/phpunit80.php';
 
     /**
