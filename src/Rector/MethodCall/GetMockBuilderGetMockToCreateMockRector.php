@@ -22,7 +22,9 @@ final class GetMockBuilderGetMockToCreateMockRector extends AbstractRector
         return new RuleDefinition('Remove getMockBuilder() to createMock()', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
-class SomeTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+final class SomeTest extends TestCase
 {
     public function test()
     {
@@ -34,7 +36,9 @@ class SomeTest extends \PHPUnit\Framework\TestCase
 CODE_SAMPLE
 ,
                 <<<'CODE_SAMPLE'
-class SomeTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+final class SomeTest extends TestCase
 {
     public function test()
     {
