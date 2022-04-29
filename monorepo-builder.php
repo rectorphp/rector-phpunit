@@ -10,6 +10,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     // @see https://github.com/symplify/monorepo-builder#6-release-flow
-    $rectorConfig->rule(TagVersionReleaseWorker::class);
-    $rectorConfig->rule(PushTagReleaseWorker::class);
+    $services->set(TagVersionReleaseWorker::class);
+    $services->set(PushTagReleaseWorker::class);
 };
