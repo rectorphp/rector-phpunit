@@ -61,11 +61,6 @@ final class PHPUnitSetList implements SetListInterface
     /**
      * @var string
      */
-    public const PHPUNIT_MOCK = __DIR__ . '/../../config/sets/phpunit-mock.php';
-
-    /**
-     * @var string
-     */
     public const REMOVE_MOCKS = __DIR__ . '/../../config/sets/remove-mocks.php';
 
     /**

@@ -6,6 +6,7 @@ use Rector\Config\RectorConfig;
 use Rector\PHPUnit\Rector\MethodCall\GetMockBuilderGetMockToCreateMockRector;
 use Rector\PHPUnit\Rector\MethodCall\RemoveExpectAnyFromMockRector;
 use Rector\PHPUnit\Rector\MethodCall\RemoveSetMethodsMethodCallRector;
+use Rector\PHPUnit\Rector\MethodCall\UseSpecificWillMethodRector;
 
 /**
  * Set to improve direct testing of your code, without mock overgrown weed everywhere. Make it simple and clear, easy to
@@ -22,4 +23,5 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(RemoveSetMethodsMethodCallRector::class);
     $rectorConfig->rule(GetMockBuilderGetMockToCreateMockRector::class);
     $rectorConfig->rule(RemoveExpectAnyFromMockRector::class);
+    $rectorConfig->rule(UseSpecificWillMethodRector::class);
 };
