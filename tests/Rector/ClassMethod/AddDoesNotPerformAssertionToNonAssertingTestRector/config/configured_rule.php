@@ -8,6 +8,5 @@ use Rector\PHPUnit\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTe
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->import(__DIR__ . '/../../../../../config/config.php');
 
-    $services = $rectorConfig->services();
     $rectorConfig->rule(AddDoesNotPerformAssertionToNonAssertingTestRector::class);
 };

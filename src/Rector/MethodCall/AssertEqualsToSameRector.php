@@ -49,16 +49,7 @@ final class AssertEqualsToSameRector extends AbstractRector
     {
         return new RuleDefinition(
             'Turns `assertEquals()` into stricter `assertSame()` for scalar values in PHPUnit TestCase',
-            [
-                new CodeSample(
-                    '$this->assertEquals(2, $result, "message");',
-                    '$this->assertSame(2, $result, "message");'
-                ),
-                new CodeSample(
-                    '$this->assertEquals($aString, $result, "message");',
-                    '$this->assertSame($aString, $result, "message");'
-                ),
-            ]
+            [new CodeSample('$this->assertEquals(2, $result);', '$this->assertSame(2, $result);')]
         );
     }
 
@@ -84,20 +75,18 @@ final class AssertEqualsToSameRector extends AbstractRector
             return null;
         }
 
-        if (! isset($node->args[0])) {
+        $args = $node->getArgs();
+        if (! isset($args[0])) {
             return null;
         }
 
-        $valueNode = $node->args[0];
-        $valueNodeType = $this->nodeTypeResolver->getType($valueNode->value);
-
+        $valueNodeType = $this->nodeTypeResolver->getType($args[0]->value);
         if (! $this->isScalarType($valueNodeType)) {
             return null;
         }
 
-        $this->identifierManipulator->renameNodeWithMap($node, self::RENAME_METHODS_MAP);
-
-        return $node;
+        $hasChanged = $this->identifierManipulator->renameNodeWithMap($node, self::RENAME_METHODS_MAP);
+        return $hasChanged ? $node : null;
     }
 
     private function isScalarType(Type $valueNodeType): bool

@@ -42,10 +42,6 @@ final class AssertFalseStrposToContainsRector extends AbstractRector
                     '$this->assertFalse(strpos($anything, "foo"), "message");',
                     '$this->assertNotContains("foo", $anything, "message");'
                 ),
-                new CodeSample(
-                    '$this->assertNotFalse(stripos($anything, "foo"), "message");',
-                    '$this->assertContains("foo", $anything, "message");'
-                ),
             ]
         );
     }
@@ -86,12 +82,9 @@ final class AssertFalseStrposToContainsRector extends AbstractRector
         return $this->changeArgumentsOrder($node);
     }
 
-    /**
-     * @return MethodCall|StaticCall|null
-     */
-    private function changeArgumentsOrder(MethodCall|StaticCall $node): ?Node
+    private function changeArgumentsOrder(MethodCall|StaticCall $node): MethodCall|StaticCall|null
     {
-        $oldArguments = $node->args;
+        $oldArguments = $node->getArgs();
 
         $strposFuncCallNode = $oldArguments[0]->value;
         if (! $strposFuncCallNode instanceof FuncCall) {
