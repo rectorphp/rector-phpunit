@@ -12,7 +12,6 @@ final class TestIncomplete extends TestCase
 
         $this->assertEquals('foo', 'foo');
         $this->assertEquals(123, 123);
-        $this->assertEquals(1.23, 1.23);
     }
 }
 
@@ -32,7 +31,6 @@ final class TestIncomplete extends TestCase
 
         $this->assertSame('foo', 'foo');
         $this->assertSame(123, 123);
-        $this->assertSame(1.23, 1.23);
     }
 }
 

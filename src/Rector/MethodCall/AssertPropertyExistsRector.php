@@ -50,12 +50,15 @@ final class AssertPropertyExistsRector extends AbstractRector
             'Turns `property_exists` comparisons to their method name alternatives in PHPUnit TestCase',
             [
                 new CodeSample(
-                    '$this->assertTrue(property_exists(new Class, "property"), "message");',
-                    '$this->assertClassHasAttribute("property", "Class", "message");'
-                ),
-                new CodeSample(
-                    '$this->assertFalse(property_exists(new Class, "property"), "message");',
-                    '$this->assertClassNotHasAttribute("property", "Class", "message");'
+                    <<<'CODE_SAMPLE'
+$this->assertFalse(property_exists(new Class, "property"));
+$this->assertTrue(property_exists(new Class, "property"));
+CODE_SAMPLE
+                    ,
+                    <<<'CODE_SAMPLE'
+$this->assertClassHasAttribute("property", "Class");
+$this->assertClassNotHasAttribute("property", "Class");
+CODE_SAMPLE
                 ),
             ]
         );

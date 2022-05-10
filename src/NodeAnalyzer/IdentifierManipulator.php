@@ -27,18 +27,19 @@ final class IdentifierManipulator
     }
 
     /**
-     * @param string[] $renameMethodMap
+     * @param array<string, string> $renameMethodMap
      */
     public function renameNodeWithMap(
         ClassConstFetch | MethodCall | PropertyFetch | StaticCall | ClassMethod $node,
         array $renameMethodMap
-    ): void {
+    ): bool {
         $oldNodeMethodName = $this->resolveOldMethodName($node);
-        if ($oldNodeMethodName === null) {
-            return;
+        if (! is_string($oldNodeMethodName)) {
+            return false;
         }
 
         $node->name = new Identifier($renameMethodMap[$oldNodeMethodName]);
+        return true;
     }
 
     private function resolveOldMethodName(
