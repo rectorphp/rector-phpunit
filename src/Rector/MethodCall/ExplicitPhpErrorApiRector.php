@@ -94,9 +94,7 @@ CODE_SAMPLE
 
         foreach (self::REPLACEMENTS as $class => $method) {
             $newNode = $this->replaceExceptionWith($node, $class, $method);
-            if ($newNode !== null) {
-                return $newNode;
-            }
+            return $newNode;
         }
 
         return $node;

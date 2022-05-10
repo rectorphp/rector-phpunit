@@ -91,15 +91,11 @@ CODE_SAMPLE
 
         // 1. refactor to "assertEqualsIgnoringCase()"
         $newMethodCall = $this->processAssertEqualsIgnoringCase($node);
-        if ($newMethodCall !== null) {
-            return $newMethodCall;
-        }
+        return $newMethodCall;
 
         // 2. refactor to "assertEqualsCanonicalizing()"
         $newMethodCall = $this->processAssertEqualsCanonicalizing($node);
-        if ($newMethodCall !== null) {
-            return $newMethodCall;
-        }
+        return $newMethodCall;
 
         if (isset($node->args[4])) {
             // add new node only in case of non-default value
