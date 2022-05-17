@@ -12,7 +12,7 @@ final class IterableOrFalse extends TestCase
     }
 
     /**
-     * @return []|null
+     * @return []|false
      */
     public function getIterableOrFalse()
     {
@@ -40,7 +40,7 @@ final class IterableOrFalse extends TestCase
     }
 
     /**
-     * @return []|null
+     * @return []|false
      */
     public function getIterableOrFalse()
     {
