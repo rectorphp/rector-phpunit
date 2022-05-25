@@ -8,7 +8,9 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
+use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -22,19 +24,39 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class GetMockRector extends AbstractRector
 {
     public function __construct(
-        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly ReflectionResolver $reflectionResolver,
     ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Turns getMock*() methods to createMock()', [
-            new CodeSample('$this->getMock("Class");', '$this->createMock("Class");'),
             new CodeSample(
-                '$this->getMockWithoutInvokingTheOriginalConstructor("Class");',
-                '$this->createMock("Class");'
-            ),
-        ]);
+                <<<'CODE_SAMPLE'
+use PHPUnit\Framework\TestCase;
+
+final class SomeTest extends TestCase
+{
+    public function test()
+    {
+        $classMock = $this->getMock("Class");
+    }
+}
+CODE_SAMPLE
+            ,
+                <<<'CODE_SAMPLE'
+use PHPUnit\Framework\TestCase;
+
+final class SomeTest extends TestCase
+{
+    public function test()
+    {
+        $classMock = $this->createMock("Class");
+    }
+}
+CODE_SAMPLE
+            ), ]);
     }
 
     /**
@@ -58,6 +80,11 @@ final class GetMockRector extends AbstractRector
         }
 
         if ($node instanceof MethodCall && $node->var instanceof MethodCall) {
+            return null;
+        }
+
+        $classReflection = $this->reflectionResolver->resolveClassReflectionSourceObject($node);
+        if ($classReflection instanceof ClassReflection && $classReflection->getName() !== 'PHPUnit\Framework\TestCase') {
             return null;
         }
 
