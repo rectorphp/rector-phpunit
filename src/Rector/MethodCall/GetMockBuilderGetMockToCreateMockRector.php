@@ -17,6 +17,16 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class GetMockBuilderGetMockToCreateMockRector extends AbstractRector
 {
+    /**
+     * @var string[]
+     */
+    private const USELESS_METHOD_NAMES = [
+        'disableOriginalConstructor',
+        'onlyMethods',
+        'setMethods',
+        'setMethodsExcept',
+    ];
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Remove getMockBuilder() to createMock()', [
@@ -71,21 +81,26 @@ CODE_SAMPLE
             return null;
         }
 
-        $getMockBuilderMethodCall = $this->isName(
-            $node->var->name,
-            'disableOriginalConstructor'
-        ) ? $node->var->var : $node->var;
+        // traverse up over useless methods until we reach the top one
+        $currentMethodCall = $node->var;
 
-        if (! $getMockBuilderMethodCall instanceof MethodCall) {
+        while ($currentMethodCall instanceof MethodCall && $this->isNames(
+            $currentMethodCall->name,
+            self::USELESS_METHOD_NAMES
+        )) {
+            $currentMethodCall = $currentMethodCall->var;
+        }
+
+        if (! $currentMethodCall instanceof MethodCall) {
             return null;
         }
 
-        if (! $this->isName($getMockBuilderMethodCall->name, 'getMockBuilder')) {
+        if (! $this->isName($currentMethodCall->name, 'getMockBuilder')) {
             return null;
         }
 
-        $args = $getMockBuilderMethodCall->args;
-        $thisVariable = $getMockBuilderMethodCall->var;
+        $args = $currentMethodCall->args;
+        $thisVariable = $currentMethodCall->var;
 
         return new MethodCall($thisVariable, 'createMock', $args);
     }
