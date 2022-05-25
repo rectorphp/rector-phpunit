@@ -6,10 +6,12 @@ namespace Rector\PHPUnit\NodeAnalyzer;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
@@ -17,6 +19,7 @@ final class MockedVariableAnalyzer
 {
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeTypeResolver $nodeTypeResolver
     ) {
     }
@@ -28,6 +31,11 @@ final class MockedVariableAnalyzer
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classMethod, function (Node $node) use (
             &$doesContainMock
         ) {
+            if ($this->isMockeryStaticCall($node)) {
+                $doesContainMock = true;
+                return null;
+            }
+
             if (! $node instanceof PropertyFetch && ! $node instanceof Variable) {
                 return null;
             }
@@ -45,5 +53,19 @@ final class MockedVariableAnalyzer
         });
 
         return $doesContainMock;
+    }
+
+    private function isMockeryStaticCall(Node $node): bool
+    {
+        if (! $node instanceof StaticCall) {
+            return false;
+        }
+
+        // is mockery mock
+        if (! $this->nodeNameResolver->isName($node->class, 'Mockery')) {
+            return false;
+        }
+
+        return $this->nodeNameResolver->isName($node->name, 'mock');
     }
 }
