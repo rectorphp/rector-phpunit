@@ -13,7 +13,7 @@ parameters:
         - */Source/*
         - *Source/*
 
-#    reportUnmatchedIgnoredErrors: false
+    reportUnmatchedIgnoredErrors: false
 
     ignoreErrors:
         # bug
@@ -34,3 +34,4 @@ parameters:
 
         # rector co-variant
         - '#Parameter \#1 \$node \(PhpParser\\Node\\(.*?) of method Rector\\(.*?)\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\PhpRectorInterface\:\:refactor\(\)#'
+        - '#Parameter \#1 \$node \(PhpParser\\Node\\Expr\\MethodCall\|PhpParser\\Node\\Expr\\StaticCall\) of method Rector\\PHPUnit\\Rector\\StaticCall\\GetMockRector\:\:refactorWithScope\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\ScopeAwarePhpRectorInterface\:\:refactorWithScope\(\)#'
