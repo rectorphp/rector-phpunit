@@ -289,7 +289,7 @@ CODE_SAMPLE
             /** @var TypeNode $staticTypeNode */
             $staticTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
                 $staticType,
-                TypeKind::PARAM()
+                TypeKind::PARAM
             );
 
             $paramTagValueNode = $this->createParamTagNode($paramName, $staticTypeNode);
@@ -335,7 +335,7 @@ CODE_SAMPLE
             return;
         }
 
-        $phpNodeType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($staticType, TypeKind::PARAM());
+        $phpNodeType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($staticType, TypeKind::PARAM);
         if ($phpNodeType === null) {
             return;
         }
