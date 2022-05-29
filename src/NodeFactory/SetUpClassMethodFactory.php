@@ -45,7 +45,7 @@ final class SetUpClassMethodFactory
 
     public function createParentStaticCall(): Expression
     {
-        $parentSetupStaticCall = $this->nodeFactory->createStaticCall(ObjectReference::PARENT(), MethodName::SET_UP);
+        $parentSetupStaticCall = $this->nodeFactory->createStaticCall(ObjectReference::PARENT, MethodName::SET_UP);
         return new Expression($parentSetupStaticCall);
     }
 }
