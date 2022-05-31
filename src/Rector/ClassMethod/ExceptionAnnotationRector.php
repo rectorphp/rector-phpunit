@@ -88,6 +88,7 @@ CODE_SAMPLE
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $hasChanged = false;
 
         foreach (self::ANNOTATION_TO_METHOD as $annotationName => $methodName) {
             if (! $phpDocInfo->hasByName($annotationName)) {
@@ -101,6 +102,11 @@ CODE_SAMPLE
             $node->stmts = array_merge($methodCallExpressions, (array) $node->stmts);
 
             $this->phpDocTagRemover->removeByName($phpDocInfo, $annotationName);
+            $hasChanged = true;
+        }
+
+        if (! $hasChanged) {
+            return null;
         }
 
         return $node;
