@@ -95,16 +95,23 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->providerMethodNamesToNewNames = [];
+        $providerMethodNamesToNewNames = $this->renameDataProviderAnnotationsAndCollectRenamedMethods($node);
+        if ($providerMethodNamesToNewNames === []) {
+            return null;
+        }
 
-        $this->renameDataProviderAnnotationsAndCollectRenamedMethods($node);
-        $this->renameProviderMethods($node);
+        $this->renameProviderMethods($node, $providerMethodNamesToNewNames);
 
         return $node;
     }
 
-    private function renameDataProviderAnnotationsAndCollectRenamedMethods(Class_ $class): void
+    /**
+     * @return array<string, string>
+     */
+    private function renameDataProviderAnnotationsAndCollectRenamedMethods(Class_ $class): array
     {
+        $oldToNewMethodNames = [];
+
         foreach ($class->getMethods() as $classMethod) {
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
 
@@ -139,15 +146,20 @@ CODE_SAMPLE
 
                 $oldMethodNameWithoutBrackets = rtrim($oldMethodName, '()');
                 $newMethodWithoutBrackets = $this->createNewMethodName($oldMethodNameWithoutBrackets);
-                $this->providerMethodNamesToNewNames[$oldMethodNameWithoutBrackets] = $newMethodWithoutBrackets;
+                $oldToNewMethodNames[$oldMethodNameWithoutBrackets] = $newMethodWithoutBrackets;
             }
         }
+
+        return $oldToNewMethodNames;
     }
 
-    private function renameProviderMethods(Class_ $class): void
+    /**
+     * @param array<string, string> $oldToNewMethodsNames
+     */
+    private function renameProviderMethods(Class_ $class, array $oldToNewMethodsNames): void
     {
         foreach ($class->getMethods() as $classMethod) {
-            foreach ($this->providerMethodNamesToNewNames as $oldName => $newName) {
+            foreach ($oldToNewMethodsNames as $oldName => $newName) {
                 if (! $this->isName($classMethod, $oldName)) {
                     continue;
                 }
