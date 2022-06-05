@@ -16,11 +16,11 @@
         "symplify/rule-doc-generator": "^10.2",
         "rector/phpstan-rules": "^0.5",
         "phpstan/extension-installer": "^1.1",
-        "phpstan/phpstan-strict-rules": "^1.1",
-        "phpstan/phpstan-webmozart-assert": "^1.0",
+        "phpstan/phpstan-strict-rules": "^1.2",
+        "phpstan/phpstan-webmozart-assert": "^1.1",
         "symplify/vendor-patches": "^10.2",
         "symplify/monorepo-builder": "^10.2",
-        "symplify/easy-ci": "^10.1"
+        "symplify/easy-ci": "^10.2"
     },
     "autoload": {
         "psr-4": {
