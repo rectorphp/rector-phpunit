@@ -22,11 +22,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveDataProviderTestPrefixRector extends AbstractRector
 {
-    /**
-     * @var array<string, string>
-     */
-    private array $providerMethodNamesToNewNames = [];
-
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
