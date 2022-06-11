@@ -28,6 +28,7 @@ final class UseSpecificWillMethodRector extends AbstractRector
         'returnSelf' => 'willReturnSelf',
         'returnValue' => 'willReturn',
         'returnValueMap' => 'willReturnMap',
+        'onConsecutiveCalls' => 'willReturnOnConsecutiveCalls',
         'throwException' => 'willThrowException',
     ];
 
