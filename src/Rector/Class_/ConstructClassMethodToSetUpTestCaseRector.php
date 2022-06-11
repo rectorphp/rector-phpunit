@@ -19,7 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see https://github.com/sebastianbergmann/phpunit/issues/3975#issuecomment-562584609
+ * @changelog https://github.com/sebastianbergmann/phpunit/issues/3975#issuecomment-562584609
  *
  * @see \Rector\PHPUnit\Tests\Rector\Class_\ConstructClassMethodToSetUpTestCaseRector\ConstructClassMethodToSetUpTestCaseRectorTest
  */

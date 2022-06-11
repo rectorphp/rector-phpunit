@@ -16,8 +16,8 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see https://phpunit.readthedocs.io/en/7.3/annotations.html#doesnotperformassertions
- * @see https://github.com/sebastianbergmann/phpunit/issues/2484
+ * @changelog https://phpunit.readthedocs.io/en/7.3/annotations.html#doesnotperformassertions
+ * @changelog https://github.com/sebastianbergmann/phpunit/issues/2484
  *
  * @see \Rector\PHPUnit\Tests\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector\AddDoesNotPerformAssertionToNonAssertingTestRectorTest
  */
