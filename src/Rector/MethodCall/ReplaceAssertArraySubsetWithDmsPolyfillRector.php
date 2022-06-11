@@ -13,8 +13,8 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see https://github.com/sebastianbergmann/phpunit/issues/3494#issuecomment-480283612
- * @see https://github.com/sebastianbergmann/phpunit/issues/3495
+ * @changelog https://github.com/sebastianbergmann/phpunit/issues/3494#issuecomment-480283612
+ * @changelog https://github.com/sebastianbergmann/phpunit/issues/3495
  *
  * @see \Rector\PHPUnit\Tests\Rector\MethodCall\ReplaceAssertArraySubsetWithDmsPolyfillRector\ReplaceAssertArraySubsetWithDmsPolyfillRectorTest
  */
