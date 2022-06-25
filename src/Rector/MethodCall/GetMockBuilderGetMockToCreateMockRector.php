@@ -20,11 +20,7 @@ final class GetMockBuilderGetMockToCreateMockRector extends AbstractRector
     /**
      * @var string[]
      */
-    private const USELESS_METHOD_NAMES = [
-        'disableOriginalConstructor',
-        'setMethods',
-        'setMethodsExcept',
-    ];
+    private const USELESS_METHOD_NAMES = ['disableOriginalConstructor', 'setMethods', 'setMethodsExcept'];
 
     public function getRuleDefinition(): RuleDefinition
     {
