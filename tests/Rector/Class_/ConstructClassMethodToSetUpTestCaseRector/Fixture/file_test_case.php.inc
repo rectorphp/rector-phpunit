@@ -4,14 +4,10 @@ namespace Rector\PHPUnit\Tests\Rector\Class_\ConstructClassMethodToSetUpTestCase
 
 use PHPUnit\Framework\TestCase;
 
-final class SomeTest extends TestCase
+final class FileTestCase extends TestCase
 {
-    private $someValue;
-
-    public function __construct(?string $name = null, array $data = [], string $dataName = '')
+    public function __construct($name = null)
     {
-        $this->someValue = 1000;
-        parent::__construct($name, $data, $dataName);
     }
 }
 
@@ -23,13 +19,10 @@ namespace Rector\PHPUnit\Tests\Rector\Class_\ConstructClassMethodToSetUpTestCase
 
 use PHPUnit\Framework\TestCase;
 
-final class SomeTest extends TestCase
+final class FileTestCase extends TestCase
 {
-    private $someValue;
-
     protected function setUp()
     {
-        $this->someValue = 1000;
     }
 }
 
