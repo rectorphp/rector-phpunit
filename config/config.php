@@ -12,5 +12,5 @@ return static function (RectorConfig $rectorConfig): void {
         ->autoconfigure();
 
     $services->load('Rector\\PHPUnit\\', __DIR__ . '/../src')
-        ->exclude([__DIR__ . '/../src/{Rector,ValueObject,PhpDoc/Node}']);
+        ->exclude([__DIR__ . '/../src/Rector', __DIR__ . '/../src/ValueObject', __DIR__ . '/../src/PhpDoc/Node']);
 };
