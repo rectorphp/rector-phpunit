@@ -16,8 +16,8 @@ final class MyRegexpTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
-        self::expectException('SomeException');
         self::expectExceptionMessageRegExp('SomREGEPX');
+        self::expectException('SomeException');
     }
 }
 
