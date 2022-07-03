@@ -13,7 +13,6 @@ use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFactory\AssertCallFactory;
-use Rector\PostRector\Collector\NodesToAddCollector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -33,7 +32,6 @@ final class DelegateExceptionArgumentsRector extends AbstractRector
     public function __construct(
         private readonly AssertCallFactory $assertCallFactory,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly NodesToAddCollector $nodesToAddCollector,
     ) {
     }
 
