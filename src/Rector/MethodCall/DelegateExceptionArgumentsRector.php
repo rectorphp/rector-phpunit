@@ -65,6 +65,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        $hasChanged = null;
         $stmts = (array) $node->stmts;
 
         dump($stmts);
