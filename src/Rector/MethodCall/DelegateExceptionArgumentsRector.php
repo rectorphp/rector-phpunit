@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFactory\AssertCallFactory;
@@ -57,14 +58,18 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [MethodCall::class, StaticCall::class];
+        return [StmtsAwareInterface::class];
     }
 
     /**
-     * @param MethodCall|StaticCall $node
+     * @param StmtsAwareInterface $node
      */
     public function refactor(Node $node): ?Node
     {
+        dump($node);
+        die;
+
+
         $oldMethodNames = array_keys(self::OLD_TO_NEW_METHOD);
         if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, $oldMethodNames)) {
             return null;
