@@ -25,13 +25,12 @@ final class MyMessageTest extends \PHPUnit\Framework\TestCase
     public function test()
     {
         $this->expectException('SomeException');
-        // with message
-        $this->expectException('SomeException');
         $this->expectExceptionMessage($message);
-        // with code
-        self::expectException('SomeException');
         self::expectExceptionMessage($message);
         self::expectExceptionCode(101);
+        self::expectException('SomeException');
+        // with code
+        self::expectException('SomeException');
     }
 }
 

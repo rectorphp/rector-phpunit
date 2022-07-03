@@ -33,5 +33,8 @@ parameters:
         - '#(.*?)PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder#'
 
         # rector co-variant
-        - '#Parameter \#1 \$node \(PhpParser\\Node\\(.*?) of method Rector\\(.*?)\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\PhpRectorInterface\:\:refactor\(\)#'
+        - '#Parameter \#1 \$node (.*?) of method Rector\\(.*?)\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\PhpRectorInterface\:\:refactor\(\)#'
         - '#Parameter \#1 \$node \(PhpParser\\Node\\Expr\\MethodCall\|PhpParser\\Node\\Expr\\StaticCall\) of method Rector\\PHPUnit\\Rector\\StaticCall\\GetMockRector\:\:refactorWithScope\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\ScopeAwarePhpRectorInterface\:\:refactorWithScope\(\)#'
+
+        - '#Cognitive complexity for "Rector\\PHPUnit\\Rector\\MethodCall\\DelegateExceptionArgumentsRector\:\:refactor\(\)" is 12, keep it under 10#'
+        - '#Class "Rector\\PHPUnit\\Rector\\MethodCall\\DelegateExceptionArgumentsRector" has invalid namespace category "MethodCall"\. Pick one of\: "StmtsAwareInterface"#'
