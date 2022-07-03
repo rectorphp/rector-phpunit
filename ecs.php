@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use PhpCsFixer\Fixer\ReturnNotation\ReturnAssignmentFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
@@ -17,12 +16,7 @@ return static function (ECSConfig $ecsConfig): void {
         __DIR__ . '/rector.php',
     ]);
 
-    $ecsConfig->skip([
-        '*/Source/*', '*/Fixture/*',
-
-        // breaks annotated code - removed on symplify dev-main
-        ReturnAssignmentFixer::class,
-    ]);
+    $ecsConfig->skip(['*/Source/*', '*/Fixture/*']);
 
     $ecsConfig->lineEnding("\n");
 };

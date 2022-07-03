@@ -8,6 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\Expression;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFactory\AssertCallFactory;
@@ -55,42 +57,76 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [MethodCall::class, StaticCall::class];
+        return [StmtsAwareInterface::class];
     }
 
     /**
-     * @param MethodCall|StaticCall $node
+     * @param StmtsAwareInterface $node
      */
     public function refactor(Node $node): ?Node
     {
-        $oldMethodNames = array_keys(self::OLD_TO_NEW_METHOD);
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, $oldMethodNames)) {
-            return null;
-        }
+        $stmts = (array) $node->stmts;
 
-        if (isset($node->args[1])) {
-            /** @var Identifier $identifierNode */
-            $identifierNode = $node->name;
-            $oldMethodName = $identifierNode->name;
+        dump($stmts);
+        die;
 
-            $call = $this->assertCallFactory->createCallWithName($node, self::OLD_TO_NEW_METHOD[$oldMethodName]);
-            $call->args[] = $node->args[1];
-            $this->nodesToAddCollector->addNodeAfterNode($call, $node);
+        $hasChanged = false;
 
-            unset($node->args[1]);
-
-            // add exception code method call
-            if (isset($node->args[2])) {
-                $call = $this->assertCallFactory->createCallWithName($node, 'expectExceptionCode');
-                $call->args[] = $node->args[2];
-                $this->nodesToAddCollector->addNodeAfterNode($call, $node);
-
-                unset($node->args[2]);
+        foreach ($stmts as $key => $stmt) {
+            if (! $stmt instanceof Expression) {
+                continue;
             }
+
+            if (! $stmt->expr instanceof StaticCall && ! $stmt->expr instanceof MethodCall) {
+                continue;
+            }
+
+            $call = $stmt->expr;
+
+//            print_node($call);
+//            die;
+
+            $oldMethodNames = array_keys(self::OLD_TO_NEW_METHOD);
+            if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, $oldMethodNames)) {
+                return null;
+            }
+
+            if (isset($node->args[1])) {
+                /** @var Identifier $identifierNode */
+                $identifierNode = $node->name;
+                $oldMethodName = $identifierNode->name;
+
+                $extraCall = $this->assertCallFactory->createCallWithName(
+                    $call,
+                    self::OLD_TO_NEW_METHOD[$oldMethodName]
+                );
+                $extraCall->args[] = $call->args[1];
+
+                array_splice($stmts, $key, 1, $extraCall);
+
+                unset($call->args[1]);
+                $hasChanged = true;
+
+                // add exception code method call
+                if (isset($call->args[2])) {
+                    $extraCall = $this->assertCallFactory->createCallWithName($call, 'expectExceptionCode');
+                    $extraCall->args[] = $call->args[2];
+
+                    array_splice($stmts, $key, 1, $extraCall);
+
+                    unset($call->args[2]);
+                }
+            }
+
+            $hasChanged = true;
+            $call->name = new Identifier('expectException');
         }
 
-        $node->name = new Identifier('expectException');
+        if ($hasChanged === true) {
+            $node->stmts = $stmts;
+            return $node;
+        }
 
-        return $node;
+        return null;
     }
 }
