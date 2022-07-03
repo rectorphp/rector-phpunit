@@ -19,9 +19,6 @@ return static function (ECSConfig $ecsConfig): void {
 
     $ecsConfig->skip([
         '*/Source/*', '*/Fixture/*',
-
-        // breaks annotated code - removed on symplify dev-main
-        ReturnAssignmentFixer::class,
     ]);
 
     $ecsConfig->lineEnding("\n");
