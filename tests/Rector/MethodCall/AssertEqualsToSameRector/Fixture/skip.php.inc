@@ -15,9 +15,5 @@ final class MySkipTest extends TestCase
         $bool = true;
         $expectedBool = true;
         $this->assertEquals($expectedBool, $bool);
-
-        $array = [];
-        $expectedArray = [];
-        $this->assertEquals($expectedArray, $array);
     }
 }

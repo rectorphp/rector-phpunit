@@ -15,9 +15,5 @@ final class MySkipTest2 extends TestCase
         $bool = true;
         $expectedBool = true;
         self::assertEquals($expectedBool, $bool);
-
-        $array = [];
-        $expectedArray = [];
-        self::assertEquals($expectedArray, $array);
     }
 }
