@@ -22,7 +22,7 @@ use Rector\Config\RectorConfig;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->sets([
-        PHPUnitSetList::PHPUNIT_90,
+        PHPUnitSetList::PHPUNIT_90, // to run also previous phpunit version ruleSets use: PHPUnitSetList::UP_TO_PHPUNIT_90
     ]);
 };
 ```

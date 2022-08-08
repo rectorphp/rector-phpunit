@@ -6,6 +6,9 @@ namespace Rector\PHPUnit\Set;
 
 use Rector\Set\Contract\SetListInterface;
 
+/**
+ * @deprecated use PHPUnitSetList constants instead.
+ */
 final class PHPUnitLevelSetList implements SetListInterface
 {
     /**
