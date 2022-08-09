@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -13,7 +15,6 @@ use PhpParser\Node\Stmt\Expression;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
-use Rector\Nette\NodeAnalyzer\StaticCallAnalyzer;
 use Rector\PHPUnit\NodeAnalyzer\SetUpMethodDecorator;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
@@ -28,7 +29,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ConstructClassMethodToSetUpTestCaseRector extends AbstractRector
 {
     public function __construct(
-        private readonly StaticCallAnalyzer $staticCallAnalyzer,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly VisibilityManipulator $visibilityManipulator,
@@ -135,7 +135,7 @@ CODE_SAMPLE
                 $constructorStmt = clone $constructorStmt->expr;
             }
 
-            if (! $this->staticCallAnalyzer->isParentCallNamed($constructorStmt, MethodName::CONSTRUCT)) {
+            if (! $this->isParentCallNamed($constructorStmt, MethodName::CONSTRUCT)) {
                 continue;
             }
 
@@ -143,5 +143,26 @@ CODE_SAMPLE
         }
 
         return $constructorStmts;
+    }
+
+    private function isParentCallNamed(Node $node, string $desiredMethodName): bool
+    {
+        if (! $node instanceof StaticCall) {
+            return false;
+        }
+
+        if ($node->class instanceof Expr) {
+            return false;
+        }
+
+        if (! $this->nodeNameResolver->isName($node->class, 'parent')) {
+            return false;
+        }
+
+        if ($node->name instanceof Expr) {
+            return false;
+        }
+
+        return $this->nodeNameResolver->isName($node->name, $desiredMethodName);
     }
 }
