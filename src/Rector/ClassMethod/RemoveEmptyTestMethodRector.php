@@ -38,7 +38,7 @@ class SomeTest extends \PHPUnit\Framework\TestCase
     }
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 class SomeTest extends \PHPUnit\Framework\TestCase
 {

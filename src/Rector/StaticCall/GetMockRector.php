@@ -44,7 +44,7 @@ final class SomeTest extends TestCase
     }
 }
 CODE_SAMPLE
-            ,
+                ,
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;
 
