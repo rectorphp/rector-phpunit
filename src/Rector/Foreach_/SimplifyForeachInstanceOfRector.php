@@ -79,6 +79,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // skip if there is a custom message included; it might be per item
+        if (count($matchedNode->getArgs()) === 3) {
+            return null;
+        }
+
         $args = [$matchedNode->args[0], new Arg($node->expr)];
 
         if ($matchedNode instanceof StaticCall) {
