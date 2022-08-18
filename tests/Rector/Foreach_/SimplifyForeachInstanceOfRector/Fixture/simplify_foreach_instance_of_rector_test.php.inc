@@ -1,8 +1,8 @@
 <?php
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+namespace Rector\PHPUnit\Tests\Rector\Foreach_\SimplifyForeachInstanceOfRector\Fixture;
 
-namespace Rector\Tests\PHPUnit\Rector\Foreach_\SimplifyForeachInstanceOfRector\Fixture;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 final class SimplifyForeachInstanceOfRectorTest extends WebTestCase
 {
@@ -19,5 +19,3 @@ final class SimplifyForeachInstanceOfRectorTest extends WebTestCase
         }
     }
 }
-
-?>
