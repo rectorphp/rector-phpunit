@@ -99,6 +99,10 @@ CODE_SAMPLE
             return true;
         }
 
+        if ($classMethod->isAbstract()) {
+            return true;
+        }
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
         if ($phpDocInfo->hasByNames(['doesNotPerformAssertions', 'expectedException'])) {
             return true;
