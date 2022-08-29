@@ -8,8 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\PrettyPrinter\Standard;
 use PHPStan\Type\TypeWithClassName;
+use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -35,7 +35,7 @@ final class AssertCallAnalyzer
 
     public function __construct(
         private readonly AstResolver $astResolver,
-        private readonly Standard $printerStandard,
+        private readonly NodePrinterInterface $nodePrinter,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeTypeResolver $nodeTypeResolver,
@@ -56,7 +56,7 @@ final class AssertCallAnalyzer
             return false;
         }
 
-        $cacheHash = md5($this->printerStandard->prettyPrint([$classMethod]));
+        $cacheHash = md5($this->nodePrinter->prettyPrint([$classMethod]));
 
         if (isset($this->containsAssertCallByClassMethod[$cacheHash])) {
             return $this->containsAssertCallByClassMethod[$cacheHash];
