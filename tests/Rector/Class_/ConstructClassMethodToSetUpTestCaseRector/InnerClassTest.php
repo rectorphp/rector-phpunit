@@ -18,12 +18,9 @@ final class InnerClassTest extends AbstractRectorTestCase
         $this->doTestFile($filePath);
     }
 
-    /**
-     * @return Iterator<SmartFileInfo>
-     */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureInnerClass');
+        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureInnerClass');
     }
 
     public function provideConfigFilePath(): string
