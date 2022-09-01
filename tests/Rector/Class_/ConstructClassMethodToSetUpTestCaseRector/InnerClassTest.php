@@ -6,7 +6,6 @@ namespace Rector\PHPUnit\Tests\Rector\Class_\ConstructClassMethodToSetUpTestCase
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class InnerClassTest extends AbstractRectorTestCase
 {
