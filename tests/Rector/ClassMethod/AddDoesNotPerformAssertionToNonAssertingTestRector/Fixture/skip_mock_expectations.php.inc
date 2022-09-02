@@ -79,11 +79,3 @@ final class CachedAdapterTest extends TestCase
 
 ?>
 -----
-<?php
-
-namespace Rector\Tests\PHPUnit\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector\Fixture;
-
-// what is expected code?
-// should remain the same? delete part bellow ----- (included)
-
-?>
