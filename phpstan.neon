@@ -38,3 +38,4 @@ parameters:
 
         - '#Cognitive complexity for "Rector\\PHPUnit\\Rector\\MethodCall\\DelegateExceptionArgumentsRector\:\:refactor\(\)" is 12, keep it under 10#'
         - '#Class "Rector\\PHPUnit\\Rector\\MethodCall\\DelegateExceptionArgumentsRector" has invalid namespace category "MethodCall"\. Pick one of\: "StmtsAwareInterface"#'
+        - '#Parameter \#2 \$callable of method Rector\\Core\\NodeManipulator\\ForeachManipulator\:\:matchOnlyStmt\(\) expects callable\(PhpParser\\Node, PhpParser\\Node\\Stmt\\Foreach_\=\)\: PhpParser\\Node\|null, Closure\(PhpParser\\Node, PhpParser\\Node\\Stmt\\Foreach_\)\: PhpParser\\Node\\Expr\\MethodCall\|PhpParser\\Node\\Expr\\StaticCall\|null given#'
