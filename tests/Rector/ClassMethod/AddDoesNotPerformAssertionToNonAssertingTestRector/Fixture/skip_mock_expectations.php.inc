@@ -2,15 +2,13 @@
 
 declare(strict_types=1);
 
-namespace AppTest\Client\Adapter;
+namespace Rector\Tests\PHPUnit\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector\Fixture;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 interface CacheInterface {}
 interface AdapterInterface {}
-
-namespace Rector\Tests\PHPUnit\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector\Fixture;
 
 final class CacheAdapter implements AdapterInterface
 {
@@ -27,7 +25,6 @@ final class CacheAdapter implements AdapterInterface
     }
 }    
 
-namespace Rector\Tests\PHPUnit\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector\Fixture;
 
 final class CachedAdapterTest extends TestCase
 {
