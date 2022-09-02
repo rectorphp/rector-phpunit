@@ -16,15 +16,14 @@ final class CacheAdapter implements AdapterInterface
     {
         return new self($adapter, $listCache, $getCache);
     }
-    
+
     private function __construct(
         private readonly AdapterInterface $adapter,
         private readonly CacheInterface $listCache,
         private readonly CacheInterface $getCache,
     ) {
     }
-}    
-
+}
 
 final class CachedAdapterTest extends TestCase
 {
