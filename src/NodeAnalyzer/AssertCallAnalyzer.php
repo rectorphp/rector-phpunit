@@ -160,6 +160,7 @@ final class AssertCallAnalyzer
             'expectOutput*',
             'should*',
             'doTestFileInfo',
+            'expectNotToPerformAssertions',
         ]);
     }
 }
