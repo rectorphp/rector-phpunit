@@ -116,18 +116,7 @@ CODE_SAMPLE
                         continue;
                     }
 
-                    $methodNameExpr = $methodCall->var->getArgs()[0]
-->value;
-                    if ($methodNameExpr instanceof String_) {
-                        $methodName = $methodNameExpr->value;
-                    } else {
-                        throw new NotImplementedYetException();
-                    }
-
-                    $returnedExpr = $methodCall->getArgs()[0]
-                        ->value;
-
-                    $anonymousClass->stmts[] = $this->createMockedClassMethod($methodName, $returnedExpr);
+                    $anonymousClass->stmts[] = $this->createMockedClassMethod($rootMethodCall, $methodCall);
                     unset($node->stmts[$key]);
                 }
 
@@ -193,8 +182,20 @@ CODE_SAMPLE
         return $assign;
     }
 
-    private function createMockedClassMethod(string $methodName, Expr $returnedExpr): ClassMethod
+    private function createMockedClassMethod(MethodCall $rootMethodCall, MethodCall $methodCall): ClassMethod
     {
+        $rootMethodCallFirstArg = $rootMethodCall->getArgs()[0];
+
+        $methodNameExpr = $rootMethodCallFirstArg->value;
+        if ($methodNameExpr instanceof String_) {
+            $methodName = $methodNameExpr->value;
+        } else {
+            throw new NotImplementedYetException();
+        }
+
+        $returnedExpr = $methodCall->getArgs()[0]
+            ->value;
+
         return new ClassMethod($methodName, [
             'flags' => Class_::MODIFIER_PUBLIC,
             'stmts' => [new Return_($returnedExpr)],

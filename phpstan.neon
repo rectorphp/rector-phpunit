@@ -16,13 +16,6 @@ parameters:
     reportUnmatchedIgnoredErrors: false
 
     ignoreErrors:
-        # bug
-        - '#Method Rector\\PHPUnit\\Rector\\Class_\\AddSeeTestAnnotationRector\:\:removeNonExistingClassSeeAnnotation\(\) has parameter \$phpDocInfo with generic class Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo but does not specify its types\: TNode#'
-        - '#Method Rector\\PHPUnit\\Rector\\Class_\\AddSeeTestAnnotationRector\:\:hasAlreadySeeAnnotation\(\) has parameter \$phpDocInfo with generic class Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo but does not specify its types\: TNode#'
-
-        # not sure
-        - '#Parameter \#1 \$expr of class PhpParser\\Node\\Stmt\\Expression constructor expects PhpParser\\Node\\Expr, PhpParser\\Node\\Expr\|PhpParser\\Node\\Stmt given#'
-
         # phpstan false positive
         - '#Parameter \#1 \$className of method Rector\\Core\\PhpParser\\AstResolver\:\:resolveClassMethod\(\) expects class\-string, string given#'
 
@@ -34,15 +27,12 @@ parameters:
 
         # rector co-variant
         - '#Parameter \#1 \$node (.*?) of method Rector\\(.*?)\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\PhpRectorInterface\:\:refactor\(\)#'
-        - '#Parameter \#1 \$node \(PhpParser\\Node\\Expr\\MethodCall\|PhpParser\\Node\\Expr\\StaticCall\) of method Rector\\PHPUnit\\Rector\\StaticCall\\GetMockRector\:\:refactorWithScope\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\ScopeAwarePhpRectorInterface\:\:refactorWithScope\(\)#'
 
         - '#Cognitive complexity for "Rector\\PHPUnit\\Rector\\MethodCall\\DelegateExceptionArgumentsRector\:\:refactor\(\)" is 12, keep it under 10#'
         - '#Class "Rector\\PHPUnit\\Rector\\MethodCall\\DelegateExceptionArgumentsRector" has invalid namespace category "MethodCall"\. Pick one of\: "StmtsAwareInterface"#'
         - '#Parameter \#2 \$callable of method Rector\\Core\\NodeManipulator\\ForeachManipulator\:\:matchOnlyStmt\(\) expects callable\(PhpParser\\Node, PhpParser\\Node\\Stmt\\Foreach_\=\)\: PhpParser\\Node\|null, Closure\(PhpParser\\Node, PhpParser\\Node\\Stmt\\Foreach_\)\: PhpParser\\Node\\Expr\\MethodCall\|PhpParser\\Node\\Expr\\StaticCall\|null given#'
 
         # solve later
-        - '#Call to an undefined method PhpParser\\Node\\Expr\:\:getArgs\(\)#'
-        - '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$var#'
-        - '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$name#'
-        - '#Cognitive complexity for "Rector\\PHPUnit\\Rector\\ClassMethod\\CreateMockToAnonymousClassRector\:\:refactor\(\)" is 18, keep it under 10#'
+#        - '#Call to an undefined method PhpParser\\Node\\Expr\:\:getArgs\(\)#'
+        - '#Cognitive complexity for "Rector\\PHPUnit\\Rector\\ClassMethod\\CreateMockToAnonymousClassRector\:\:refactor\(\)" is \d+, keep it under 10#'
 
