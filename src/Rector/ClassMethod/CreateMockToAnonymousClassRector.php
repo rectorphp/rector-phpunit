@@ -153,9 +153,11 @@ CODE_SAMPLE
             $anonymousClass = $this->createAnonymousClass($firstArg);
             $anonymousClassPosition = $key;
         }
+
         if ($anonymousClassPosition === null) {
             return null;
         }
+
         if (! $anonymousClass instanceof Class_) {
             return null;
         }
