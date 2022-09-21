@@ -6,11 +6,11 @@ final class MyMessageTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
-        $this->setExpectedException('SomeException');
+        $this->setExpectedException('FirstException');
         // with message
-        $this->setExpectedException('SomeException', $message);
+        $this->setExpectedException('SecondException', $message);
         // with code
-        self::setExpectedException('SomeException', $message, 101);
+        self::setExpectedException('ThirdException', $message, 101);
     }
 }
 
@@ -24,13 +24,13 @@ final class MyMessageTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
-        $this->expectException('SomeException');
+        $this->expectException('FirstException');
         $this->expectExceptionMessage($message);
         self::expectExceptionMessage($message);
         self::expectExceptionCode(101);
-        self::expectException('SomeException');
+        self::expectException('ThirdException');
         // with code
-        self::expectException('SomeException');
+        self::expectException('ThirdException');
     }
 }
 
