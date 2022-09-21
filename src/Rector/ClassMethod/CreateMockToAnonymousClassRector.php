@@ -7,10 +7,12 @@ namespace Rector\PHPUnit\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Scalar;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -18,6 +20,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Exception\NotImplementedYetException;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -94,11 +97,17 @@ CODE_SAMPLE
             return null;
         }
 
+        $anonymousClassPosition = null;
         $anonymousClass = null;
         $mockExpr = null;
 
+        $hasDynamicReturnExprs = false;
+
+        $anonymousClassMethods = [];
+        $createMockMethodCallAssign = null;
+
         foreach ((array) $node->stmts as $key => $classMethodStmt) {
-            if ($anonymousClass instanceof Class_ && $mockExpr instanceof Expr) {
+            if ($mockExpr instanceof Expr) {
                 // possible call on mock expr
                 if ($classMethodStmt instanceof Expression && $classMethodStmt->expr instanceof MethodCall) {
                     $methodCall = $classMethodStmt->expr;
@@ -116,8 +125,14 @@ CODE_SAMPLE
                         continue;
                     }
 
-                    $anonymousClass->stmts[] = $this->createMockedClassMethod($rootMethodCall, $methodCall);
-                    unset($node->stmts[$key]);
+                    // has dynamic return?
+                    if ($hasDynamicReturnExprs === false) {
+                        $returnedExpr = $methodCall->getArgs()[0]
+->value;
+                        $hasDynamicReturnExprs = ! $returnedExpr instanceof Scalar && ! $returnedExpr instanceof Array_;
+                    }
+
+                    $anonymousClassMethods[$key] = $this->createMockedClassMethod($rootMethodCall, $methodCall);
                 }
 
                 continue;
@@ -136,11 +151,33 @@ CODE_SAMPLE
             $mockExpr = $createMockMethodCallAssign->var;
 
             $anonymousClass = $this->createAnonymousClass($firstArg);
-            $new = new New_($anonymousClass);
-            $newAnonymousClassAssign = new Assign($createMockMethodCallAssign->var, $new);
-
-            $node->stmts[$key] = new Expression($newAnonymousClassAssign);
+            $anonymousClassPosition = $key;
         }
+
+        if ($anonymousClassPosition === null) {
+            return null;
+        }
+
+        if (! $anonymousClass instanceof Class_) {
+            return null;
+        }
+
+        if ($hasDynamicReturnExprs) {
+            return null;
+        }
+
+        foreach ($anonymousClassMethods as $keyToRemove => $anonymousClassMethod) {
+            unset($node->stmts[$keyToRemove]);
+            $anonymousClass->stmts[] = $anonymousClassMethod;
+        }
+
+        if (! $createMockMethodCallAssign instanceof Assign) {
+            throw new ShouldNotHappenException();
+        }
+
+        $new = new New_($anonymousClass);
+        $newAnonymousClassAssign = new Assign($createMockMethodCallAssign->var, $new);
+        $node->stmts[$anonymousClassPosition] = new Expression($newAnonymousClassAssign);
 
         return $node;
     }
