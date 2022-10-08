@@ -21,6 +21,9 @@ use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
+/**
+ * @see \Rector\PHPUnit\Tests\Rector\Property\ProphecyPHPDocRector\ProphecyPHPDocRectorTest
+ */
 class ProphecyPHPDocRector extends AbstractRector
 {
     public function __construct(
@@ -129,22 +132,25 @@ CODE_SAMPLE
 
         $class = $this->betterNodeFinder->findParentType($node, Class_::class);
 
-        foreach ($class->stmts as $stmt) {
-            if (! $stmt instanceof Property) {
+        foreach ($class->stmts as $propertyStmt) {
+            if (! $propertyStmt instanceof Property) {
                 continue;
             }
 
-            if ($stmt->props[0]->name->name !== $propertyName) {
+            if ($propertyStmt->props[0]->name->name !== $propertyName) {
                 continue;
             }
 
             $doc = new Doc("/**\n     * @var ObjectProphecy<" . $prophesizeClassParts[array_key_last(
                 $prophesizeClassParts
             )] . ">\n     */");
-            $stmt->setDocComment($doc);
-            $stmt->getDocComment();
+            $propertyStmt->setDocComment($doc);
+            $propertyStmt->getDocComment();
 
-            $useStatements = ['Prophecy\Prophecy\ObjectProphecy', \implode('\\', $prophesizeClassParts)];
+            $useClassNames = [
+                'Prophecy\Prophecy\ObjectProphecy',
+                \implode('\\', $prophesizeClassParts),
+            ];
 
             $namespace = $this->betterNodeFinder->findParentType($node, Namespace_::class);
 
@@ -152,20 +158,20 @@ CODE_SAMPLE
                 return;
             }
 
-            foreach ($namespace->stmts as $stmt) {
-                if (! $stmt instanceof Use_) {
+            foreach ($namespace->stmts as $useStmt) {
+                if (! $useStmt instanceof Use_) {
                     continue;
                 }
 
-                $foundClass = \implode('\\', $stmt->uses[0]->name->parts);
+                $foundClass = \implode('\\', $useStmt->uses[0]->name->parts);
 
-                $findIndex = \array_search($foundClass, $useStatements, true);
+                $findIndex = \array_search($foundClass, $useClassNames, true);
                 if ($findIndex !== false) {
-                    unset($useStatements[$findIndex]);
+                    unset($useClassNames[$findIndex]);
                 }
             }
 
-            $uses = $this->nodeFactory->createUsesFromNames($useStatements);
+            $uses = $this->nodeFactory->createUsesFromNames($useClassNames);
             $stmts = $namespace->stmts;
 
             foreach ($uses as $use) {
