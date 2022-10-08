@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\Rector\Property;
 
 use PhpParser\Comment\Doc;
+use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
@@ -78,7 +79,7 @@ CODE_SAMPLE
         return [Assign::class];
     }
 
-    public function refactor(\PhpParser\Node $node)
+    public function refactor(Node $node)
     {
         if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
             return null;
