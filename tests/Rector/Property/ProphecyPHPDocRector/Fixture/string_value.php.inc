@@ -6,11 +6,11 @@ use PHPUnit\Framework\TestCase;
 
 final class ClassConstTest extends TestCase
 {
-    private $someObjectProphecy;
+    private $prophecy;
 
     public function setUp(): void
     {
-        $prophecy = $this->prophesize('App\SomeClass');
+        $this->prophecy = $this->prophesize('App\SomeClass');
     }
 }
 
@@ -29,11 +29,11 @@ final class ClassConstTest extends TestCase
     /**
      * @var ObjectProphecy<SomeClass>
      */
-    private $someObjectProphecy;
+    private $prophecy;
 
     public function setUp(): void
     {
-        $prophecy = $this->prophesize('App\SomeClass');
+        $this->prophecy = $this->prophesize('App\SomeClass');
     }
 }
 
