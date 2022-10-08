@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rector\PHPUnit\Rector\Property;
 
 use PhpParser\Comment\Doc;
@@ -23,8 +25,7 @@ class ProphecyPHPDocRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer
-    )
-    {
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -76,22 +77,22 @@ CODE_SAMPLE
 
     public function refactor(\PhpParser\Node $node)
     {
-        if (!$this->testsNodeAnalyzer->isInTestClass($node)) {
+        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
             return null;
         }
 
-        if (!$node instanceof Assign) {
+        if (! $node instanceof Assign) {
             return;
         }
 
         $expr = $node->expr;
 
-        if (!$expr instanceof MethodCall) {
+        if (! $expr instanceof MethodCall) {
             return;
         }
 
         $var = $expr->var;
-        if (!$var instanceof Variable) {
+        if (! $var instanceof Variable) {
             return;
         }
 
@@ -100,7 +101,7 @@ CODE_SAMPLE
         }
 
         $name = $expr->name;
-        if (!$name instanceof Identifier) {
+        if (! $name instanceof Identifier) {
             return;
         }
 
@@ -120,7 +121,7 @@ CODE_SAMPLE
 
         $var = $node->var;
 
-        if (!$var instanceof PropertyFetch) {
+        if (! $var instanceof PropertyFetch) {
             return;
         }
 
@@ -129,7 +130,7 @@ CODE_SAMPLE
         $class = $this->betterNodeFinder->findParentType($node, Class_::class);
 
         foreach ($class->stmts as $stmt) {
-            if (!$stmt instanceof Property) {
+            if (! $stmt instanceof Property) {
                 continue;
             }
 
@@ -137,30 +138,29 @@ CODE_SAMPLE
                 continue;
             }
 
-            $doc = new Doc("/**\n     * @var ObjectProphecy<" . $prophesizeClassParts[array_key_last($prophesizeClassParts)] . ">\n     */");
+            $doc = new Doc("/**\n     * @var ObjectProphecy<" . $prophesizeClassParts[array_key_last(
+                $prophesizeClassParts
+            )] . ">\n     */");
             $stmt->setDocComment($doc);
             $stmt->getDocComment();
 
-            $useStatements = [
-                'Prophecy\Prophecy\ObjectProphecy',
-                \implode('\\', $prophesizeClassParts),
-            ];
+            $useStatements = ['Prophecy\Prophecy\ObjectProphecy', \implode('\\', $prophesizeClassParts)];
 
             $namespace = $this->betterNodeFinder->findParentType($node, Namespace_::class);
 
-            if (!$namespace instanceof Namespace_) {
+            if (! $namespace instanceof Namespace_) {
                 return;
             }
 
             foreach ($namespace->stmts as $stmt) {
-                if (!$stmt instanceof Use_) {
+                if (! $stmt instanceof Use_) {
                     continue;
                 }
 
                 $foundClass = \implode('\\', $stmt->uses[0]->name->parts);
 
-                $findIndex = \array_search($foundClass, $useStatements);
-                if (false !== $findIndex) {
+                $findIndex = \array_search($foundClass, $useStatements, true);
+                if ($findIndex !== false) {
                     unset($useStatements[$findIndex]);
                 }
             }
