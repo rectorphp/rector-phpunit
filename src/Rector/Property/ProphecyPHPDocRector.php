@@ -147,10 +147,7 @@ CODE_SAMPLE
             $propertyStmt->setDocComment($doc);
             $propertyStmt->getDocComment();
 
-            $useClassNames = [
-                'Prophecy\Prophecy\ObjectProphecy',
-                \implode('\\', $prophesizeClassParts),
-            ];
+            $useClassNames = ['Prophecy\Prophecy\ObjectProphecy', \implode('\\', $prophesizeClassParts)];
 
             $namespace = $this->betterNodeFinder->findParentType($node, Namespace_::class);
 
