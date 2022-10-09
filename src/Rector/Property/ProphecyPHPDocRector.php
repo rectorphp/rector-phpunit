@@ -70,7 +70,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return class-string<\PhpParser\Node>
+     * @return array<class-string<\PhpParser\Node>>
      */
     public function getNodeTypes(): array
     {
@@ -80,7 +80,7 @@ CODE_SAMPLE
     /**
      * @param Assign $node
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): Assign|null
     {
         if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
             return null;
@@ -154,5 +154,7 @@ CODE_SAMPLE
 
             break;
         }
+
+        return $node;
     }
 }
