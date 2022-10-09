@@ -86,10 +86,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $node instanceof Assign) {
-            return null;
-        }
-
         $expr = $node->expr;
         if (! $expr instanceof MethodCall) {
             return null;
