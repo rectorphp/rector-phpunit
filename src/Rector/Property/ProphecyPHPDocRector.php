@@ -91,7 +91,6 @@ CODE_SAMPLE
         }
 
         $expr = $node->expr;
-
         if (! $expr instanceof MethodCall) {
             return null;
         }
@@ -101,21 +100,15 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($var->name !== 'this') {
+        if (! $this->isName($var, 'this')) {
             return null;
         }
 
-        $name = $expr->name;
-        if (! $name instanceof Identifier) {
-            return null;
-        }
-
-        if ($name->name !== 'prophesize') {
+        if (! $this->isName($expr->name, 'prophesize')) {
             return null;
         }
 
         $value = $expr->args[0]->value;
-
         if ($value instanceof String_) {
             $prophesizeClassParts = \explode('\\', $value->value);
         } elseif ($value instanceof ClassConstFetch) {
