@@ -20,14 +20,12 @@ final class ClassConstTest extends TestCase
 
 namespace Rector\PHPUnit\Tests\Rector\Property\ProphecyPHPDocRectorTest\Fixture;
 
-use App\SomeClass;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Prophecy\ObjectProphecy;
 
 final class ClassConstTest extends TestCase
 {
     /**
-     * @var ObjectProphecy<SomeClass>
+     * @var \Prophecy\Prophecy\ObjectProphecy<\App\SomeClass>
      */
     private $prophecy;
 

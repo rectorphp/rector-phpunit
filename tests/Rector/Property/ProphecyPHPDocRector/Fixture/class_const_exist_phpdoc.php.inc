@@ -32,7 +32,7 @@ use Prophecy\Prophecy\ObjectProphecy;
 final class ClassConstExistPHPDOCTest extends TestCase
 {
     /**
-     * @var ObjectProphecy<SomeClass>
+     * @var \Prophecy\Prophecy\ObjectProphecy<\App\SomeClass>
      */
     private $prophecy;
 

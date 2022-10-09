@@ -14,9 +14,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\Use_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -74,8 +72,6 @@ CODE_SAMPLE
 
     public function getNodeTypes(): array
     {
-        // PhpParser\Node\Expr\Assign
-        // PhpParser\Node\Expr\MethodCall
         return [Assign::class];
     }
 
@@ -142,45 +138,16 @@ CODE_SAMPLE
                 continue;
             }
 
-            $useClassNames = ['Prophecy\Prophecy\ObjectProphecy', \implode('\\', $prophesizeClassParts)];
-
             $doc = new Doc(
                 \sprintf(
                     "/**\n     * @var %s<%s>\n     */",
-                    '\\'. $useClassNames[0],
-                    '\\'. $useClassNames[1],
+                    '\Prophecy\Prophecy\ObjectProphecy',
+                    '\\' . \implode('\\', $prophesizeClassParts),
                 )
             );
+
             $propertyStmt->setDocComment($doc);
             $propertyStmt->getDocComment();
-
-            $namespace = $this->betterNodeFinder->findParentType($node, Namespace_::class);
-
-            if (! $namespace instanceof Namespace_) {
-                return;
-            }
-
-            foreach ($namespace->stmts as $useStmt) {
-                if (! $useStmt instanceof Use_) {
-                    continue;
-                }
-
-                $foundClass = \implode('\\', $useStmt->uses[0]->name->parts);
-
-                $findIndex = \array_search($foundClass, $useClassNames, true);
-                if ($findIndex !== false) {
-                    unset($useClassNames[$findIndex]);
-                }
-            }
-
-            $uses = $this->nodeFactory->createUsesFromNames($useClassNames);
-            $stmts = $namespace->stmts;
-
-            foreach ($uses as $use) {
-                $stmts[] = $use; // TODO not working currently
-            }
-
-            $namespace->stmts = $stmts;
 
             break;
         }

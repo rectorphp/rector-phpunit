@@ -24,17 +24,16 @@ final class ShortClassesTest extends TestCase
 namespace Rector\PHPUnit\Tests\Rector\Property\ProphecyPHPDocRectorTest\Fixture;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\Prophecy\ObjectProphecy;
 
 final class ShortClassesTest extends TestCase
 {
     /**
-     * @var ObjectProphecy<\ReflectionClass>
+     * @var \Prophecy\Prophecy\ObjectProphecy<\ReflectionClass>
      */
     private $prophecy;
 
     /**
-     * @var ObjectProphecy<\stdClass>
+     * @var \Prophecy\Prophecy\ObjectProphecy<\stdClass>
      */
     private $prophecy2;
 
