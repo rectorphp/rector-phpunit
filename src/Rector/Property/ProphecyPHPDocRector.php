@@ -6,12 +6,13 @@ namespace Rector\PHPUnit\Rector\Property;
 
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Core\Rector\AbstractRector;
@@ -87,26 +88,13 @@ CODE_SAMPLE
         }
 
         $expr = $node->expr;
-        if (! $expr instanceof MethodCall) {
+
+        $prophesizedObjectArg = $this->matchThisProphesizeMethodCallFirstArg($expr);
+        if (! $prophesizedObjectArg instanceof Arg) {
             return null;
         }
 
-        $var = $expr->var;
-        if (! $var instanceof Variable) {
-            return null;
-        }
-
-        if (! $this->isName($var, 'this')) {
-            return null;
-        }
-
-        if (! $this->isName($expr->name, 'prophesize')) {
-            return null;
-        }
-
-        $firstARg = $expr->getArgs()[0];
-
-        $value = $firstARg->value;
+        $value = $prophesizedObjectArg->value;
         if ($value instanceof String_) {
             $prophesizeClassParts = \explode('\\', $value->value);
         } elseif ($value instanceof ClassConstFetch) {
@@ -150,5 +138,27 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function matchThisProphesizeMethodCallFirstArg(Expr $expr): ?Arg
+    {
+        if (! $expr instanceof MethodCall) {
+            return null;
+        }
+
+        $var = $expr->var;
+        if (! $var instanceof Variable) {
+            return null;
+        }
+
+        if (! $this->isName($var, 'this')) {
+            return null;
+        }
+
+        if (! $this->isName($expr->name, 'prophesize')) {
+            return null;
+        }
+
+        return $expr->getArgs()[0];
     }
 }
