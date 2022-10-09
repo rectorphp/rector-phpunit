@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\Rector\Class_;
 
-use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -12,6 +11,9 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
+use Rector\BetterPhpDocParser\ValueObject\Type\FullyQualifiedIdentifierTypeNode;
 use Rector\Core\NodeManipulator\ClassMethodPropertyFetchManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -25,7 +27,7 @@ class ProphecyPHPDocRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly ClassMethodPropertyFetchManipulator $classMethodPropertyFetchManipulator
+        private readonly ClassMethodPropertyFetchManipulator $classMethodPropertyFetchManipulator,
     ) {
     }
 
@@ -160,14 +162,17 @@ CODE_SAMPLE
 
     private function changePropertyDoc(Property $property, string $prophesizedClass): void
     {
-        $doc = new Doc(
-            \sprintf(
-                "/**\n     * @var %s<%s>\n     */",
-                '\Prophecy\Prophecy\ObjectProphecy',
-                '\\' . $prophesizedClass,
-            )
-        );
+        $propertyPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
 
-        $property->setDocComment($doc);
+        // replace old one
+        $propertyPhpDocInfo->removeByType(VarTagValueNode::class);
+
+        $propertyPhpDocInfo->addTagValueNode(new VarTagValueNode(
+            new GenericTypeNode(new FullyQualifiedIdentifierTypeNode('Prophecy\Prophecy\ObjectProphecy'), [
+                new FullyQualifiedIdentifierTypeNode($prophesizedClass),
+            ]),
+            '',
+            ''
+        ));
     }
 }
