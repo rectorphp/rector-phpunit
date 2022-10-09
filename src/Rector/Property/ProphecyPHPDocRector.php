@@ -77,6 +77,9 @@ CODE_SAMPLE
         return [Assign::class];
     }
 
+    /**
+     * @param Assign $node
+     */
     public function refactor(Node $node)
     {
         if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
@@ -84,31 +87,31 @@ CODE_SAMPLE
         }
 
         if (! $node instanceof Assign) {
-            return;
+            return null;
         }
 
         $expr = $node->expr;
 
         if (! $expr instanceof MethodCall) {
-            return;
+            return null;
         }
 
         $var = $expr->var;
         if (! $var instanceof Variable) {
-            return;
+            return null;
         }
 
         if ($var->name !== 'this') {
-            return;
+            return null;
         }
 
         $name = $expr->name;
         if (! $name instanceof Identifier) {
-            return;
+            return null;
         }
 
         if ($name->name !== 'prophesize') {
-            return;
+            return null;
         }
 
         $value = $expr->args[0]->value;
@@ -118,18 +121,20 @@ CODE_SAMPLE
         } elseif ($value instanceof ClassConstFetch) {
             $prophesizeClassParts = $value->class->parts;
         } else {
-            return;
+            return null;
         }
 
         $var = $node->var;
 
         if (! $var instanceof PropertyFetch) {
-            return;
+            return null;
         }
 
         $propertyName = $var->name->name;
-
         $class = $this->betterNodeFinder->findParentType($node, Class_::class);
+        if (! $class instanceof Class_) {
+            return null;
+        }
 
         foreach ($class->getProperties() as $property) {
             if (! $this->isName($property, $propertyName)) {
