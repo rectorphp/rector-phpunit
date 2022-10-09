@@ -87,9 +87,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $expr = $node->expr;
-
-        $prophesizedObjectArg = $this->matchThisProphesizeMethodCallFirstArg($expr);
+        $prophesizedObjectArg = $this->matchThisProphesizeMethodCallFirstArg($node->expr);
         if (! $prophesizedObjectArg instanceof Arg) {
             return null;
         }
@@ -132,7 +130,6 @@ CODE_SAMPLE
             );
 
             $property->setDocComment($doc);
-            $property->getDocComment();
 
             break;
         }
