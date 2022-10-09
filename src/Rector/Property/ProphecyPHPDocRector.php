@@ -108,7 +108,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $value = $expr->args[0]->value;
+        $firstARg = $expr->getArgs()[0];
+
+        $value = $firstARg->value;
         if ($value instanceof String_) {
             $prophesizeClassParts = \explode('\\', $value->value);
         } elseif ($value instanceof ClassConstFetch) {
@@ -118,14 +120,17 @@ CODE_SAMPLE
         }
 
         $var = $node->var;
-
         if (! $var instanceof PropertyFetch) {
             return null;
         }
 
-        $propertyName = $var->name->name;
         $class = $this->betterNodeFinder->findParentType($node, Class_::class);
         if (! $class instanceof Class_) {
+            return null;
+        }
+
+        $propertyName = $this->getName($var->name);
+        if (! is_string($propertyName)) {
             return null;
         }
 
