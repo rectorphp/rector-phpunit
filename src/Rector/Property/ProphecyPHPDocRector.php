@@ -142,13 +142,17 @@ CODE_SAMPLE
                 continue;
             }
 
-            $doc = new Doc("/**\n     * @var ObjectProphecy<" . $prophesizeClassParts[array_key_last(
-                $prophesizeClassParts
-            )] . ">\n     */");
+            $useClassNames = ['Prophecy\Prophecy\ObjectProphecy', \implode('\\', $prophesizeClassParts)];
+
+            $doc = new Doc(
+                \sprintf(
+                    "/**\n     * @var %s<%s>\n     */",
+                    '\\'. $useClassNames[0],
+                    '\\'. $useClassNames[1],
+                )
+            );
             $propertyStmt->setDocComment($doc);
             $propertyStmt->getDocComment();
-
-            $useClassNames = ['Prophecy\Prophecy\ObjectProphecy', \implode('\\', $prophesizeClassParts)];
 
             $namespace = $this->betterNodeFinder->findParentType($node, Namespace_::class);
 
