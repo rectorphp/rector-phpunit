@@ -14,7 +14,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Property;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -42,11 +41,11 @@ class HelloTest extends TestCase
     /**
      * @var SomeClass
      */
-    private $test;
+    private $propesizedObject;
 
     public function setUp(): void
     {
-        $this->test = $this->prophesize(SomeClass::class);
+        $this->propesizedObject = $this->prophesize(SomeClass::class);
     }
 }
 CODE_SAMPLE
@@ -57,11 +56,11 @@ class HelloTest extends TestCase
     /**
      * @var ObjectProphecy<SomeClass>
      */
-    private $test;
+    private $propesizedObject;
 
     public function setUp(): void
     {
-        $this->test = $this->prophesize(SomeClass::class);
+        $this->propesizedObject = $this->prophesize(SomeClass::class);
     }
 }
 CODE_SAMPLE
@@ -70,6 +69,9 @@ CODE_SAMPLE
         );
     }
 
+    /**
+     * @return class-string<\PhpParser\Node>
+     */
     public function getNodeTypes(): array
     {
         return [Assign::class];
@@ -129,12 +131,8 @@ CODE_SAMPLE
 
         $class = $this->betterNodeFinder->findParentType($node, Class_::class);
 
-        foreach ($class->stmts as $propertyStmt) {
-            if (! $propertyStmt instanceof Property) {
-                continue;
-            }
-
-            if ($propertyStmt->props[0]->name->name !== $propertyName) {
+        foreach ($class->getProperties() as $property) {
+            if (! $this->isName($property, $propertyName)) {
                 continue;
             }
 
@@ -146,8 +144,8 @@ CODE_SAMPLE
                 )
             );
 
-            $propertyStmt->setDocComment($doc);
-            $propertyStmt->getDocComment();
+            $property->setDocComment($doc);
+            $property->getDocComment();
 
             break;
         }
