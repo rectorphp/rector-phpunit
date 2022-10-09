@@ -94,9 +94,9 @@ CODE_SAMPLE
 
         $value = $prophesizedObjectArg->value;
         if ($value instanceof String_) {
-            $prophesizeClassParts = \explode('\\', $value->value);
+            $prophesizeClass = $value->value;
         } elseif ($value instanceof ClassConstFetch) {
-            $prophesizeClassParts = $value->class->parts;
+            $prophesizeClass = $value->class;
         } else {
             return null;
         }
@@ -125,7 +125,7 @@ CODE_SAMPLE
                 \sprintf(
                     "/**\n     * @var %s<%s>\n     */",
                     '\Prophecy\Prophecy\ObjectProphecy',
-                    '\\' . \implode('\\', $prophesizeClassParts),
+                    '\\' . $prophesizeClass,
                 )
             );
 
