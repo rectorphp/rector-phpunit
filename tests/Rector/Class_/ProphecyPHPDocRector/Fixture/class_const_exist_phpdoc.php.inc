@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\Property\ProphecyPHPDocRectorTest\Fixture;
+namespace Rector\PHPUnit\Tests\Rector\Class_\ProphecyPHPDocRector\Fixture;
 
 use App\SomeClass;
 use PHPUnit\Framework\TestCase;
@@ -23,7 +23,7 @@ final class ClassConstExistPHPDOCTest extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\Property\ProphecyPHPDocRectorTest\Fixture;
+namespace Rector\PHPUnit\Tests\Rector\Class_\ProphecyPHPDocRector\Fixture;
 
 use App\SomeClass;
 use PHPUnit\Framework\TestCase;

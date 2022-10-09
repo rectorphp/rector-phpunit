@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\Property\ProphecyPHPDocRectorTest\Fixture;
+namespace Rector\PHPUnit\Tests\Rector\Class_\ProphecyPHPDocRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
@@ -21,7 +21,7 @@ final class ShortClassesTest extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\Property\ProphecyPHPDocRectorTest\Fixture;
+namespace Rector\PHPUnit\Tests\Rector\Class_\ProphecyPHPDocRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
