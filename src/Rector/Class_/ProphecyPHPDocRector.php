@@ -8,11 +8,8 @@ use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use Rector\Core\NodeManipulator\ClassMethodPropertyFetchManipulator;
@@ -102,21 +99,12 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $value = $prophesizedObjectArg->value;
-                if ($value instanceof String_) {
-                    $prophesizeClass = $value->value;
-                } elseif ($value instanceof ClassConstFetch) {
-                    $prophesizeClass = $value->class;
-                } else {
-                    continue;
+                $prophesizedClass = $this->valueResolver->getValue($prophesizedObjectArg->value);
+                if (! is_string($prophesizedClass)) {
+                    return null;
                 }
-                //
-                //                $var = $node->var;
-                //                if (! $var instanceof PropertyFetch) {
-                //                    continue;
-                //                }
 
-                $this->changePropertyDoc($property, $prophesizeClass);
+                $this->changePropertyDoc($property, $prophesizedClass);
 
                 $hasChanged = true;
                 break;
@@ -132,9 +120,9 @@ CODE_SAMPLE
 
     private function matchThisProphesizeMethodCallFirstArg(Expr $expr): ?Arg
     {
-        //        if (! $expr->expr instanceof MethodCall) {
-        //            return null;
-        //        }
+        if (! $expr instanceof MethodCall) {
+            return null;
+        }
 
         $var = $expr->var;
         if (! $var instanceof Variable) {
@@ -144,10 +132,6 @@ CODE_SAMPLE
         if (! $this->isName($var, 'this')) {
             return null;
         }
-
-        //        if (! $assign->var instanceof PropertyFetch) {
-        //            return null;
-        //        }
 
         if (! $this->isName($expr->name, 'prophesize')) {
             return null;
@@ -174,13 +158,13 @@ CODE_SAMPLE
         return $assignExprs;
     }
 
-    private function changePropertyDoc(Property $property, string|Node\Name\FullyQualified $prophesizeClass): void
+    private function changePropertyDoc(Property $property, string $prophesizedClass): void
     {
         $doc = new Doc(
             \sprintf(
                 "/**\n     * @var %s<%s>\n     */",
                 '\Prophecy\Prophecy\ObjectProphecy',
-                '\\' . $prophesizeClass,
+                '\\' . $prophesizedClass,
             )
         );
 
