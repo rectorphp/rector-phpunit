@@ -25,7 +25,7 @@ class ProphecyPHPDocRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private ClassMethodPropertyFetchManipulator $classMethodPropertyFetchManipulator
+        private readonly ClassMethodPropertyFetchManipulator $classMethodPropertyFetchManipulator
     ) {
     }
 
@@ -70,7 +70,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return array<class-string<\PhpParser\Node>>
+     * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array
     {
