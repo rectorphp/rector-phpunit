@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Tests\Rector\Property\ProphecyPHPDocRector;
+namespace Rector\PHPUnit\Tests\Rector\Class_\ProphecyPHPDocRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
