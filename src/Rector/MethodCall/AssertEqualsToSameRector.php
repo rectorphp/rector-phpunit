@@ -97,9 +97,9 @@ final class AssertEqualsToSameRector extends AbstractRector
         return $hasChanged ? $node : null;
     }
 
-    private function shouldSkipConstantArrayType(Expr $firstArgValue): bool
+    private function shouldSkipConstantArrayType(Expr $expr): bool
     {
-        $type = $this->getType($firstArgValue);
+        $type = $this->getType($expr);
 
         if (! $type instanceof ConstantArrayType) {
             return false;
@@ -111,10 +111,10 @@ final class AssertEqualsToSameRector extends AbstractRector
         }
 
         /**
-         * Non empty array, but value cannot be retrieved via ValueResolver,
-         * then there is possibly an dynamic value inside
+         * Non empty array, but value cannot be retrieved via ValueResolver, then there is possibly an dynamic value
+         * inside
          */
-        $value = $this->valueResolver->getValue($firstArgValue);
+        $value = $this->valueResolver->getValue($expr);
         return $value === [];
     }
 
