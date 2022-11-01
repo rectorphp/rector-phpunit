@@ -1,8 +1,8 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
-
 namespace Rector\Tests\PHPUnit\Rector\MethodCall\AssertEqualsToSameRector\Fixture;
+
+use PHPUnit\Framework\TestCase;
 
 final class ShouldSkipArraysWithObjects extends TestCase
 {
