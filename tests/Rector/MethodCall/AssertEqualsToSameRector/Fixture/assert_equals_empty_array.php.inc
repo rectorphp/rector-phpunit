@@ -4,7 +4,7 @@ namespace Rector\PHPUnit\Tests\Rector\MethodCall\AssertEqualsToSameRector\Fixtur
 
 use PHPUnit\Framework\TestCase;
 
-final class AssertNotEqualsEmptyArray extends TestCase
+final class AssertEqualsEmptyArray extends TestCase
 {
     public function test()
     {
@@ -22,7 +22,7 @@ namespace Rector\PHPUnit\Tests\Rector\MethodCall\AssertEqualsToSameRector\Fixtur
 
 use PHPUnit\Framework\TestCase;
 
-final class AssertNotEqualsEmptyArray extends TestCase
+final class AssertEqualsEmptyArray extends TestCase
 {
     public function test()
     {
