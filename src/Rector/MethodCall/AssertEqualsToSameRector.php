@@ -123,13 +123,11 @@ final class AssertEqualsToSameRector extends AbstractRector
             }
 
             if (! $this->isScalarType($valueType)) {
-                continue;
+                return true;
             }
-
-            return false;
         }
 
-        return true;
+        return false;
     }
 
     private function isScalarType(Type $valueNodeType): bool
