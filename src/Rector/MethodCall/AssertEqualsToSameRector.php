@@ -122,6 +122,7 @@ final class AssertEqualsToSameRector extends AbstractRector
                 return true;
             }
 
+            // non-scalar type can be an object or mixed, which should be skipped
             if (! $this->isScalarType($valueType)) {
                 return true;
             }
