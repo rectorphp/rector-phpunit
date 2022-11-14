@@ -9,6 +9,9 @@ env:
 
 jobs:
     rector:
+        # Don't run on forks
+        if: github.repository == 'rectorphp/rector-phpunit'
+
         uses: rectorphp/reusable-workflows/.github/workflows/rector.yaml@main
         secrets:
             ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
