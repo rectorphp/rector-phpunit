@@ -39,6 +39,7 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::CODING_STYLE,
         SetList::EARLY_RETURN,
         SetList::NAMING,
+        SetList::PRIVATIZATION,
     ]);
 
     $rectorConfig->ruleWithConfiguration(StringClassNameToClassConstantRector::class, [
