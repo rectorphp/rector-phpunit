@@ -49,7 +49,10 @@ return static function (RectorConfig $rectorConfig): void {
         // new AnnotationToAttribute('PHPUnit\Framework\Attributes\RequiresSetting'),
         // new AnnotationToAttribute('PHPUnit\Framework\Attributes\RunClassInSeparateProcess'),
         new AnnotationToAttribute('runInSeparateProcess', 'PHPUnit\Framework\Attributes\RunInSeparateProcess'),
-        new AnnotationToAttribute('runTestsInSeparateProcesses', 'PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses'),
+        new AnnotationToAttribute(
+            'runTestsInSeparateProcesses',
+            'PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses'
+        ),
         new AnnotationToAttribute('small', 'PHPUnit\Framework\Attributes\Small'),
         new AnnotationToAttribute('test', 'PHPUnit\Framework\Attributes\Test'),
         // new AnnotationToAttribute('PHPUnit\Framework\Attributes\TestDox'),

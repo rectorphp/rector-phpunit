@@ -23,7 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\PHPUnit\Tests\Rector\Class_\ProphecyPHPDocRector\ProphecyPHPDocRectorTest
  */
-class ProphecyPHPDocRector extends AbstractRector
+final class ProphecyPHPDocRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
