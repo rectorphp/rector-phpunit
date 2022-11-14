@@ -1,0 +1,15 @@
+name: Rector
+
+on:
+    pull_request: null
+    push:
+        branches:
+            - main
+
+jobs:
+    rector:
+        # run only on main repository, not on the forks without access
+        if: github.repository == 'rectorphp/rector-phpunit'
+
+        # see https://github.com/rectorphp/reusable-workflows
+        uses: rectorphp/reusable-workflows/.github/workflows/rector.yaml@main
