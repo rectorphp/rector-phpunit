@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\NodeFactory;
 
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Expression;
@@ -43,9 +44,16 @@ final class ExpectExceptionMethodCallFactory
             throw new ShouldNotHappenException();
         }
 
-        $node = $phpDocTagNode->name === '@expectedExceptionMessage'
-            ? new String_($phpDocTagNode->value->value)
-            : $this->phpDocValueToNodeMapper->mapGenericTagValueNode($phpDocTagNode->value);
+        $node = $this->createExpectedExpr($phpDocTagNode, $phpDocTagNode->value);
         return $this->nodeFactory->createMethodCall('this', $methodName, [new Arg($node)]);
+    }
+
+    private function createExpectedExpr(PhpDocTagNode $phpDocTagNode, GenericTagValueNode $genericTagValueNode): Expr
+    {
+        if ($phpDocTagNode->name === '@expectedExceptionMessage') {
+            return new String_($genericTagValueNode->value);
+        }
+
+        return $this->phpDocValueToNodeMapper->mapGenericTagValueNode($genericTagValueNode);
     }
 }
