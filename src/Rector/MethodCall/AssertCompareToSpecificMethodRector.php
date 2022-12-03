@@ -58,8 +58,8 @@ final class AssertCompareToSpecificMethodRector extends AbstractRector
                     '$this->assertCount(10, $anything, "message");'
                 ),
                 new CodeSample(
-                    '$this->assertNotEquals(get_class($value), stdClass::class);',
-                    '$this->assertNotInstanceOf(stdClass::class, $value);'
+                    '$this->assertNotEquals(get_class($value), SomeInstance::class);',
+                    '$this->assertNotInstanceOf(SomeInstance::class, $value);'
                 ),
             ]
         );

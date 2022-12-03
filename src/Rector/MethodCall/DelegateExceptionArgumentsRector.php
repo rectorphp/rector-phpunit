@@ -41,9 +41,12 @@ final class DelegateExceptionArgumentsRector extends AbstractRector
             'Takes `setExpectedException()` 2nd and next arguments to own methods in PHPUnit.',
             [
                 new CodeSample(
-                    '$this->setExpectedException(Exception::class, "Message", "CODE");',
                     <<<'CODE_SAMPLE'
-$this->setExpectedException(Exception::class);
+$this->setExpectedException(SomeException::class, "Message", "CODE");
+CODE_SAMPLE
+                    ,
+                    <<<'CODE_SAMPLE'
+$this->setExpectedException(SomeException::class);
 $this->expectExceptionMessage('Message');
 $this->expectExceptionCode('CODE');
 CODE_SAMPLE
