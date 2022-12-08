@@ -1,0 +1,33 @@
+<?php
+
+namespace Rector\PHPUnit\Tests\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Fixture;
+
+use PHPUnit\Framework\TestCase;
+
+final class CoversClass extends TestCase
+{
+    /**
+     * @covers \Rector\PHPUnit\Tests\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Source\ExistingClass
+     */
+    public function test()
+    {
+    }
+}
+
+?>
+-----
+<?php
+
+namespace Rector\PHPUnit\Tests\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Fixture;
+
+use PHPUnit\Framework\TestCase;
+
+final class CoversClass extends TestCase
+{
+    #[\PHPUnit\Framework\Attributes\CoversClass(\Rector\PHPUnit\Tests\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Source\ExistingClass::class)]
+    public function test()
+    {
+    }
+}
+
+?>

@@ -15,7 +15,7 @@ use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\PHPUnit\ValueObject\AnnotationWithValueToAttribute;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
@@ -38,7 +38,7 @@ final class AnnotationWithValueToAttributeRector extends AbstractRector implemen
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change annotations with value to attribute', [
-            new CodeSample(
+            new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;
 
@@ -60,6 +60,13 @@ final class SomeTest extends TestCase
 {
 }
 CODE_SAMPLE
+                ,
+                [
+                    new AnnotationWithValueToAttribute('backupGlobals', 'PHPUnit\Framework\Attributes\BackupGlobals', [
+                        'enabled' => true,
+                        'disabled' => false,
+                    ]),
+                ]
             ),
         ]);
     }
@@ -89,24 +96,26 @@ CODE_SAMPLE
             $desiredTagValueNodes = $phpDocInfo->getTagsByName($annotationWithValueToAttribute->getAnnotationName());
 
             foreach ($desiredTagValueNodes as $desiredTagValueNode) {
-                if ($desiredTagValueNode->value instanceof GenericTagValueNode) {
-                    $attributeValue = $this->resolveAttributeValue(
-                        $desiredTagValueNode->value,
-                        $annotationWithValueToAttribute
-                    );
-
-                    $hasChanged = true;
-
-                    $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
-                        $annotationWithValueToAttribute->getAttributeClass(),
-                        [$attributeValue]
-                    );
-
-                    $node->attrGroups[] = $attributeGroup;
-
-                    // cleanup
-                    $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
+                if (! $desiredTagValueNode->value instanceof GenericTagValueNode) {
+                    continue;
                 }
+
+                $attributeValue = $this->resolveAttributeValue(
+                    $desiredTagValueNode->value,
+                    $annotationWithValueToAttribute
+                );
+
+                $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
+                    $annotationWithValueToAttribute->getAttributeClass(),
+                    [$attributeValue]
+                );
+
+                $node->attrGroups[] = $attributeGroup;
+
+                // cleanup
+                $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
+
+                $hasChanged = true;
             }
         }
 
@@ -123,7 +132,6 @@ CODE_SAMPLE
     public function configure(array $configuration): void
     {
         Assert::allIsInstanceOf($configuration, AnnotationWithValueToAttribute::class);
-
         $this->annotationWithValueToAttributes = $configuration;
     }
 
