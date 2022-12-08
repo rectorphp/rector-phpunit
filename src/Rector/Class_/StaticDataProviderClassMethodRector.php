@@ -4,75 +4,71 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\Rector\Class_;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFinder\DataProviderClassMethodFinder;
-use Rector\PHPUnit\PhpDoc\DataProviderMethodRenamer;
+use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @changelog https://stackoverflow.com/a/46693675/1348344
- *
- * @see \Rector\PHPUnit\Tests\Rector\Class_\RemoveDataProviderTestPrefixRector\RemoveDataProviderTestPrefixRectorTest
+ * @see \Rector\PHPUnit\Tests\Rector\Class_\StaticDataProviderClassMethodRector\StaticDataProviderClassMethodRectorTest
  */
-final class RemoveDataProviderTestPrefixRector extends AbstractRector
+final class StaticDataProviderClassMethodRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly DataProviderClassMethodFinder $dataProviderClassMethodFinder,
-        private readonly DataProviderMethodRenamer $dataProviderMethodRenamer
+        private readonly VisibilityManipulator $visibilityManipulator
     ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition(
-            'Data provider methods cannot start with "test" prefix',
-            [
-                new CodeSample(
-                    <<<'CODE_SAMPLE'
-class SomeClass extends PHPUnit\Framework\TestCase
-{
-    /**
-     * @dataProvider testProvideData()
-     */
-    public function test()
-    {
-        $nothing = 5;
-    }
+        return new RuleDefinition('Change data provider methods to static', [
+            new CodeSample(
+                <<<'CODE_SAMPLE'
+use PHPUnit\Framework\TestCase;
 
-    public function testProvideData()
-    {
-        return ['123'];
-    }
-}
-CODE_SAMPLE
-                    ,
-                    <<<'CODE_SAMPLE'
-class SomeClass extends PHPUnit\Framework\TestCase
+final class SomeTest extends TestCase
 {
     /**
      * @dataProvider provideData()
      */
     public function test()
     {
-        $nothing = 5;
     }
 
     public function provideData()
     {
-        return ['123'];
+        yield [1];
     }
 }
 CODE_SAMPLE
-                ),
-            ]
-        );
+
+                ,
+                <<<'CODE_SAMPLE'
+use PHPUnit\Framework\TestCase;
+
+final class SomeTest extends TestCase
+{
+    /**
+     * @dataProvider provideData()
+     */
+    public function test()
+    {
+    }
+
+    public static function provideData()
+    {
+        yield [1];
+    }
+}
+CODE_SAMPLE
+            ),
+        ]);
     }
 
     /**
@@ -92,22 +88,19 @@ CODE_SAMPLE
             return null;
         }
 
+        // 1. find all data providers
+        $dataProviderClassMethods = $this->dataProviderClassMethodFinder->find($node);
+
         $hasChanged = false;
 
-        $dataProviderClassMethods = $this->dataProviderClassMethodFinder->find($node);
         foreach ($dataProviderClassMethods as $dataProviderClassMethod) {
-            if (! $this->isName($dataProviderClassMethod, 'test*')) {
+            if ($dataProviderClassMethod->isStatic()) {
                 continue;
             }
 
-            $shortMethodName = Strings::substring($dataProviderClassMethod->name->toString(), 4);
-            $shortMethodName = lcfirst($shortMethodName);
-
-            $dataProviderClassMethod->name = new Identifier($shortMethodName);
+            $this->visibilityManipulator->makeStatic($dataProviderClassMethod);
             $hasChanged = true;
         }
-
-        $this->dataProviderMethodRenamer->removeTestPrefix($node);
 
         if ($hasChanged) {
             return $node;
