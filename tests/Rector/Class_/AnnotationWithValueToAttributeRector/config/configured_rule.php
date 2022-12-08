@@ -14,9 +14,6 @@ return static function (RectorConfig $rectorConfig): void {
             'enabled' => true,
             'disabled' => false,
         ]),
-    ]);
-
-    $rectorConfig->ruleWithConfiguration(AnnotationWithValueToAttributeRector::class, [
         new AnnotationWithValueToAttribute('dataProvider', 'PHPUnit\Framework\Attributes\DataProvider'),
     ]);
 };
