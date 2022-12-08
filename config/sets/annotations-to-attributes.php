@@ -6,9 +6,12 @@ use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\PHPUnit\Rector\Class_\AnnotationWithValueToAttributeRector;
+use Rector\PHPUnit\Rector\Class_\CoversAnnotationWithValueToAttributeRector;
 use Rector\PHPUnit\ValueObject\AnnotationWithValueToAttribute;
 
 return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->rules([CoversAnnotationWithValueToAttributeRector::class]);
+
     $rectorConfig->ruleWithConfiguration(AnnotationWithValueToAttributeRector::class, [
         new AnnotationWithValueToAttribute('backupGlobals', 'PHPUnit\Framework\Attributes\BackupGlobals', [
             'enabled' => true,
@@ -31,8 +34,6 @@ return static function (RectorConfig $rectorConfig): void {
         new AnnotationWithValueToAttribute('testWith', 'PHPUnit\Framework\Attributes\TestWith'),
         new AnnotationWithValueToAttribute('testDox', 'PHPUnit\Framework\Attributes\TestDox'),
 
-        // new AnnotationToAttribute('covers', 'PHPUnit\Framework\Attributes\CoversClass'),
-        // new AnnotationToAttribute('covers', 'PHPUnit\Framework\Attributes\CoversFunction'),
         // new AnnotationToAttribute('dataProvider', 'PHPUnit\Framework\Attributes\DataProviderExternal'),
 
         // depends

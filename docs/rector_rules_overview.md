@@ -1,4 +1,4 @@
-# 43 Rules Overview
+# 45 Rules Overview
 
 ## AddDoesNotPerformAssertionToNonAssertingTestRector
 
@@ -63,6 +63,47 @@ Add `@see` annotation test of the class for faster jump to test. Make it FQN, so
  use PHPUnit\Framework\TestCase;
 
  class SomeServiceTest extends TestCase
+ {
+ }
+```
+
+<br>
+
+## AnnotationWithValueToAttributeRector
+
+Change annotations with value to attribute
+
+:wrench: **configure it!**
+
+- class: [`Rector\PHPUnit\Rector\Class_\AnnotationWithValueToAttributeRector`](../src/Rector/Class_/AnnotationWithValueToAttributeRector.php)
+
+```php
+use Rector\Config\RectorConfig;
+use Rector\PHPUnit\Rector\Class_\AnnotationWithValueToAttributeRector;
+use Rector\PHPUnit\ValueObject\AnnotationWithValueToAttribute;
+
+return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->ruleWithConfiguration(
+        AnnotationWithValueToAttributeRector::class,
+        [new AnnotationWithValueToAttribute('backupGlobals', 'PHPUnit\Framework\Attributes\BackupGlobals', [
+            true,
+            false,
+        ])]
+    );
+};
+```
+
+↓
+
+```diff
+ use PHPUnit\Framework\TestCase;
++use PHPUnit\Framework\Attributes\BackupGlobals;
+
+-/**
+- * @backupGlobals enabled
+- */
++#[BackupGlobals(true)]
+ final class SomeTest extends TestCase
  {
  }
 ```
@@ -417,6 +458,35 @@ Change `__construct()` method in tests of `PHPUnit\Framework\TestCase` to `setUp
 +
          $this->someValue = 1000;
 -        parent::__construct($name, $data, $dataName);
+     }
+ }
+```
+
+<br>
+
+## CoversAnnotationWithValueToAttributeRector
+
+Change covers annotations with value to attribute
+
+- class: [`Rector\PHPUnit\Rector\Class_\CoversAnnotationWithValueToAttributeRector`](../src/Rector/Class_/CoversAnnotationWithValueToAttributeRector.php)
+
+```diff
+ use PHPUnit\Framework\TestCase;
++use PHPUnit\Framework\Attributes\CoversClass;
++use PHPUnit\Framework\Attributes\CoversFunction;
+
+-/**
+- * @covers SomeClass
+- */
++#[CoversClass(SomeClass::class)]
+ final class SomeTest extends TestCase
+ {
+-    /**
+-     * @covers ::someFunction
+-     */
++    #[CoversFunction('someFunction')]
+     public function test()
+     {
      }
  }
 ```
