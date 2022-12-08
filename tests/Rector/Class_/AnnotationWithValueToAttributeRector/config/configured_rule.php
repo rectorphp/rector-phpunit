@@ -10,13 +10,9 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->import(__DIR__ . '/../../../../../config/config.php');
 
     $rectorConfig->ruleWithConfiguration(AnnotationWithValueToAttributeRector::class, [
-        new AnnotationWithValueToAttribute(
-            'backupGlobals',
-            'PHPUnit\Framework\Attributes\BackupGlobals',
-            [
-                'enabled' => true,
-                'disabled' => false,
-            ]
-        ),
+        new AnnotationWithValueToAttribute('backupGlobals', 'PHPUnit\Framework\Attributes\BackupGlobals', [
+            'enabled' => true,
+            'disabled' => false,
+        ]),
     ]);
 };
