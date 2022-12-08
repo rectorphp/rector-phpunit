@@ -90,10 +90,10 @@ CODE_SAMPLE
 
             foreach ($desiredTagValueNodes as $desiredTagValueNode) {
                 if ($desiredTagValueNode->value instanceof GenericTagValueNode) {
-                    $originalValue = $desiredTagValueNode->value->value;
-                    $originalValue = strtolower($originalValue);
-
-                    $attributeValue = $annotationWithValueToAttribute->getValueMap()[$originalValue];
+                    $attributeValue = $this->resolveAttributeValue(
+                        $desiredTagValueNode->value,
+                        $annotationWithValueToAttribute
+                    );
 
                     $hasChanged = true;
 
@@ -125,5 +125,19 @@ CODE_SAMPLE
         Assert::allIsInstanceOf($configuration, AnnotationWithValueToAttribute::class);
 
         $this->annotationWithValueToAttributes = $configuration;
+    }
+
+    private function resolveAttributeValue(
+        GenericTagValueNode $genericTagValueNode,
+        AnnotationWithValueToAttribute $annotationWithValueToAttribute
+    ): mixed {
+        $valueMap = $annotationWithValueToAttribute->getValueMap();
+        if ($valueMap === []) {
+            // no map? convert value as it is
+            return $genericTagValueNode->value;
+        }
+
+        $originalValue = strtolower($genericTagValueNode->value);
+        return $valueMap[$originalValue];
     }
 }

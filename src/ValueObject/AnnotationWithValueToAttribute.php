@@ -12,7 +12,7 @@ final class AnnotationWithValueToAttribute
     public function __construct(
         private readonly string $annotationName,
         private readonly string $attributeClass,
-        private readonly array $valueMap
+        private readonly array $valueMap = []
     ) {
     }
 
