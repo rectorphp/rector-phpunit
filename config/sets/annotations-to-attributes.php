@@ -10,16 +10,19 @@ use Rector\PHPUnit\ValueObject\AnnotationWithValueToAttribute;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(AnnotationWithValueToAttributeRector::class, [
-        new AnnotationWithValueToAttribute(
-            'backupGlobals',
-            'PHPUnit\Framework\Attributes\BackupGlobals',
-            [
-                'enabled' => true,
-                'disabled' => false,
-            ]
-        ),
+        new AnnotationWithValueToAttribute('backupGlobals', 'PHPUnit\Framework\Attributes\BackupGlobals', [
+            'enabled' => true,
+            'disabled' => false,
+        ]),
+        new AnnotationWithValueToAttribute('backupStaticAttributes', 'PHPUnit\Framework\Attributes\BackupStaticProperties', [
+            'enabled' => true,
+            'disabled' => false,
+        ]),
+        new AnnotationWithValueToAttribute('preserveGlobalState', 'PHPUnit\Framework\Attributes\PreserveGlobalState', [
+            'enabled' => true,
+            'disabled' => false,
+        ]),
 
-        // new AnnotationToAttribute('backupStaticAttributes', 'PHPUnit\Framework\Attributes\BackupStaticProperties'),
         // new AnnotationToAttribute('covers', 'PHPUnit\Framework\Attributes\CoversClass'),
         // new AnnotationToAttribute('covers', 'PHPUnit\Framework\Attributes\CoversFunction'),
         // new AnnotationToAttribute('dataProvider', 'PHPUnit\Framework\Attributes\DataProvider'),
@@ -67,7 +70,6 @@ return static function (RectorConfig $rectorConfig): void {
         new AnnotationToAttribute('medium', 'PHPUnit\Framework\Attributes\Medium'),
         new AnnotationToAttribute('preCondition', 'PHPUnit\Framework\Attributes\PostCondition'),
         new AnnotationToAttribute('postCondition', 'PHPUnit\Framework\Attributes\PreCondition'),
-        new AnnotationToAttribute('preserveGlobalState', 'PHPUnit\Framework\Attributes\PreserveGlobalState'),
         new AnnotationToAttribute('runInSeparateProcess', 'PHPUnit\Framework\Attributes\RunInSeparateProcess'),
         new AnnotationToAttribute(
             'runTestsInSeparateProcesses',
