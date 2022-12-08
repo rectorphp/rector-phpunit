@@ -8,10 +8,10 @@ use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
-use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
-use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
+use Rector\PHPUnit\NodeFinder\DataProviderClassMethodFinder;
+use Rector\PHPUnit\PhpDoc\DataProviderMethodRenamer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -24,6 +24,8 @@ final class RemoveDataProviderTestPrefixRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly DataProviderClassMethodFinder $dataProviderClassMethodFinder,
+        private readonly DataProviderMethodRenamer $dataProviderMethodRenamer
     ) {
     }
 
@@ -90,84 +92,27 @@ CODE_SAMPLE
             return null;
         }
 
-        $providerMethodNamesToNewNames = $this->renameDataProviderAnnotationsAndCollectRenamedMethods($node);
-        if ($providerMethodNamesToNewNames === []) {
-            return null;
-        }
+        $hasChanged = false;
 
-        $this->renameProviderMethods($node, $providerMethodNamesToNewNames);
-
-        return $node;
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function renameDataProviderAnnotationsAndCollectRenamedMethods(Class_ $class): array
-    {
-        $oldToNewMethodNames = [];
-
-        foreach ($class->getMethods() as $classMethod) {
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-
-            $dataProviderTagValueNodes = $phpDocInfo->getTagsByName('dataProvider');
-            if ($dataProviderTagValueNodes === []) {
+        $dataProviderClassMethods = $this->dataProviderClassMethodFinder->find($node);
+        foreach ($dataProviderClassMethods as $dataProviderClassMethod) {
+            if (! $this->isName($dataProviderClassMethod, 'test*')) {
                 continue;
             }
 
-            foreach ($dataProviderTagValueNodes as $dataProviderTagValueNode) {
-                if (! $dataProviderTagValueNode->value instanceof GenericTagValueNode) {
-                    continue;
-                }
+            $shortMethodName = Strings::substring($dataProviderClassMethod->name->toString(), 4);
+            $shortMethodName = lcfirst($shortMethodName);
 
-                $oldMethodName = $dataProviderTagValueNode->value->value;
-
-                if (! \str_starts_with($oldMethodName, 'test')) {
-                    continue;
-                }
-
-                $newMethodName = $this->createNewMethodName($oldMethodName);
-
-                $dataProviderTagValueNode->value->value = Strings::replace(
-                    $oldMethodName,
-                    '#' . preg_quote($oldMethodName, '#') . '#',
-                    $newMethodName
-                );
-
-                // invoke reprint
-                $dataProviderTagValueNode->setAttribute(PhpDocAttributeKey::START_AND_END, null);
-
-                $phpDocInfo->markAsChanged();
-
-                $oldMethodNameWithoutBrackets = rtrim($oldMethodName, '()');
-                $newMethodWithoutBrackets = $this->createNewMethodName($oldMethodNameWithoutBrackets);
-                $oldToNewMethodNames[$oldMethodNameWithoutBrackets] = $newMethodWithoutBrackets;
-            }
+            $dataProviderClassMethod->name = new Identifier($shortMethodName);
+            $hasChanged = true;
         }
 
-        return $oldToNewMethodNames;
-    }
+        $this->dataProviderMethodRenamer->removeTestPrefix($node);
 
-    /**
-     * @param array<string, string> $oldToNewMethodsNames
-     */
-    private function renameProviderMethods(Class_ $class, array $oldToNewMethodsNames): void
-    {
-        foreach ($class->getMethods() as $classMethod) {
-            foreach ($oldToNewMethodsNames as $oldName => $newName) {
-                if (! $this->isName($classMethod, $oldName)) {
-                    continue;
-                }
-
-                $classMethod->name = new Identifier($newName);
-            }
+        if ($hasChanged) {
+            return $node;
         }
-    }
 
-    private function createNewMethodName(string $oldMethodName): string
-    {
-        $newMethodName = Strings::substring($oldMethodName, strlen('test'));
-
-        return lcfirst($newMethodName);
+        return null;
     }
 }
