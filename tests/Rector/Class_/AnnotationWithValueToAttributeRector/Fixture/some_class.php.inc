@@ -6,6 +6,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @backupGlobals enabled
+ * @backupGlobals ENABLED
+ * @backupGlobals disabled
+ * @backupGlobals DISABLED
  */
 final class SomeTest extends TestCase
 {
@@ -20,6 +23,9 @@ namespace Rector\PHPUnit\Tests\Rector\Class_\AnnotationWithValueToAttributeRecto
 use PHPUnit\Framework\TestCase;
 
 #[\PHPUnit\Framework\Attributes\BackupGlobals(true)]
+#[\PHPUnit\Framework\Attributes\BackupGlobals(true)]
+#[\PHPUnit\Framework\Attributes\BackupGlobals(false)]
+#[\PHPUnit\Framework\Attributes\BackupGlobals(false)]
 final class SomeTest extends TestCase
 {
 }

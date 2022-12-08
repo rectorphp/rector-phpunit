@@ -6,6 +6,7 @@ use Rector\Config\RectorConfig;
 use Rector\PHPUnit\Rector\Class_\StaticDataProviderClassMethodRector;
 
 return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->import(__DIR__ . '/annotations-to-attributes.php');
+
     $rectorConfig->rules([StaticDataProviderClassMethodRector::class]);
-    $rectorConfig->rule(\Rector\PHPUnit\Rector\Class_\AnnotationWithValueToAttributeRector::class);
 };

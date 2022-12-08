@@ -91,6 +91,7 @@ CODE_SAMPLE
             foreach ($desiredTagValueNodes as $desiredTagValueNode) {
                 if ($desiredTagValueNode->value instanceof GenericTagValueNode) {
                     $originalValue = $desiredTagValueNode->value->value;
+                    $originalValue = strtolower($originalValue);
 
                     $attributeValue = $annotationWithValueToAttribute->getValueMap()[$originalValue];
 
