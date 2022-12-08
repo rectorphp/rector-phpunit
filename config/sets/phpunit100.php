@@ -7,4 +7,5 @@ use Rector\PHPUnit\Rector\Class_\StaticDataProviderClassMethodRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([StaticDataProviderClassMethodRector::class]);
+    $rectorConfig->rule(\Rector\PHPUnit\Rector\Class_\AnnotationWithValueToAttributeRector::class);
 };
