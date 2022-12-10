@@ -7,10 +7,22 @@ use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\PHPUnit\Rector\Class_\AnnotationWithValueToAttributeRector;
 use Rector\PHPUnit\Rector\Class_\CoversAnnotationWithValueToAttributeRector;
+use Rector\PHPUnit\Rector\ClassMethod\DependsAnnotationWithValueToAttributeRector;
 use Rector\PHPUnit\ValueObject\AnnotationWithValueToAttribute;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([CoversAnnotationWithValueToAttributeRector::class]);
+    $rectorConfig->rules([
+        CoversAnnotationWithValueToAttributeRector::class,
+
+        /**
+         * Currently handle:
+         *      - @depends Methodname
+         *
+         * Todo:
+         *      - @depends Class::MethodName
+         */
+        DependsAnnotationWithValueToAttributeRector::class,
+    ]);
 
     $rectorConfig->ruleWithConfiguration(AnnotationWithValueToAttributeRector::class, [
         new AnnotationWithValueToAttribute('backupGlobals', 'PHPUnit\Framework\Attributes\BackupGlobals', [
