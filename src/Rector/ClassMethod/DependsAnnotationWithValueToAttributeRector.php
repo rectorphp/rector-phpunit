@@ -115,9 +115,8 @@ CODE_SAMPLE
                 continue;
             }
 
-            $attributeClass = 'PHPUnit\Framework\Attributes\Depends';
             $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
-                $attributeClass,
+                'PHPUnit\Framework\Attributes\Depends',
                 [$attributeValue]
             );
             $node->attrGroups[] = $attributeGroup;
