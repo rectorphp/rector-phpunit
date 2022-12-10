@@ -20,6 +20,7 @@ return static function (RectorConfig $rectorConfig): void {
          *
          * Todo:
          *      - @depends Class::MethodName
+         *      - @depends clone, !clone, shallowClone, !shallowClone
          */
         DependsAnnotationWithValueToAttributeRector::class,
     ]);
