@@ -5,9 +5,16 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
+use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -16,6 +23,13 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DependsAnnotationWithValueToAttributeRector extends AbstractRector
 {
+    public function __construct(
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
+        private readonly PhpDocTagRemover $phpDocTagRemover
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change depends annotations with value to attribute', [
@@ -69,8 +83,50 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
+            return null;
+        }
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
         if (! $phpDocInfo instanceof PhpDocInfo) {
+            return null;
+        }
+
+        /** @var PhpDocTagNode[] $desiredTagValueNodes */
+        $desiredTagValueNodes = $phpDocInfo->getTagsByName('depends');
+        if ($desiredTagValueNodes === []) {
+            return null;
+        }
+
+        $currentClass = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $currentClass instanceof Class_) {
+            return null;
+        }
+
+        foreach ($desiredTagValueNodes as $desiredTagValueNode) {
+            if (! $desiredTagValueNode->value instanceof GenericTagValueNode) {
+                continue;
+            }
+
+            $attributeValue = $desiredTagValueNode->value->value;
+            $classMethod = $currentClass->getMethod($attributeValue);
+
+            if (! $classMethod instanceof ClassMethod) {
+                continue;
+            }
+
+            $attributeClass = 'PHPUnit\Framework\Attributes\Depends';
+            $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
+                $attributeClass,
+                [$attributeValue]
+            );
+            $node->attrGroups[] = $attributeGroup;
+
+            // cleanup
+            $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
+        }
+
+        if (! $phpDocInfo->hasChanged()) {
             return null;
         }
 
