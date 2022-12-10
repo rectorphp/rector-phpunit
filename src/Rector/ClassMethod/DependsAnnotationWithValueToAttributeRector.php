@@ -27,7 +27,6 @@ final class SomeTest extends TestCase
 {
     public function testOne() {}
     public function testTwo() {}
-
     /**
      * @depends testOne
      * @depends testTwo
@@ -46,11 +45,8 @@ final class SomeTest extends TestCase
 {
     public function testOne() {}
     public function testTwo() {}
-
-    /**
-     * @depends testOne
-     * @depends testTwo
-     */
+    #[\PHPUnit\Framework\Attributes\Depends('testOne')]
+    #[\PHPUnit\Framework\Attributes\Depends('testTwo')]
     public function testThree(): void
     {
     }
