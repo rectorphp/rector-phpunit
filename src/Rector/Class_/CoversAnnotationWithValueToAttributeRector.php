@@ -13,6 +13,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
+use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -23,7 +24,8 @@ final class CoversAnnotationWithValueToAttributeRector extends AbstractRector
 {
     public function __construct(
         private readonly PhpDocTagRemover $phpDocTagRemover,
-        private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory
+        private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 
@@ -80,6 +82,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
+            return null;
+        }
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return null;
