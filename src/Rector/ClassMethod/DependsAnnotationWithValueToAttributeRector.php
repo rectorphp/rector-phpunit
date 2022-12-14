@@ -103,15 +103,27 @@ CODE_SAMPLE
             return null;
         }
 
+        $currentMethodName = $this->getName($node);
         foreach ($desiredTagValueNodes as $desiredTagValueNode) {
             if (! $desiredTagValueNode->value instanceof GenericTagValueNode) {
                 continue;
             }
 
-            $attributeValue = $desiredTagValueNode->value->value;
-            $classMethod = $currentClass->getMethod($attributeValue);
+            $originalAttributeValue = $desiredTagValueNode->value->value;
 
-            if (! $classMethod instanceof ClassMethod) {
+            // process depends other ClassMethod
+            $attributeValue = $this->resolveDependsClassMethod(
+                $currentClass,
+                $currentMethodName,
+                $originalAttributeValue
+            );
+
+            if (! is_string($attributeValue)) {
+                // other: depends other Class_
+                $attributeValue = $this->resolveDependsClass($originalAttributeValue);
+            }
+
+            if (! is_string($attributeValue)) {
                 continue;
             }
 
@@ -130,5 +142,33 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function resolveDependsClass(string $attributeValue): ?string
+    {
+        if (! str_ends_with($attributeValue, '::class')) {
+            return null;
+        }
+
+        $className = substr($attributeValue, 0, -7);
+        return $className . '::class';
+    }
+
+    private function resolveDependsClassMethod(
+        Class_ $currentClass,
+        string $currentMethodName,
+        string $attributeValue
+    ): ?string {
+        if ($currentMethodName === $attributeValue) {
+            return null;
+        }
+
+        $classMethod = $currentClass->getMethod($attributeValue);
+
+        if (! $classMethod instanceof ClassMethod) {
+            return null;
+        }
+
+        return $attributeValue;
     }
 }
