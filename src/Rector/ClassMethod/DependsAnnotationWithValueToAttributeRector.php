@@ -110,7 +110,6 @@ CODE_SAMPLE
             }
 
             $originalAttributeValue = $desiredTagValueNode->value->value;
-
             // process depends other ClassMethod
             $attributeValue = $this->resolveDependsClassMethod(
                 $currentClass,
@@ -118,9 +117,11 @@ CODE_SAMPLE
                 $originalAttributeValue
             );
 
+            $attributeName = 'PHPUnit\Framework\Attributes\Depends';
             if (! is_string($attributeValue)) {
                 // other: depends other Class_
                 $attributeValue = $this->resolveDependsClass($originalAttributeValue);
+                $attributeName = 'PHPUnit\Framework\Attributes\DependsOnClass';
             }
 
             if (! is_string($attributeValue)) {
@@ -128,7 +129,7 @@ CODE_SAMPLE
             }
 
             $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
-                'PHPUnit\Framework\Attributes\Depends',
+                $attributeName,
                 [$attributeValue]
             );
             $node->attrGroups[] = $attributeGroup;
