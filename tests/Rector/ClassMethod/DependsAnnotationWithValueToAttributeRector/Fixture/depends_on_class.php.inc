@@ -24,7 +24,7 @@ use Rector\PHPUnit\Tests\Rector\ClassMethod\DependsAnnotationWithValueToAttribut
 
 class DependsOnClass extends \PHPUnit\Framework\TestCase
 {
-    #[\PHPUnit\Framework\Attributes\Depends(AnotherTest::class)]
+    #[\PHPUnit\Framework\Attributes\DependsOnClass(AnotherTest::class)]
     public function test(): void
     {
     }
