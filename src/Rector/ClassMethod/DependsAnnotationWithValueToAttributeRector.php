@@ -110,27 +110,19 @@ CODE_SAMPLE
             }
 
             $originalAttributeValue = $desiredTagValueNode->value->value;
-            // process depends other ClassMethod
-            $attributeValue = $this->resolveDependsClassMethod(
+            $attributeNameAndValue = $this->resolveAttributeValueAndAttributeName(
                 $currentClass,
                 $currentMethodName,
                 $originalAttributeValue
             );
 
-            $attributeName = 'PHPUnit\Framework\Attributes\Depends';
-            if (! is_string($attributeValue)) {
-                // other: depends other Class_
-                $attributeValue = $this->resolveDependsClass($originalAttributeValue);
-                $attributeName = 'PHPUnit\Framework\Attributes\DependsOnClass';
-            }
-
-            if (! is_string($attributeValue)) {
+            if ($attributeNameAndValue === null) {
                 continue;
             }
 
             $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
-                $attributeName,
-                [$attributeValue]
+                $attributeNameAndValue[0],
+                [$attributeNameAndValue[1]]
             );
             $node->attrGroups[] = $attributeGroup;
 
@@ -143,6 +135,45 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    /**
+     * @return string[]|null
+     */
+    private function resolveAttributeValueAndAttributeName(
+        Class_ $currentClass,
+        string $currentMethodName,
+        string $originalAttributeValue
+    ): ?array {
+        // process depends other ClassMethod
+        $attributeValue = $this->resolveDependsClassMethod(
+            $currentClass,
+            $currentMethodName,
+            $originalAttributeValue
+        );
+
+        $attributeName = 'PHPUnit\Framework\Attributes\Depends';
+        if (! is_string($attributeValue)) {
+            // other: depends other Class_
+            $attributeValue = $this->resolveDependsClass($originalAttributeValue);
+            $attributeName = 'PHPUnit\Framework\Attributes\DependsOnClass';
+        }
+
+        if (! is_string($attributeValue)) {
+            // other: depends clone ClassMethod
+            $attributeValue = $this->resolveDependsCloneClassMethod(
+                $currentClass,
+                $currentMethodName,
+                $originalAttributeValue
+            );
+            $attributeName = 'PHPUnit\Framework\Attributes\DependsUsingDeepClone';
+        }
+
+        if (! is_string($attributeValue)) {
+            return null;
+        }
+
+        return [$attributeName, $attributeValue];
     }
 
     private function resolveDependsClass(string $attributeValue): ?string
@@ -160,6 +191,29 @@ CODE_SAMPLE
         string $currentMethodName,
         string $attributeValue
     ): ?string {
+        if ($currentMethodName === $attributeValue) {
+            return null;
+        }
+
+        $classMethod = $currentClass->getMethod($attributeValue);
+
+        if (! $classMethod instanceof ClassMethod) {
+            return null;
+        }
+
+        return $attributeValue;
+    }
+
+    private function resolveDependsCloneClassMethod(
+        Class_ $currentClass,
+        string $currentMethodName,
+        string $attributeValue
+    ): ?string {
+        if (! str_starts_with($attributeValue, 'clone ')) {
+            return null;
+        }
+
+        [, $attributeValue] = explode('clone ', $attributeValue);
         if ($currentMethodName === $attributeValue) {
             return null;
         }
