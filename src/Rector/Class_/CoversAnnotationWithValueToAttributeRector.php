@@ -12,15 +12,17 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\PHPUnit\Tests\Rector\Class_\CoversAnnotationWithValueToAttributeRector\CoversAnnotationWithValueToAttributeRectorTest
  */
-final class CoversAnnotationWithValueToAttributeRector extends AbstractRector
+final class CoversAnnotationWithValueToAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly PhpDocTagRemover $phpDocTagRemover,
@@ -75,6 +77,11 @@ CODE_SAMPLE
     public function getNodeTypes(): array
     {
         return [Class_::class, ClassMethod::class];
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::ATTRIBUTES;
     }
 
     /**
