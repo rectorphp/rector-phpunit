@@ -36,7 +36,7 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
             new FunctionNameWithAssertMethods('array_search', 'assertContains', 'assertNotContains'),
             new FunctionNameWithAssertMethods('in_array', 'assertContains', 'assertNotContains'),
             new FunctionNameWithAssertMethods('empty', 'assertEmpty', 'assertNotEmpty'),
-            new FunctionNameWithAssertMethods('file_exists', 'assertFileExists', 'assertFileNotExists'),
+            new FunctionNameWithAssertMethods('file_exists', 'assertFileExists', 'assertFileDoesNotExist'),
             new FunctionNameWithAssertMethods('is_dir', 'assertDirectoryExists', 'assertDirectoryNotExists'),
             new FunctionNameWithAssertMethods('is_infinite', 'assertInfinite', 'assertFinite'),
             new FunctionNameWithAssertMethods('is_null', 'assertNull', 'assertNotNull'),
