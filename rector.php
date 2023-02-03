@@ -33,6 +33,7 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/config/config.php',
         LevelSetList::UP_TO_PHP_81,
         SetList::DEAD_CODE,
+        \Rector\PHPUnit\Set\PHPUnitSetList::PHPUNIT_100,
         SetList::CODE_QUALITY,
         SetList::CODING_STYLE,
         SetList::EARLY_RETURN,

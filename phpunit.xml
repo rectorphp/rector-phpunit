@@ -7,6 +7,8 @@
     <testsuites>
         <testsuite name="main">
             <directory>tests</directory>
+            <exclude>tests/Rector/Class_/AddSeeTestAnnotationRector/Source</exclude>
+            <exclude>tests/Rector/ClassMethod/DependsAnnotationWithValueToAttributeRector/Source</exclude>
         </testsuite>
     </testsuites>
 </phpunit>
