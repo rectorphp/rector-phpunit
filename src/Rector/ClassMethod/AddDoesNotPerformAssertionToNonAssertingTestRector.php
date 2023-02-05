@@ -110,7 +110,10 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->phpAttributeAnalyzer->hasPhpAttribute($classMethod, 'PHPUnit\Framework\Attributes\DoesNotPerformAssertions')) {
+        if ($this->phpAttributeAnalyzer->hasPhpAttribute(
+            $classMethod,
+            'PHPUnit\Framework\Attributes\DoesNotPerformAssertions'
+        )) {
             return true;
         }
 
