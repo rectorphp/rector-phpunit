@@ -93,49 +93,10 @@ CODE_SAMPLE
             return null;
         }
 
-        // resolve covers class first
-        $classPhpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+        $coversClassAttributeGroups = $this->resolveCoversClassAttributeGroups($node);
+        $coversFunctionsAttributeGroups = $this->resolveCoversFunctionAttributeGroups($node);
 
-        $attributeGroups = [];
-
-        if ($classPhpDocInfo instanceof PhpDocInfo) {
-            /** @var PhpDocTagNode[] $desiredTagValueNodes */
-            $desiredTagValueNodes = $classPhpDocInfo->getTagsByName('covers');
-
-            foreach ($desiredTagValueNodes as $desiredTagValueNode) {
-                if (! $desiredTagValueNode->value instanceof GenericTagValueNode) {
-                    continue;
-                }
-
-                $attributeGroups[] = $this->createAttributeGroup($desiredTagValueNode->value->value);
-
-                // cleanup
-                $this->phpDocTagRemover->removeTagValueFromNode($classPhpDocInfo, $desiredTagValueNode);
-            }
-        }
-
-        // resolve covers function
-        foreach ($node->getMethods() as $classMethod) {
-            $classMethodPhpDocInfo = $this->phpDocInfoFactory->createFromNode($classMethod);
-            if (! $classMethodPhpDocInfo instanceof PhpDocInfo) {
-                continue;
-            }
-
-            /** @var PhpDocTagNode[] $desiredTagValueNodes */
-            $desiredTagValueNodes = $classMethodPhpDocInfo->getTagsByName('covers');
-
-            foreach ($desiredTagValueNodes as $desiredTagValueNode) {
-                if (! $desiredTagValueNode->value instanceof GenericTagValueNode) {
-                    continue;
-                }
-
-                $attributeGroups[] = $this->createAttributeGroup($desiredTagValueNode->value->value);
-
-                // cleanup
-                $this->phpDocTagRemover->removeTagValueFromNode($classMethodPhpDocInfo, $desiredTagValueNode);
-            }
-        }
-
+        $attributeGroups = array_merge($coversClassAttributeGroups, $coversFunctionsAttributeGroups);
         if ($attributeGroups === []) {
             return null;
         }
@@ -156,5 +117,67 @@ CODE_SAMPLE
         }
 
         return $this->phpAttributeGroupFactory->createFromClassWithItems($attributeClass, [$attributeValue]);
+    }
+
+    /**
+     * @return AttributeGroup[]
+     */
+    private function resolveCoversClassAttributeGroups(Class_ $class): array
+    {
+        // resolve covers class first
+        $classPhpDocInfo = $this->phpDocInfoFactory->createFromNode($class);
+        if (! $classPhpDocInfo instanceof PhpDocInfo) {
+            return [];
+        }
+
+        $attributeGroups = [];
+
+        /** @var PhpDocTagNode[] $desiredTagValueNodes */
+        $desiredTagValueNodes = $classPhpDocInfo->getTagsByName('covers');
+
+        foreach ($desiredTagValueNodes as $desiredTagValueNode) {
+            if (! $desiredTagValueNode->value instanceof GenericTagValueNode) {
+                continue;
+            }
+
+            $attributeGroups[] = $this->createAttributeGroup($desiredTagValueNode->value->value);
+
+            // cleanup
+            $this->phpDocTagRemover->removeTagValueFromNode($classPhpDocInfo, $desiredTagValueNode);
+        }
+
+        return $attributeGroups;
+    }
+
+    /**
+     * @return AttributeGroup[]
+     */
+    private function resolveCoversFunctionAttributeGroups(Class_ $class): array
+    {
+        $attributeGroups = [];
+
+        // resolve covers function
+        foreach ($class->getMethods() as $classMethod) {
+            $classMethodPhpDocInfo = $this->phpDocInfoFactory->createFromNode($classMethod);
+            if (! $classMethodPhpDocInfo instanceof PhpDocInfo) {
+                continue;
+            }
+
+            /** @var PhpDocTagNode[] $desiredTagValueNodes */
+            $desiredTagValueNodes = $classMethodPhpDocInfo->getTagsByName('covers');
+
+            foreach ($desiredTagValueNodes as $desiredTagValueNode) {
+                if (! $desiredTagValueNode->value instanceof GenericTagValueNode) {
+                    continue;
+                }
+
+                $attributeGroups[] = $this->createAttributeGroup($desiredTagValueNode->value->value);
+
+                // cleanup
+                $this->phpDocTagRemover->removeTagValueFromNode($classMethodPhpDocInfo, $desiredTagValueNode);
+            }
+        }
+
+        return $attributeGroups;
     }
 }
