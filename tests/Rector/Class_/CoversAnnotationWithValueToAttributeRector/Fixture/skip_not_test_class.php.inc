@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\Class_\AnnotationWithValueToAttributeRector\Fixture;
+namespace Rector\PHPUnit\Tests\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
