@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Namespace_;
+use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -24,6 +25,7 @@ final class RemoveTestSuffixFromAbstractTestClassesRector extends AbstractRector
     public function __construct(
         private readonly NeighbourClassLikePrinter $neighbourClassLikePrinter,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
     ) {
     }
 
@@ -85,11 +87,16 @@ CODE_SAMPLE
             return null;
         }
 
+        $oldClassName = $this->getName($node);
+
         // rename class
         $testCaseClassName = $node->name->toString() . 'Case';
         $node->name = new Identifier($testCaseClassName);
 
         $this->printNewNodes($node);
+
+        // to rename all other references
+        $this->renamedClassesDataCollector->addOldToNewClass($oldClassName, $oldClassName . 'Case');
 
         return $node;
     }

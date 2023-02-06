@@ -23,6 +23,8 @@ final class RemoveTestSuffixFromAbstractTestClassesRectorTest extends AbstractRe
             __DIR__ . '/Fixture/ExtendsTestCase.php',
             FileSystem::read(__DIR__ . '/Expected/ExtendsTestCase.php')
         );
+
+        $this->doTestFile(__DIR__ . '/Fixture/follow_up_parent_class_name_change.php.inc');
     }
 
     public static function provideData(): Iterator
