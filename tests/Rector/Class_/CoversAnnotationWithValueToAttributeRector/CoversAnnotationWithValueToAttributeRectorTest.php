@@ -16,9 +16,6 @@ final class CoversAnnotationWithValueToAttributeRectorTest extends AbstractRecto
         $this->doTestFile($filePath);
     }
 
-    /**
-     * @return Iterator<string>
-     */
     public static function provideData(): Iterator
     {
         return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');

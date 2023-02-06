@@ -12,6 +12,7 @@ parameters:
     excludePaths:
         - */Source/*
         - *Source/*
+        - */Fixture/*
 
     reportUnmatchedIgnoredErrors: false
 

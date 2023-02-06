@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\Class_\AnnotationWithValueToAttributeRector\Fixture;
+namespace Rector\PHPUnit\Tests\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
@@ -18,13 +18,13 @@ final class CoversFunction extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\Class_\AnnotationWithValueToAttributeRector\Fixture;
+namespace Rector\PHPUnit\Tests\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\CoversFunction('someFunction')]
 final class CoversFunction extends TestCase
 {
-    #[\PHPUnit\Framework\Attributes\CoversFunction('someFunction')]
     public function test()
     {
     }
