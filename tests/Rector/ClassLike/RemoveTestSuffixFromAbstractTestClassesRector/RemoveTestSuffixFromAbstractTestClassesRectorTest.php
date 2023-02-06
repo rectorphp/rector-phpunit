@@ -6,38 +6,28 @@ namespace Rector\PHPUnit\Tests\Rector\ClassLike\RemoveTestSuffixFromAbstractTest
 
 use Iterator;
 use Nette\Utils\FileSystem;
-use Rector\FileSystemRector\ValueObject\AddedFileWithContent;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Webmozart\Assert\Assert;
 
 final class RemoveTestSuffixFromAbstractTestClassesRectorTest extends AbstractRectorTestCase
 {
-    /**
-     * @dataProvider provideData()
-     */
-    public function test(string $filePath): void
+    public function testNoChanges(): void
     {
-        $this->doTestFile($filePath);
-
-        Assert::string($this->originalTempFilePath);
-        $originalDirectory = dirname($this->originalTempFilePath);
-
-        $expectedAddedFileWithContent = new AddedFileWithContent(
-            $originalDirectory . '/ReplaceAbstractClassWithSuffixTestCase.php',
-            FileSystem::read(__DIR__ . '/Fixture/replace_abstract_class_with_suffix_test.php.inc')
-        );
-        $this->assertFileWasAdded($expectedAddedFileWithContent);
-
-//        $expectedAddedFileWithContent = new AddedFileWithContent(
-//            $originalDirectory . '/SkipAbstractClassWithoutSuffix.php',
-//            FileSystem::read(__DIR__ . '/Fixture/skip_abstract_class_without_suffix.php.inc')
-//        );
-//        $this->assertFileWasAdded($expectedAddedFileWithContent);
+        $this->doTestFile(__DIR__ . '/Fixture/skip_abstract_class_without_suffix.php.inc');
     }
 
-    public function provideData(): Iterator
+    public function testChanges(): void
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture');
+        $this->doTestFile(__DIR__ . '/Fixture/extends_test.php.inc');
+
+        $this->assertFileWasAdded(
+            __DIR__ . '/Fixture/ExtendsTestCase.php',
+            FileSystem::read(__DIR__ . '/Expected/ExtendsTestCase.php')
+        );
+    }
+
+    public static function provideData(): Iterator
+    {
+        return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');
     }
 
     public function provideConfigFilePath(): string

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
+use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 
@@ -16,6 +17,7 @@ return static function (RectorConfig $rectorConfig): void {
         // for tests
         '*/Source/*',
         '*/Fixture/*',
+        '*/Expected/*',
 
         // object types
         StringClassNameToClassConstantRector::class => [
@@ -33,7 +35,7 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/config/config.php',
         LevelSetList::UP_TO_PHP_81,
         SetList::DEAD_CODE,
-        \Rector\PHPUnit\Set\PHPUnitSetList::PHPUNIT_100,
+        PHPUnitSetList::PHPUNIT_100,
         SetList::CODE_QUALITY,
         SetList::CODING_STYLE,
         SetList::EARLY_RETURN,

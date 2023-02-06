@@ -5,42 +5,55 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\Rector\ClassLike;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt\ClassLike;
-use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Namespace_;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
+use Rector\Symfony\Printer\NeighbourClassLikePrinter;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see Rector\PHPUnit\Tests\Rector\ClassLike\RemoveTestSuffixFromAbstractTestClassesRector\RemoveTestSuffixFromAbstractTestClassesRectorTest
+ * @see \Rector\PHPUnit\Tests\Rector\ClassLike\RemoveTestSuffixFromAbstractTestClassesRector\RemoveTestSuffixFromAbstractTestClassesRectorTest
  */
 final class RemoveTestSuffixFromAbstractTestClassesRector extends AbstractRector
 {
     public function __construct(
-        private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
-    )
-    {
+        private readonly NeighbourClassLikePrinter $neighbourClassLikePrinter,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Rename Suffix for abstract test class as it may not end with directory suffix (default is Test)', [
-            new CodeSample(
-                <<<'CODE_SAMPLE'
-// app/ReplaceAbstractClassWithSuffixTest.php
-abstract class ReplaceAbstractClassWithSuffixTest
+        return new RuleDefinition(
+            'Rename abstract test class suffix from "*Test" to "*TestCase"',
+            [
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
+// tests/AbstractTest.php
+use PHPUnit\Framework\TestCase;
+
+abstract class AbstractTest extends TestCase
 {
 }
 CODE_SAMPLE
-                ,
-                <<<'CODE_SAMPLE'
-// app/ReplaceAbstractClassWithSuffixTestCase.php
-abstract class ReplaceAbstractClassWithSuffixTestCase
+                    ,
+                    <<<'CODE_SAMPLE'
+// tests/AbstractTestCase.php
+use PHPUnit\Framework\TestCase;
+
+abstract class AbstractTestCase extends TestCase
 {
 }
 CODE_SAMPLE
-            ),
-        ]);
+                ),
+
+            ]
+        );
     }
 
     /**
@@ -48,43 +61,48 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassLike::class];
+        return [Class_::class];
     }
 
     /**
-     * @param ClassLike $node
+     * @param Class_ $node
      */
     public function refactor(Node $node): ?Node
     {
-        if (!$node->isAbstract()) {
-            return null;
-        }
-        $directorySuffix = $this->getPhpUnitDirectorySuffix();
-
-        $filePath = $this->file->getFilePath();
-        $basename = pathinfo($filePath, PATHINFO_FILENAME);
-
-        if (!str_ends_with($basename, $directorySuffix)) {
+        if (! $node->isAbstract()) {
             return null;
         }
 
-        $className = $this->getName($node);
-        if ($className === null) {
+        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
             return null;
         }
 
-        $classShortName = $this->nodeNameResolver->getShortName($className);
-        // no match → rename file
-        $newFileLocation = dirname($filePath) . DIRECTORY_SEPARATOR . $classShortName . 'Case.php';
-        $this->removedAndAddedFilesCollector->addMovedFile($this->file, $newFileLocation);
+        if (! $node->name instanceof Identifier) {
+            return null;
+        }
 
+        if (! $this->isName($node->name, '*Test')) {
+            return null;
+        }
 
-        return null;
+        // rename class
+        $testCaseClassName = $node->name->toString() . 'Case';
+        $node->name = new Identifier($testCaseClassName);
+
+        $this->printNewNodes($node);
+
+        return $node;
     }
 
-    private function getPhpUnitDirectorySuffix(): string
+    private function printNewNodes(Class_ $class): void
     {
-        // TODO check in phpunit config if this is different.
-        return 'Test';
+        $filePath = $this->file->getFilePath();
+
+        $parentNode = $class->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof Namespace_) {
+            throw new ShouldNotHappenException();
+        }
+
+        $this->neighbourClassLikePrinter->printClassLike($class, $parentNode, $filePath, $this->file);
     }
 }

@@ -16,7 +16,7 @@ return static function (ECSConfig $ecsConfig): void {
         __DIR__ . '/rector.php',
     ]);
 
-    $ecsConfig->skip(['*/Source/*', '*/Fixture/*']);
+    $ecsConfig->skip(['*/Source/*', '*/Fixture/*', '*/Expected/*']);
 
     $ecsConfig->lineEnding("\n");
 };
