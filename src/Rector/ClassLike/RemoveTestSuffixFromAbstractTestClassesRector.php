@@ -87,6 +87,7 @@ CODE_SAMPLE
             return null;
         }
 
+        /** @var string $oldClassName */
         $oldClassName = $this->getName($node);
 
         // rename class
