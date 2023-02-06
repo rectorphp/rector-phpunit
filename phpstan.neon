@@ -1,10 +1,26 @@
 parameters:
-    level: max
+    level: 8
 
     paths:
         - config
         - src
         - tests
+
+    # reportUnmatchedIgnoredErrors: false
+
+    type_coverage:
+        return_type: 99
+        param_type: 99
+        property_type: 99
+
+    unused_public:
+        methods: true
+        properties: true
+        constants: true
+
+    cognitive_complexity:
+        class: 50
+        function: 9
 
     scanDirectories:
         - stubs
@@ -14,8 +30,6 @@ parameters:
         - *Source/*
         - */Fixture/*
         - */Expected/*
-
-    reportUnmatchedIgnoredErrors: false
 
     ignoreErrors:
         # phpstan false positive
@@ -30,4 +44,7 @@ parameters:
         # rector co-variant
         - '#Parameter \#1 \$node (.*?) of method Rector\\(.*?)\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\PhpRectorInterface\:\:refactor\(\)#'
 
-        - '#Cognitive complexity for "Rector\\PHPUnit\\Rector\\MethodCall\\DelegateExceptionArgumentsRector\:\:refactor\(\)" is 12, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\PHPUnit\\Rector\\ClassMethod\\CreateMockToAnonymousClassRector\:\:refactor\(\)" is 23, keep it under 9#'
+
+        - '#Cognitive complexity for "Rector\\PHPUnit\\Rector\\MethodCall\\DelegateExceptionArgumentsRector\:\:refactor\(\)" is 12, keep it under 9#'
+

@@ -6,6 +6,9 @@ namespace Rector\PHPUnit\Set;
 
 use Rector\Set\Contract\SetListInterface;
 
+/**
+ * @api
+ */
 final class PHPUnitSetList implements SetListInterface
 {
     /**
