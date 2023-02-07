@@ -7,12 +7,17 @@ namespace Rector\PHPUnit\NodeFinder;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
+use PHPStan\Reflection\ClassReflection;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Core\PhpParser\AstResolver;
+use Rector\Core\Reflection\ReflectionResolver;
 
 final class DataProviderClassMethodFinder
 {
     public function __construct(
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly AstResolver $astResolver,
     ) {
     }
 
@@ -21,7 +26,18 @@ final class DataProviderClassMethodFinder
      */
     public function find(Class_ $class): array
     {
-        $dataProviderMethodNames = $this->resolverDataProviderClassMethodNames($class);
+        $parentAbstractClasses = $this->resolveParentAbstractClasses($class);
+        $targetClasses = array_merge([$class], $parentAbstractClasses);
+
+        // foreach to find method names
+        $dataProviderMethodNames = [];
+
+        foreach ($targetClasses as $targetClass) {
+            $dataProviderMethodNames = array_merge(
+                $dataProviderMethodNames,
+                $this->resolverDataProviderClassMethodNames($targetClass)
+            );
+        }
 
         $dataProviderClassMethods = [];
         foreach ($dataProviderMethodNames as $dataProviderMethodName) {
@@ -67,5 +83,30 @@ final class DataProviderClassMethodFinder
     {
         $rawValue = $genericTagValueNode->value;
         return trim($rawValue, '()');
+    }
+
+    /**
+     * @return Class_[]
+     */
+    private function resolveParentAbstractClasses(Class_ $class): array
+    {
+        // resolve from parent one?
+        $classReflection = $this->reflectionResolver->resolveClassReflection($class);
+        if (! $classReflection instanceof ClassReflection) {
+            return [];
+        }
+
+        $parentClasses = [];
+
+        foreach ($classReflection->getParents() as $parentClassReflection) {
+            // is the top parent class? stop
+            if ($parentClassReflection->getName() === 'PHPUnit\Framework\TestCase') {
+                break;
+            }
+
+            $parentClasses[] = $this->astResolver->resolveClassFromClassReflection($parentClassReflection);
+        }
+
+        return $parentClasses;
     }
 }
