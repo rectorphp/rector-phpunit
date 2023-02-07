@@ -715,6 +715,28 @@ Turns getMock*() methods to `createMock()`
 
 <br>
 
+<br>
+
+## PropertyExistsWithoutAssertRector
+
+Turns PHPUnit TestCase `assertObjectHasAttribute` into `property_exists` comparisons
+
+- class: [`Rector\PHPUnit\Rector\MethodCall\PropertyExistsWithoutAssertRector`](../src/Rector/MethodCall/PropertyExistsWithoutAssertRector.php)
+
+```diff
+-$this->assertClassHasAttribute("property", "Class");
+-$this->assertClassNotHasAttribute("property", "Class");
+-$this->assertObjectNotHasAttribute("property", $object);
+-$this->assertObjectHasAttribute("property", $object);
+
++$this->assertFalse(property_exists(new Class, "property"));
++$this->assertTrue(property_exists(new Class, "property"));
++$this->assertFalse(property_exists($object, "property"));
++$this->assertTrue(property_exists($object, "property"));
+```
+
+<br>
+
 ## ProphecyPHPDocRector
 
 Add correct `@var` to ObjectProphecy instances based on `$this->prophesize()` call.
