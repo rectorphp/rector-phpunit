@@ -288,7 +288,6 @@ CODE_SAMPLE
             /** @var string $paramName */
             $paramName = $this->getName($paramAndArg->getVariable());
 
-            /** @var TypeNode $staticTypeNode */
             $staticTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($staticType);
 
             $paramTagValueNode = $this->createParamTagNode($paramName, $staticTypeNode);
