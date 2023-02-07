@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\Tests\Rector\ClassLike\RemoveTestSuffixFromAbstractTestClassesRector;
 
-use Iterator;
 use Nette\Utils\FileSystem;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
@@ -25,11 +24,6 @@ final class RemoveTestSuffixFromAbstractTestClassesRectorTest extends AbstractRe
         );
 
         $this->doTestFile(__DIR__ . '/Fixture/follow_up_parent_class_name_change.php.inc');
-    }
-
-    public static function provideData(): Iterator
-    {
-        return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');
     }
 
     public function provideConfigFilePath(): string
