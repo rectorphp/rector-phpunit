@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Namespace_;
+use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
@@ -26,6 +27,7 @@ final class RemoveTestSuffixFromAbstractTestClassesRector extends AbstractRector
         private readonly NeighbourClassLikePrinter $neighbourClassLikePrinter,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
+        private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector
     ) {
     }
 
@@ -98,6 +100,9 @@ CODE_SAMPLE
 
         // to rename all other references
         $this->renamedClassesDataCollector->addOldToNewClass($oldClassName, $oldClassName . 'Case');
+
+        // remove source files that were renamed above
+        $this->removedAndAddedFilesCollector->removeFile($this->file->getFilePath());
 
         return $node;
     }
