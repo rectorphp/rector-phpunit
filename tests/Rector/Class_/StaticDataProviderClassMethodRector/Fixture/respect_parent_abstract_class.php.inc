@@ -1,12 +1,10 @@
 <?php
 
-namespace PHPUnit\Framework;
-
 namespace Rector\PHPUnit\Tests\Rector\Class_\StaticDataProviderClassMethodRector\Fixture;
 
 use Rector\PHPUnit\Tests\Rector\Class_\StaticDataProviderClassMethodRector\Source\AnotherAbstractClass;
 
-final class RespeparentAbstractClass extends AnotherAbstractClass
+final class RespectParentAbstractClass extends AnotherAbstractClass
 {
     public function dataProvider(): array
     {
@@ -20,13 +18,11 @@ final class RespeparentAbstractClass extends AnotherAbstractClass
 -----
 <?php
 
-namespace PHPUnit\Framework;
-
 namespace Rector\PHPUnit\Tests\Rector\Class_\StaticDataProviderClassMethodRector\Fixture;
 
 use Rector\PHPUnit\Tests\Rector\Class_\StaticDataProviderClassMethodRector\Source\AnotherAbstractClass;
 
-final class RespeparentAbstractClass extends AnotherAbstractClass
+final class RespectParentAbstractClass extends AnotherAbstractClass
 {
     public static function dataProvider(): array
     {
