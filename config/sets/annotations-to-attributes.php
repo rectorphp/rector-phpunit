@@ -48,7 +48,9 @@ return static function (RectorConfig $rectorConfig): void {
         new AnnotationWithValueToAttribute('ticket', 'PHPUnit\Framework\Attributes\Ticket'),
         new AnnotationWithValueToAttribute('uses', 'PHPUnit\Framework\Attributes\UsesClass'),
         new AnnotationWithValueToAttribute('testWith', 'PHPUnit\Framework\Attributes\TestWith'),
+        new AnnotationWithValueToAttribute('testwith', 'PHPUnit\Framework\Attributes\TestWith'),
         new AnnotationWithValueToAttribute('testDox', 'PHPUnit\Framework\Attributes\TestDox'),
+        new AnnotationWithValueToAttribute('testdox', 'PHPUnit\Framework\Attributes\TestDox'),
 
         // new AnnotationToAttribute('dataProvider', 'PHPUnit\Framework\Attributes\DataProviderExternal'),
 
