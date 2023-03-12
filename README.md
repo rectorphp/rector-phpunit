@@ -9,7 +9,7 @@ This package is already part of [rector/rector](http://github.com/rectorphp/rect
 All you need to do is install the main package, and you're good to go:
 
 ```bash
-composer require rector/rector --dev
+composer require rector/rector-phpunit --dev
 ```
 
 ## Use Sets
