@@ -120,7 +120,7 @@ final class AssertCallAnalyzer
                 return false;
             }
 
-            if ($classMethod !== null) {
+            if ($classMethod instanceof ClassMethod) {
                 return $this->containsAssertCall($classMethod);
             }
 
