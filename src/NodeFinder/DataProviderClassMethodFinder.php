@@ -118,7 +118,9 @@ final class DataProviderClassMethodFinder
                 break;
             }
 
-            $parentClasses[] = $this->astResolver->resolveClassFromClassReflection($parentClassReflection);
+            /** @var Class_ $parentClass */
+            $parentClass = $this->astResolver->resolveClassFromClassReflection($parentClassReflection);
+            $parentClasses[] = $parentClass;
         }
 
         return $parentClasses;
