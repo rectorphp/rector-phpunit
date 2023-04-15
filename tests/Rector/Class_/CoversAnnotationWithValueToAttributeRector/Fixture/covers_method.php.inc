@@ -4,10 +4,10 @@ namespace Rector\PHPUnit\Tests\Rector\Class_\CoversAnnotationWithValueToAttribut
 
 use PHPUnit\Framework\TestCase;
 
-final class CoversFunction extends TestCase
+final class CoversMethod extends TestCase
 {
     /**
-     * @covers ::someFunction()
+     * @covers \Rector\PHPUnit\Tests\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Source\ExistingClass
      */
     public function test()
     {
@@ -22,9 +22,9 @@ namespace Rector\PHPUnit\Tests\Rector\Class_\CoversAnnotationWithValueToAttribut
 
 use PHPUnit\Framework\TestCase;
 
-final class CoversFunction extends TestCase
+final class CoversMethod extends TestCase
 {
-    #[\PHPUnit\Framework\Attributes\CoversFunction('someFunction')]
+    #[\PHPUnit\Framework\Attributes\CoversClass(\Rector\PHPUnit\Tests\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Source\ExistingClass::class)]
     public function test()
     {
     }
