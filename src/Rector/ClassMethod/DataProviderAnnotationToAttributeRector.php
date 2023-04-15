@@ -113,10 +113,19 @@ CODE_SAMPLE
 
             $methodName = trim($originalAttributeValue, '()');
 
-            $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
-                'PHPUnit\Framework\Attributes\DataProvider',
-                [$methodName]
-            );
+            if (str_contains($methodName, '::')) {
+                [$className, $methodName] = explode('::', $methodName, 2);
+
+                $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
+                    'PHPUnit\Framework\Attributes\DataProviderExternal',
+                    [$className.'::class', $methodName]
+                );
+            } else {
+                $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
+                    'PHPUnit\Framework\Attributes\DataProvider',
+                    [$methodName]
+                );
+            }
             $node->attrGroups[] = $attributeGroup;
 
             // cleanup
