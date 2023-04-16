@@ -112,7 +112,7 @@ CODE_SAMPLE
 
             $originalAttributeValue = $desiredTagValueNode->value->value;
 
-            $node->attrGroups[] = $this->createAttribtueGroup($originalAttributeValue);
+            $node->attrGroups[] = $this->createAttributeGroup($originalAttributeValue);
 
             // cleanup
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
@@ -125,7 +125,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function createAttribtueGroup(string $originalAttributeValue): AttributeGroup
+    private function createAttributeGroup(string $originalAttributeValue): AttributeGroup
     {
         $methodName = trim($originalAttributeValue, '()');
 
