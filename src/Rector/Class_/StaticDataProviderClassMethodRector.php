@@ -96,15 +96,8 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($dataProviderClassMethods as $dataProviderClassMethod) {
-            if ($dataProviderClassMethod->isStatic()) {
+            if ($this->skipMethod($dataProviderClassMethod)) {
                 continue;
-            }
-
-            $variables = $this->betterNodeFinder->findInstanceOf($dataProviderClassMethod, Variable::class);
-            foreach ($variables as $variable) {
-                if ($this->nodeNameResolver->isName($variable, 'this')) {
-                    continue 2;
-                }
             }
 
             $this->visibilityManipulator->makeStatic($dataProviderClassMethod);
@@ -116,5 +109,20 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function skipMethod(Node\Stmt\ClassMethod $method): bool {
+        if ($method->isStatic()) {
+            return true;
+        }
+
+        $variables = $this->betterNodeFinder->findInstanceOf($method, Variable::class);
+        foreach ($variables as $variable) {
+            if ($this->nodeNameResolver->isName($variable, 'this')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
