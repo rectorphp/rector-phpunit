@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFinder\DataProviderClassMethodFinder;
@@ -21,7 +23,7 @@ final class StaticDataProviderClassMethodRector extends AbstractRector
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly DataProviderClassMethodFinder $dataProviderClassMethodFinder,
-        private readonly VisibilityManipulator $visibilityManipulator
+        private readonly VisibilityManipulator $visibilityManipulator,
     ) {
     }
 
@@ -94,7 +96,7 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($dataProviderClassMethods as $dataProviderClassMethod) {
-            if ($dataProviderClassMethod->isStatic()) {
+            if ($this->skipMethod($dataProviderClassMethod)) {
                 continue;
             }
 
@@ -107,5 +109,21 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function skipMethod(ClassMethod $classMethod): bool
+    {
+        if ($classMethod->isStatic()) {
+            return true;
+        }
+
+        if ($classMethod->stmts === null) {
+            return false;
+        }
+
+        return (bool) $this->betterNodeFinder->findFirst(
+            $classMethod->stmts,
+            fn (Node $node): bool => $node instanceof Variable && $this->nodeNameResolver->isName($node, 'this')
+        );
     }
 }
