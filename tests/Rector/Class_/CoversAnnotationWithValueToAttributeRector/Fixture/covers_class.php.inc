@@ -4,11 +4,11 @@ namespace Rector\PHPUnit\Tests\Rector\Class_\CoversAnnotationWithValueToAttribut
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \Rector\PHPUnit\Tests\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Source\ExistingClass
+ */
 final class CoversClass extends TestCase
 {
-    /**
-     * @covers \Rector\PHPUnit\Tests\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Source\ExistingClass
-     */
     public function test()
     {
     }
