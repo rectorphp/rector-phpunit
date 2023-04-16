@@ -125,7 +125,7 @@ CODE_SAMPLE
      *
      * @return AttributeGroup[]
      */
-    private function resolveCoversClassAttributeGroups(Node\Stmt $node): array
+    private function resolveCoversClassAttributeGroups(Class_|ClassMethod $node): array
     {
         // resolve covers class first
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
@@ -157,7 +157,7 @@ CODE_SAMPLE
      *
      * @return AttributeGroup[]
      */
-    private function resolveCoversFunctionAttributeGroups(Node\Stmt $node): array
+    private function resolveCoversFunctionAttributeGroups(Class_|ClassMethod $node): array
     {
         // resolve covers function
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
