@@ -146,5 +146,4 @@ CODE_SAMPLE
 
         return $attributeGroups;
     }
-
 }
