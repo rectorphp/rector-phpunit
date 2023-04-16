@@ -121,8 +121,6 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Class_|ClassMethod $node
-     *
      * @return AttributeGroup[]
      */
     private function resolveCoversClassAttributeGroups(Class_|ClassMethod $node): array
@@ -153,8 +151,6 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Class_|ClassMethod $node
-     *
      * @return AttributeGroup[]
      */
     private function resolveCoversFunctionAttributeGroups(Class_|ClassMethod $node): array
