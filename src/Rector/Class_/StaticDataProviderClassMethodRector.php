@@ -117,13 +117,13 @@ CODE_SAMPLE
             return true;
         }
 
-        $variables = $this->betterNodeFinder->findInstanceOf($classMethod, Variable::class);
-        foreach ($variables as $variable) {
-            if ($this->nodeNameResolver->isName($variable, 'this')) {
-                return true;
-            }
+        if ($classMethod->stmts === null) {
+            return false;
         }
 
-        return false;
+        return (bool) $this->betterNodeFinder->findFirst(
+            $classMethod->stmts,
+            fn (Node $node): bool => $node instanceof Variable && $this->nodeNameResolver->isName($node, 'this')
+        );
     }
 }
