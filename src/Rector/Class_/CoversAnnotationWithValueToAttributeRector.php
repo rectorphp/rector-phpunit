@@ -94,15 +94,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $coversClassAttributeGroups = $this->resolveCoversClassAttributeGroups($node);
-        $coversFunctionsAttributeGroups = $this->resolveCoversFunctionAttributeGroups($node);
-
-        $attributeGroups = array_merge($coversClassAttributeGroups, $coversFunctionsAttributeGroups);
-        if ($attributeGroups === []) {
+        $coversAttributeGroups = $this->resolveCoversAttributeGroups($node);
+        if ($coversAttributeGroups === []) {
             return null;
         }
 
-        $node->attrGroups = array_merge($node->attrGroups, $attributeGroups);
+        $node->attrGroups = $coversAttributeGroups;
 
         return $node;
     }
@@ -123,7 +120,7 @@ CODE_SAMPLE
     /**
      * @return AttributeGroup[]
      */
-    private function resolveCoversClassAttributeGroups(Class_|ClassMethod $node): array
+    private function resolveCoversAttributeGroups(Class_|ClassMethod $node): array
     {
         // resolve covers class first
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
@@ -150,32 +147,4 @@ CODE_SAMPLE
         return $attributeGroups;
     }
 
-    /**
-     * @return AttributeGroup[]
-     */
-    private function resolveCoversFunctionAttributeGroups(Class_|ClassMethod $node): array
-    {
-        // resolve covers function
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
-        if (! $phpDocInfo instanceof PhpDocInfo) {
-            return [];
-        }
-
-        /** @var PhpDocTagNode[] $desiredTagValueNodes */
-        $desiredTagValueNodes = $phpDocInfo->getTagsByName('covers');
-
-        $attributeGroups = [];
-        foreach ($desiredTagValueNodes as $desiredTagValueNode) {
-            if (! $desiredTagValueNode->value instanceof GenericTagValueNode) {
-                continue;
-            }
-
-            $attributeGroups[] = $this->createAttributeGroup($desiredTagValueNode->value->value);
-
-            // cleanup
-            $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
-        }
-
-        return $attributeGroups;
-    }
 }
