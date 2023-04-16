@@ -113,9 +113,13 @@ CODE_SAMPLE
 
             $methodName = trim($originalAttributeValue, '()');
 
+            $className = '';
             if (str_contains($methodName, '::')) {
                 [$className, $methodName] = explode('::', $methodName, 2);
+            }
 
+            if ($className !== '') {
+                if ($className)
                 $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
                     'PHPUnit\Framework\Attributes\DataProviderExternal',
                     [$className.'::class', $methodName]
