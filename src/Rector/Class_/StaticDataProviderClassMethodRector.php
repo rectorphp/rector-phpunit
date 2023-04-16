@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFinder\DataProviderClassMethodFinder;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
@@ -111,7 +110,8 @@ CODE_SAMPLE
         return null;
     }
 
-    private function skipMethod(Node\Stmt\ClassMethod $method): bool {
+    private function skipMethod(Node\Stmt\ClassMethod $method): bool
+    {
         if ($method->isStatic()) {
             return true;
         }
