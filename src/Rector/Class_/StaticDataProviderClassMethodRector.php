@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\Rector\Class_;
 
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
@@ -110,13 +111,13 @@ CODE_SAMPLE
         return null;
     }
 
-    private function skipMethod(Node\Stmt\ClassMethod $method): bool
+    private function skipMethod(ClassMethod $classMethod): bool
     {
-        if ($method->isStatic()) {
+        if ($classMethod->isStatic()) {
             return true;
         }
 
-        $variables = $this->betterNodeFinder->findInstanceOf($method, Variable::class);
+        $variables = $this->betterNodeFinder->findInstanceOf($classMethod, Variable::class);
         foreach ($variables as $variable) {
             if ($this->nodeNameResolver->isName($variable, 'this')) {
                 return true;
