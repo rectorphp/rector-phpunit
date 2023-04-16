@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 final class FooTest extends TestCase
 {
     /**
-     * @dataProvider Tests\Foo\ExternalProvider::barProvider
+     * @dataProvider \Tests\Foo\ExternalProvider::barProvider
      **/
     public function testBar()
     {

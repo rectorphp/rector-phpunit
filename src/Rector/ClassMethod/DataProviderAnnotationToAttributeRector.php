@@ -119,7 +119,10 @@ CODE_SAMPLE
             }
 
             if ($className !== '') {
-                if ($className)
+                if ($className[0] !== '\\') {
+                    $className = '\\' . $className;
+                }
+
                 $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
                     'PHPUnit\Framework\Attributes\DataProviderExternal',
                     [$className.'::class', $methodName]
