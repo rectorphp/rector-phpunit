@@ -97,8 +97,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstArgument = $propertyExistsMethodCall->args[0];
-        $secondArgument = $propertyExistsMethodCall->args[1];
+        $firstArgument = $propertyExistsMethodCall->getArgs()[0];
+        $secondArgument = $propertyExistsMethodCall->getArgs()[1];
 
         if ($firstArgument->value instanceof Variable) {
             $secondArg = new Variable($firstArgument->value->name);
@@ -117,8 +117,7 @@ CODE_SAMPLE
         unset($node->args[0]);
 
         $newArgs = $this->nodeFactory->createArgs([$secondArgument->value->value, $secondArg]);
-
-        $node->args = $this->appendArgs($newArgs, $node->args);
+        $node->args = $this->appendArgs($newArgs, $node->getArgs());
 
         $this->identifierManipulator->renameNodeWithMap($node, $map);
 

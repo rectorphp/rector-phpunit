@@ -142,13 +142,13 @@ final class AssertRegExpRector extends AbstractRector
 
     private function moveFunctionArgumentsUp(MethodCall|StaticCall $node): void
     {
-        $oldArguments = $node->args;
+        $oldArguments = $node->getArgs();
 
         /** @var FuncCall $pregMatchFunction */
         $pregMatchFunction = $oldArguments[1]->value;
 
-        $regex = $pregMatchFunction->args[0];
-        $variable = $pregMatchFunction->args[1];
+        $regex = $pregMatchFunction->getArgs()[0];
+        $variable = $pregMatchFunction->getArgs()[1];
 
         unset($oldArguments[0], $oldArguments[1]);
 

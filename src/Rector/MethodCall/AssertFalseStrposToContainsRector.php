@@ -92,8 +92,8 @@ final class AssertFalseStrposToContainsRector extends AbstractRector
             return null;
         }
 
-        $firstArgument = $strposFuncCallNode->args[1];
-        $secondArgument = $strposFuncCallNode->args[0];
+        $firstArgument = $strposFuncCallNode->getArgs()[1];
+        $secondArgument = $strposFuncCallNode->getArgs()[0];
 
         unset($oldArguments[0]);
 

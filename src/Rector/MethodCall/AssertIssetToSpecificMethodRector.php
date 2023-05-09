@@ -161,7 +161,7 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
             self::ASSERT_FALSE => 'assertObjectNotHasAttribute',
         ]);
 
-        $oldArgs = $node->args;
+        $oldArgs = $node->getArgs();
         unset($oldArgs[0]);
 
         $newArgs = $this->nodeFactory->createArgs([new String_($name), $propertyFetch->var]);
@@ -176,8 +176,7 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
             self::ASSERT_FALSE => 'assertArrayNotHasKey',
         ]);
 
-        $oldArgs = $node->args;
-
+        $oldArgs = $node->getArgs();
         unset($oldArgs[0]);
 
         $node->args = array_merge($this->nodeFactory->createArgs([$arrayDimFetch->dim, $arrayDimFetch->var]), $oldArgs);

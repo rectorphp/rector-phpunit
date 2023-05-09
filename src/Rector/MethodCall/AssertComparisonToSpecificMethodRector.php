@@ -128,7 +128,7 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
 
     private function changeArgumentsOrder(MethodCall|StaticCall $node): void
     {
-        $oldArguments = $node->args;
+        $oldArguments = $node->getArgs();
 
         /** @var BinaryOp $expression */
         $expression = $oldArguments[0]->value;

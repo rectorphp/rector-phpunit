@@ -93,7 +93,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $node->args[$i] = $methodCall->args[0];
+            $node->args[$i] = $methodCall->getArgs()[0];
         }
 
         return $node;

@@ -52,7 +52,7 @@ final class ExpectExceptionMessageRegExpFactory
 
         if ($firstArg->value instanceof String_) {
             $oldString = $firstArg->value;
-            $methodCall->args[0]->value = new String_('#' . preg_quote($oldString->value, '#') . '#');
+            $firstArg->value = new String_('#' . preg_quote($oldString->value, '#') . '#');
         }
 
         return $methodCall;

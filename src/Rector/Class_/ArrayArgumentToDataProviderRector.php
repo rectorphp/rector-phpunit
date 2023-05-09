@@ -184,7 +184,8 @@ CODE_SAMPLE
         }
 
         // resolve value types
-        $firstArgumentValue = $methodCall->args[0]->value;
+        $firstArgumentValue = $methodCall->getArgs()[0]
+->value;
         if (! $firstArgumentValue instanceof Array_) {
             // nothing we can do
             return;

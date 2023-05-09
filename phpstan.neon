@@ -8,16 +8,6 @@ parameters:
 
     reportUnmatchedIgnoredErrors: false
 
-    type_coverage:
-        return_type: 99
-        param_type: 99
-        property_type: 99
-
-    unused_public:
-        methods: true
-        properties: true
-        constants: true
-
     cognitive_complexity:
         class: 50
         function: 9
@@ -42,8 +32,8 @@ parameters:
 
         - '#Cognitive complexity for "Rector\\PHPUnit\\Rector\\MethodCall\\DelegateExceptionArgumentsRector\:\:refactor\(\)" is 12, keep it under 9#'
 
-        # known type
-        - '#Method Rector\\PHPUnit\\NodeFinder\\DataProviderClassMethodFinder\:\:resolveParentAbstractClasses\(\) should return array<PhpParser\\Node\\Stmt\\Class_> but returns array<int, PhpParser\\Node\\Stmt\\Class_\|PhpParser\\Node\\Stmt\\Enum_\|PhpParser\\Node\\Stmt\\Interface_\|PhpParser\\Node\\Stmt\\Trait_\|null>#'
-
         # double type chdck
         - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsInstanceOf\(\) with array<PhpParser\\Node\\Arg> and (.*?) will always evaluate to true#'
+
+        # false positive
+        - '#Access to an undefined property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'

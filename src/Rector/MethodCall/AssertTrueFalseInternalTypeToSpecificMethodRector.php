@@ -90,9 +90,8 @@ final class AssertTrueFalseInternalTypeToSpecificMethodRector extends AbstractRe
             return null;
         }
 
-        /** @var FuncCall|Node $firstArgumentValue */
-        $firstArgumentValue = $node->args[0]->value;
-
+        $firstArgumentValue = $node->getArgs()[0]
+->value;
         if (! $firstArgumentValue instanceof FuncCall) {
             return null;
         }
@@ -110,9 +109,11 @@ final class AssertTrueFalseInternalTypeToSpecificMethodRector extends AbstractRe
     private function moveFunctionArgumentsUp(MethodCall|StaticCall $node): Node
     {
         /** @var FuncCall $isFunctionNode */
-        $isFunctionNode = $node->args[0]->value;
+        $isFunctionNode = $node->getArgs()[0]
+->value;
 
-        $firstArgumentValue = $isFunctionNode->args[0]->value;
+        $firstArgumentValue = $isFunctionNode->getArgs()[0]
+->value;
         $isFunctionName = $this->getName($isFunctionNode);
 
         $newArgs = [
@@ -120,7 +121,7 @@ final class AssertTrueFalseInternalTypeToSpecificMethodRector extends AbstractRe
             new Arg($firstArgumentValue),
         ];
 
-        $oldArguments = $node->args;
+        $oldArguments = $node->getArgs();
         unset($oldArguments[0]);
 
         $node->args = $this->appendArgs($newArgs, $oldArguments);

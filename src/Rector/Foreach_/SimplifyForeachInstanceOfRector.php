@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -51,12 +52,12 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (count((array) $node->stmts) !== 1) {
+        if (count($node->stmts) !== 1) {
             return null;
         }
 
         $onlyStmt = $node->stmts[0];
-        if (! $onlyStmt instanceof Node\Stmt\Expression) {
+        if (! $onlyStmt instanceof Expression) {
             return null;
         }
 
