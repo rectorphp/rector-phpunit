@@ -81,7 +81,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->valueResolver->isTrue($node->args[0]->value)) {
+        if ($this->valueResolver->isTrue($node->getArgs()[0]->value)) {
             $this->argumentMover->removeFirst($node);
 
             $node->name = new Identifier('assertTrue');

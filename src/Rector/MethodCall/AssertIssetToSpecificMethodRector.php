@@ -81,7 +81,8 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
             return null;
         }
 
-        $firstArgumentValue = $node->args[0]->value;
+        $firstArgumentValue = $node->getArgs()[0]
+->value;
         // is property access
         if (! $firstArgumentValue instanceof Isset_) {
             return null;
@@ -93,7 +94,8 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
         }
 
         /** @var Isset_ $issetNode */
-        $issetNode = $node->args[0]->value;
+        $issetNode = $node->getArgs()[0]
+->value;
 
         $issetNodeArg = $issetNode->vars[0];
 

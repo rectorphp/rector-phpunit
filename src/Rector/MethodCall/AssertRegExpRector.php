@@ -86,7 +86,8 @@ final class AssertRegExpRector extends AbstractRector
         }
 
         /** @var FuncCall|Node $secondArgumentValue */
-        $secondArgumentValue = $node->args[1]->value;
+        $secondArgumentValue = $node->getArgs()[1]
+->value;
 
         if (! $secondArgumentValue instanceof FuncCall) {
             return null;
@@ -101,7 +102,8 @@ final class AssertRegExpRector extends AbstractRector
             return null;
         }
 
-        $oldFirstArgument = $node->args[0]->value;
+        $oldFirstArgument = $node->getArgs()[0]
+->value;
         $oldCondition = $this->resolveOldCondition($oldFirstArgument);
 
         $this->renameMethod($node, $oldMethodName, $oldCondition);

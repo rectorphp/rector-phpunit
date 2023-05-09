@@ -78,12 +78,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $args = [$expr->args[0], new Arg($node->expr)];
+        $newArgs = [$expr->getArgs()[0], new Arg($node->expr)];
 
         if ($expr instanceof StaticCall) {
-            return new StaticCall($expr->class, 'assertContainsOnlyInstancesOf', $args);
+            return new StaticCall($expr->class, 'assertContainsOnlyInstancesOf', $newArgs);
         }
 
-        return new MethodCall($expr->var, 'assertContainsOnlyInstancesOf', $args);
+        return new MethodCall($expr->var, 'assertContainsOnlyInstancesOf', $newArgs);
     }
 }

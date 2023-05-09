@@ -27,7 +27,8 @@ final class ExpectExceptionMessageRegExpFactory
             return null;
         }
 
-        $secondArgument = $methodCall->args[1]->value;
+        $secondArgument = $methodCall->getArgs()[1]
+->value;
         if (! $secondArgument instanceof MethodCall) {
             return null;
         }
@@ -47,9 +48,10 @@ final class ExpectExceptionMessageRegExpFactory
         );
 
         // put regex between "#...#" to create match
-        if ($methodCall->args[0]->value instanceof String_) {
-            /** @var String_ $oldString */
-            $oldString = $methodCall->args[0]->value;
+        $firstArg = $methodCall->getArgs()[0];
+
+        if ($firstArg->value instanceof String_) {
+            $oldString = $firstArg->value;
             $methodCall->args[0]->value = new String_('#' . preg_quote($oldString->value, '#') . '#');
         }
 

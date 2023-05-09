@@ -35,12 +35,6 @@ parameters:
         # phpstan false positive
         - '#Parameter \#1 \$className of method Rector\\Core\\PhpParser\\AstResolver\:\:resolveClassMethod\(\) expects class\-string, string given#'
 
-        - '#PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\:\:\$value#'
-        - '#array<PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\> given#'
-        - '#array<int, PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\> given#'
-        - '#PhpParser\\Node\\VariadicPlaceholder given#'
-        - '#(.*?)PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder#'
-
         # rector co-variant
         - '#Parameter \#1 \$node (.*?) of method Rector\\(.*?)\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\PhpRectorInterface\:\:refactor\(\)#'
 
@@ -50,3 +44,6 @@ parameters:
 
         # known type
         - '#Method Rector\\PHPUnit\\NodeFinder\\DataProviderClassMethodFinder\:\:resolveParentAbstractClasses\(\) should return array<PhpParser\\Node\\Stmt\\Class_> but returns array<int, PhpParser\\Node\\Stmt\\Class_\|PhpParser\\Node\\Stmt\\Enum_\|PhpParser\\Node\\Stmt\\Interface_\|PhpParser\\Node\\Stmt\\Trait_\|null>#'
+
+        # double type chdck
+        - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsInstanceOf\(\) with array<PhpParser\\Node\\Arg> and (.*?) will always evaluate to true#'

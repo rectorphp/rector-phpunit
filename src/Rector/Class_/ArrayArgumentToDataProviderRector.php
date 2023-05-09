@@ -179,7 +179,7 @@ CODE_SAMPLE
             return;
         }
 
-        if (count($methodCall->args) !== 1) {
+        if (count($methodCall->getArgs()) !== 1) {
             throw new ShouldNotHappenException();
         }
 
@@ -200,7 +200,7 @@ CODE_SAMPLE
 
         $this->dataProviderClassMethodRecipes[] = new DataProviderClassMethodRecipe(
             $dataProviderMethodName,
-            $methodCall->args
+            $methodCall->getArgs()
         );
 
         $methodCall->args = [];

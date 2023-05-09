@@ -68,7 +68,7 @@ final class AssertResourceToClosedResourceRector extends AbstractRector
             return null;
         }
 
-        if (! isset($node->args[0])) {
+        if (! isset($node->getArgs()[0])) {
             return null;
         }
 
