@@ -86,7 +86,8 @@ final class AssertRegExpRector extends AbstractRector
         }
 
         /** @var FuncCall|Node $secondArgumentValue */
-        $secondArgumentValue = $node->args[1]->value;
+        $secondArgumentValue = $node->getArgs()[1]
+->value;
 
         if (! $secondArgumentValue instanceof FuncCall) {
             return null;
@@ -101,7 +102,8 @@ final class AssertRegExpRector extends AbstractRector
             return null;
         }
 
-        $oldFirstArgument = $node->args[0]->value;
+        $oldFirstArgument = $node->getArgs()[0]
+->value;
         $oldCondition = $this->resolveOldCondition($oldFirstArgument);
 
         $this->renameMethod($node, $oldMethodName, $oldCondition);
@@ -140,13 +142,13 @@ final class AssertRegExpRector extends AbstractRector
 
     private function moveFunctionArgumentsUp(MethodCall|StaticCall $node): void
     {
-        $oldArguments = $node->args;
+        $oldArguments = $node->getArgs();
 
         /** @var FuncCall $pregMatchFunction */
         $pregMatchFunction = $oldArguments[1]->value;
 
-        $regex = $pregMatchFunction->args[0];
-        $variable = $pregMatchFunction->args[1];
+        $regex = $pregMatchFunction->getArgs()[0];
+        $variable = $pregMatchFunction->getArgs()[1];
 
         unset($oldArguments[0], $oldArguments[1]);
 

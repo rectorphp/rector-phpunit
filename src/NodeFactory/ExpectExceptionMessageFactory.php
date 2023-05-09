@@ -26,7 +26,8 @@ final class ExpectExceptionMessageFactory
             return null;
         }
 
-        $secondArgument = $methodCall->args[1]->value;
+        $secondArgument = $methodCall->getArgs()[1]
+->value;
         if (! $secondArgument instanceof MethodCall) {
             return null;
         }

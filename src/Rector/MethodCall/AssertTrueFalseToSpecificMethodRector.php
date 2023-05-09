@@ -83,7 +83,8 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
             return null;
         }
 
-        $firstArgumentValue = $node->args[0]->value;
+        $firstArgumentValue = $node->getArgs()[0]
+->value;
         if (! $firstArgumentValue instanceof FuncCall && ! $firstArgumentValue instanceof Empty_) {
             return null;
         }
@@ -139,15 +140,17 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
      */
     private function moveFunctionArgumentsUp(MethodCall|StaticCall $node): void
     {
-        $funcCallOrEmptyNode = $node->args[0]->value;
+        $funcCallOrEmptyNode = $node->getArgs()[0]
+->value;
+
         if ($funcCallOrEmptyNode instanceof FuncCall) {
             $funcCallOrEmptyNodeName = $this->getName($funcCallOrEmptyNode);
             if ($funcCallOrEmptyNodeName === null) {
                 return;
             }
 
-            $funcCallOrEmptyNodeArgs = $funcCallOrEmptyNode->args;
-            $oldArguments = $node->args;
+            $funcCallOrEmptyNodeArgs = $funcCallOrEmptyNode->getArgs();
+            $oldArguments = $node->getArgs();
             unset($oldArguments[0]);
 
             $node->args = $this->buildNewArguments(

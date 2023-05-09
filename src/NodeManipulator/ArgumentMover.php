@@ -11,7 +11,7 @@ final class ArgumentMover
 {
     public function removeFirst(MethodCall|StaticCall $node): void
     {
-        $methodArguments = $node->args;
+        $methodArguments = $node->getArgs();
         array_shift($methodArguments);
 
         $node->args = $methodArguments;

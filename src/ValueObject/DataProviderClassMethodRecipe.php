@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\ValueObject;
 
 use PhpParser\Node\Arg;
+use Webmozart\Assert\Assert;
 
 final class DataProviderClassMethodRecipe
 {
@@ -15,6 +16,7 @@ final class DataProviderClassMethodRecipe
         private readonly string $methodName,
         private readonly array $args
     ) {
+        Assert::allIsInstanceOf($args, Arg::class);
     }
 
     public function getMethodName(): string

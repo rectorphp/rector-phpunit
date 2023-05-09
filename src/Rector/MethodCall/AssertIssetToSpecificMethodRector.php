@@ -81,7 +81,8 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
             return null;
         }
 
-        $firstArgumentValue = $node->args[0]->value;
+        $firstArgumentValue = $node->getArgs()[0]
+->value;
         // is property access
         if (! $firstArgumentValue instanceof Isset_) {
             return null;
@@ -93,7 +94,8 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
         }
 
         /** @var Isset_ $issetNode */
-        $issetNode = $node->args[0]->value;
+        $issetNode = $node->getArgs()[0]
+->value;
 
         $issetNodeArg = $issetNode->vars[0];
 
@@ -159,7 +161,7 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
             self::ASSERT_FALSE => 'assertObjectNotHasAttribute',
         ]);
 
-        $oldArgs = $node->args;
+        $oldArgs = $node->getArgs();
         unset($oldArgs[0]);
 
         $newArgs = $this->nodeFactory->createArgs([new String_($name), $propertyFetch->var]);
@@ -174,8 +176,7 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
             self::ASSERT_FALSE => 'assertArrayNotHasKey',
         ]);
 
-        $oldArgs = $node->args;
-
+        $oldArgs = $node->getArgs();
         unset($oldArgs[0]);
 
         $node->args = array_merge($this->nodeFactory->createArgs([$arrayDimFetch->dim, $arrayDimFetch->var]), $oldArgs);

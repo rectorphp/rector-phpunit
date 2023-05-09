@@ -70,7 +70,8 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
             return null;
         }
 
-        $firstArgumentValue = $node->args[0]->value;
+        $firstArgumentValue = $node->getArgs()[0]
+->value;
         if (! $firstArgumentValue instanceof Instanceof_) {
             return null;
         }
@@ -83,7 +84,8 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
 
     private function changeArgumentsOrder(MethodCall|StaticCall $node): void
     {
-        $oldArguments = $node->args;
+        $oldArguments = $node->getArgs();
+
         /** @var Instanceof_ $comparison */
         $comparison = $oldArguments[0]->value;
 

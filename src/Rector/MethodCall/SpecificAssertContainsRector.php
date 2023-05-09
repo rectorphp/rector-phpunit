@@ -85,7 +85,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isPossiblyStringType($node->args[1]->value)) {
+        if (! $this->isPossiblyStringType($node->getArgs()[1]->value)) {
             return null;
         }
 

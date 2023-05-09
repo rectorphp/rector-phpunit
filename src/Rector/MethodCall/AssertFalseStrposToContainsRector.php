@@ -64,7 +64,8 @@ final class AssertFalseStrposToContainsRector extends AbstractRector
             return null;
         }
 
-        $firstArgumentValue = $node->args[0]->value;
+        $firstArgumentValue = $node->getArgs()[0]
+->value;
         if ($firstArgumentValue instanceof StaticCall) {
             return null;
         }
@@ -91,8 +92,8 @@ final class AssertFalseStrposToContainsRector extends AbstractRector
             return null;
         }
 
-        $firstArgument = $strposFuncCallNode->args[1];
-        $secondArgument = $strposFuncCallNode->args[0];
+        $firstArgument = $strposFuncCallNode->getArgs()[1];
+        $secondArgument = $strposFuncCallNode->getArgs()[0];
 
         unset($oldArguments[0]);
 

@@ -179,12 +179,13 @@ CODE_SAMPLE
             return;
         }
 
-        if (count($methodCall->args) !== 1) {
+        if (count($methodCall->getArgs()) !== 1) {
             throw new ShouldNotHappenException();
         }
 
         // resolve value types
-        $firstArgumentValue = $methodCall->args[0]->value;
+        $firstArgumentValue = $methodCall->getArgs()[0]
+->value;
         if (! $firstArgumentValue instanceof Array_) {
             // nothing we can do
             return;
@@ -200,7 +201,7 @@ CODE_SAMPLE
 
         $this->dataProviderClassMethodRecipes[] = new DataProviderClassMethodRecipe(
             $dataProviderMethodName,
-            $methodCall->args
+            $methodCall->getArgs()
         );
 
         $methodCall->args = [];

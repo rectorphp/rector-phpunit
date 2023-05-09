@@ -95,7 +95,8 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
             return null;
         }
 
-        $firstArgumentValue = $node->args[0]->value;
+        $firstArgumentValue = $node->getArgs()[0]
+->value;
         if (! $firstArgumentValue instanceof BinaryOp) {
             return null;
         }
@@ -127,7 +128,7 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
 
     private function changeArgumentsOrder(MethodCall|StaticCall $node): void
     {
-        $oldArguments = $node->args;
+        $oldArguments = $node->getArgs();
 
         /** @var BinaryOp $expression */
         $expression = $oldArguments[0]->value;

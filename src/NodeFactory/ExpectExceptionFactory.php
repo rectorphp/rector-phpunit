@@ -23,7 +23,7 @@ final class ExpectExceptionFactory
             return null;
         }
 
-        $argumentVariableName = $this->nodeNameResolver->getName($methodCall->args[1]->value);
+        $argumentVariableName = $this->nodeNameResolver->getName($methodCall->getArgs()[1]->value);
         if ($argumentVariableName === null) {
             return null;
         }
@@ -33,6 +33,6 @@ final class ExpectExceptionFactory
             return null;
         }
 
-        return new MethodCall($methodCall->var, 'expectException', [$methodCall->args[0]]);
+        return new MethodCall($methodCall->var, 'expectException', [$methodCall->getArgs()[0]]);
     }
 }

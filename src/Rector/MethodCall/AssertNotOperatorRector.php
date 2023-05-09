@@ -63,14 +63,16 @@ final class AssertNotOperatorRector extends AbstractRector
             return null;
         }
 
-        $firstArgumentValue = $node->args[0]->value;
+        $firstArgumentValue = $node->getArgs()[0]
+->value;
         if (! $firstArgumentValue instanceof BooleanNot) {
             return null;
         }
 
         $this->identifierManipulator->renameNodeWithMap($node, self::RENAME_METHODS_MAP);
 
-        $oldArguments = $node->args;
+        $oldArguments = $node->getArgs();
+
         /** @var BooleanNot $negation */
         $negation = $oldArguments[0]->value;
 
