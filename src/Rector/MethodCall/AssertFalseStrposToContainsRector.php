@@ -23,8 +23,8 @@ final class AssertFalseStrposToContainsRector extends AbstractRector
      * @var array<string, string>
      */
     private const RENAME_METHODS_MAP = [
-        'assertFalse' => 'assertNotContains',
-        'assertNotFalse' => 'assertContains',
+        'assertFalse' => 'assertStringNotContainsString',
+        'assertNotFalse' => 'assertStringContainsString',
     ];
 
     public function __construct(
@@ -41,8 +41,7 @@ final class AssertFalseStrposToContainsRector extends AbstractRector
                 new CodeSample(
                     '$this->assertFalse(strpos($anything, "foo"), "message");',
                     '$this->assertNotContains("foo", $anything, "message");'
-                ),
-            ]
+                )]
         );
     }
 
