@@ -21,8 +21,8 @@ final class MyContainsStrposTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
-        $this->assertContains('foo', $node);
-        $this->assertNotContains('foo', $node, 'message');
+        $this->assertStringContainsString('foo', $node);
+        $this->assertStringNotContainsString('foo', $node, 'message');
     }
 }
 
