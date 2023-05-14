@@ -19,6 +19,9 @@ return static function (RectorConfig $rectorConfig): void {
         '*/Fixture/*',
         '*/Expected/*',
 
+        // buggy here
+        \Rector\CodeQuality\Rector\If_\ConsecutiveNullCompareReturnsToNullCoalesceQueueRector::class,
+
         // object types
         StringClassNameToClassConstantRector::class => [
             __DIR__ . '/src/Rector/MethodCall/UseSpecificWillMethodRector.php',
