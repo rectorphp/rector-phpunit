@@ -35,8 +35,7 @@ final class RemoveTestSuffixFromAbstractTestClassesRector extends AbstractRector
     }
 
     /**
-     * @param Stmt[] $nodes
-     * @return Stmt[]|null
+     * @return Node[]|null
      */
     public function beforeTraverse(array $nodes): ?array
     {
