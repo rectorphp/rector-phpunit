@@ -14,7 +14,6 @@ use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Symfony\Printer\NeighbourClassLikePrinter;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -36,7 +35,7 @@ final class RemoveTestSuffixFromAbstractTestClassesRector extends AbstractRector
     }
 
     /**
-     * @param Stmt[]
+     * @param Stmt[] $nodes
      * @return Stmt[]|null
      */
     public function beforeTraverse(array $nodes): ?array
