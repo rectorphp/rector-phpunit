@@ -6,11 +6,13 @@ namespace Rector\PHPUnit\Rector\ClassLike;
 
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Namespace_;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -23,12 +25,33 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveTestSuffixFromAbstractTestClassesRector extends AbstractRector
 {
+    private FileWithoutNamespace|Namespace_|null $rootNode = null;
+
     public function __construct(
         private readonly NeighbourClassLikePrinter $neighbourClassLikePrinter,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector
     ) {
+    }
+
+    /**
+     * @param Stmt[]
+     * @return Stmt[]|null
+     */
+    public function beforeTraverse(array $nodes): ?array
+    {
+        // ensure reset early on every run to avoid reuse existing value
+        $this->rootNode = null;
+
+        foreach ($nodes as $node) {
+            if ($node instanceof FileWithoutNamespace || $node instanceof Namespace_) {
+                $this->rootNode = $node;
+                break;
+            }
+        }
+
+        return parent::beforeTraverse($nodes);
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -111,11 +134,10 @@ CODE_SAMPLE
     {
         $filePath = $this->file->getFilePath();
 
-        $parentNode = $class->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof Namespace_) {
+        if (! $this->rootNode instanceof FileWithoutNamespace && ! $this->rootNode instanceof Namespace_) {
             throw new ShouldNotHappenException();
         }
 
-        $this->neighbourClassLikePrinter->printClassLike($class, $parentNode, $filePath, $this->file);
+        $this->neighbourClassLikePrinter->printClassLike($class, $this->rootNode, $filePath, $this->file);
     }
 }

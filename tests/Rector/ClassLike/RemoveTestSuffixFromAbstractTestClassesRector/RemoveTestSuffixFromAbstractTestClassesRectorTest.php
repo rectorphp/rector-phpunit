@@ -23,6 +23,13 @@ final class RemoveTestSuffixFromAbstractTestClassesRectorTest extends AbstractRe
             FileSystem::read(__DIR__ . '/Expected/ExtendsTestCase.php')
         );
 
+        $this->doTestFile(__DIR__ . '/Fixture/no_namespace_extends_test.php.inc');
+
+        $this->assertFileWasAdded(
+            __DIR__ . '/Fixture/NoNamespaceExtendsTestCase.php',
+            FileSystem::read(__DIR__ . '/Expected/NoNamespaceExtendsTestCase.php')
+        );
+
         $this->doTestFile(__DIR__ . '/Fixture/follow_up_parent_class_name_change.php.inc');
     }
 
