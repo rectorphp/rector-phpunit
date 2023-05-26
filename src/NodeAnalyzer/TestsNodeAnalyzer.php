@@ -7,44 +7,44 @@ namespace Rector\PHPUnit\NodeAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class TestsNodeAnalyzer
 {
     /**
-     * @var ObjectType[]
+     * @var string[]
      */
-    private array $testCaseObjectTypes = [];
+    private const TEST_CASE_OBJECT_CLASSES = ['PHPUnit\Framework\TestCase', 'PHPUnit_Framework_TestCase'];
 
     public function __construct(
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
-        $this->testCaseObjectTypes = [
-            new ObjectType('PHPUnit\Framework\TestCase'),
-            new ObjectType('PHPUnit_Framework_TestCase'),
-        ];
     }
 
     public function isInTestClass(Node $node): bool
     {
-        $classLike = $node instanceof ClassLike
-            ? $node
-            : $this->betterNodeFinder->findParentType($node, ClassLike::class);
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
 
-        if (! $classLike instanceof ClassLike) {
+        if (! $classReflection instanceof ClassReflection) {
             return false;
         }
 
-        return $this->nodeTypeResolver->isObjectTypes($classLike, $this->testCaseObjectTypes);
+        foreach (self::TEST_CASE_OBJECT_CLASSES as $testCaseObjectClass) {
+            if ($classReflection->isSubclassOf($testCaseObjectClass)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function isTestClassMethod(ClassMethod $classMethod): bool
