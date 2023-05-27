@@ -11,7 +11,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use Rector\Core\NodeManipulator\MethodCallManipulator;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -89,11 +88,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [MethodCall::class];
+        return [Assign::class];
     }
 
     /**
-     * @param MethodCall $node
+     * @param Assign $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -101,16 +100,15 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isName($node->name, 'createMock')) {
+        if (! $node->expr instanceof MethodCall) {
             return null;
         }
 
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof Assign) {
+        if (! $this->isName($node->expr->name, 'createMock')) {
             return null;
         }
 
-        $mockVariable = $parentNode->var;
+        $mockVariable = $node->var;
         if (! $mockVariable instanceof Variable) {
             return null;
         }
@@ -120,7 +118,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->name = new Identifier('createStub');
+        $node->expr->name = new Identifier('createStub');
 
         return $node;
     }
