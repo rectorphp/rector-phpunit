@@ -6,15 +6,15 @@ namespace Rector\PHPUnit\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\Reflection\ClassReflection;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -29,7 +29,8 @@ final class DataProviderAnnotationToAttributeRector extends AbstractRector imple
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
-        private readonly PhpDocTagRemover $phpDocTagRemover
+        private readonly PhpDocTagRemover $phpDocTagRemover,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -100,8 +101,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $currentClass = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $currentClass instanceof Class_) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
+
+        if (! $classReflection->isClass()) {
             return null;
         }
 
