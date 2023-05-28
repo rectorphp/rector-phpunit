@@ -13,7 +13,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -77,7 +76,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [Class_::class];
     }
 
     public function provideMinPhpVersion(): int
@@ -86,7 +85,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod $node
+     * @param Class_ $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -94,54 +93,71 @@ CODE_SAMPLE
             return null;
         }
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
-        if (! $phpDocInfo instanceof PhpDocInfo) {
-            return null;
-        }
-
-        /** @var PhpDocTagNode[] $desiredTagValueNodes */
-        $desiredTagValueNodes = $phpDocInfo->getTagsByName('depends');
-        if ($desiredTagValueNodes === []) {
-            return null;
-        }
-
-        $currentClass = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $currentClass instanceof Class_) {
-            return null;
-        }
-
-        $currentMethodName = $this->getName($node);
-        foreach ($desiredTagValueNodes as $desiredTagValueNode) {
-            if (! $desiredTagValueNode->value instanceof GenericTagValueNode) {
+        $hasChanged = false;
+        foreach ($node->getMethods() as $classMethod) {
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNode($classMethod);
+            if (! $phpDocInfo instanceof PhpDocInfo) {
                 continue;
             }
 
-            $originalAttributeValue = $desiredTagValueNode->value->value;
-            $attributeNameAndValue = $this->resolveAttributeValueAndAttributeName(
-                $currentClass,
-                $currentMethodName,
-                $originalAttributeValue
-            );
+            /** @var PhpDocTagNode[] $desiredTagValueNodes */
+            $desiredTagValueNodes = $phpDocInfo->getTagsByName('depends');
+            $currentMethodName = $this->getName($classMethod);
 
-            if ($attributeNameAndValue === null) {
-                continue;
+            foreach ($desiredTagValueNodes as $desiredTagValueNode) {
+                $attributeNameAndValue = $this->resolveAttributeNameAndValue(
+                    $desiredTagValueNode,
+                    $node,
+                    $currentMethodName
+                );
+                if ($attributeNameAndValue === []) {
+                    continue;
+                }
+
+                $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
+                    $attributeNameAndValue[0],
+                    [$attributeNameAndValue[1]]
+                );
+                $classMethod->attrGroups[] = $attributeGroup;
+
+                // cleanup
+                $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
+
+                $hasChanged = true;
             }
-
-            $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
-                $attributeNameAndValue[0],
-                [$attributeNameAndValue[1]]
-            );
-            $node->attrGroups[] = $attributeGroup;
-
-            // cleanup
-            $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
         }
 
-        if (! $phpDocInfo->hasChanged()) {
+        if (! $hasChanged) {
             return null;
         }
 
         return $node;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function resolveAttributeNameAndValue(
+        PhpDocTagNode $phpDocTagNode,
+        Class_ $class,
+        string $currentMethodName
+    ): array {
+        if (! $phpDocTagNode->value instanceof GenericTagValueNode) {
+            return [];
+        }
+
+        $originalAttributeValue = $phpDocTagNode->value->value;
+        $attributeNameAndValue = $this->resolveAttributeValueAndAttributeName(
+            $class,
+            $currentMethodName,
+            $originalAttributeValue
+        );
+
+        if ($attributeNameAndValue === null) {
+            return [];
+        }
+
+        return $attributeNameAndValue;
     }
 
     /**
