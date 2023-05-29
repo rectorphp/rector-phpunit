@@ -87,8 +87,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            /** @var int $key */
-            $this->nodeRemover->removeStmt($node, $key);
+            unset($node->stmts[$key]);
         }
 
         $node->stmts = array_merge((array) $node->stmts, (array) $proccesed);
