@@ -90,13 +90,13 @@ CODE_SAMPLE
             unset($node->stmts[$key]);
         }
 
-        $node->stmts = array_merge((array) $node->stmts, (array) $proccesed);
+        $node->stmts = array_merge($node->stmts, $proccesed);
 
         return $node;
     }
 
     /**
-     * @return Expression[]|null
+     * @return Node\Stmt[]|null
      */
     private function processTryCatch(TryCatch $tryCatch): ?array
     {

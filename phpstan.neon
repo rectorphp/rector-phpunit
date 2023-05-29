@@ -37,3 +37,4 @@ parameters:
 
         # false positive
         - '#Access to an undefined property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
+        - '#Parameter \#2 \.\.\.\$arrays of function array_merge expects array, array<PhpParser\\Node\\Stmt>\|null given#'
