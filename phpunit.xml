@@ -3,6 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     bootstrap="vendor/autoload.php"
     colors="true"
+    displayDetailsOnTestsThatTriggerWarnings="true"
 >
     <testsuites>
         <testsuite name="main">
