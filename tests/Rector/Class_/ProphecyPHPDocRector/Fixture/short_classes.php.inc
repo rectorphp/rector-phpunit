@@ -10,7 +10,7 @@ final class ShortClassesTest extends TestCase
 
     private $prophecy2;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->prophecy = $this->prophesize(\ReflectionClass::class);
         $this->prophecy2 = $this->prophesize(\stdClass::class);
@@ -37,7 +37,7 @@ final class ShortClassesTest extends TestCase
      */
     private $prophecy2;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->prophecy = $this->prophesize(\ReflectionClass::class);
         $this->prophecy2 = $this->prophesize(\stdClass::class);

@@ -9,7 +9,7 @@ final class ClassConstTest extends TestCase
 {
     private $prophecy;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->prophecy = $this->prophesize(SomeClass::class);
     }
@@ -31,7 +31,7 @@ final class ClassConstTest extends TestCase
      */
     private $prophecy;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->prophecy = $this->prophesize(SomeClass::class);
     }

@@ -13,7 +13,7 @@ final class ClassConstExistPHPDOCTest extends TestCase
      */
     private $prophecy;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->prophecy = $this->prophesize(SomeClass::class);
     }
@@ -36,7 +36,7 @@ final class ClassConstExistPHPDOCTest extends TestCase
      */
     private $prophecy;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->prophecy = $this->prophesize(SomeClass::class);
     }
