@@ -31,7 +31,7 @@ class HelloTest extends TestCase
 
     private Hello $hello;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $service = $this->prophesize(Service::class);
         $this->hello = new Hello($service->reveal());

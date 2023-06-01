@@ -8,7 +8,7 @@ final class ClassConstTest extends TestCase
 {
     private $prophecy;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->prophecy = $this->prophesize('App\SomeClass');
     }
@@ -29,7 +29,7 @@ final class ClassConstTest extends TestCase
      */
     private $prophecy;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->prophecy = $this->prophesize('App\SomeClass');
     }
