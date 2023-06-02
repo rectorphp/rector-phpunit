@@ -85,6 +85,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         if (! $this->isPossiblyStringType($node->getArgs()[1]->value)) {
             return null;
         }

@@ -79,6 +79,10 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         if (! isset($node->args[0])) {
             return null;
         }

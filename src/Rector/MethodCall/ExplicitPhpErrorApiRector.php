@@ -107,6 +107,10 @@ CODE_SAMPLE
         string $exceptionClass,
         string $explicitMethod
     ): ?Node {
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         if (! isset($node->getArgs()[0])) {
             return null;
         }

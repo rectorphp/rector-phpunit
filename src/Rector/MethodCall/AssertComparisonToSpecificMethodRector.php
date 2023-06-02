@@ -95,6 +95,10 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         $firstArgumentValue = $node->getArgs()[0]
 ->value;
         if (! $firstArgumentValue instanceof BinaryOp) {

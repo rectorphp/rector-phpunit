@@ -70,6 +70,10 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         $firstArgumentValue = $node->getArgs()[0]
 ->value;
         if (! $firstArgumentValue instanceof Instanceof_) {

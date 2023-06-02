@@ -81,6 +81,10 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         $firstArgumentValue = $node->getArgs()[0]
 ->value;
         // is property access

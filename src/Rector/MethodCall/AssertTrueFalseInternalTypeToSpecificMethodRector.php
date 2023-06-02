@@ -90,6 +90,10 @@ final class AssertTrueFalseInternalTypeToSpecificMethodRector extends AbstractRe
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         $firstArgumentValue = $node->getArgs()[0]
 ->value;
         if (! $firstArgumentValue instanceof FuncCall) {

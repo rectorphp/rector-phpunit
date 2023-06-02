@@ -78,6 +78,10 @@ final class AssertEqualsToSameRector extends AbstractRector
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         $args = $node->getArgs();
         if (! isset($args[0])) {
             return null;

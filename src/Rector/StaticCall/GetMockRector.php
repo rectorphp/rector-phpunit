@@ -88,6 +88,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         // narrow args to one
         if (count($node->args) > 1) {
             $node->args = [$node->getArgs()[0]];

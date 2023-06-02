@@ -139,6 +139,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($expr->isFirstClassCallable()) {
+            return null;
+        }
+
         return $expr->getArgs()[0];
     }
 
