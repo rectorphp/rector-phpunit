@@ -179,6 +179,10 @@ CODE_SAMPLE
             return;
         }
 
+        if ($methodCall->isFirstClassCallable()) {
+            return null;
+        }
+
         if (count($methodCall->getArgs()) !== 1) {
             throw new ShouldNotHappenException();
         }

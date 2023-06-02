@@ -89,6 +89,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         // 1. refactor to "assertEqualsIgnoringCase()"
         $newMethodCall = $this->processAssertEqualsIgnoringCase($node);
         if ($newMethodCall !== null) {

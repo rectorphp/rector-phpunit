@@ -85,6 +85,10 @@ final class AssertCompareToSpecificMethodRector extends AbstractRector
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         // we need 2 args
         if (! isset($node->args[1])) {
             return null;

@@ -125,6 +125,10 @@ CODE_SAMPLE
                         continue;
                     }
 
+                    if ($methodCall->isFirstClassCallable()) {
+                        continue;
+                    }
+
                     // has dynamic return?
                     if ($hasDynamicReturnExprs === false) {
                         $returnedExpr = $methodCall->getArgs()[0]
@@ -146,6 +150,11 @@ CODE_SAMPLE
             // change to anonymous class
             /** @var MethodCall $methodCall */
             $methodCall = $createMockMethodCallAssign->expr;
+
+            if ($methodCall->isFirstClassCallable()) {
+                continue;
+            }
+
             $firstArg = $methodCall->getArgs()[0];
 
             $mockExpr = $createMockMethodCallAssign->var;

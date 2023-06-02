@@ -70,6 +70,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($expr->isFirstClassCallable()) {
+            return null;
+        }
+
         if (! $this->nodeComparator->areNodesEqual($node->valueVar, $expr->getArgs()[1]->value)) {
             return null;
         }

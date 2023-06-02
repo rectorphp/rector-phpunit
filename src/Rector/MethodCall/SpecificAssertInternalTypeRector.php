@@ -100,6 +100,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         $typeNode = $node->getArgs()[0]
 ->value;
         if (! $typeNode instanceof String_) {

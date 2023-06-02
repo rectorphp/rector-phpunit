@@ -83,6 +83,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         foreach ($node->getArgs() as $i => $argNode) {
             if (! $argNode->value instanceof MethodCall) {
                 continue;

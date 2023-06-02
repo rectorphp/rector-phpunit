@@ -85,6 +85,10 @@ final class AssertRegExpRector extends AbstractRector
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         /** @var FuncCall|Node $secondArgumentValue */
         $secondArgumentValue = $node->getArgs()[1]
 ->value;
