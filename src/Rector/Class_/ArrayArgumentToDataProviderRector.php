@@ -180,7 +180,7 @@ CODE_SAMPLE
         }
 
         if ($methodCall->isFirstClassCallable()) {
-            return null;
+            return;
         }
 
         if (count($methodCall->getArgs()) !== 1) {

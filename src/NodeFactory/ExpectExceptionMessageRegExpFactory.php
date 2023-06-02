@@ -28,7 +28,7 @@ final class ExpectExceptionMessageRegExpFactory
         }
 
         if ($methodCall->isFirstClassCallable()) {
-            return;
+            return null;
         }
 
         $secondArgument = $methodCall->getArgs()[1]
