@@ -140,10 +140,12 @@ CODE_SAMPLE
             return null;
         }
 
-        foreach ($node->implements as $implement) {
-            if ($this->isName($implement, 'PHPUnit\Framework\TestListener')) {
-                $this->removeNode($implement);
+        foreach ($node->implements as $key => $implement) {
+            if (! $this->isName($implement, 'PHPUnit\Framework\TestListener')) {
+                continue;
             }
+
+            unset($node->implements[$key]);
         }
 
         foreach ($node->getMethods() as $classMethod) {
