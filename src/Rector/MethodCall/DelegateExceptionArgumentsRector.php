@@ -42,13 +42,29 @@ final class DelegateExceptionArgumentsRector extends AbstractRector
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-$this->setExpectedException(SomeException::class, "Message", "CODE");
+use PHPUnit\Framework\TestCase;
+
+class SomeTest extends TestCase
+{
+    public function test()
+    {
+        $this->setExpectedException(SomeException::class, "Message", "CODE");
+    }
+}
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-$this->setExpectedException(SomeException::class);
-$this->expectExceptionMessage('Message');
-$this->expectExceptionCode('CODE');
+use PHPUnit\Framework\TestCase;
+
+class SomeTest extends TestCase
+{
+    public function test()
+    {
+        $this->setExpectedException(SomeException::class);
+        $this->expectExceptionMessage('Message');
+        $this->expectExceptionCode('CODE');
+    }
+}
 CODE_SAMPLE
                 ),
             ]
@@ -68,15 +84,18 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $stmts = (array) $node->stmts;
-        if ($stmts === []) {
+        if ($node->stmts === null || $node->stmts === []) {
+            return null;
+        }
+
+        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
             return null;
         }
 
         $hasChanged = false;
         $oldMethodNames = array_keys(self::OLD_TO_NEW_METHOD);
 
-        foreach ($stmts as $key => $stmt) {
+        foreach ($node->stmts as $stmt) {
             if (! $stmt instanceof Expression) {
                 continue;
             }
@@ -90,47 +109,43 @@ CODE_SAMPLE
                 continue;
             }
 
-            $extraStmts = [];
-
             if (isset($call->args[1])) {
-                /** @var Identifier $identifierNode */
-                $identifierNode = $call->name;
-                $oldMethodName = $identifierNode->name;
-
-                $extraCall = $this->assertCallFactory->createCallWithName(
-                    $call,
-                    self::OLD_TO_NEW_METHOD[$oldMethodName]
-                );
-                $extraCall->args[] = $call->args[1];
-
-                $extraStmts[] = new Expression($extraCall);
+                $extraCall = $this->createFirstArgExtraMethodCall($call);
+                $node->stmts[] = new Expression($extraCall);
 
                 unset($call->args[1]);
+            }
 
-                // add exception code method call
-                if (isset($call->args[2])) {
-                    $extraCall = $this->assertCallFactory->createCallWithName($call, 'expectExceptionCode');
-                    $extraCall->args[] = $call->args[2];
+            // add exception code method call
+            if (isset($call->args[2])) {
+                $extraCall = $this->assertCallFactory->createCallWithName($call, 'expectExceptionCode');
+                $extraCall->args[] = $call->args[2];
 
-                    $extraStmts[] = new Expression($extraCall);
+                $node->stmts[] = new Expression($extraCall);
 
-                    unset($call->args[2]);
-                }
+                unset($call->args[2]);
             }
 
             $hasChanged = true;
             $call->name = new Identifier('expectException');
-
-            $extraStmts = array_merge($extraStmts, [new Expression($call)]);
-
-            array_splice($stmts, $key, 1, $extraStmts);
         }
 
         if ($hasChanged) {
-            $node->stmts = $stmts;
             return $node;
         }
 
         return null;
+    }
+
+    private function createFirstArgExtraMethodCall(StaticCall|MethodCall $call): MethodCall|StaticCall
+    {
+        /** @var Identifier $identifierNode */
+        $identifierNode = $call->name;
+        $oldMethodName = $identifierNode->name;
+
+        $extraCall = $this->assertCallFactory->createCallWithName($call, self::OLD_TO_NEW_METHOD[$oldMethodName]);
+        $extraCall->args[] = $call->args[1];
+
+        return $extraCall;
     }
 }

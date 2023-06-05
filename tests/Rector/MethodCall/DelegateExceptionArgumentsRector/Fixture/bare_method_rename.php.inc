@@ -2,11 +2,11 @@
 
 namespace Rector\PHPUnit\Tests\Rector\MethodCall\DelegateExceptionArgumentsRector\Fixture;
 
-final class MyMessageTest extends \PHPUnit\Framework\TestCase
+final class BareMethodRenameTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
-        $this->setExpectedException('SecondException', $message);
+        $this->setExpectedException('FirstException');
     }
 }
 
@@ -16,12 +16,11 @@ final class MyMessageTest extends \PHPUnit\Framework\TestCase
 
 namespace Rector\PHPUnit\Tests\Rector\MethodCall\DelegateExceptionArgumentsRector\Fixture;
 
-final class MyMessageTest extends \PHPUnit\Framework\TestCase
+final class BareMethodRenameTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
-        $this->expectException('SecondException');
-        $this->expectExceptionMessage($message);
+        $this->expectException('FirstException');
     }
 }
 
