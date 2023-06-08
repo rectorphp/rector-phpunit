@@ -9,9 +9,9 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Type\TypeWithClassName;
-use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -35,7 +35,7 @@ final class AssertCallAnalyzer
 
     public function __construct(
         private readonly AstResolver $astResolver,
-        private readonly NodePrinterInterface $nodePrinter,
+        private readonly BetterStandardPrinter $nodePrinter,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeTypeResolver $nodeTypeResolver,
