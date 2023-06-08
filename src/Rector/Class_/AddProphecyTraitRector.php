@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
-use Rector\Core\NodeManipulator\ClassInsertManipulator;
+use PhpParser\Node\Stmt\TraitUse;
 use Rector\Core\NodeManipulator\ClassManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -28,7 +29,6 @@ final class AddProphecyTraitRector extends AbstractRector
     private const PROPHECY_TRAIT = 'Prophecy\PhpUnit\ProphecyTrait';
 
     public function __construct(
-        private readonly ClassInsertManipulator $classInsertManipulator,
         private readonly ClassManipulator $classManipulator,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
@@ -88,7 +88,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->classInsertManipulator->addAsFirstTrait($node, self::PROPHECY_TRAIT);
+        $traitUse = new TraitUse([new FullyQualified(self::PROPHECY_TRAIT)]);
+
+        $node->stmts = array_merge([$traitUse], $node->stmts);
 
         return $node;
     }
