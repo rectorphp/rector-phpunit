@@ -35,7 +35,7 @@ final class AssertCallAnalyzer
 
     public function __construct(
         private readonly AstResolver $astResolver,
-        private readonly BetterStandardPrinter $nodePrinter,
+        private readonly BetterStandardPrinter $betterStandardPrinter,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeTypeResolver $nodeTypeResolver,
@@ -56,7 +56,7 @@ final class AssertCallAnalyzer
             return false;
         }
 
-        $cacheHash = md5($this->nodePrinter->prettyPrint([$classMethod]));
+        $cacheHash = md5($this->betterStandardPrinter->prettyPrint([$classMethod]));
 
         if (isset($this->containsAssertCallByClassMethod[$cacheHash])) {
             return $this->containsAssertCallByClassMethod[$cacheHash];
