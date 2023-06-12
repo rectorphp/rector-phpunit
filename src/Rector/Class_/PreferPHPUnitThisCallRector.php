@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Type\ObjectType;
@@ -72,7 +73,7 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        $this->traverseNodesWithCallable($node, function (Node $node) use (&$hasChanged) {
+        $this->traverseNodesWithCallable($node, function (Node $node) use (&$hasChanged): ?MethodCall {
             if (! $node instanceof StaticCall) {
                 return null;
             }
