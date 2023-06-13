@@ -9,7 +9,7 @@ final class RespectParentAbstractClass extends AnotherAbstractClass
     public function dataProvider(): array
     {
         return [
-        	[1, 2],
+            [1, 2],
         ];
     }
 }
@@ -27,7 +27,7 @@ final class RespectParentAbstractClass extends AnotherAbstractClass
     public static function dataProvider(): array
     {
         return [
-        	[1, 2],
+            [1, 2],
         ];
     }
 }
