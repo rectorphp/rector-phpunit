@@ -209,11 +209,7 @@ CODE_SAMPLE
         // rename method to new one handling non-array input
         $methodCall->name = new Identifier($arrayArgumentToDataProvider->getNewMethod());
 
-        $dataProviderMethodName = $this->createDataProviderMethodName($methodCall, $classMethod);
-        if ($dataProviderMethodName === null) {
-            return;
-        }
-
+        $dataProviderMethodName = $this->createDataProviderMethodName($classMethod);
         $this->dataProviderClassMethodRecipes[] = new DataProviderClassMethodRecipe(
             $dataProviderMethodName,
             $methodCall->getArgs()
@@ -228,10 +224,6 @@ CODE_SAMPLE
 
         foreach ($paramAndArgs as $paramAndArg) {
             $methodCall->args[] = new Arg($paramAndArg->getVariable());
-        }
-
-        if (! $classMethod instanceof ClassMethod) {
-            return;
         }
 
         $this->refactorTestClassMethodParams($classMethod, $paramAndArgs);
@@ -271,7 +263,7 @@ CODE_SAMPLE
         return $this->isName($methodCall->name, $arrayArgumentToDataProvider->getOldMethod());
     }
 
-    private function createDataProviderMethodName(MethodCall $methodCall, ClassMethod $classMethod): ?string
+    private function createDataProviderMethodName(ClassMethod $classMethod): string
     {
         $classMethodName = $this->getName($classMethod);
         return 'provideDataFor' . ucfirst($classMethodName);
