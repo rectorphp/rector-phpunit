@@ -135,13 +135,19 @@ CODE_SAMPLE
 
         $this->dataProviderClassMethodRecipes = [];
 
-        $this->traverseNodesWithCallable($node->stmts, function (Node $node) {
+        $classMethod = null;
+        $this->traverseNodesWithCallable($node->getMethods(), function (Node $node) use (&$classMethod) {
+            if ($node instanceof ClassMethod) {
+                $classMethod = $node;
+                return null;
+            }
+
             if (! $node instanceof MethodCall) {
                 return null;
             }
 
             foreach ($this->arrayArgumentsToDataProviders as $arrayArgumentToDataProvider) {
-                $this->refactorMethodCallWithConfiguration($node, $arrayArgumentToDataProvider);
+                $this->refactorMethodCallWithConfiguration($node, $arrayArgumentToDataProvider, $classMethod);
             }
 
             return null;
@@ -173,8 +179,13 @@ CODE_SAMPLE
 
     private function refactorMethodCallWithConfiguration(
         MethodCall $methodCall,
-        ArrayArgumentToDataProvider $arrayArgumentToDataProvider
+        ArrayArgumentToDataProvider $arrayArgumentToDataProvider,
+        ?ClassMethod $classMethod
     ): void {
+        if (! $classMethod instanceof ClassMethod) {
+            return;
+        }
+
         if (! $this->isMethodCallMatch($methodCall, $arrayArgumentToDataProvider)) {
             return;
         }
@@ -198,11 +209,7 @@ CODE_SAMPLE
         // rename method to new one handling non-array input
         $methodCall->name = new Identifier($arrayArgumentToDataProvider->getNewMethod());
 
-        $dataProviderMethodName = $this->createDataProviderMethodName($methodCall);
-        if ($dataProviderMethodName === null) {
-            return;
-        }
-
+        $dataProviderMethodName = $this->createDataProviderMethodName($classMethod);
         $this->dataProviderClassMethodRecipes[] = new DataProviderClassMethodRecipe(
             $dataProviderMethodName,
             $methodCall->getArgs()
@@ -217,11 +224,6 @@ CODE_SAMPLE
 
         foreach ($paramAndArgs as $paramAndArg) {
             $methodCall->args[] = new Arg($paramAndArg->getVariable());
-        }
-
-        $classMethod = $this->betterNodeFinder->findParentType($methodCall, ClassMethod::class);
-        if (! $classMethod instanceof ClassMethod) {
-            return;
         }
 
         $this->refactorTestClassMethodParams($classMethod, $paramAndArgs);
@@ -261,13 +263,8 @@ CODE_SAMPLE
         return $this->isName($methodCall->name, $arrayArgumentToDataProvider->getOldMethod());
     }
 
-    private function createDataProviderMethodName(MethodCall $methodCall): ?string
+    private function createDataProviderMethodName(ClassMethod $classMethod): string
     {
-        $classMethod = $this->betterNodeFinder->findParentType($methodCall, ClassMethod::class);
-        if (! $classMethod instanceof ClassMethod) {
-            return null;
-        }
-
         $classMethodName = $this->getName($classMethod);
         return 'provideDataFor' . ucfirst($classMethodName);
     }
