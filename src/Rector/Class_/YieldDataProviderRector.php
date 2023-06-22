@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use Rector\Core\PhpParser\NodeTransformer;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFinder\DataProviderClassMethodFinder;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -132,12 +133,21 @@ CODE_SAMPLE
         // change return typehint
         $classMethod->returnType = new FullyQualified('Iterator');
 
+        $commentReturn = null;
         foreach ((array) $classMethod->stmts as $key => $classMethodStmt) {
             if (! $classMethodStmt instanceof Return_) {
                 continue;
             }
 
+            $commentReturn = $classMethodStmt->getAttribute(AttributeKey::COMMENTS) ?? [];
             unset($classMethod->stmts[$key]);
+        }
+
+        if (isset($yields[0])) {
+            $yields[0]->setAttribute(
+                AttributeKey::COMMENTS,
+                array_merge($commentReturn, $yields[0]->getAttribute(AttributeKey::COMMENTS) ?? [])
+            );
         }
 
         $classMethod->stmts = array_merge((array) $classMethod->stmts, $yields);

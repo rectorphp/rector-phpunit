@@ -8,9 +8,6 @@ use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-/**
- * @runTestsInSeparateProcesses
- */
 final class YieldDataProviderRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
