@@ -133,7 +133,7 @@ CODE_SAMPLE
         // change return typehint
         $classMethod->returnType = new FullyQualified('Iterator');
 
-        $commentReturn = null;
+        $commentReturn = [];
         foreach ((array) $classMethod->stmts as $key => $classMethodStmt) {
             if (! $classMethodStmt instanceof Return_) {
                 continue;
