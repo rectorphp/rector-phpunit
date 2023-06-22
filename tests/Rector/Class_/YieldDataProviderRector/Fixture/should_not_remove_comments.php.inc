@@ -7,6 +7,8 @@ use PHPUnit\Framework\TestCase;
 final class ShouldNotRemoveComments extends TestCase
 {
     /**
+     * some comment
+     *
      * @dataProvider provideDataSomething()
      */
     public function testSomething(string $filePath): void
@@ -38,6 +40,8 @@ use PHPUnit\Framework\TestCase;
 final class ShouldNotRemoveComments extends TestCase
 {
     /**
+     * some comment
+     *
      * @dataProvider provideDataSomething()
      */
     public function testSomething(string $filePath): void
