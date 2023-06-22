@@ -7,13 +7,13 @@ use PHPUnit\Framework\TestCase;
 final class ShouldNotRemoveComments extends TestCase
 {
     /**
-     * @dataProvider provideData()
+     * @dataProvider provideDataSomething()
      */
-    public function test(string $filePath): void
+    public function testSomething(string $filePath): void
     {
     }
 
-    public function provideData(): array
+    public function provideDataSomething(): array
     {
         // Let's pretend that this comment is extremely important and meaningful.
         // It should not be removed by Rector.
@@ -38,16 +38,13 @@ use PHPUnit\Framework\TestCase;
 final class ShouldNotRemoveComments extends TestCase
 {
     /**
-     * @dataProvider provideData()
+     * @dataProvider provideDataSomething()
      */
-    /**
-     * @dataProvider provideData()
-     */
-    public function test(string $filePath): void
+    public function testSomething(string $filePath): void
     {
     }
 
-    public function provideData(): \Iterator
+    public function provideDataSomething(): \Iterator
     {
         // This is yet another comment.
         yield ['item1'];
