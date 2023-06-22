@@ -7,12 +7,12 @@ use PHPUnit\Framework\TestCase;
 final class DataProvider extends TestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('dataProvider')]
-    #[\PHPUnit\Framework\Attributes\DataProvider('provideData')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideDataForProvider')]
     public function test(string $filePath): void
     {
     }
 
-    public static function provideData()
+    public static function provideDataForProvider()
     {
         return [
             ['<?php implode("", $foo, );', '<?php implode($foo, "", );']
@@ -39,12 +39,12 @@ use PHPUnit\Framework\TestCase;
 final class DataProvider extends TestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('dataProvider')]
-    #[\PHPUnit\Framework\Attributes\DataProvider('provideData')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideDataForProvider')]
     public function test(string $filePath): void
     {
     }
 
-    public static function provideData(): \Iterator
+    public static function provideDataForProvider(): \Iterator
     {
         yield ['<?php implode("", $foo, );', '<?php implode($foo, "", );'];
     }
