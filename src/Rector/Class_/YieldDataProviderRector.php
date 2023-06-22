@@ -93,18 +93,8 @@ CODE_SAMPLE
                 continue;
             }
 
-            // keep comments of 1st array item
-            $firstComment = $node->stmts[0]->getAttribute(AttributeKey::COMMENTS);
             $this->transformArrayToYieldsOnMethodNode($dataProviderClassMethod, $array);
-
             $hasChanged = true;
-
-            if (is_array($firstComment)) {
-                $node->stmts[0]->setAttribute(
-                    AttributeKey::COMMENTS,
-                    array_merge($firstComment, (array) $node->stmts[0]->getAttribute(AttributeKey::COMMENTS))
-                );
-            }
         }
 
         if ($hasChanged) {
@@ -143,12 +133,21 @@ CODE_SAMPLE
         // change return typehint
         $classMethod->returnType = new FullyQualified('Iterator');
 
+        $commentReturn = [];
         foreach ((array) $classMethod->stmts as $key => $classMethodStmt) {
             if (! $classMethodStmt instanceof Return_) {
                 continue;
             }
 
+            $commentReturn = $classMethodStmt->getAttribute(AttributeKey::COMMENTS) ?? [];
             unset($classMethod->stmts[$key]);
+        }
+
+        if (isset($yields[0])) {
+            $yields[0]->setAttribute(
+                AttributeKey::COMMENTS,
+                array_merge($commentReturn, $yields[0]->getAttribute(AttributeKey::COMMENTS) ?? [])
+            );
         }
 
         $classMethod->stmts = array_merge((array) $classMethod->stmts, $yields);
