@@ -50,6 +50,8 @@ final class ShouldNotRemoveComments extends TestCase
 
     public function provideDataSomething(): \Iterator
     {
+        // Let's pretend that this comment is extremely important and meaningful.
+        // It should not be removed by Rector.
         // This is yet another comment.
         yield ['item1'];
         // And a final one.
