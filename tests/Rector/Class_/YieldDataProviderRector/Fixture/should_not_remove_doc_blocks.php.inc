@@ -5,7 +5,7 @@ namespace Rector\PHPUnit\Tests\Rector\Class_\YieldDataProviderRector\Fixture;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-final class ShouldNotRemoveDocblocks extends TestCase
+final class ShouldNotRemoveDocblocksTest extends TestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
@@ -36,7 +36,7 @@ namespace Rector\PHPUnit\Tests\Rector\Class_\YieldDataProviderRector\Fixture;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-final class ShouldNotRemoveDocblocks extends TestCase
+final class ShouldNotRemoveDocblocksTest extends TestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
