@@ -4,7 +4,7 @@ namespace Rector\PHPUnit\Tests\Rector\Class_\YieldDataProviderRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
-final class ShouldNotRemoveComments extends TestCase
+final class ShouldNotRemoveCommentsTest extends TestCase
 {
     /**
      * some comment
@@ -37,7 +37,7 @@ namespace Rector\PHPUnit\Tests\Rector\Class_\YieldDataProviderRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
-final class ShouldNotRemoveComments extends TestCase
+final class ShouldNotRemoveCommentsTest extends TestCase
 {
     /**
      * some comment
