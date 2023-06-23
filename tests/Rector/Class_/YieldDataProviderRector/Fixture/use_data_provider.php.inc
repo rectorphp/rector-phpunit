@@ -36,7 +36,7 @@ namespace Rector\PHPUnit\Tests\Rector\Class_\YieldDataProviderRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
-final class UseDataProvideTest extends TestCase
+final class UseDataProviderTest extends TestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('dataProvider')]
     #[\PHPUnit\Framework\Attributes\DataProvider('provideDataForProvider')]
