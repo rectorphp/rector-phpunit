@@ -32,17 +32,38 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
         $this->functionNameWithAssertMethods = [
-            new FunctionNameWithAssertMethods('is_readable', 'assertIsReadable', 'assertNotIsReadable'),
-            new FunctionNameWithAssertMethods('array_key_exists', 'assertArrayHasKey', 'assertArrayNotHasKey'),
-            new FunctionNameWithAssertMethods('array_search', 'assertContains', 'assertNotContains'),
-            new FunctionNameWithAssertMethods('in_array', 'assertContains', 'assertNotContains'),
-            new FunctionNameWithAssertMethods('empty', 'assertEmpty', 'assertNotEmpty'),
-            new FunctionNameWithAssertMethods('file_exists', 'assertFileExists', 'assertFileNotExists'),
-            new FunctionNameWithAssertMethods('is_dir', 'assertDirectoryExists', 'assertDirectoryNotExists'),
-            new FunctionNameWithAssertMethods('is_infinite', 'assertInfinite', 'assertFinite'),
-            new FunctionNameWithAssertMethods('is_null', 'assertNull', 'assertNotNull'),
-            new FunctionNameWithAssertMethods('is_writable', 'assertIsWritable', 'assertNotIsWritable'),
-            new FunctionNameWithAssertMethods('is_nan', 'assertNan', ''),
+            'is_readable' => new FunctionNameWithAssertMethods(
+                'is_readable',
+                'assertIsReadable',
+                'assertNotIsReadable'
+            ),
+            'array_key_exists' => new FunctionNameWithAssertMethods(
+                'array_key_exists',
+                'assertArrayHasKey',
+                'assertArrayNotHasKey'
+            ),
+            'array_search' => new FunctionNameWithAssertMethods('array_search', 'assertContains', 'assertNotContains'),
+            'in_array' => new FunctionNameWithAssertMethods('in_array', 'assertContains', 'assertNotContains'),
+            'empty' => new FunctionNameWithAssertMethods('empty', 'assertEmpty', 'assertNotEmpty'),
+            'file_exists' => new FunctionNameWithAssertMethods(
+                'file_exists',
+                'assertFileExists',
+                'assertFileNotExists'
+            ),
+            'is_dir' => new FunctionNameWithAssertMethods(
+                'is_dir',
+                'assertDirectoryExists',
+                'assertDirectoryNotExists'
+            ),
+            'is_infinite' => new FunctionNameWithAssertMethods('is_infinite', 'assertInfinite', 'assertFinite'),
+            'is_null' => new FunctionNameWithAssertMethods('is_null', 'assertNull', 'assertNotNull'),
+            'is_writable' => new FunctionNameWithAssertMethods(
+                'is_writable',
+                'assertIsWritable',
+                'assertNotIsWritable'
+            ),
+            'is_nan' => new FunctionNameWithAssertMethods('is_nan', 'assertNan', ''),
+            'is_a' => new FunctionNameWithAssertMethods('is_a', 'assertInstanceOf', 'assertNotInstanceOf'),
         ];
     }
 
@@ -89,51 +110,39 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
         }
 
         $firstArgumentValue = $arguments[0]->value;
-
-        $isFirstArgumentValueInstanceOfFuncCall = $firstArgumentValue instanceof FuncCall;
-        $isFirstArgumentValueInstanceOfEmpty = $firstArgumentValue instanceof Empty_;
-
-        if (! $isFirstArgumentValueInstanceOfFuncCall && ! $isFirstArgumentValueInstanceOfEmpty) {
+        if (! $firstArgumentValue instanceof FuncCall && ! $firstArgumentValue instanceof Empty_) {
             return null;
         }
 
-        if ($isFirstArgumentValueInstanceOfFuncCall && $this->isName($firstArgumentValue, 'is_a')) {
+        $firstArgumentName = $this->getName($firstArgumentValue);
+        if ($firstArgumentName === null || ! array_key_exists(
+            $firstArgumentName,
+            $this->functionNameWithAssertMethods
+        )) {
+            return null;
+        }
+
+        $functionNameWithAssertMethod = $this->functionNameWithAssertMethods[$firstArgumentName];
+        if ($firstArgumentName === 'is_a') {
+            /**
+             * @var FuncCall $firstArgumentValue
+             * @var array<Arg> $args
+             **/
             $args = $firstArgumentValue->getArgs();
             if ($args === []) {
                 return null;
             }
 
-            $firstArgValue = $args[0]->value;
-
-            $firstArgType = $this->nodeTypeResolver->getType($firstArgValue);
-            if ($firstArgType instanceof StringType) {
+            $firstArgumentType = $this->nodeTypeResolver->getType($args[0]->value);
+            if ($firstArgumentType instanceof StringType) {
                 return null;
             }
-
-            $this->functionNameWithAssertMethods[] = new FunctionNameWithAssertMethods(
-                'is_a',
-                'assertInstanceOf',
-                'assertNotInstanceOf'
-            );
         }
 
-        foreach ($this->functionNameWithAssertMethods as $functionNameWithAssertMethod) {
-            if (! $this->isName($firstArgumentValue, $functionNameWithAssertMethod->getFunctionName())) {
-                continue;
-            }
+        $this->renameMethod($node, $functionNameWithAssertMethod);
+        $this->moveFunctionArgumentsUp($node);
 
-            $name = $this->getName($firstArgumentValue);
-            if ($name === null) {
-                return null;
-            }
-
-            $this->renameMethod($node, $functionNameWithAssertMethod);
-            $this->moveFunctionArgumentsUp($node);
-
-            return $node;
-        }
-
-        return null;
+        return $node;
     }
 
     private function renameMethod(
