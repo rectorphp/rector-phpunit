@@ -90,7 +90,9 @@ CODE_SAMPLE
             unset($node->stmts[$key]);
         }
 
-        $node->stmts = array_merge($node->stmts, $proccesed);
+        if ($proccesed !== null) {
+            $node->stmts = array_merge($node->stmts, $proccesed);
+        }
 
         return $node;
     }
