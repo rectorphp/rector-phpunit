@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
+use PHPStan\Type\StringType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\ValueObject\FunctionNameWithAssertMethods;
@@ -42,7 +43,6 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
             new FunctionNameWithAssertMethods('is_null', 'assertNull', 'assertNotNull'),
             new FunctionNameWithAssertMethods('is_writable', 'assertIsWritable', 'assertNotIsWritable'),
             new FunctionNameWithAssertMethods('is_nan', 'assertNan', ''),
-            new FunctionNameWithAssertMethods('is_a', 'assertInstanceOf', 'assertNotInstanceOf'),
         ];
     }
 
@@ -83,14 +83,38 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
             return null;
         }
 
-        if (! isset($node->args[0])) {
+        $arguments = $node->getArgs();
+        if ($arguments === []) {
             return null;
         }
 
-        $firstArgumentValue = $node->getArgs()[0]
-->value;
-        if (! $firstArgumentValue instanceof FuncCall && ! $firstArgumentValue instanceof Empty_) {
+        $firstArgumentValue = $arguments[0]->value;
+
+        $isFirstArgumentValueInstanceOfFuncCall = $firstArgumentValue instanceof FuncCall;
+        $isFirstArgumentValueInstanceOfEmpty = $firstArgumentValue instanceof Empty_;
+
+        if (! $isFirstArgumentValueInstanceOfFuncCall && ! $isFirstArgumentValueInstanceOfEmpty) {
             return null;
+        }
+
+        if ($isFirstArgumentValueInstanceOfFuncCall && $this->isName($firstArgumentValue, 'is_a')) {
+            $args = $firstArgumentValue->getArgs();
+            if ($args === []) {
+                return null;
+            }
+
+            $firstArgValue = $args[0]->value;
+
+            $firstArgType = $this->nodeTypeResolver->getType($firstArgValue);
+            if ($firstArgType instanceof StringType) {
+                return null;
+            }
+
+            $this->functionNameWithAssertMethods[] = new FunctionNameWithAssertMethods(
+                'is_a',
+                'assertInstanceOf',
+                'assertNotInstanceOf'
+            );
         }
 
         foreach ($this->functionNameWithAssertMethods as $functionNameWithAssertMethod) {
