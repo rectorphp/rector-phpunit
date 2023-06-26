@@ -7,8 +7,11 @@ class SomeTest extends \PHPUnit\Framework\TestCase
     public function test()
     {
         $applicationMock = $this->getMockBuilder('SomeClass')
-           ->disableOriginalConstructor()
-           ->getMock();
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
     }
 }
 
