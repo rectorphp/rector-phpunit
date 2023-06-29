@@ -26,7 +26,7 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
     /**
      * @var array<string,array<array-key,string>>
      */
-    private array $functionNameWithAssertMethodNames = [
+    private const FUNCTION_NAME_WITH_ASSERT_METHOD_NAMES = [
         'is_readable' => ['is_readable', 'assertIsReadable', 'assertNotIsReadable'],
         'array_key_exists' => ['array_key_exists', 'assertArrayHasKey', 'assertArrayNotHasKey'],
         'array_search' => ['array_search', 'assertContains', 'assertNotContains'],
@@ -96,7 +96,7 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
         $firstArgumentName = $this->getName($firstArgumentValue);
         if ($firstArgumentName === null || ! array_key_exists(
             $firstArgumentName,
-            $this->functionNameWithAssertMethodNames
+            self::FUNCTION_NAME_WITH_ASSERT_METHOD_NAMES
         )) {
             return null;
         }
@@ -117,7 +117,7 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
             }
         }
 
-        [$functionName, $assetMethodName, $notAssertMethodName] = $this->functionNameWithAssertMethodNames[$firstArgumentName];
+        [$functionName, $assetMethodName, $notAssertMethodName] = self::FUNCTION_NAME_WITH_ASSERT_METHOD_NAMES[$firstArgumentName];
 
         $functionNameWithAssertMethods = new FunctionNameWithAssertMethods(
             $functionName,
