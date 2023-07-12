@@ -6,7 +6,7 @@ use Rector\Config\RectorConfig;
 use Rector\PHPUnit\PHPUnit100\Rector\MethodCall\PropertyExistsWithoutAssertRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->import(__DIR__ . '/../../../../../config/config.php');
+    $rectorConfig->import(__DIR__ . '/../../../../../../config/config.php');
 
     $rectorConfig->rule(PropertyExistsWithoutAssertRector::class);
 };
