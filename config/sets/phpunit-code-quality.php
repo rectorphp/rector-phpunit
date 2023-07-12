@@ -22,6 +22,7 @@ use Rector\PHPUnit\Rector\MethodCall\AssertSameTrueFalseToAssertTrueFalseRector;
 use Rector\PHPUnit\Rector\MethodCall\AssertTrueFalseInternalTypeToSpecificMethodRector;
 use Rector\PHPUnit\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector;
 use Rector\PHPUnit\Rector\MethodCall\RemoveExpectAnyFromMockRector;
+use Rector\PHPUnit\Rector\MethodCall\UseSpecificWillMethodRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
@@ -46,5 +47,6 @@ return static function (RectorConfig $rectorConfig): void {
         AssertPropertyExistsRector::class,
         AssertRegExpRector::class,
         SimplifyForeachInstanceOfRector::class,
+        UseSpecificWillMethodRector::class,
     ]);
 };
