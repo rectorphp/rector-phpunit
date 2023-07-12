@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-use Rector\PHPUnit\PHPUnit60\Rector\MethodCall\GetMockBuilderGetMockToCreateMockRector;
 use Rector\PHPUnit\Rector\Class_\AddSeeTestAnnotationRector;
 use Rector\PHPUnit\Rector\Class_\ConstructClassMethodToSetUpTestCaseRector;
 use Rector\PHPUnit\Rector\Class_\PreferPHPUnitThisCallRector;
@@ -62,6 +61,5 @@ return static function (RectorConfig $rectorConfig): void {
          */
         RemoveSetMethodsMethodCallRector::class,
         RemoveExpectAnyFromMockRector::class,
-        GetMockBuilderGetMockToCreateMockRector::class,
     ]);
 };
