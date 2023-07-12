@@ -5,6 +5,8 @@ parameters:
         - config
         - src
         - tests
+        - rules
+        - rules-tests
 
     reportUnmatchedIgnoredErrors: false
 
