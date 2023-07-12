@@ -10,7 +10,6 @@ use Rector\Set\ValueObject\SetList;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->importNames();
-    $rectorConfig->disableParallel();
 
     $rectorConfig->paths([__DIR__ . '/src', __DIR__ . '/tests', __DIR__ . '/rules', __DIR__ . '/rules-tests']);
 
@@ -21,7 +20,7 @@ return static function (RectorConfig $rectorConfig): void {
         '*/Expected/*',
 
         // buggy here
-        \Rector\CodeQuality\Rector\If_\ConsecutiveNullCompareReturnsToNullCoalesceQueueRector::class,
+        // \Rector\CodeQuality\Rector\If_\ConsecutiveNullCompareReturnsToNullCoalesceQueueRector::class,
 
         // object types
         StringClassNameToClassConstantRector::class => [
