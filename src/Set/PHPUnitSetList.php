@@ -69,6 +69,7 @@ final class PHPUnitSetList implements SetListInterface
     public const PHPUNIT_EXCEPTION = __DIR__ . '/../../config/sets/phpunit-exception.php';
 
     /**
+     * @deprecated Use CodeQuality set instead, as related to code-quality
      * @var string
      */
     public const REMOVE_MOCKS = __DIR__ . '/../../config/sets/remove-mocks.php';
