@@ -13,9 +13,11 @@ use Rector\Renaming\ValueObject\MethodCallRename;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->sets([PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES]);
 
-    $rectorConfig->rules([StaticDataProviderClassMethodRector::class, PropertyExistsWithoutAssertRector::class]);
-
-    $rectorConfig->rule(AddProphecyTraitRector::class);
+    $rectorConfig->rules([
+        StaticDataProviderClassMethodRector::class,
+        PropertyExistsWithoutAssertRector::class,
+        AddProphecyTraitRector::class,
+    ]);
 
     $rectorConfig->ruleWithConfiguration(RenameMethodRector::class, [
         // https://github.com/sebastianbergmann/phpunit/issues/4087
