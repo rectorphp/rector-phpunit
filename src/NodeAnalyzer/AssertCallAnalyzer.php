@@ -63,23 +63,28 @@ final class AssertCallAnalyzer
         }
 
         // A. try "->assert" shallow search first for performance
-        $hasDirectAssertCall = $this->hasDirectAssertCall($classMethod);
-        if ($hasDirectAssertCall) {
-            $this->containsAssertCallByClassMethod[$cacheHash] = $hasDirectAssertCall;
+        $hasDirectAssertOrMockCall = $this->hasDirectAssertOrMockCall($classMethod);
+        if ($hasDirectAssertOrMockCall) {
+            $this->containsAssertCallByClassMethod[$cacheHash] = $hasDirectAssertOrMockCall;
             return true;
         }
 
         // B. look for nested calls
-        $hasNestedAssertCall = $this->hasNestedAssertCall($classMethod);
-        $this->containsAssertCallByClassMethod[$cacheHash] = $hasNestedAssertCall;
+        $hasNestedAssertOrMockCall = $this->hasNestedAssertCall($classMethod);
+        $this->containsAssertCallByClassMethod[$cacheHash] = $hasNestedAssertOrMockCall;
 
-        return $hasNestedAssertCall;
+        return $hasNestedAssertOrMockCall;
     }
 
-    private function hasDirectAssertCall(ClassMethod $classMethod): bool
+    private function hasDirectAssertOrMockCall(ClassMethod $classMethod): bool
     {
         return (bool) $this->betterNodeFinder->findFirst((array) $classMethod->stmts, function (Node $node): bool {
             if ($node instanceof MethodCall) {
+                // probably a mock
+                if ($this->nodeNameResolver->isName($node->name, 'expects')) {
+                    return true;
+                }
+
                 $type = $this->nodeTypeResolver->getType($node->var);
 
                 if ($type instanceof FullyQualifiedObjectType && in_array(
@@ -111,6 +116,11 @@ final class AssertCallAnalyzer
         ): bool {
             if (! $node instanceof MethodCall && ! $node instanceof StaticCall) {
                 return false;
+            }
+
+            // is a mock call
+            if ($this->nodeNameResolver->isName($node->name, 'expects')) {
+                return true;
             }
 
             $classMethod = $this->resolveClassMethodFromCall($node);
