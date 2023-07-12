@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\MethodCall\AssertEqualsParameterToSpecificMethodsTypeRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit80\Rector\MethodCall\AssertEqualsParameterToSpecificMethodsTypeRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
@@ -22,7 +22,7 @@ final class RefactorDelta extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\MethodCall\AssertEqualsParameterToSpecificMethodsTypeRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit80\Rector\MethodCall\AssertEqualsParameterToSpecificMethodsTypeRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
