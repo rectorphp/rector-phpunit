@@ -86,7 +86,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->addDoesNotPerformAssertions($node);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $phpDocInfo->addPhpDocTagNode(new PhpDocTagNode('@doesNotPerformAssertions', new GenericTagValueNode('')));
 
         return $node;
     }
@@ -105,20 +106,11 @@ CODE_SAMPLE
             return true;
         }
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-        if ($phpDocInfo->hasByNames(['doesNotPerformAssertions', 'expectedException'])) {
-            return true;
-        }
-
-        if ($this->phpAttributeAnalyzer->hasPhpAttribute(
-            $classMethod,
-            'PHPUnit\Framework\Attributes\DoesNotPerformAssertions'
-        )) {
+        if ($this->hasAssertingAnnotationOrAttribute($classMethod)) {
             return true;
         }
 
         $this->assertCallAnalyzer->resetNesting();
-
         if ($this->assertCallAnalyzer->containsAssertCall($classMethod)) {
             return true;
         }
@@ -126,9 +118,17 @@ CODE_SAMPLE
         return $this->mockedVariableAnalyzer->containsMockAsUsedVariable($classMethod);
     }
 
-    private function addDoesNotPerformAssertions(ClassMethod $classMethod): void
+    private function hasAssertingAnnotationOrAttribute(ClassMethod $classMethod): bool
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-        $phpDocInfo->addPhpDocTagNode(new PhpDocTagNode('@doesNotPerformAssertions', new GenericTagValueNode('')));
+
+        if ($phpDocInfo->hasByNames(['doesNotPerformAssertions', 'expectedException'])) {
+            return true;
+        }
+
+        return $this->phpAttributeAnalyzer->hasPhpAttribute(
+            $classMethod,
+            'PHPUnit\Framework\Attributes\DoesNotPerformAssertions'
+        );
     }
 }
