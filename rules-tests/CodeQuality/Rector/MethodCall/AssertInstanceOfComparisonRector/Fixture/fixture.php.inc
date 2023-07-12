@@ -19,9 +19,10 @@ final class MyOfComparissonTest extends \PHPUnit\Framework\TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\MethodCall\AssertInstanceOfComparisonRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertInstanceOfComparisonRector\Fixture;
 
 use Foo\Bar;
+use Rector\PHPUnit\Tests\Rector\MethodCall\AssertInstanceOfComparisonRector\Fixture\Foo;
 
 final class MyOfComparissonTest extends \PHPUnit\Framework\TestCase
 {

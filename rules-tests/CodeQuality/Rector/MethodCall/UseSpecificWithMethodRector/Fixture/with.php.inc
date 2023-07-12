@@ -18,7 +18,7 @@ class With extends \PHPUnit\Framework\TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\MethodCall\UseSpecificWillMethodRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\UseSpecificWithMethodRector\Fixture;
 
 class With extends \PHPUnit\Framework\TestCase
 {

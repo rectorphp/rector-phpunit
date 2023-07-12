@@ -16,7 +16,7 @@ final class ShortClassesTest extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\Class_\PreferPHPUnitThisCallRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 

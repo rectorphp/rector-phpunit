@@ -32,14 +32,14 @@ class Exception implements \Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\A
 -----
 <?php
 
-namespace Rector\Tests\PHPUnit\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
 final class DemoFile2Test extends TestCase
 {
     /**
-     * @var object<\Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector\Fixture\ExceptionInterface::class> $exception
+     * @var object<ExceptionInterface::class> $exception
      * @dataProvider exceptionsDataProvider
      **/
     public function testExceptionIsInstanceOfExceptionInterface(object $exception): void

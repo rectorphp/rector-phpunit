@@ -17,10 +17,10 @@ class RemoveNonExistingSeeTest
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\Class_\AddSeeTestAnnotationRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\AddSeeTestAnnotationRector\Fixture;
 
 /**
- * @see \Rector\PHPUnit\Tests\Rector\Class_\AddSeeTestAnnotationRector\Fixture\RemoveNonExistingSeeTest
+ * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\AddSeeTestAnnotationRector\Fixture\RemoveNonExistingSeeTest
  */
 final class RemoveNonExistingSee
 {

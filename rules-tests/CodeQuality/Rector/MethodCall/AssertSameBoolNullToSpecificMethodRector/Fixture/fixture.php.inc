@@ -15,7 +15,7 @@ final class MyTest extends \PHPUnit\Framework\TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\MethodCall\AssertSameBoolNullToSpecificMethodRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertSameBoolNullToSpecificMethodRector\Fixture;
 
 final class MyTest extends \PHPUnit\Framework\TestCase
 {

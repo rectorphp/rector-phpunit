@@ -31,13 +31,13 @@ final class MyTest extends Testing
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector\Fixture;
 
 abstract class Testing extends \PHPUnit\Framework\TestCase
 {
 }
 
-final class MyTest extends \Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector\Fixture\Testing
+final class MyTest extends Testing
 {
     public function test()
     {

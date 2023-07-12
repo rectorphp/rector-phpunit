@@ -18,7 +18,7 @@ final class Count extends \PHPUnit\Framework\TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\MethodCall\AssertCompareToSpecificMethodRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertCompareToSpecificMethodRector\Fixture;
 
 final class Count extends \PHPUnit\Framework\TestCase
 {

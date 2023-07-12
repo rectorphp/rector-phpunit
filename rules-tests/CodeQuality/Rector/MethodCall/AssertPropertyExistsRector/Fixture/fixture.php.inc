@@ -17,7 +17,7 @@ final class MyAssertPropertyExistTest extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\MethodCall\AssertPropertyExistsRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertPropertyExistsRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 

@@ -17,7 +17,7 @@ final class MyTest extends \PHPUnit\Framework\TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\MethodCall\AssertRegExpRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertRegExpRector\Fixture;
 
 final class MyTest extends \PHPUnit\Framework\TestCase
 {

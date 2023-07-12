@@ -20,7 +20,7 @@ final class MyEqualsTest extends \PHPUnit\Framework\TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\MethodCall\AssertComparisonToSpecificMethodRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertComparisonToSpecificMethodRector\Fixture;
 
 final class MyEqualsTest extends \PHPUnit\Framework\TestCase
 {
