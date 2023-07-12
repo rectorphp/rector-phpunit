@@ -99,7 +99,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->attrGroups = $coversAttributeGroups;
+        $node->attrGroups = array_merge($node->attrGroups, $coversAttributeGroups);
 
         return $node;
     }
