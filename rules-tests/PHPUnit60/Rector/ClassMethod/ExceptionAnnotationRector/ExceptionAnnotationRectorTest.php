@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Tests\Rector\ClassMethod\ExceptionAnnotationRector;
+namespace Rector\PHPUnit\Tests\PHPUnit60\Rector\ClassMethod\ExceptionAnnotationRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

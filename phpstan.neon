@@ -31,7 +31,6 @@ parameters:
         - '#Parameter \#1 \$node (.*?) of method Rector\\(.*?)\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\PhpRectorInterface\:\:refactor\(\)#'
 
         - '#Cognitive complexity for "Rector\\PHPUnit\\Rector\\ClassMethod\\CreateMockToAnonymousClassRector\:\:refactor\(\)" is 25, keep it under 10#'
-        - '#Cognitive complexity for "Rector\\PHPUnit\\Rector\\MethodCall\\DelegateExceptionArgumentsRector\:\:refactor\(\)" is 11, keep it under 10#'
 
         # double type chdck
         - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsInstanceOf\(\) with array<PhpParser\\Node\\Arg> and (.*?) will always evaluate to true#'
@@ -41,3 +40,5 @@ parameters:
         - '#Parameter \#2 \.\.\.\$arrays of function array_merge expects array, array<PhpParser\\Node\\Stmt>\|null given#'
 
         - '#Return type (.*?) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector\\PhpRectorInterface\:\:refactor\(\)#'
+
+        - '#Cognitive complexity for "Rector\\PHPUnit\\PHPUnit60\\Rector\\MethodCall\\DelegateExceptionArgumentsRector\:\:refactor\(\)" is 11, keep it under 10#'

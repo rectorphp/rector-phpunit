@@ -1,14 +1,14 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\ClassMethod\ExceptionAnnotationRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit60\Rector\ClassMethod\ExceptionAnnotationRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
-class Fixture6Test extends TestCase
+class Fixture5Test extends TestCase
 {
     /**
      * @expectedException \Exception
-     * @expectedExceptionMessage SomeClass::someMethod
+     * @expectedExceptionMessage Message referencing a method, SomeClass::someMethod
      */
     public function testLiteralMessage(): void
     {
@@ -20,16 +20,16 @@ class Fixture6Test extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\ClassMethod\ExceptionAnnotationRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit60\Rector\ClassMethod\ExceptionAnnotationRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
-class Fixture6Test extends TestCase
+class Fixture5Test extends TestCase
 {
     public function testLiteralMessage(): void
     {
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('SomeClass::someMethod');
+        $this->expectExceptionMessage('Message referencing a method, SomeClass::someMethod');
         throw new \Exception('Message referencing a method, SomeClass::someMethod');
     }
 }
