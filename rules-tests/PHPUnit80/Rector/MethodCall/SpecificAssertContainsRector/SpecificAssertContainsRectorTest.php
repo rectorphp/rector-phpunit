@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Tests\Rector\MethodCall\SpecificAssertContainsRector;
+namespace Rector\PHPUnit\Tests\PHPUnit80\Rector\MethodCall\SpecificAssertContainsRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

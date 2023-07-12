@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Rector\MethodCall;
+namespace Rector\PHPUnit\PHPUnit80\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -19,7 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog https://github.com/sebastianbergmann/phpunit/blob/master/ChangeLog-8.0.md
  *
- * @see \Rector\PHPUnit\Tests\Rector\MethodCall\SpecificAssertContainsRector\SpecificAssertContainsRectorTest
+ * @see \Rector\PHPUnit\Tests\PHPUnit80\Rector\MethodCall\SpecificAssertContainsRector\SpecificAssertContainsRectorTest
  */
 final class SpecificAssertContainsRector extends AbstractRector
 {
