@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Tests\Rector\MethodCall\DelegateExceptionArgumentsRector;
+namespace Rector\PHPUnit\Tests\PHPUnit60\Rector\MethodCall\DelegateExceptionArgumentsRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
