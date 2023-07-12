@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Rector\Class_;
+namespace Rector\PHPUnit\AnnotationsToAttributes\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
@@ -21,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\Rector\Class_\CoversAnnotationWithValueToAttributeRector\CoversAnnotationWithValueToAttributeRectorTest
+ * @see \Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\CoversAnnotationWithValueToAttributeRector\CoversAnnotationWithValueToAttributeRectorTest
  */
 final class CoversAnnotationWithValueToAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\ClassMethod\DataProviderAnnotationToAttributeRector\Fixture;
+namespace Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\ClassMethod\DataProviderAnnotationToAttributeRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
@@ -25,7 +25,7 @@ final class ExternalProvider
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\ClassMethod\DataProviderAnnotationToAttributeRector\Fixture;
+namespace Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\ClassMethod\DataProviderAnnotationToAttributeRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\ClassMethod\DataProviderAnnotationToAttributeRector\Fixture;
+namespace Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\ClassMethod\DataProviderAnnotationToAttributeRector\Fixture;
 
 class SomeTest extends \PHPUnit\Framework\TestCase
 {
@@ -16,7 +16,7 @@ class SomeTest extends \PHPUnit\Framework\TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\ClassMethod\DataProviderAnnotationToAttributeRector\Fixture;
+namespace Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\ClassMethod\DataProviderAnnotationToAttributeRector\Fixture;
 
 class SomeTest extends \PHPUnit\Framework\TestCase
 {
