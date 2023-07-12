@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\PHPUnit\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector;
+use Rector\PHPUnit\Rector\ClassMethod\ExceptionAnnotationRector;
+use Rector\PHPUnit\Rector\MethodCall\DelegateExceptionArgumentsRector;
 use Rector\PHPUnit\Rector\MethodCall\GetMockBuilderGetMockToCreateMockRector;
 use Rector\Renaming\Rector\FileWithoutNamespace\PseudoNamespaceToNamespaceRector;
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
@@ -12,9 +14,17 @@ use Rector\Renaming\ValueObject\MethodCallRename;
 use Rector\Renaming\ValueObject\PseudoNamespaceToNamespace;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->import(__DIR__ . '/phpunit-exception.php');
+    // handles 2nd and 3rd argument of setExpectedException
+    $rectorConfig->rules([
+        DelegateExceptionArgumentsRector::class,
+        ExceptionAnnotationRector::class,
+        AddDoesNotPerformAssertionToNonAssertingTestRector::class,
+        GetMockBuilderGetMockToCreateMockRector::class,
+    ]);
 
     $rectorConfig->ruleWithConfiguration(RenameMethodRector::class, [
+        new MethodCallRename('PHPUnit\Framework\TestClass', 'setExpectedException', 'expectedException'),
+        new MethodCallRename('PHPUnit\Framework\TestClass', 'setExpectedExceptionRegExp', 'expectedException'),
         new MethodCallRename('PHPUnit\Framework\TestCase', 'createMockBuilder', 'getMockBuilder'),
     ]);
 
@@ -38,7 +48,4 @@ return static function (RectorConfig $rectorConfig): void {
             'PHPUnit_Framework_MockObject_Stub',
         ]),
     ]);
-
-    $rectorConfig->rule(AddDoesNotPerformAssertionToNonAssertingTestRector::class);
-    $rectorConfig->rule(GetMockBuilderGetMockToCreateMockRector::class);
 };

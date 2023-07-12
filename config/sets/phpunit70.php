@@ -8,8 +8,6 @@ use Rector\Renaming\Rector\ClassMethod\RenameAnnotationRector;
 use Rector\Renaming\ValueObject\RenameAnnotationByType;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->import(__DIR__ . '/phpunit-exception.php');
-
     $rectorConfig->ruleWithConfiguration(RenameAnnotationRector::class, [
         new RenameAnnotationByType('PHPUnit\Framework\TestCase', 'scenario', 'test'),
     ]);
