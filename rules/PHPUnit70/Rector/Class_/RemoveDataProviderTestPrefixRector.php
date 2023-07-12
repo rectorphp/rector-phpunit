@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Rector\Class_;
+namespace Rector\PHPUnit\PHPUnit70\Rector\Class_;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
@@ -18,7 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog https://stackoverflow.com/a/46693675/1348344
  *
- * @see \Rector\PHPUnit\Tests\Rector\Class_\RemoveDataProviderTestPrefixRector\RemoveDataProviderTestPrefixRectorTest
+ * @see \Rector\PHPUnit\Tests\PHPUnit70\Rector\Class_\RemoveDataProviderTestPrefixRector\RemoveDataProviderTestPrefixRectorTest
  */
 final class RemoveDataProviderTestPrefixRector extends AbstractRector
 {
