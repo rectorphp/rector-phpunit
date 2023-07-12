@@ -19,7 +19,6 @@ use Rector\PHPUnit\Rector\MethodCall\AssertPropertyExistsRector;
 use Rector\PHPUnit\Rector\MethodCall\AssertRegExpRector;
 use Rector\PHPUnit\Rector\MethodCall\AssertSameBoolNullToSpecificMethodRector;
 use Rector\PHPUnit\Rector\MethodCall\AssertSameTrueFalseToAssertTrueFalseRector;
-use Rector\PHPUnit\Rector\MethodCall\AssertTrueFalseInternalTypeToSpecificMethodRector;
 use Rector\PHPUnit\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector;
 use Rector\PHPUnit\Rector\MethodCall\RemoveExpectAnyFromMockRector;
 use Rector\PHPUnit\Rector\MethodCall\RemoveSetMethodsMethodCallRector;
@@ -41,7 +40,6 @@ return static function (RectorConfig $rectorConfig): void {
         AssertTrueFalseToSpecificMethodRector::class,
         AssertSameBoolNullToSpecificMethodRector::class,
         AssertFalseStrposToContainsRector::class,
-        AssertTrueFalseInternalTypeToSpecificMethodRector::class,
         AssertIssetToSpecificMethodRector::class,
         AssertInstanceOfComparisonRector::class,
         AssertPropertyExistsRector::class,
