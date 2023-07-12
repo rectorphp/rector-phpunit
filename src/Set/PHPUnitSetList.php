@@ -63,6 +63,7 @@ final class PHPUnitSetList implements SetListInterface
     public const PHPUNIT_CODE_QUALITY = __DIR__ . '/../../config/sets/phpunit-code-quality.php';
 
     /**
+     * @deprecated Use PHPUnit 6.0 set instead, as related to the version
      * @var string
      */
     public const PHPUNIT_EXCEPTION = __DIR__ . '/../../config/sets/phpunit-exception.php';
