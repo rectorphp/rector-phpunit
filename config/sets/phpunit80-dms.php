@@ -3,8 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-use Rector\PHPUnit\Rector\MethodCall\ReplaceAssertArraySubsetWithDmsPolyfillRector;
 
+// @deprecated as better outside PHPUnit scope, handle by find and replace when needed
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rule(ReplaceAssertArraySubsetWithDmsPolyfillRector::class);
 };
