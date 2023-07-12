@@ -1,9 +1,9 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\StaticCall\GetMockRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit50\Rector\StaticCall\GetMockRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
-use Rector\PHPUnit\Tests\Rector\StaticCall\GetMockRector\Source\SomeExceptionWithGetMock;
+use Rector\PHPUnit\Tests\PHPUnit50\Rector\StaticCall\GetMockRector\Source\SomeExceptionWithGetMock;
 
 final class SkipExceptionGetMock extends TestCase
 {

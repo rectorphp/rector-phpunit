@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Tests\Rector\StaticCall\GetMockRector;
+namespace Rector\PHPUnit\Tests\PHPUnit50\Rector\StaticCall\GetMockRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
