@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Rector\StaticCall;
+namespace Rector\PHPUnit\PHPUnit50\Rector\StaticCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
@@ -19,7 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @changelog https://github.com/sebastianbergmann/phpunit/blob/5.7.0/src/Framework/TestCase.php#L1623
  * @changelog https://github.com/sebastianbergmann/phpunit/blob/6.0.0/src/Framework/TestCase.php#L1452
  *
- * @see \Rector\PHPUnit\Tests\Rector\StaticCall\GetMockRector\GetMockRectorTest
+ * @see \Rector\PHPUnit\Tests\PHPUnit50\Rector\StaticCall\GetMockRector\GetMockRectorTest
  */
 final class GetMockRector extends AbstractRector
 {

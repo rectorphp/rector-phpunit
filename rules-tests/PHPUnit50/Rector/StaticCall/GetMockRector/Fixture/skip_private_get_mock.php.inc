@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\StaticCall\GetMockRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit50\Rector\StaticCall\GetMockRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
