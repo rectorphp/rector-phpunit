@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
+use Rector\PHPUnit\AnnotationsToAttributes\Rector\ClassMethod\TestWithAnnotationToAttributeRector;
 use Rector\PHPUnit\Rector\Class_\AnnotationWithValueToAttributeRector;
 use Rector\PHPUnit\Rector\Class_\CoversAnnotationWithValueToAttributeRector;
 use Rector\PHPUnit\Rector\ClassMethod\DataProviderAnnotationToAttributeRector;
@@ -13,6 +14,7 @@ use Rector\PHPUnit\ValueObject\AnnotationWithValueToAttribute;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
+        TestWithAnnotationToAttributeRector::class,
         DataProviderAnnotationToAttributeRector::class,
         CoversAnnotationWithValueToAttributeRector::class,
 
@@ -47,8 +49,6 @@ return static function (RectorConfig $rectorConfig): void {
         new AnnotationWithValueToAttribute('group', 'PHPUnit\Framework\Attributes\Group'),
         new AnnotationWithValueToAttribute('ticket', 'PHPUnit\Framework\Attributes\Ticket'),
         new AnnotationWithValueToAttribute('uses', 'PHPUnit\Framework\Attributes\UsesClass'),
-        new AnnotationWithValueToAttribute('testWith', 'PHPUnit\Framework\Attributes\TestWith'),
-        new AnnotationWithValueToAttribute('testwith', 'PHPUnit\Framework\Attributes\TestWith'),
         new AnnotationWithValueToAttribute('testDox', 'PHPUnit\Framework\Attributes\TestDox'),
         new AnnotationWithValueToAttribute('testdox', 'PHPUnit\Framework\Attributes\TestDox'),
 
