@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Tests\Rector\Class_\RemoveDataProviderTestPrefixRector;
+namespace Rector\PHPUnit\Tests\PHPUnit70\Rector\Class_\RemoveDataProviderTestPrefixRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
