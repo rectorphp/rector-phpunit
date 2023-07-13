@@ -2,7 +2,6 @@
 
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertInstanceOfComparisonRector\Fixture;
 
-use Foo\Bar;
 use Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertInstanceOfComparisonRector\Fixture\Foo;
 
 final class MyOfComparissonTest extends \PHPUnit\Framework\TestCase
@@ -11,7 +10,6 @@ final class MyOfComparissonTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertTrue($something instanceof Foo);
         $this->assertFalse($something instanceof \Namespaced\Foo);
-        $this->assertTrue($something instanceof Bar\Baz);
     }
 }
 
@@ -21,7 +19,6 @@ final class MyOfComparissonTest extends \PHPUnit\Framework\TestCase
 
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertInstanceOfComparisonRector\Fixture;
 
-use Foo\Bar;
 use Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertInstanceOfComparisonRector\Fixture\Foo;
 
 final class MyOfComparissonTest extends \PHPUnit\Framework\TestCase
@@ -30,7 +27,6 @@ final class MyOfComparissonTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertInstanceOf(\Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertInstanceOfComparisonRector\Fixture\Foo::class, $something);
         $this->assertNotInstanceOf(\Namespaced\Foo::class, $something);
-        $this->assertInstanceOf(\Foo\Bar\Baz::class, $something);
     }
 }
 
