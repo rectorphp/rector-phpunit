@@ -1,4 +1,4 @@
-# 47 Rules Overview
+# 45 Rules Overview
 
 ## AddDoesNotPerformAssertionToNonAssertingTestRector
 
@@ -108,60 +108,6 @@ return static function (RectorConfig $rectorConfig): void {
 +#[BackupGlobals(true)]
  final class SomeTest extends TestCase
  {
- }
-```
-
-<br>
-
-## ArrayArgumentToDataProviderRector
-
-Move array argument from tests into data provider [configurable]
-
-:wrench: **configure it!**
-
-- class: [`Rector\PHPUnit\Rector\Class_\ArrayArgumentToDataProviderRector`](../src/Rector/Class_/ArrayArgumentToDataProviderRector.php)
-
-```php
-<?php
-
-declare(strict_types=1);
-
-use Rector\Config\RectorConfig;
-use Rector\PHPUnit\Rector\Class_\ArrayArgumentToDataProviderRector;
-use Rector\PHPUnit\ValueObject\ArrayArgumentToDataProvider;
-
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->ruleWithConfiguration(ArrayArgumentToDataProviderRector::class, [
-        ArrayArgumentToDataProviderRector::ARRAY_ARGUMENTS_TO_DATA_PROVIDERS => [
-            new ArrayArgumentToDataProvider('PHPUnit\Framework\TestCase', 'doTestMultiple', 'doTestSingle', 'number'),
-        ],
-    ]);
-};
-```
-
-↓
-
-```diff
- use PHPUnit\Framework\TestCase;
-
- class SomeServiceTest extends TestCase
- {
--    public function test()
-+    /**
-+     * @dataProvider provideData()
-+     */
-+    public function test(int $number)
-     {
--        $this->doTestMultiple([1, 2, 3]);
-+        $this->doTestSingle($number);
-+    }
-+
-+    public function provideData(): \Iterator
-+    {
-+        yield [1];
-+        yield [2];
-+        yield [3];
-     }
  }
 ```
 
@@ -712,30 +658,6 @@ Turns PHPUnit TestCase assertObjectHasAttribute into `property_exists` compariso
 -$this->assertClassNotHasAttribute("property", "Class");
 +$this->assertFalse(property_exists(new Class, "property"));
 +$this->assertTrue(property_exists(new Class, "property"));
-```
-
-<br>
-
-## ProphecyPHPDocRector
-
-Add correct `@var` to ObjectProphecy instances based on `$this->prophesize()` call.
-
-- class: [`Rector\PHPUnit\Rector\Class_\ProphecyPHPDocRector`](../src/Rector/Class_/ProphecyPHPDocRector.php)
-
-```diff
- class HelloTest extends TestCase
- {
-     /**
--     * @var SomeClass
-+     * @var ObjectProphecy<SomeClass>
-      */
-     private $propesizedObject;
-
-     protected function setUp(): void
-     {
-         $this->propesizedObject = $this->prophesize(SomeClass::class);
-     }
- }
 ```
 
 <br>
