@@ -8,6 +8,7 @@ use Rector\PHPUnit\CodeQuality\Rector\Class_\ConstructClassMethodToSetUpTestCase
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\YieldDataProviderRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\RemoveEmptyTestMethodRector;
+use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\ReplaceTestAnnotationWithPrefixedFunctionRector;
 use Rector\PHPUnit\CodeQuality\Rector\Foreach_\SimplifyForeachInstanceOfRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertCompareToSpecificMethodRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertComparisonToSpecificMethodRector;
@@ -35,6 +36,7 @@ return static function (RectorConfig $rectorConfig): void {
         PreferPHPUnitThisCallRector::class,
         YieldDataProviderRector::class,
         RemoveEmptyTestMethodRector::class,
+        ReplaceTestAnnotationWithPrefixedFunctionRector::class,
 
         // sepcific asserts
         AssertCompareToSpecificMethodRector::class,
