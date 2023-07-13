@@ -2,7 +2,7 @@
 
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector\Fixture;
 
-use Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector\Fixture\Foo;
+use Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector\Fixture\Foo;
 
 final class SkipMethodCall extends \PHPUnit\Framework\TestCase
 {

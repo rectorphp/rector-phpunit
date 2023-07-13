@@ -10,7 +10,7 @@ final class SkipCustomIsset2 extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
-        $foo = new \Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\MethodCall\AssertIssetToSpecificMethodRector\Fixture\CustomIsset2();
+        $foo = new \Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertIssetToSpecificMethodRector\Fixture\CustomIsset2();
         $this->assertTrue(isset($foo->bar));
     }
 }
@@ -29,7 +29,7 @@ final class SkipCustomIsset2 extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
-        $foo = new \Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\MethodCall\AssertIssetToSpecificMethodRector\Fixture\CustomIsset2();
+        $foo = new \Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertIssetToSpecificMethodRector\Fixture\CustomIsset2();
         $this->assertObjectHasAttribute('bar', $foo);
     }
 }

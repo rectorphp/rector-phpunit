@@ -2,7 +2,7 @@
 
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertPropertyExistsRector\Fixture;
 
-use Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\MethodCall\AssertPropertyExistsRector\Fixture\SomeClass;
+use Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertPropertyExistsRector\Fixture\SomeClass;
 
 final class SkipStaticCall extends \PHPUnit\Framework\TestCase
 {

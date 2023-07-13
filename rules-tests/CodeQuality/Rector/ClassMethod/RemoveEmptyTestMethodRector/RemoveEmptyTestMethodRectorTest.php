@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Tests\Rector\ClassMethod\RemoveEmptyTestMethodRector;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\RemoveEmptyTestMethodRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
