@@ -1,4 +1,4 @@
-# 48 Rules Overview
+# 47 Rules Overview
 
 ## AddDoesNotPerformAssertionToNonAssertingTestRector
 
@@ -75,7 +75,7 @@ Change annotations with value to attribute
 
 :wrench: **configure it!**
 
-- class: [`Rector\PHPUnit\Rector\Class_\AnnotationWithValueToAttributeRector`](../src/Rector/Class_/AnnotationWithValueToAttributeRector.php)
+- class: [`Rector\PHPUnit\AnnotationsToAttributes\Rector\Class_\AnnotationWithValueToAttributeRector`](../rules/AnnotationsToAttributes/Rector/Class_/AnnotationWithValueToAttributeRector.php)
 
 ```php
 <?php
@@ -83,7 +83,7 @@ Change annotations with value to attribute
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-use Rector\PHPUnit\Rector\Class_\AnnotationWithValueToAttributeRector;
+use Rector\PHPUnit\AnnotationsToAttributes\Rector\Class_\AnnotationWithValueToAttributeRector;
 use Rector\PHPUnit\ValueObject\AnnotationWithValueToAttribute;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -357,19 +357,6 @@ Turns `preg_match` comparisons to their method name alternatives in PHPUnit Test
 
 <br>
 
-## AssertResourceToClosedResourceRector
-
-Turns `assertIsNotResource()` into stricter `assertIsClosedResource()` for resource values in PHPUnit TestCase
-
-- class: [`Rector\PHPUnit\Rector\MethodCall\AssertResourceToClosedResourceRector`](../src/Rector/MethodCall/AssertResourceToClosedResourceRector.php)
-
-```diff
--$this->assertIsNotResource($aResource, "message");
-+$this->assertIsClosedResource($aResource, "message");
-```
-
-<br>
-
 ## AssertSameBoolNullToSpecificMethodRector
 
 Turns same bool and null comparisons to their method name alternatives in PHPUnit TestCase
@@ -559,7 +546,7 @@ Takes `setExpectedException()` 2nd and next arguments to own methods in PHPUnit.
 
 Change depends annotations with value to attribute
 
-- class: [`Rector\PHPUnit\Rector\ClassMethod\DependsAnnotationWithValueToAttributeRector`](../src/Rector/ClassMethod/DependsAnnotationWithValueToAttributeRector.php)
+- class: [`Rector\PHPUnit\AnnotationsToAttributes\Rector\ClassMethod\DependsAnnotationWithValueToAttributeRector`](../rules/AnnotationsToAttributes/Rector/ClassMethod/DependsAnnotationWithValueToAttributeRector.php)
 
 ```diff
  use PHPUnit\Framework\TestCase;
@@ -785,7 +772,7 @@ Data provider methods cannot start with "test" prefix
 
 Remove empty test methods
 
-- class: [`Rector\PHPUnit\Rector\ClassMethod\RemoveEmptyTestMethodRector`](../src/Rector/ClassMethod/RemoveEmptyTestMethodRector.php)
+- class: [`Rector\PHPUnit\CodeQuality\Rector\ClassMethod\RemoveEmptyTestMethodRector`](../rules/CodeQuality/Rector/ClassMethod/RemoveEmptyTestMethodRector.php)
 
 ```diff
  class SomeTest extends \PHPUnit\Framework\TestCase
@@ -853,7 +840,7 @@ Remove `"setMethods()"` method as never used
 
 Replace `@test` with prefixed function
 
-- class: [`Rector\PHPUnit\Rector\ClassMethod\ReplaceTestAnnotationWithPrefixedFunctionRector`](../src/Rector/ClassMethod/ReplaceTestAnnotationWithPrefixedFunctionRector.php)
+- class: [`Rector\PHPUnit\CodeQuality\Rector\ClassMethod\ReplaceTestAnnotationWithPrefixedFunctionRector`](../rules/CodeQuality/Rector/ClassMethod/ReplaceTestAnnotationWithPrefixedFunctionRector.php)
 
 ```diff
  class SomeTest extends \PHPUnit\Framework\TestCase
@@ -875,7 +862,7 @@ Replace `@test` with prefixed function
 
 Simplify unnecessary foreach check of instances
 
-- class: [`Rector\PHPUnit\CodeQuality\Rector\Foreach_\SimplifyForeachInstanceOfRector`](../src/CodeQuality/Rector/Foreach_/SimplifyForeachInstanceOfRector.php)
+- class: [`Rector\PHPUnit\CodeQuality\Rector\Foreach_\SimplifyForeachInstanceOfRector`](../rules/CodeQuality/Rector/Foreach_/SimplifyForeachInstanceOfRector.php)
 
 ```diff
 -foreach ($foos as $foo) {
