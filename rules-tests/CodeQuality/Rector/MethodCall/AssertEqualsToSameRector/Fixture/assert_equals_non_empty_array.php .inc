@@ -18,7 +18,7 @@ final class AssertEqualsNonEmptyArray extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\MethodCall\AssertEqualsToSameRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertEqualsToSameRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
