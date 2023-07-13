@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Tests\Rector\Class_\AnnotationWithValueToAttributeRector;
+namespace Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\AnnotationWithValueToAttributeRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
