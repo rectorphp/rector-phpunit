@@ -3,7 +3,7 @@
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
-use Rector\PHPUnit\Tests\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Fixture\SomeClass;
+use Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Fixture\SomeClass;
 
 final class SomeTest extends TestCase
 {
@@ -22,7 +22,7 @@ final class SomeTest extends TestCase
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
-use Rector\PHPUnit\Tests\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Fixture\SomeClass;
+use Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Fixture\SomeClass;
 
 final class SomeTest extends TestCase
 {
