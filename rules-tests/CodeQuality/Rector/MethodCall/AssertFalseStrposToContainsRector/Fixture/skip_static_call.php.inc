@@ -2,7 +2,7 @@
 
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertFalseStrposToContainsRector\Fixture;
 
-use Rector\PHPUnit\Tests\Rector\MethodCall\AssertFalseStrposToContainsRector\Fixture\SomeClass;
+use Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\MethodCall\AssertFalseStrposToContainsRector\Fixture\SomeClass;
 
 final class SkipStaticCall extends \PHPUnit\Framework\TestCase
 {

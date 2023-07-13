@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Tests\Rector\Class_\AnnotationWithValueToAttributeRector;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Foreach_\SimplifyForeachInstanceOfRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class AnnotationWithValueToAttributeRectorTest extends AbstractRectorTestCase
+final class SimplifyForeachInstanceOfRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

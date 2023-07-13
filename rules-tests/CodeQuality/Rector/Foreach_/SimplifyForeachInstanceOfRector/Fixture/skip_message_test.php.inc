@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\Foreach_\SimplifyForeachInstanceOfRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Foreach_\SimplifyForeachInstanceOfRector\Fixture;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
