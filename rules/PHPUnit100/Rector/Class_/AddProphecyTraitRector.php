@@ -8,8 +8,10 @@ use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\TraitUse;
+use PHPStan\Reflection\ClassReflection;
 use Rector\Core\NodeManipulator\ClassManipulator;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -29,8 +31,8 @@ final class AddProphecyTraitRector extends AbstractRector
     private const PROPHECY_TRAIT = 'Prophecy\PhpUnit\ProphecyTrait';
 
     public function __construct(
-        private readonly ClassManipulator $classManipulator,
-        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly ReflectionResolver $reflectionResolver,
     ) {
     }
 
@@ -106,6 +108,11 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->classManipulator->hasTrait($class, self::PROPHECY_TRAIT);
+        $classReflection = $this->reflectionResolver->resolveClassReflection($class);
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        return $classReflection->hasTraitUse(self::PROPHECY_TRAIT);
     }
 }
