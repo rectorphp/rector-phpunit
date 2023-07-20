@@ -83,11 +83,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $callerType = $this->getType($node->var);
-        if (! $callerType instanceof TypeWithClassName) {
-            return null;
-        }
-
         // traverse up over useless methods until we reach the top one
         $currentMethodCall = $node->var;
 
