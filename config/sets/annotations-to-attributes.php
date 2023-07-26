@@ -7,6 +7,7 @@ use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\PHPUnit\AnnotationsToAttributes\Rector\Class_\AnnotationWithValueToAttributeRector;
 use Rector\PHPUnit\AnnotationsToAttributes\Rector\Class_\CoversAnnotationWithValueToAttributeRector;
+use Rector\PHPUnit\AnnotationsToAttributes\Rector\Class_\TicketAnnotationToAttributeRector;
 use Rector\PHPUnit\AnnotationsToAttributes\Rector\ClassMethod\DataProviderAnnotationToAttributeRector;
 use Rector\PHPUnit\AnnotationsToAttributes\Rector\ClassMethod\DependsAnnotationWithValueToAttributeRector;
 use Rector\PHPUnit\AnnotationsToAttributes\Rector\ClassMethod\TestWithAnnotationToAttributeRector;
@@ -14,6 +15,7 @@ use Rector\PHPUnit\ValueObject\AnnotationWithValueToAttribute;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
+        TicketAnnotationToAttributeRector::class,
         TestWithAnnotationToAttributeRector::class,
         DataProviderAnnotationToAttributeRector::class,
         CoversAnnotationWithValueToAttributeRector::class,
@@ -47,7 +49,6 @@ return static function (RectorConfig $rectorConfig): void {
 
         new AnnotationWithValueToAttribute('depends', 'PHPUnit\Framework\Attributes\Depends'),
         new AnnotationWithValueToAttribute('group', 'PHPUnit\Framework\Attributes\Group'),
-        new AnnotationWithValueToAttribute('ticket', 'PHPUnit\Framework\Attributes\Ticket'),
         new AnnotationWithValueToAttribute('uses', 'PHPUnit\Framework\Attributes\UsesClass'),
         new AnnotationWithValueToAttribute('testDox', 'PHPUnit\Framework\Attributes\TestDox'),
         new AnnotationWithValueToAttribute('testdox', 'PHPUnit\Framework\Attributes\TestDox'),
