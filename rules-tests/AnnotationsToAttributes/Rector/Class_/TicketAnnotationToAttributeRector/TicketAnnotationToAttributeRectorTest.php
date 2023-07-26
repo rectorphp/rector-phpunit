@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Tests\AnnotationsToAttributes;
+namespace Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\TicketAnnotationToAttributeRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class AnnotationsToAttributesTest extends AbstractRectorTestCase
+final class TicketAnnotationToAttributeRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
@@ -23,6 +23,6 @@ final class AnnotationsToAttributesTest extends AbstractRectorTestCase
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/annotations_to_attributes.php';
+        return __DIR__ . '/config/configured_rule.php';
     }
 }
