@@ -101,7 +101,7 @@ final class AssertFalseStrposToContainsRector extends AbstractRector
         unset($oldArguments[0]);
 
         $newArgs = [$firstArgument, $secondArgument];
-        $node->args = $this->appendArgs($newArgs, $oldArguments);
+        $node->args = array_merge($newArgs, $oldArguments);
 
         return $node;
     }
