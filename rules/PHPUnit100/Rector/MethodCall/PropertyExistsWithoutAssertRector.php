@@ -126,7 +126,7 @@ CODE_SAMPLE
 
         $newArgs = $this->nodeFactory->createArgs([$propertyExistsFuncCall]);
 
-        $node->args = $this->appendArgs($newArgs, $node->getArgs());
+        $node->args = array_merge($newArgs, $node->getArgs());
         $this->identifierManipulator->renameNodeWithMap($node, $map);
 
         return $node;

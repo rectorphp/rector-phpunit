@@ -203,15 +203,15 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
             && count($funcCallOrEmptyNodeArgs) === 3) {
             unset($funcCallOrEmptyNodeArgs[2]);
 
-            return $this->appendArgs($funcCallOrEmptyNodeArgs, $oldArguments);
+            return array_merge($funcCallOrEmptyNodeArgs, $oldArguments);
         }
 
         if ($funcCallOrEmptyNodeName === 'is_a') {
             $newArgs = [$funcCallOrEmptyNodeArgs[1], $funcCallOrEmptyNodeArgs[0]];
 
-            return $this->appendArgs($newArgs, $oldArguments);
+            return array_merge($newArgs, $oldArguments);
         }
 
-        return $this->appendArgs($funcCallOrEmptyNodeArgs, $oldArguments);
+        return array_merge($funcCallOrEmptyNodeArgs, $oldArguments);
     }
 }
