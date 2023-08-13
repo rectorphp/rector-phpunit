@@ -8,8 +8,6 @@ use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertFalseStrposToContainsRect
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertSameBoolNullToSpecificMethodRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->import(__DIR__ . '/../../../../config/config.php');
-
     $rectorConfig->rules([
         AssertComparisonToSpecificMethodRector::class,
         AssertFalseStrposToContainsRector::class,

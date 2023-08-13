@@ -7,8 +7,6 @@ use Rector\PHPUnit\AnnotationsToAttributes\Rector\Class_\CoversAnnotationWithVal
 use Rector\PHPUnit\AnnotationsToAttributes\Rector\ClassMethod\DataProviderAnnotationToAttributeRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->import(__DIR__ . '/../../../../config/config.php');
-
     $rectorConfig->rules([
         DataProviderAnnotationToAttributeRector::class,
         CoversAnnotationWithValueToAttributeRector::class,

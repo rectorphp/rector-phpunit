@@ -38,9 +38,6 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::NAMING,
         SetList::TYPE_DECLARATION,
         SetList::PRIVATIZATION,
-
-        // needed for DEAD_CODE list, just in split package like this
-        __DIR__ . '/config/config.php',
     ]);
 
     $rectorConfig->ruleWithConfiguration(StringClassNameToClassConstantRector::class, [
