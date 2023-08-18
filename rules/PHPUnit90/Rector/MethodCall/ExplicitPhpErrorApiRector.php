@@ -86,7 +86,7 @@ CODE_SAMPLE
     /**
      * @param MethodCall|StaticCall $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): null|MethodCall|StaticCall
     {
         if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, ['expectException'])) {
             return null;
@@ -99,14 +99,14 @@ CODE_SAMPLE
             }
         }
 
-        return $node;
+        return null;
     }
 
     private function replaceExceptionWith(
         MethodCall|StaticCall $node,
         string $exceptionClass,
         string $explicitMethod
-    ): ?Node {
+    ): null|MethodCall|StaticCall {
         if ($node->isFirstClassCallable()) {
             return null;
         }
