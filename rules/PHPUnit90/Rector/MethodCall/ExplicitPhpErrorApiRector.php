@@ -86,7 +86,7 @@ CODE_SAMPLE
     /**
      * @param MethodCall|StaticCall $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): null|MethodCall|StaticCall
     {
         if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, ['expectException'])) {
             return null;
@@ -106,7 +106,7 @@ CODE_SAMPLE
         MethodCall|StaticCall $node,
         string $exceptionClass,
         string $explicitMethod
-    ): ?Node {
+    ): null|MethodCall|StaticCall {
         if ($node->isFirstClassCallable()) {
             return null;
         }
