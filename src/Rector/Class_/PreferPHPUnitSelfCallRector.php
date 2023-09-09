@@ -91,7 +91,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $this->nodeNameResolver->startsWith($node->name, 'assert')) {
+            if (! str_starts_with($methodName, 'assert')) {
                 return null;
             }
 
