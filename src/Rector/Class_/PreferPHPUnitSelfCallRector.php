@@ -91,7 +91,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $this->nodeNameResolver->matchesStringName($node->name, 'assert*')) {
+            if (! $this->nodeNameResolver->matchesStringName($methodName, 'assert*')) {
                 return null;
             }
 
