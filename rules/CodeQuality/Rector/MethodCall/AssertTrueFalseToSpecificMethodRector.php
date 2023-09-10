@@ -93,7 +93,10 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
             return null;
         }
 
-        $firstArgumentName = $this->getName($firstArgumentValue);
+        $firstArgumentName = $firstArgumentValue instanceof Empty_
+            ? 'empty'
+            : $this->getName($firstArgumentValue);
+
         if ($firstArgumentName === null || ! array_key_exists(
             $firstArgumentName,
             self::FUNCTION_NAME_WITH_ASSERT_METHOD_NAMES
