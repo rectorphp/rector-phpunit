@@ -143,9 +143,11 @@ CODE_SAMPLE
             if (! $parentClassReflection->hasNativeMethod(MethodName::CONSTRUCT)) {
                 continue;
             }
+
             if ($parentClassReflection->getName() === 'PHPUnit\Framework\TestCase') {
                 continue;
             }
+
             return true;
         }
 
