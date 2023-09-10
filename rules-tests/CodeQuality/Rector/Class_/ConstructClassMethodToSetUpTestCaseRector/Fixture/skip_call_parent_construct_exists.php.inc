@@ -4,7 +4,7 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\ConstructClassMethodToS
 
 use Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\ConstructClassMethodToSetUpTestCaseRector\Source\TestResponse;
 
-final class SkipCallParentConstruct extends TestResponse
+final class SkipCallParentConstructExists extends TestResponse
 {
     private $someValue;
 
