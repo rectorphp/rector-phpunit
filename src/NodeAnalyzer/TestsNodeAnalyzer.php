@@ -53,7 +53,7 @@ final class TestsNodeAnalyzer
             return false;
         }
 
-        if (fnmatch('test*', $classMethod->name->toString(), FNM_NOESCAPE)) {
+        if (str_starts_with($classMethod->name->toString(), 'test')) {
             return true;
         }
 

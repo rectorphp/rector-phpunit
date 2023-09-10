@@ -94,7 +94,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! fnmatch('assert*', $methodName, FNM_NOESCAPE)) {
+            if (! str_starts_with($methodName, 'assert')) {
                 return null;
             }
 
