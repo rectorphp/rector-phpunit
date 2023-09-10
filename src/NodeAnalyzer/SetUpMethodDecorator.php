@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\NodeAnalyzer;
 
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\ValueObject\MethodName;
@@ -31,6 +32,11 @@ final class SetUpMethodDecorator
             return;
         }
 
-        $classMethod->returnType = $setUpClassMethod->returnType;
+        if ($setUpClassMethod->returnType instanceof Identifier) {
+            $classMethod->returnType = new Identifier($setUpClassMethod->returnType->toString());
+            return;
+        }
+
+        $classMethod->returnType = null;
     }
 }
