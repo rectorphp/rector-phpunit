@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-use Rector\PHPUnit\Tests\ConfigList;
 
 use Rector\Config\RectorConfig;
 
