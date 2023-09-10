@@ -97,7 +97,7 @@ CODE_SAMPLE
 
         $dataProviderClassMethods = $this->dataProviderClassMethodFinder->find($node);
         foreach ($dataProviderClassMethods as $dataProviderClassMethod) {
-            if (! StringUtils::isMatch($dataProviderClassMethod->name->toString(), '#^test*#')) {
+            if (! fnmatch('test*', $dataProviderClassMethod->name->toString(), FNM_NOESCAPE)) {
                 continue;
             }
 

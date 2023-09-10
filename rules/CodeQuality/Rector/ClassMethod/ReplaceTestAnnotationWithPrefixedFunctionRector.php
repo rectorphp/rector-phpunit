@@ -72,7 +72,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (StringUtils::isMatch($node->name->toString(), '#^test*#')) {
+        if (fnmatch('test*', $node->name->toString(), FNM_NOESCAPE)) {
             return null;
         }
 

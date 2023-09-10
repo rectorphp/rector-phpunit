@@ -95,7 +95,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! StringUtils::isMatch($methodName, '#^assert*#')) {
+            if (! fnmatch('assert*', $methodName, FNM_NOESCAPE)) {
                 return null;
             }
 
