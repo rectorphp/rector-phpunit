@@ -7,6 +7,7 @@ namespace Rector\PHPUnit\NodeAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\PhpParser\AstResolver;
@@ -161,6 +162,10 @@ final class AssertCallAnalyzer
 
     private function isAssertMethodName(MethodCall|StaticCall $call): bool
     {
+        if (! $call->name instanceof Identifier) {
+            return false;
+        }
+
         $callname = $call->name->toString();
 
         foreach (['doTestFileInfo', 'expectNotToPerformAssertions'] as $methodCallName) {
