@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPUnit\NodeAnalyzer\SetUpMethodDecorator;
@@ -33,7 +34,8 @@ final class ConstructClassMethodToSetUpTestCaseRector extends AbstractRector
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly VisibilityManipulator $visibilityManipulator,
-        private readonly SetUpMethodDecorator $setUpMethodDecorator
+        private readonly SetUpMethodDecorator $setUpMethodDecorator,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -105,6 +107,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->shouldSkip($node, $constructClassMethod)) {
+            return null;
+        }
+
         $addedStmts = $this->resolveStmtsToAddToSetUp($constructClassMethod);
         $setUpClassMethod = $node->getMethod(MethodName::SET_UP);
 
@@ -123,6 +129,22 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function shouldSkip(Class_ $node, ClassMethod $classMethod): bool
+    {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (! $classReflection instanceof \PHPStan\Reflection\ClassReflection) {
+            return true;
+        }
+
+        foreach ($classReflection->getParents() as $parentClassReflection) {
+            if ($parentClassReflection->hasNativeMethod(MethodName::CONSTRUCT) && $parentClassReflection->getName() !== 'PHPUnit\Framework\TestCase') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
