@@ -161,16 +161,27 @@ final class AssertCallAnalyzer
 
     private function isAssertMethodName(MethodCall|StaticCall $call): bool
     {
-        return $this->nodeNameResolver->isNames($call->name, [
-            // phpunit
+        $callname = $call->name->toString();
+
+        foreach (['doTestFileInfo', 'expectNotToPerformAssertions'] as $methodCallName) {
+            if ($callname === $methodCallName) {
+                return true;
+            }
+        }
+
+        foreach ([
             '*assert',
             'assert*',
             'expectException*',
             'setExpectedException*',
             'expectOutput*',
             'should*',
-            'doTestFileInfo',
-            'expectNotToPerformAssertions',
-        ]);
+        ] as $methodCallNamePattern) {
+            if (fnmatch($methodCallNamePattern, $callname, FNM_NOESCAPE)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
