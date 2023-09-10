@@ -96,11 +96,13 @@ CODE_SAMPLE
 
         $dataProviderClassMethods = $this->dataProviderClassMethodFinder->find($node);
         foreach ($dataProviderClassMethods as $dataProviderClassMethod) {
-            if (! fnmatch('test*', $dataProviderClassMethod->name->toString(), FNM_NOESCAPE)) {
+            $dataProviderClassMethodName = $dataProviderClassMethod->name->toString();
+
+            if (! str_starts_with($dataProviderClassMethodName, 'test')) {
                 continue;
             }
 
-            $shortMethodName = Strings::substring($dataProviderClassMethod->name->toString(), 4);
+            $shortMethodName = Strings::substring($dataProviderClassMethodName, 4);
             $shortMethodName = lcfirst($shortMethodName);
 
             $dataProviderClassMethod->name = new Identifier($shortMethodName);
