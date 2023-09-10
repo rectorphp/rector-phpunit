@@ -7,13 +7,17 @@ namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\NodeTraverser;
+use PHPStan\Reflection\ClassReflection;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPUnit\NodeAnalyzer\SetUpMethodDecorator;
@@ -33,7 +37,8 @@ final class ConstructClassMethodToSetUpTestCaseRector extends AbstractRector
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly VisibilityManipulator $visibilityManipulator,
-        private readonly SetUpMethodDecorator $setUpMethodDecorator
+        private readonly SetUpMethodDecorator $setUpMethodDecorator,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -105,6 +110,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->shouldSkip($node, $constructClassMethod)) {
+            return null;
+        }
+
         $addedStmts = $this->resolveStmtsToAddToSetUp($constructClassMethod);
         $setUpClassMethod = $node->getMethod(MethodName::SET_UP);
 
@@ -123,6 +132,47 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function shouldSkip(Class_ $class, ClassMethod $classMethod): bool
+    {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($class);
+        if (! $classReflection instanceof ClassReflection) {
+            return true;
+        }
+
+        $currentParent = current($classReflection->getParents());
+        if (! $currentParent instanceof ClassReflection) {
+            return true;
+        }
+
+        if ($currentParent->getName() !== 'PHPUnit\Framework\TestCase') {
+            return true;
+        }
+
+        $paramNames = [];
+        foreach ($classMethod->params as $param) {
+            $paramNames[] = $this->getName($param);
+        }
+
+        $isFoundParamUsed = false;
+        $this->traverseNodesWithCallable(
+            (array) $classMethod->stmts,
+            function (Node $subNode) use ($paramNames, &$isFoundParamUsed): ?int {
+                if ($subNode instanceof StaticCall && $this->isName($subNode->name, MethodName::CONSTRUCT)) {
+                    return NodeTraverser::DONT_TRAVERSE_CHILDREN;
+                }
+
+                if ($subNode instanceof Variable && $this->isNames($subNode, $paramNames)) {
+                    $isFoundParamUsed = true;
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
+
+                return null;
+            }
+        );
+
+        return $isFoundParamUsed;
     }
 
     /**

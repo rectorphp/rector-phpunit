@@ -71,7 +71,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isName($node->name, 'test*')) {
+        if (fnmatch('test*', $node->name->toString(), FNM_NOESCAPE)) {
             return null;
         }
 

@@ -93,7 +93,8 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
             return null;
         }
 
-        $firstArgumentName = $this->getName($firstArgumentValue);
+        $firstArgumentName = $this->resolveFirstArgument($firstArgumentValue);
+
         if ($firstArgumentName === null || ! array_key_exists(
             $firstArgumentName,
             self::FUNCTION_NAME_WITH_ASSERT_METHOD_NAMES
@@ -130,6 +131,13 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
         $this->moveFunctionArgumentsUp($node);
 
         return $node;
+    }
+
+    private function resolveFirstArgument(FuncCall|Empty_ $firstArgumentValue): ?string
+    {
+        return $firstArgumentValue instanceof Empty_
+            ? 'empty'
+            : $this->getName($firstArgumentValue);
     }
 
     private function renameMethod(

@@ -53,7 +53,7 @@ final class TestsNodeAnalyzer
             return false;
         }
 
-        if ($this->nodeNameResolver->isName($classMethod, 'test*')) {
+        if (fnmatch('test*', $classMethod->name->toString(), FNM_NOESCAPE)) {
             return true;
         }
 

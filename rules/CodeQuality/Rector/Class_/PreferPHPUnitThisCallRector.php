@@ -94,7 +94,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $this->isName($node->name, 'assert*')) {
+            if (! fnmatch('assert*', $methodName, FNM_NOESCAPE)) {
                 return null;
             }
 
