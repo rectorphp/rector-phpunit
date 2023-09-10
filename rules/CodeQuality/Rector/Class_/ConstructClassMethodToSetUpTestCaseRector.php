@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PHPStan\Reflection\ClassReflection;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -107,7 +108,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkip($node, $constructClassMethod)) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
@@ -131,17 +132,21 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function shouldSkip(Class_ $node, ClassMethod $classMethod): bool
+    private function shouldSkip(Class_ $class): bool
     {
-        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-        if (! $classReflection instanceof \PHPStan\Reflection\ClassReflection) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($class);
+        if (! $classReflection instanceof ClassReflection) {
             return true;
         }
 
         foreach ($classReflection->getParents() as $parentClassReflection) {
-            if ($parentClassReflection->hasNativeMethod(MethodName::CONSTRUCT) && $parentClassReflection->getName() !== 'PHPUnit\Framework\TestCase') {
-                return true;
+            if (! $parentClassReflection->hasNativeMethod(MethodName::CONSTRUCT)) {
+                continue;
             }
+            if ($parentClassReflection->getName() === 'PHPUnit\Framework\TestCase') {
+                continue;
+            }
+            return true;
         }
 
         return false;
