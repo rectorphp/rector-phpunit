@@ -71,7 +71,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (fnmatch('test*', $node->name->toString(), FNM_NOESCAPE)) {
+        if (str_starts_with($node->name->toString(), 'test')) {
             return null;
         }
 
