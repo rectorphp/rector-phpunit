@@ -9,8 +9,8 @@
         <testsuite name="main">
             <directory>tests</directory>
             <directory>rules-tests</directory>
-            <exclude>tests/Rector/Class_/AddSeeTestAnnotationRector/Source</exclude>
-            <exclude>tests/Rector/ClassMethod/DependsAnnotationWithValueToAttributeRector/Source</exclude>
+            <exclude>rules-tests/CodeQuality/Rector/Class_/AddSeeTestAnnotationRector/Source</exclude>
+            <exclude>rules-tests/AnnotationsToAttributes/Rector/ClassMethod/DependsAnnotationWithValueToAttributeRector/Source</exclude>
         </testsuite>
     </testsuites>
 </phpunit>
