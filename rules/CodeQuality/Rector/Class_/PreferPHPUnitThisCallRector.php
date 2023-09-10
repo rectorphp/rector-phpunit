@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeTraverser;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Util\StringUtils;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -94,7 +95,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $this->isName($node->name, 'assert*')) {
+            if (! StringUtils::isMatch($methodName, '#assert*#')) {
                 return null;
             }
 
