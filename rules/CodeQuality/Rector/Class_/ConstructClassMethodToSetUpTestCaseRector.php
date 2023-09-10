@@ -139,19 +139,12 @@ CODE_SAMPLE
             return true;
         }
 
-        foreach ($classReflection->getParents() as $parentClassReflection) {
-            if (! $parentClassReflection->hasNativeMethod(MethodName::CONSTRUCT)) {
-                continue;
-            }
-
-            if ($parentClassReflection->getName() === 'PHPUnit\Framework\TestCase') {
-                continue;
-            }
-
+        $currentParent = current($classReflection->getParents());
+        if (! $currentParent instanceof ClassReflection) {
             return true;
         }
 
-        return false;
+        return $currentParent->getName() !== 'PHPUnit\Framework\TestCase';
     }
 
     /**
