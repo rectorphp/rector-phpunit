@@ -116,7 +116,7 @@ CODE_SAMPLE
     private function shouldSkipClass(Class_ $class): bool
     {
         // we are in the test case
-        if ($this->isName($class, '*Test')) {
+        if (str_ends_with($class->name->toString(), 'Test')) {
             return true;
         }
 
