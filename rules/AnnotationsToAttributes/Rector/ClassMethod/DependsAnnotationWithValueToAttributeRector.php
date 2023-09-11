@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
@@ -27,7 +28,8 @@ final class DependsAnnotationWithValueToAttributeRector extends AbstractRector i
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
-        private readonly PhpDocTagRemover $phpDocTagRemover
+        private readonly PhpDocTagRemover $phpDocTagRemover,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -122,7 +124,6 @@ CODE_SAMPLE
 
                 // cleanup
                 $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
-
                 $hasChanged = true;
             }
         }
@@ -130,6 +131,8 @@ CODE_SAMPLE
         if (! $hasChanged) {
             return null;
         }
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
         return $node;
     }
@@ -219,7 +222,6 @@ CODE_SAMPLE
         }
 
         $classMethod = $currentClass->getMethod($attributeValue);
-
         if (! $classMethod instanceof ClassMethod) {
             return null;
         }
@@ -242,7 +244,6 @@ CODE_SAMPLE
         }
 
         $classMethod = $currentClass->getMethod($attributeValue);
-
         if (! $classMethod instanceof ClassMethod) {
             return null;
         }

@@ -12,6 +12,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Reflection\ClassReflection;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -30,7 +31,8 @@ final class DataProviderAnnotationToAttributeRector extends AbstractRector imple
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private readonly PhpDocTagRemover $phpDocTagRemover,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -123,9 +125,7 @@ CODE_SAMPLE
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
         }
 
-        if (! $phpDocInfo->hasChanged()) {
-            return null;
-        }
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
         return $node;
     }

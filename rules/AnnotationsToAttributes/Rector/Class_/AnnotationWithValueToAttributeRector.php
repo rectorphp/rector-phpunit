@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -34,6 +35,7 @@ final class AnnotationWithValueToAttributeRector extends AbstractRector implemen
     public function __construct(
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -121,6 +123,7 @@ CODE_SAMPLE
 
                 // cleanup
                 $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
+                $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
                 $hasChanged = true;
             }

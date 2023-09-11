@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFactory\ExpectExceptionMethodCallFactory;
@@ -37,7 +38,8 @@ final class ExceptionAnnotationRector extends AbstractRector
     public function __construct(
         private readonly ExpectExceptionMethodCallFactory $expectExceptionMethodCallFactory,
         private readonly PhpDocTagRemover $phpDocTagRemover,
-        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -113,6 +115,8 @@ CODE_SAMPLE
         if (! $hasChanged) {
             return null;
         }
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
         return $node;
     }

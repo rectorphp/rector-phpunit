@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -29,6 +30,7 @@ final class TestWithAnnotationToAttributeRector extends AbstractRector
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private readonly PhpDocTagRemover $phpDocTagRemover,
+        private readonly DocBlockUpdater $docBlockUpdater
     ) {
     }
 
@@ -125,6 +127,7 @@ CODE_SAMPLE
             }
         }
 
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
         $node->attrGroups = array_merge($node->attrGroups, $attributeGroups);
 
         return $node;

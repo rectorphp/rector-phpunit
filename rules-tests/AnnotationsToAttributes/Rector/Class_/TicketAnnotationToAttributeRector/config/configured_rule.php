@@ -6,6 +6,5 @@ use Rector\PHPUnit\AnnotationsToAttributes\Rector\Class_\TicketAnnotationToAttri
 use Rector\Config\RectorConfig;
 
 return static function (RectorConfig $rectorConfig): void {
-
     $rectorConfig->rule(TicketAnnotationToAttributeRector::class);
 };

@@ -17,6 +17,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPUnit\Framework\Attributes\Ticket;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPUnit\ValueObject\AnnotationWithValueToAttribute;
@@ -34,6 +35,7 @@ final class TicketAnnotationToAttributeRector extends AbstractRector implements 
 {
     public function __construct(
         private readonly PhpDocTagRemover $phpDocTagRemover,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -108,6 +110,7 @@ CODE_SAMPLE
 
             // cleanup
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $ticketTagValueNode);
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
             $hasChanged = true;
 

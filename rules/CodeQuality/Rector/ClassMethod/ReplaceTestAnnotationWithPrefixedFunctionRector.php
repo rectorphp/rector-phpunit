@@ -8,6 +8,7 @@ use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -20,7 +21,8 @@ final class ReplaceTestAnnotationWithPrefixedFunctionRector extends AbstractRect
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly PhpDocTagRemover $phpDocTagRemover
+        private readonly PhpDocTagRemover $phpDocTagRemover,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -86,8 +88,10 @@ CODE_SAMPLE
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         $this->phpDocTagRemover->removeByName($phpDocInfo, 'test');
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
         $node->name->name = 'test' . ucfirst($node->name->name);
+
 
         return $node;
     }
