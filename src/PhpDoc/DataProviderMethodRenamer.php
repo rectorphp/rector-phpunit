@@ -9,11 +9,13 @@ use PhpParser\Node\Stmt\Class_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 
 final class DataProviderMethodRenamer
 {
     public function __construct(
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -21,6 +23,8 @@ final class DataProviderMethodRenamer
     {
         foreach ($class->getMethods() as $classMethod) {
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
+
+            $hasClassMethodChanged = false;
 
             foreach ($phpDocInfo->getTagsByName('dataProvider') as $phpDocTagNode) {
                 if (! $phpDocTagNode->value instanceof GenericTagValueNode) {
@@ -41,7 +45,11 @@ final class DataProviderMethodRenamer
 
                 // invoke reprint
                 $phpDocTagNode->setAttribute(PhpDocAttributeKey::START_AND_END, null);
-                $phpDocInfo->markAsChanged();
+                $hasClassMethodChanged = true;
+            }
+
+            if ($hasClassMethodChanged) {
+                $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
             }
         }
     }
