@@ -43,10 +43,9 @@ use PHPUnit\Framework\TestCase;
 final class SomeTest extends TestCase
 {
     public function testOne() {}
-    public function testTwo() {}
+
     /**
      * @depends testOne
-     * @depends testTwo
      */
     public function testThree(): void
     {
@@ -61,9 +60,8 @@ use PHPUnit\Framework\TestCase;
 final class SomeTest extends TestCase
 {
     public function testOne() {}
-    public function testTwo() {}
+
     #[\PHPUnit\Framework\Attributes\Depends('testOne')]
-    #[\PHPUnit\Framework\Attributes\Depends('testTwo')]
     public function testThree(): void
     {
     }
@@ -124,6 +122,8 @@ CODE_SAMPLE
 
                 // cleanup
                 $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
+                $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
+
                 $hasChanged = true;
             }
         }
@@ -131,8 +131,6 @@ CODE_SAMPLE
         if (! $hasChanged) {
             return null;
         }
-
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
         return $node;
     }
