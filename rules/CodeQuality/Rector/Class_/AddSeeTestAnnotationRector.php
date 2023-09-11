@@ -12,6 +12,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\Naming\TestClassNameResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -30,7 +31,8 @@ final class AddSeeTestAnnotationRector extends AbstractRector
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
         private readonly PhpDocTagRemover $phpDocTagRemover,
-        private readonly TestClassNameResolver $testClassNameResolver
+        private readonly TestClassNameResolver $testClassNameResolver,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -110,6 +112,8 @@ CODE_SAMPLE
 
         $phpDocTagNode = $this->createSeePhpDocTagNode($matchingTestClassName);
         $phpDocInfo->addPhpDocTagNode($phpDocTagNode);
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
         return $node;
     }
