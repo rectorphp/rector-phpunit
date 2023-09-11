@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
@@ -15,6 +16,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\Naming\TestClassNameResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\AddSeeTestAnnotationRector\AddSeeTestAnnotationRectorTest
@@ -115,8 +117,12 @@ CODE_SAMPLE
 
     private function shouldSkipClass(Class_ $class): bool
     {
+        if ($class->isAnonymous()) {
+            return true;
+        }
+
         // we are in the test case
-        if (str_ends_with($class->name->toString(), 'Test')) {
+        if ($class->name instanceof Identifier && str_ends_with($class->name->toString(), 'Test')) {
             return true;
         }
 
