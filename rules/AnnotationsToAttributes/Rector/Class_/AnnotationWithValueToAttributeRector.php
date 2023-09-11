@@ -123,13 +123,12 @@ CODE_SAMPLE
 
                 // cleanup
                 $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
-                $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
-
                 $hasChanged = true;
             }
         }
 
         if ($hasChanged) {
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
             return $node;
         }
 
