@@ -18,7 +18,7 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/rules-tests',
         __DIR__ . '/tests',
         __DIR__ . '/rules',
-        __DIR__ . '/rules-tests'
+        __DIR__ . '/rules-tests',
     ]);
 
     $rectorConfig->skip([
