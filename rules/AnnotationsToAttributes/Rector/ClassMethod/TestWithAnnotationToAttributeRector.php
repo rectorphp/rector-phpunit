@@ -123,7 +123,10 @@ CODE_SAMPLE
             foreach ($testWithItems as $testWithItem) {
                 $jsonArray = Json::decode(trim($testWithItem), Json::FORCE_ARRAY);
 
-                $attributeGroups[] = $this->phpAttributeGroupFactory->createFromClassWithItems('PHPUnit\Framework\Attributes\TestWith', [$jsonArray]);
+                $attributeGroups[] = $this->phpAttributeGroupFactory->createFromClassWithItems(
+                    'PHPUnit\Framework\Attributes\TestWith',
+                    [$jsonArray]
+                );
             }
         }
 

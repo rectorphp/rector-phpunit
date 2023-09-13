@@ -92,7 +92,6 @@ CODE_SAMPLE
 
         $node->name->name = 'test' . ucfirst($node->name->name);
 
-
         return $node;
     }
 }
