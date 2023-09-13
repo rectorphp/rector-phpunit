@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\AnnotationsToAttributes\Rector\Class_;
 
-use PhpParser\Node\Arg;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Name\FullyQualified;
@@ -20,10 +20,8 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\PHPUnit\ValueObject\AnnotationWithValueToAttribute;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
@@ -111,7 +109,6 @@ CODE_SAMPLE
             // cleanup
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $ticketTagValueNode);
             $hasChanged = true;
-
         }
 
         if ($hasChanged) {
@@ -127,9 +124,7 @@ CODE_SAMPLE
         $fullyQualified = new FullyQualified(Ticket::class);
         $ticketString = new String_($stringValue);
 
-        $args = [
-            new Arg($ticketString),
-        ];
+        $args = [new Arg($ticketString)];
 
         return new Attribute($fullyQualified, $args);
     }

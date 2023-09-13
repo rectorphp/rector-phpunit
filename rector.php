@@ -12,7 +12,14 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->importNames();
     $rectorConfig->removeUnusedImports();
 
-    $rectorConfig->paths([__DIR__ . '/src', __DIR__ . '/tests', __DIR__ . '/rules', __DIR__ . '/rules-tests']);
+    $rectorConfig->paths([
+        __DIR__ . '/src',
+        __DIR__ . '/rules',
+        __DIR__ . '/rules-tests',
+        __DIR__ . '/tests',
+        __DIR__ . '/rules',
+        __DIR__ . '/rules-tests'
+    ]);
 
     $rectorConfig->skip([
         // for tests
