@@ -128,6 +128,11 @@ CODE_SAMPLE
         return [new Expression($matcherAssign), $node];
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::MATCH_EXPRESSION;
+    }
+
     private function createClosure(MethodCall $expectsMethodCall): Closure
     {
         $closure = new Closure();
@@ -178,10 +183,5 @@ CODE_SAMPLE
         });
 
         return $exactlyMethodCall;
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::MATCH_EXPRESSION;
     }
 }
