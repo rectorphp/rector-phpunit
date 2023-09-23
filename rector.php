@@ -54,5 +54,4 @@ return static function (RectorConfig $rectorConfig): void {
         'PHPUnit\Framework\*',
         'Prophecy\Prophet',
     ]);
-    $rectorConfig->rule(\Rector\Utils\Rector\MoveAbstractRectorToChildrenRector::class);
 };
