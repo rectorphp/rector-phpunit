@@ -7,6 +7,7 @@ namespace Rector\PHPUnit\PHPUnit60\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
@@ -40,6 +41,7 @@ final class ExceptionAnnotationRector extends AbstractRector
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
     }
 

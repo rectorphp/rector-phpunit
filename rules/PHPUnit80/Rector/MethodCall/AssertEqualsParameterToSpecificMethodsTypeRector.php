@@ -7,6 +7,7 @@ namespace Rector\PHPUnit\PHPUnit80\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFactory\AssertCallFactory;
@@ -24,7 +25,8 @@ final class AssertEqualsParameterToSpecificMethodsTypeRector extends AbstractRec
 {
     public function __construct(
         private readonly AssertCallFactory $assertCallFactory,
-        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly ValueResolver $valueResolver
     ) {
     }
 

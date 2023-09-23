@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\PhpParser\NodeTransformer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -31,6 +32,7 @@ final class YieldDataProviderRector extends AbstractRector
         private readonly NodeTransformer $nodeTransformer,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly DataProviderClassMethodFinder $dataProviderClassMethodFinder,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
     }
 
