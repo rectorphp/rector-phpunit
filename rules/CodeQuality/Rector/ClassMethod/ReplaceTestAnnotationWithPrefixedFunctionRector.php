@@ -92,7 +92,7 @@ CODE_SAMPLE
         $this->phpDocTagRemover->removeByName($phpDocInfo, 'test');
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
-        $node->name->name = 'test' . ucfirst((string) $node->name->name);
+        $node->name->name = 'test' . ucfirst($node->name->name);
 
         return $node;
     }

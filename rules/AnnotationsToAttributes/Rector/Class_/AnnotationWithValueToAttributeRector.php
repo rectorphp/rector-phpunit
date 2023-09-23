@@ -156,7 +156,7 @@ CODE_SAMPLE
             return $genericTagValueNode->value;
         }
 
-        $originalValue = strtolower((string) $genericTagValueNode->value);
+        $originalValue = strtolower($genericTagValueNode->value);
         return $valueMap[$originalValue];
     }
 }
