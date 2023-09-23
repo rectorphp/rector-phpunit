@@ -7,6 +7,7 @@ namespace Rector\PHPUnit\CodeQuality\Rector\ClassMethod;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
@@ -23,6 +24,7 @@ final class ReplaceTestAnnotationWithPrefixedFunctionRector extends AbstractRect
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
     }
 
@@ -90,7 +92,7 @@ CODE_SAMPLE
         $this->phpDocTagRemover->removeByName($phpDocInfo, 'test');
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
-        $node->name->name = 'test' . ucfirst($node->name->name);
+        $node->name->name = 'test' . ucfirst((string) $node->name->name);
 
         return $node;
     }

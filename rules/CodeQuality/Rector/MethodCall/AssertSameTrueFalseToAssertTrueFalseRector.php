@@ -7,6 +7,7 @@ namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\ArgumentMover;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -20,7 +21,8 @@ final class AssertSameTrueFalseToAssertTrueFalseRector extends AbstractRector
 {
     public function __construct(
         private readonly ArgumentMover $argumentMover,
-        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly ValueResolver $valueResolver
     ) {
     }
 

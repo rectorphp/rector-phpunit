@@ -17,6 +17,7 @@ use PhpParser\Node\MatchArm;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -30,7 +31,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class WithConsecutiveRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
