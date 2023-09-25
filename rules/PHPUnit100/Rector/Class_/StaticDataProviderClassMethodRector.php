@@ -5,9 +5,15 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\PHPUnit100\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
+use PhpParser\NodeTraverser;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFinder\DataProviderClassMethodFinder;
@@ -101,6 +107,34 @@ CODE_SAMPLE
             }
 
             $this->visibilityManipulator->makeStatic($dataProviderClassMethod);
+
+            $this->traverseNodesWithCallable(
+                (array) $dataProviderClassMethod->stmts,
+                function (Node $subNode): int|null|StaticCall {
+                    if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
+                        return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    }
+
+                    if (! $subNode instanceof MethodCall) {
+                        return null;
+                    }
+
+                    if ($subNode->isFirstClassCallable()) {
+                        return null;
+                    }
+
+                    if (! $this->isName($subNode->var, 'this')) {
+                        return null;
+                    }
+
+                    if (! $subNode->name instanceof Identifier) {
+                        return null;
+                    }
+
+                    return $this->nodeFactory->createStaticCall('self', $subNode->name->toString(), $subNode->getArgs());
+                }
+            );
+
             $hasChanged = true;
         }
 
