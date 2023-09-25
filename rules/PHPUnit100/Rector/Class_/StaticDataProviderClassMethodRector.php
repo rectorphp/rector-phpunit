@@ -107,33 +107,7 @@ CODE_SAMPLE
             }
 
             $this->visibilityManipulator->makeStatic($dataProviderClassMethod);
-
-            $this->traverseNodesWithCallable(
-                (array) $dataProviderClassMethod->stmts,
-                function (Node $subNode): int|null|StaticCall {
-                    if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
-                        return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-                    }
-
-                    if (! $subNode instanceof MethodCall) {
-                        return null;
-                    }
-
-                    if ($subNode->isFirstClassCallable()) {
-                        return null;
-                    }
-
-                    if (! $this->isName($subNode->var, 'this')) {
-                        return null;
-                    }
-
-                    if (! $subNode->name instanceof Identifier) {
-                        return null;
-                    }
-
-                    return $this->nodeFactory->createStaticCall('self', $subNode->name->toString(), $subNode->getArgs());
-                }
-            );
+            $this->handleNonStaticMethods($dataProviderClassMethod);
 
             $hasChanged = true;
         }
@@ -158,6 +132,40 @@ CODE_SAMPLE
         return (bool) $this->betterNodeFinder->findFirst(
             $classMethod->stmts,
             fn (Node $node): bool => $node instanceof Variable && $this->nodeNameResolver->isName($node, 'this')
+        );
+    }
+
+    private function handleNonStaticMethods(ClassMethod $dataProviderClassMethod): void
+    {
+        $this->traverseNodesWithCallable(
+            (array) $dataProviderClassMethod->stmts,
+            function (Node $subNode): int|null|StaticCall {
+                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+
+                if (! $subNode instanceof MethodCall) {
+                    return null;
+                }
+
+                if ($subNode->isFirstClassCallable()) {
+                    return null;
+                }
+
+                if (! $this->isName($subNode->var, 'this')) {
+                    return null;
+                }
+
+                if (! $subNode->name instanceof Identifier) {
+                    return null;
+                }
+
+                return $this->nodeFactory->createStaticCall(
+                    'self',
+                    $subNode->name->toString(),
+                    $subNode->getArgs()
+                );
+            }
         );
     }
 }
