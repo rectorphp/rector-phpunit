@@ -4,21 +4,24 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\Transform;
 
-use InvalidArgumentException;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\DNumber;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\ValueObject\PhpVersion;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFactory\AssertCallFactory;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\PHPUnit\Tests\Transform\Rector\AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector\AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRectorTest
  */
-final class AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector extends AbstractRector
+final class AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly AssertCallFactory $assertCallFactory,
@@ -41,9 +44,9 @@ $this->assertSame(10, $value);
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-$this->assertEqualsWithDelta(10.20, $value, 0.01);
-$this->assertEqualsWithDelta(10.20, $value, 0.01);
-$this->assertEqualsWithDelta(10.200, $value, 0.001);
+$this->assertEqualsWithDelta(10.20, $value, PHP_FLOAT_EPSILON);
+$this->assertEqualsWithDelta(10.20, $value, PHP_FLOAT_EPSILON);
+$this->assertEqualsWithDelta(10.200, $value, PHP_FLOAT_EPSILON);
 $this->assertSame(10, $value);
 CODE_SAMPLE
                 ),
@@ -78,28 +81,13 @@ CODE_SAMPLE
         $newMethodCall = $this->assertCallFactory->createCallWithName($node, 'assertEqualsWithDelta');
         $newMethodCall->args[0] = $args[0];
         $newMethodCall->args[1] = $args[1];
-        $newMethodCall->args[2] = new Arg(new DNumber($this->generateDelta($firstValue)));
+        $newMethodCall->args[2] = new Arg(new ConstFetch(new Name('PHP_FLOAT_EPSILON')));
 
         return $newMethodCall;
     }
 
-    private function generateDelta(DNumber $dNumber): float
+    public function provideMinPhpVersion(): int
     {
-        $rawValueNumber = $dNumber->getAttribute('rawValue');
-        $countDecimals = strrpos((string) $rawValueNumber, '.');
-
-        if ($countDecimals === false) {
-            throw new InvalidArgumentException('First argument passed in the function is not a float.');
-        }
-
-        $countHowManyDecimals = strlen((string) $rawValueNumber) - $countDecimals - 2;
-
-        if ($countHowManyDecimals < 1) {
-            return 0.1;
-        }
-
-        $mountFloat = number_format(0.0, $countHowManyDecimals, '.', '0') . '1';
-
-        return (float) $mountFloat;
+        return PhpVersion::PHP_72;
     }
 }
