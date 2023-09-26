@@ -33,12 +33,12 @@ class MyTest1 extends TestCase
     public function test()
     {
         $value = 10.20001;
-        $this->assertEqualsWithDelta(10.20, $value, 0.01);
-        $this->assertEqualsWithDelta(10.20, $value, 0.01);
-        $this->assertEqualsWithDelta(10.200, $value, 0.001);
+        $this->assertEqualsWithDelta(10.20, $value, PHP_FLOAT_EPSILON);
+        $this->assertEqualsWithDelta(10.20, $value, PHP_FLOAT_EPSILON);
+        $this->assertEqualsWithDelta(10.200, $value, PHP_FLOAT_EPSILON);
         $this->assertEquals('10.20', $value);
-        $this->assertEqualsWithDelta(10.28, $value, 0.01);
-        $this->assertEqualsWithDelta(10.2, $value, 0.1);
+        $this->assertEqualsWithDelta(10.28, $value, PHP_FLOAT_EPSILON);
+        $this->assertEqualsWithDelta(10.2, $value, PHP_FLOAT_EPSILON);
         $this->assertEquals(10, $value);
         $this->assertSame(10, $value);
     }
