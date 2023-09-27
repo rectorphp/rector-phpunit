@@ -5,5 +5,15 @@ namespace Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\CoversAnnot
 
 final class ExistingClass
 {
+    public function __construct()
+    {
+    }
 
+    public function foo(): void
+    {
+    }
+
+    public function bar(): void
+    {
+    }
 }
