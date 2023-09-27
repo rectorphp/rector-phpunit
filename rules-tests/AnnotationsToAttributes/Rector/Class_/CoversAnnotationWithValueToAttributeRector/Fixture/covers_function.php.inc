@@ -9,7 +9,14 @@ final class CoversFunction extends TestCase
     /**
      * @covers ::someFunction()
      */
-    public function test()
+    public function testOne()
+    {
+    }
+
+    /**
+     * @covers ::someFunction()
+     */
+    public function testTwo()
     {
     }
 }
@@ -25,7 +32,11 @@ use PHPUnit\Framework\TestCase;
 #[\PHPUnit\Framework\Attributes\CoversFunction('someFunction')]
 final class CoversFunction extends TestCase
 {
-    public function test()
+    public function testOne()
+    {
+    }
+
+    public function testTwo()
     {
     }
 }
