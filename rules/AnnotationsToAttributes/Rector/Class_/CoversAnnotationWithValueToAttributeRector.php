@@ -97,14 +97,17 @@ CODE_SAMPLE
         if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
             return null;
         }
+
         if ($node instanceof Class_) {
             $coversAttributeGroups = $this->resolveClassAttributes($node);
             if ($coversAttributeGroups === []) {
                 return null;
             }
+
             $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
             $node->attrGroups = array_merge($node->attrGroups, $coversAttributeGroups);
         }
+
         if ($node instanceof ClassMethod) {
             $this->removeMethodCoversAnnotations($node);
             $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
@@ -129,22 +132,22 @@ CODE_SAMPLE
     /**
      * @return array<string, AttributeGroup>
      */
-    private function resolveClassAttributes(Class_ $node): array
+    private function resolveClassAttributes(Class_ $class): array
     {
         $coversDefaultGroups = [];
         $coversGroups = [];
         $methodGroups = [];
         $hasCoversDefault = false;
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($class);
         if ($phpDocInfo instanceof PhpDocInfo) {
             $coversDefaultGroups = $this->handleCoversDefaultClass($phpDocInfo);
             // If there is a ::coversDefaultClass, @covers ::function will refer to class methods, otherwise it will refer to global functions.
-            $hasCoversDefault = count($coversDefaultGroups) > 0;
+            $hasCoversDefault = $coversDefaultGroups !== [];
             $coversGroups = $this->handleCovers($phpDocInfo, $hasCoversDefault);
         }
 
-        foreach ($node->getMethods() as $methodNode) {
-            $methodGroups = array_merge($methodGroups, $this->resolveMethodAttributes($methodNode, $hasCoversDefault));
+        foreach ($class->getMethods() as $classMethod) {
+            $methodGroups = [...$methodGroups, ...$this->resolveMethodAttributes($classMethod, $hasCoversDefault)];
         }
 
         return array_merge($coversDefaultGroups, $coversGroups, $methodGroups);
@@ -161,6 +164,7 @@ CODE_SAMPLE
             if (! $desiredTagValueNode->value instanceof GenericTagValueNode) {
                 continue;
             }
+
             $attributeGroups[] = $this->createAttributeGroup($desiredTagValueNode->value->value);
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
         }
@@ -179,12 +183,14 @@ CODE_SAMPLE
             if (! $desiredTagValueNode->value instanceof GenericTagValueNode) {
                 continue;
             }
+
             $covers = $desiredTagValueNode->value->value;
             if (str_starts_with($covers, '\\')) {
                 $attributeGroups[$covers] = $this->createAttributeGroup($covers);
             } elseif (! $hasCoversDefault && str_starts_with($covers, '::')) {
                 $attributeGroups[$covers] = $this->createAttributeGroup($covers);
             }
+
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
         }
 
@@ -194,18 +200,20 @@ CODE_SAMPLE
     /**
      * @return array<string, AttributeGroup>
      */
-    private function resolveMethodAttributes(ClassMethod $node, bool $hasCoversDefault): array
+    private function resolveMethodAttributes(ClassMethod $classMethod, bool $hasCoversDefault): array
     {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($classMethod);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return [];
         }
+
         $attributeGroups = [];
         $desiredTagValueNodes = $phpDocInfo->getTagsByName('covers');
         foreach ($desiredTagValueNodes as $desiredTagValueNode) {
             if (! $desiredTagValueNode->value instanceof GenericTagValueNode) {
                 continue;
             }
+
             $covers = $desiredTagValueNode->value->value;
             if (str_starts_with($covers, '\\')) {
                 $covers = $this->getClass($covers);
@@ -218,17 +226,19 @@ CODE_SAMPLE
         return $attributeGroups;
     }
 
-    private function removeMethodCoversAnnotations(ClassMethod $node): void
+    private function removeMethodCoversAnnotations(ClassMethod $classMethod): void
     {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($classMethod);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return;
         }
+
         $desiredTagValueNodes = $phpDocInfo->getTagsByName('covers');
         foreach ($desiredTagValueNodes as $desiredTagValueNode) {
             if (! $desiredTagValueNode->value instanceof GenericTagValueNode) {
                 continue;
             }
+
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
         }
     }
