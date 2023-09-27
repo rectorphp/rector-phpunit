@@ -4,19 +4,16 @@ namespace Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\CoversAnnot
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers ::someFunction()
+ */
 final class CoversFunction extends TestCase
 {
-    /**
-     * @covers ::someFunction()
-     */
-    public function testOne()
+    public function testOne(): void
     {
     }
 
-    /**
-     * @covers ::someFunction()
-     */
-    public function testTwo()
+    public function testTwo(): void
     {
     }
 }
@@ -32,11 +29,11 @@ use PHPUnit\Framework\TestCase;
 #[\PHPUnit\Framework\Attributes\CoversFunction('someFunction')]
 final class CoversFunction extends TestCase
 {
-    public function testOne()
+    public function testOne(): void
     {
     }
 
-    public function testTwo()
+    public function testTwo(): void
     {
     }
 }

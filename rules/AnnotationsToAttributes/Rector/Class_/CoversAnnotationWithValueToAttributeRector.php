@@ -148,17 +148,33 @@ CODE_SAMPLE
         if (!$phpDocInfo instanceof PhpDocInfo) {
             return [];
         }
-        $attributeGroups = [];
-        /** @var PhpDocTagNode[] $desiredTagValueNodes */
+        $coversDefaultGroups = $this->handleCoversDefaultClass($phpDocInfo);
+        $coversGroups        = $this->handleCovers($phpDocInfo, count($coversDefaultGroups) > 0);
+
+        return array_merge($coversDefaultGroups, $coversGroups);
+    }
+
+    /**
+     * @return AttributeGroup[]
+     */
+    private function handleCoversDefaultClass(PhpDocInfo $phpDocInfo): array
+    {
+        $attributeGroups      = [];
         $desiredTagValueNodes = $phpDocInfo->getTagsByName('coversDefaultClass');
         foreach ($desiredTagValueNodes as $desiredTagValueNode) {
             if (!$desiredTagValueNode->value instanceof GenericTagValueNode) {
                 continue;
             }
             $attributeGroups[] = $this->createAttributeGroup($desiredTagValueNode->value->value);
-            // cleanup
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
         }
+
+        return $attributeGroups;
+    }
+
+    private function handleCovers(PhpDocInfo $phpDocInfo, bool $hasCoversDefault): array
+    {
+        $attributeGroups      = [];
         $desiredTagValueNodes = $phpDocInfo->getTagsByName('covers');
         foreach ($desiredTagValueNodes as $desiredTagValueNode) {
             if (!$desiredTagValueNode->value instanceof GenericTagValueNode) {
@@ -167,8 +183,9 @@ CODE_SAMPLE
             $covers = $desiredTagValueNode->value->value;
             if (str_starts_with($covers, '\\')) {
                 $attributeGroups[$covers] = $this->createAttributeGroup($covers);
+            } elseif (!$hasCoversDefault && str_starts_with($covers, '::')) {
+                $attributeGroups[$covers] = $this->createAttributeGroup($covers);
             }
-            // remove @coversDefaultClass tag
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
         }
 
@@ -184,7 +201,7 @@ CODE_SAMPLE
         if (!$phpDocInfo instanceof PhpDocInfo) {
             return [];
         }
-        $attributeGroups = [];
+        $attributeGroups      = [];
         $desiredTagValueNodes = $phpDocInfo->getTagsByName('covers');
         foreach ($desiredTagValueNodes as $desiredTagValueNode) {
             if (!$desiredTagValueNode->value instanceof GenericTagValueNode) {
