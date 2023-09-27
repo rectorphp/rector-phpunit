@@ -48,7 +48,7 @@ use PHPUnit\Framework\TestCase;
 final class SomeTest extends TestCase
 {
     /**
-     * @covers ::someFunction
+     * @covers ::someFunction()
      */
     public function test()
     {
@@ -63,9 +63,9 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversFunction;
 
 #[CoversClass(SomeClass::class)]
+#[CoversFunction('someFunction')]
 final class SomeTest extends TestCase
 {
-    #[CoversFunction('someFunction')]
     public function test()
     {
     }
@@ -137,8 +137,9 @@ CODE_SAMPLE
         $phpDocInfo          = $this->phpDocInfoFactory->createFromNode($node);
         if ($phpDocInfo instanceof PhpDocInfo) {
             $coversDefaultGroups = $this->handleCoversDefaultClass($phpDocInfo);
-            $hasCoversDefault    = count($coversDefaultGroups) > 0;
-            $coversGroups        = $this->handleCovers($phpDocInfo, $hasCoversDefault);
+            // If there is a ::coversDefaultClass, @covers ::function will refer to class methods, otherwise it will refer to global functions.
+            $hasCoversDefault = count($coversDefaultGroups) > 0;
+            $coversGroups     = $this->handleCovers($phpDocInfo, $hasCoversDefault);
         }
 
         foreach ($node->getMethods() as $methodNode) {
