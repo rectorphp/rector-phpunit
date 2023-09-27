@@ -22,9 +22,9 @@ namespace Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\CoversAnnot
 
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(\Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Source\ExistingClass::class)]
 final class CoversMethod extends TestCase
 {
-    #[\PHPUnit\Framework\Attributes\CoversClass(\Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Source\ExistingClass::class)]
     public function test()
     {
     }
