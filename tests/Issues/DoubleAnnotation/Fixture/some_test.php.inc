@@ -8,7 +8,7 @@ use Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\UseSpecificWillMethodRect
 final class SomeTest extends TestCase
 {
     /**
-     * @covers SomeClass::method
+     * @covers \SomeClass::method
      * @dataProvider generatorInput
      */
     public function testSomething(mixed $expected)
@@ -29,10 +29,10 @@ namespace Rector\PHPUnit\Tests\Issues\DoubleAnnotation\Fixture;
 use PHPUnit\Framework\TestCase;
 use Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\UseSpecificWillMethodRector\Fixture\SomeClass;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(\SomeClass::class)]
 final class SomeTest extends TestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('generatorInput')]
-    #[\PHPUnit\Framework\Attributes\CoversClass(SomeClass::method)]
     public function testSomething(mixed $expected)
     {
         $this->assertSame($expected, 'actual');
