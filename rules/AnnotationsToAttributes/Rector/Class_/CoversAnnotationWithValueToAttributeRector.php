@@ -208,8 +208,6 @@ CODE_SAMPLE
             } elseif (!$hasCoversDefault && str_starts_with($covers, '::')) {
                 $attributeGroups[$covers] = $this->createAttributeGroup($covers);
             }
-
-            $attributeGroups[$covers] = $this->createAttributeGroup($covers);
         }
 
         return $attributeGroups;
