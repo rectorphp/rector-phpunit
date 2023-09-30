@@ -10,15 +10,12 @@ use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\TypeWithClassName;
-use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ClassReflectionAnalyzer;
 use Rector\PHPUnit\NodeAnalyzer\IdentifierManipulator;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -42,8 +39,7 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
     public function __construct(
         private readonly IdentifierManipulator $identifierManipulator,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly AstResolver $astResolver,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ClassReflectionAnalyzer $classReflectionAnalyzer
     ) {
     }
 
@@ -136,21 +132,11 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
             return true;
         }
 
-        // reflection->getParents() got empty array when
-        // extends class not found by PHPStan
-        $className = $classReflection->getName();
-        $class = $this->astResolver->resolveClassFromName($className);
-
-        if (! $class instanceof Class_) {
+        if (! $classReflection->isClass()) {
             return false;
         }
 
-        if (! $class->extends instanceof FullyQualified) {
-            return false;
-        }
-
-        // if parent class not detected by PHPStan, assume it has __isset
-        return ! $this->reflectionProvider->hasClass($class->extends->toString());
+        return $this->classReflectionAnalyzer->resolveParentClassName($classReflection) !== null;
     }
 
     private function refactorPropertyFetchNode(MethodCall|StaticCall $node, PropertyFetch $propertyFetch): ?Node
