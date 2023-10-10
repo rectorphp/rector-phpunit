@@ -130,11 +130,11 @@ CODE_SAMPLE
 
     /**
      * @template T of Node
-     * @param \PhpParser\Node|\PhpParser\Node[] $node
+     * @param Node|Node[] $node
      * @param class-string<T> $type
      * @return T[]
      */
-    public function findInstancesOfScoped(\PhpParser\Node|array $node, string $type): array
+    public function findInstancesOfScoped(Node|array $node, string $type): array
     {
         /** @var T[] $foundNodes */
         $foundNodes = [];
