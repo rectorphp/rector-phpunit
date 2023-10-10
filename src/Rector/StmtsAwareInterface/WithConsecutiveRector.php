@@ -15,11 +15,15 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\MatchArm;
 use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
+use PhpParser\NodeTraverser;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -32,7 +36,8 @@ final class WithConsecutiveRector extends AbstractRector implements MinPhpVersio
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
     ) {
     }
 
@@ -123,6 +128,36 @@ CODE_SAMPLE
         return PhpVersionFeature::MATCH_EXPRESSION;
     }
 
+    /**
+     * @template T of Node
+     * @param Node|Node[] $node
+     * @param class-string<T> $type
+     * @return T[]
+     */
+    public function findInstancesOfScoped(Node|array $node, string $type): array
+    {
+        /** @var T[] $foundNodes */
+        $foundNodes = [];
+
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $node,
+            static function (Node $subNode) use ($type, &$foundNodes): ?int {
+                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+
+                if ($subNode instanceof $type) {
+                    $foundNodes[] = $subNode;
+                    return null;
+                }
+
+                return null;
+            }
+        );
+
+        return $foundNodes;
+    }
+
     private function createClosure(MethodCall $expectsMethodCall): Closure
     {
         $closure = new Closure();
@@ -210,7 +245,7 @@ CODE_SAMPLE
     private function resolveUniqueUsedVariables(MethodCall $expectsMethodCall): array
     {
         /** @var Variable[] $usedVariables */
-        $usedVariables = $this->betterNodeFinder->findInstanceOf($expectsMethodCall->getArgs(), Variable::class);
+        $usedVariables = $this->findInstancesOfScoped($expectsMethodCall->getArgs(), Variable::class);
 
         $uniqueUsedVariables = [];
 
