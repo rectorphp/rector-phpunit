@@ -70,7 +70,7 @@ final class SomeTest extends TestCase
         $this->personServiceMock->expects($matcher)
             ->method('prepare')
             ->willReturnCallback(function () use ($matcher) {
-                return match ($matcher->numberOfInvocations()) {
+                return match ($matcher->getInvocationCount()) {
                     1 => [1, 2],
                     2 => [3, 4]
                 };
@@ -142,7 +142,7 @@ CODE_SAMPLE
         $matcherVariable = new Variable('matcher');
         $closure->uses[] = new ClosureUse($matcherVariable);
 
-        $match = new Match_(new MethodCall($matcherVariable, new Identifier('numberOfInvocations')));
+        $match = new Match_(new MethodCall($matcherVariable, new Identifier('getInvocationCount')));
 
         foreach ($expectsMethodCall->getArgs() as $key => $arg) {
             $match->arms[] = new MatchArm([new LNumber($key + 1)], $arg->value);
