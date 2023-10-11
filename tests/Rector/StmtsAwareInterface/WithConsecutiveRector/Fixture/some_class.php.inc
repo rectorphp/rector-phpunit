@@ -32,7 +32,7 @@ final class SomeTest extends TestCase
         $matcher = $this->exactly(2);
         $this->personServiceMock->expects($matcher)
             ->method('prepare')->willReturnCallback(function () use ($matcher) {
-            return match ($matcher->getInvocationCount()) {
+            return match ($matcher->numberOfInvocations()) {
                 1 => [1, 2],
                 2 => [3, 4],
             };
