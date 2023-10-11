@@ -44,7 +44,7 @@ final class AvoidNestedUses extends TestCase
 
         $this->personServiceMock->expects($matcher)
             ->method('prepare')->willReturnCallback(function () use ($matcher, $value) {
-            return match ($matcher->getInvocationCount()) {
+            return match ($matcher->numberOfInvocations()) {
                 1 => [1, $value],
                 2 => [2, function ($nested) {
                     $nestedReturn = 1000;
