@@ -97,11 +97,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isName($node->name, 'assertEmpty')) {
-            $methodName = 'assertNotInstanceOf';
-        } else {
-            $methodName = 'assertInstanceOf';
-        }
+        $methodName = $this->isName($node->name, 'assertEmpty') ? 'assertNotInstanceOf' : 'assertInstanceOf';
 
         $node->name = new Identifier($methodName);
 
