@@ -147,7 +147,7 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
 
         unset($oldArguments[0]);
         $newArgs = [$firstArgument, $secondArgument];
-        $node->args = array_merge($newArgs, $oldArguments);
+        $node->args = [...$newArgs, ...$oldArguments];
     }
 
     private function isConstantValue(Expr $expr): bool

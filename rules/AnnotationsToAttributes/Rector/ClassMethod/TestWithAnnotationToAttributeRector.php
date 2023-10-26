@@ -99,10 +99,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $testWithPhpDocTagNodes = array_merge(
-            $phpDocInfo->getTagsByName('testWith'),
-            $phpDocInfo->getTagsByName('testwith')
-        );
+        $testWithPhpDocTagNodes = [
+            ...$phpDocInfo->getTagsByName('testWith'),
+            ...$phpDocInfo->getTagsByName('testwith'),
+        ];
 
         if ($testWithPhpDocTagNodes === []) {
             return null;

@@ -155,7 +155,7 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
         unset($oldArgs[0]);
 
         $newArgs = $this->nodeFactory->createArgs([new String_($name), $propertyFetch->var]);
-        $node->args = array_merge($newArgs, $oldArgs);
+        $node->args = [...$newArgs, ...$oldArgs];
         return $node;
     }
 
@@ -169,7 +169,7 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
         $oldArgs = $node->getArgs();
         unset($oldArgs[0]);
 
-        $node->args = array_merge($this->nodeFactory->createArgs([$arrayDimFetch->dim, $arrayDimFetch->var]), $oldArgs);
+        $node->args = [...$this->nodeFactory->createArgs([$arrayDimFetch->dim, $arrayDimFetch->var]), ...$oldArgs];
         return $node;
     }
 }

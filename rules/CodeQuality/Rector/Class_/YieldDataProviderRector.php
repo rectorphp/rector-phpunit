@@ -152,7 +152,7 @@ CODE_SAMPLE
             );
         }
 
-        $classMethod->stmts = array_merge((array) $classMethod->stmts, $yields);
+        $classMethod->stmts = [...(array) $classMethod->stmts, ...$yields];
     }
 
     private function removeReturnTag(ClassMethod $classMethod): void

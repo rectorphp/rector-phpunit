@@ -158,6 +158,6 @@ final class AssertRegExpRector extends AbstractRector
 
         unset($oldArguments[0], $oldArguments[1]);
 
-        $node->args = array_merge([$regex, $variable], $oldArguments);
+        $node->args = [$regex, $variable, ...$oldArguments];
     }
 }

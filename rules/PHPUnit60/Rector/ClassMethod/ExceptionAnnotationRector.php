@@ -108,7 +108,7 @@ CODE_SAMPLE
                 $phpDocInfo->getTagsByName($annotationName),
                 $methodName,
             );
-            $node->stmts = array_merge($methodCallExpressions, (array) $node->stmts);
+            $node->stmts = [...$methodCallExpressions, ...(array) $node->stmts];
 
             $this->phpDocTagRemover->removeByName($phpDocInfo, $annotationName);
             $hasChanged = true;

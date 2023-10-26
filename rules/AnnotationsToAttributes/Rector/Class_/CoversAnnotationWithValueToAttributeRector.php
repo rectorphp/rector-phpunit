@@ -150,7 +150,7 @@ CODE_SAMPLE
             $methodGroups = [...$methodGroups, ...$this->resolveMethodAttributes($classMethod, $hasCoversDefault)];
         }
 
-        return array_merge($coversDefaultGroups, $coversGroups, $methodGroups);
+        return [...$coversDefaultGroups, ...$coversGroups, ...$methodGroups];
     }
 
     /**

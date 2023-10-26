@@ -128,7 +128,7 @@ CODE_SAMPLE
             $stmtKey = $constructClassMethod->getAttribute(AttributeKey::STMT_KEY);
             unset($node->stmts[$stmtKey]);
 
-            $setUpClassMethod->stmts = array_merge((array) $setUpClassMethod->stmts, $addedStmts);
+            $setUpClassMethod->stmts = [...(array) $setUpClassMethod->stmts, ...$addedStmts];
         }
 
         return $node;
