@@ -101,9 +101,10 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
             throw new ShouldNotHappenException();
         }
 
-        $node->args = array_merge([
+        $node->args = [
             new Arg($this->nodeFactory->createClassConstReference($className)),
             new Arg($argument),
-        ], $oldArguments);
+            ...$oldArguments,
+        ];
     }
 }

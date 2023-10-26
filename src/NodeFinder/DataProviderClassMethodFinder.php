@@ -34,16 +34,16 @@ final class DataProviderClassMethodFinder
     public function find(Class_ $class): array
     {
         $parentAbstractClasses = $this->resolveParentAbstractClasses($class);
-        $targetClasses = array_merge([$class], $parentAbstractClasses);
+        $targetClasses = [$class, ...$parentAbstractClasses];
 
         // foreach to find method names
         $dataProviderMethodNames = [];
 
         foreach ($targetClasses as $targetClass) {
-            $dataProviderMethodNames = array_merge(
-                $dataProviderMethodNames,
-                $this->resolverDataProviderClassMethodNames($targetClass)
-            );
+            $dataProviderMethodNames = [
+                ...$dataProviderMethodNames,
+                ...$this->resolverDataProviderClassMethodNames($targetClass),
+            ];
         }
 
         $dataProviderClassMethods = [];
@@ -125,7 +125,7 @@ final class DataProviderClassMethodFinder
         foreach ($class->getMethods() as $classMethod) {
             $currentDataProviderMethodNames = $this->findDataProviderNamesForClassMethod($classMethod);
 
-            $dataProviderMethodNames = array_merge($dataProviderMethodNames, $currentDataProviderMethodNames);
+            $dataProviderMethodNames = [...$dataProviderMethodNames, ...$currentDataProviderMethodNames];
         }
 
         return $dataProviderMethodNames;
