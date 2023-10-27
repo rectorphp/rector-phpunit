@@ -64,6 +64,6 @@ return static function (RectorConfig $rectorConfig): void {
         new MethodCallRename('PHPUnit\Framework\Assert', 'assertNotIsReadable', 'assertIsNotReadable'),
 
         // https://github.com/sebastianbergmann/phpunit/pull/3687
-        new MethodCallRename('PHPUnit\Framework\Assert', 'setMethods', 'onlyMethods'),
+        new MethodCallRename('PHPUnit\Framework\MockObject\MockBuilder', 'setMethods', 'onlyMethods'),
     ]);
 };
