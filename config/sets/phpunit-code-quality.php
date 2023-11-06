@@ -14,6 +14,7 @@ use Rector\PHPUnit\CodeQuality\Rector\Foreach_\SimplifyForeachInstanceOfRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertCompareToSpecificMethodRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertComparisonToSpecificMethodRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertEmptyNullableObjectToAssertInstanceofRector;
+use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertEqualsToSameRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertFalseStrposToContainsRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertInstanceOfComparisonRector;
@@ -40,6 +41,7 @@ return static function (RectorConfig $rectorConfig): void {
         RemoveEmptyTestMethodRector::class,
         ReplaceTestAnnotationWithPrefixedFunctionRector::class,
         TestWithToDataProviderRector::class,
+        AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector::class,
 
         // specific asserts
         AssertCompareToSpecificMethodRector::class,
