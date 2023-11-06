@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Transform;
+namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -19,7 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\Transform\Rector\AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector\AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRectorTest
+ * @see  \Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector\AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRectorTest
  */
 final class AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector extends AbstractRector implements MinPhpVersionInterface
 {

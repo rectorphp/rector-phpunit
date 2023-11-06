@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\Transform\Rector\AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
@@ -24,7 +24,7 @@ class MyTest1 extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Transform\Rector\AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
