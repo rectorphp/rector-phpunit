@@ -112,7 +112,8 @@ CODE_SAMPLE
 
     private function refactorClassMethod(Class_ $class, ClassMethod $classMethod): void
     {
-        $arrayItems = [];
+        $arrayItemsSingleLine = [];
+        $arrayMultiLine = null;
         $hasChanged = false;
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($classMethod);
         if (! $phpDocInfo instanceof PhpDocInfo) {
@@ -133,8 +134,15 @@ CODE_SAMPLE
                 continue;
             }
 
-            [$values] = $this->extractTestWithData($testWithPhpDocTagNode->value);
-            $arrayItems[] = new ArrayItem($this->createArrayItem($values));
+            $values = $this->extractTestWithData($testWithPhpDocTagNode->value);
+
+            if (count($values) > 1) {
+                $arrayMultiLine = $this->createArrayItem($values);
+            }
+
+            if (count($values) === 1) {
+                $arrayItemsSingleLine[] = new ArrayItem($this->createArrayItem($values[0]));
+            }
 
             //cleanup
             $hasChanged = $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $testWithPhpDocTagNode);
@@ -150,9 +158,15 @@ CODE_SAMPLE
 
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
 
+        $returnValue = $arrayMultiLine;
+
+        if ($arrayItemsSingleLine !== []) {
+            $returnValue = new Array_($arrayItemsSingleLine);
+        }
+
         $providerMethod = new ClassMethod($dataProviderName);
         $providerMethod->flags = Class_::MODIFIER_PUBLIC;
-        $providerMethod->stmts[] = new Return_(new Array_($arrayItems));
+        $providerMethod->stmts[] = new Return_($returnValue);
         $this->classInsertManipulator->addAsFirstMethod($class, $providerMethod);
     }
 
