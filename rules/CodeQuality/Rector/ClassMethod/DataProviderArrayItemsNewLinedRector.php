@@ -6,6 +6,7 @@ namespace Rector\PHPUnit\CodeQuality\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -117,6 +118,21 @@ CODE_SAMPLE
 
             $array = $return->expr;
             if ($array->items === []) {
+                continue;
+            }
+
+            $shouldReprint = false;
+            foreach ($array->items as $key => $item) {
+                if (
+                    isset($array->items[$key+1])
+                    && $array->items[$key+1] instanceof ArrayItem
+                    && $array->items[$key+1]->getStartLine() === $item->getEndLine()) {
+                    $shouldReprint = true;
+                    break;
+                }
+            }
+
+            if (! $shouldReprint) {
                 continue;
             }
 
