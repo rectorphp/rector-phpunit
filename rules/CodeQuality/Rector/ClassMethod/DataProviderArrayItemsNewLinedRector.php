@@ -145,10 +145,13 @@ CODE_SAMPLE
             if (! $item instanceof ArrayItem) {
                 continue;
             }
-
-            if (isset($array->items[$key + 1]) && $array->items[$key + 1]->getStartLine() === $item->getEndLine()) {
-                return true;
+            if (! isset($array->items[$key + 1])) {
+                continue;
             }
+            if ($array->items[$key + 1]->getStartLine() !== $item->getEndLine()) {
+                continue;
+            }
+            return true;
         }
 
         return false;
