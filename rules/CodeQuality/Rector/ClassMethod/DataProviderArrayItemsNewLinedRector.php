@@ -124,9 +124,9 @@ CODE_SAMPLE
             $shouldReprint = false;
             foreach ($array->items as $key => $item) {
                 if (
-                    isset($array->items[$key+1])
-                    && $array->items[$key+1] instanceof ArrayItem
-                    && $array->items[$key+1]->getStartLine() === $item->getEndLine()) {
+                    isset($array->items[$key + 1])
+                    && $array->items[$key + 1] instanceof ArrayItem
+                    && $array->items[$key + 1]->getStartLine() === $item->getEndLine()) {
                     $shouldReprint = true;
                     break;
                 }
