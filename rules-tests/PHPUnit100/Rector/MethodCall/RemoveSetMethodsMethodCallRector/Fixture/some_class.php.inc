@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 use Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Fixture\SomeClass;
@@ -19,7 +19,7 @@ final class SomeTest extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 use Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Fixture\SomeClass;
