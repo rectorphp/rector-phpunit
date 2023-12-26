@@ -2,7 +2,7 @@
 
 namespace Rector\PHPUnit\Tests\Issues\PHPUnit10DataProvider\Fixture;
 
-final class SomeTest
+final class SomeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test
@@ -24,10 +24,10 @@ final class SomeTest
 
 namespace Rector\PHPUnit\Tests\Issues\PHPUnit10DataProvider\Fixture;
 
-final class SomeTest
+final class SomeTest extends \PHPUnit\Framework\TestCase
 {
-    #[\PHPUnit\Framework\Attributes\Test]
     #[\PHPUnit\Framework\Attributes\DataProvider('fooProvider')]
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_should_do_stuff(string $foo): void
     {
     }
