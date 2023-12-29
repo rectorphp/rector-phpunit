@@ -112,14 +112,6 @@ CODE_SAMPLE
 
     private function skipMethod(ClassMethod $classMethod): bool
     {
-        if ($classMethod->isPublic()) {
-            return true;
-        }
-
-        if ($classMethod->stmts === null) {
-            return false;
-        }
-
-        return false;
+        return $classMethod->isPublic();
     }
 }
