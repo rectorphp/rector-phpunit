@@ -9,7 +9,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\Reflection\ReflectionProvider;
-use Rector\Core\PhpParser\Node\NodeFactory;
+use Rector\PhpParser\Node\NodeFactory;
 
 final class PhpDocValueToNodeMapper
 {

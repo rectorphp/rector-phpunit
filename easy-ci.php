@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Contract\Rector\RectorInterface;
 use Rector\Set\Contract\SetListInterface;
 use Symplify\EasyCI\Config\EasyCIConfig;
 
