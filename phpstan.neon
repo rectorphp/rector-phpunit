@@ -10,10 +10,6 @@ parameters:
 
     reportUnmatchedIgnoredErrors: false
 
-    cognitive_complexity:
-        class: 50
-        function: 10
-
     scanDirectories:
         - stubs
 
@@ -25,22 +21,9 @@ parameters:
 
     ignoreErrors:
         # phpstan false positive
-        - '#Parameter \#1 \$className of method Rector\\Core\\PhpParser\\AstResolver\:\:resolveClassMethod\(\) expects class\-string, string given#'
-
-        # rector co-variant
-        - '#Parameter \#1 \$node (.*?) of method Rector\\(.*?)\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\RectorInterface\:\:refactor\(\)#'
-
-        - '#Cognitive complexity for "Rector\\PHPUnit\\Rector\\ClassMethod\\CreateMockToAnonymousClassRector\:\:refactor\(\)" is 25, keep it under 10#'
-
-        # double type chdck
-        - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsInstanceOf\(\) with array<PhpParser\\Node\\Arg> and (.*?) will always evaluate to true#'
+        - '#Parameter \#1 \$className of method Rector\\PhpParser\\AstResolver\:\:resolveClassMethod\(\) expects class\-string, string given#'
 
         # false positive
-        - '#Access to an undefined property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
-        - '#Parameter \#2 \.\.\.\$arrays of function array_merge expects array, array<PhpParser\\Node\\Stmt>\|null given#'
-
-        - '#Return type (.*?) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector\\RectorInterface\:\:refactor\(\)#'
-
-        - '#Cognitive complexity for "Rector\\PHPUnit\\PHPUnit60\\Rector\\MethodCall\\DelegateExceptionArgumentsRector\:\:refactor\(\)" is 11, keep it under 10#'
+        - '#Access to an undefined property Rector\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
 
         - '#PhpParser\\Node\\Stmt\\Expression is not generic#'
