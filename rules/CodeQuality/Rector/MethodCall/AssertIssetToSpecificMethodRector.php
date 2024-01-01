@@ -14,10 +14,10 @@ use PhpParser\Node\Scalar\String_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\TypeWithClassName;
-use Rector\Core\Rector\AbstractRector;
-use Rector\Core\Reflection\ClassReflectionAnalyzer;
 use Rector\PHPUnit\NodeAnalyzer\IdentifierManipulator;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
+use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
