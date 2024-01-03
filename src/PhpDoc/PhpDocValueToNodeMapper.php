@@ -11,11 +11,11 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\PhpParser\Node\NodeFactory;
 
-final class PhpDocValueToNodeMapper
+final readonly class PhpDocValueToNodeMapper
 {
     public function __construct(
-        private readonly NodeFactory $nodeFactory,
-        private readonly ReflectionProvider $reflectionProvider
+        private NodeFactory $nodeFactory,
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 

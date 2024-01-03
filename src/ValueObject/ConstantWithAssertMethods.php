@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\ValueObject;
 
-final class ConstantWithAssertMethods
+final readonly class ConstantWithAssertMethods
 {
     public function __construct(
-        private readonly string $constant,
-        private readonly string $assetMethodName,
-        private readonly string $notAssertMethodName
+        private string $constant,
+        private string $assetMethodName,
+        private string $notAssertMethodName
     ) {
     }
 

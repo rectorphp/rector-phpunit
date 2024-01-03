@@ -15,11 +15,11 @@ use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\PHPUnit\PhpDoc\PhpDocValueToNodeMapper;
 
-final class ExpectExceptionMethodCallFactory
+final readonly class ExpectExceptionMethodCallFactory
 {
     public function __construct(
-        private readonly NodeFactory $nodeFactory,
-        private readonly PhpDocValueToNodeMapper $phpDocValueToNodeMapper
+        private NodeFactory $nodeFactory,
+        private PhpDocValueToNodeMapper $phpDocValueToNodeMapper
     ) {
     }
 

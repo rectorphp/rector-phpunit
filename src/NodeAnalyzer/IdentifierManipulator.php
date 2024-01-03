@@ -18,10 +18,10 @@ use Rector\NodeNameResolver\NodeNameResolver;
  * -public function someMethod()
  * +public function newMethod()
  */
-final class IdentifierManipulator
+final readonly class IdentifierManipulator
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

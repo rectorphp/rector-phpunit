@@ -18,13 +18,13 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpParser\AstResolver;
 use Rector\Reflection\ReflectionResolver;
 
-final class DataProviderClassMethodFinder
+final readonly class DataProviderClassMethodFinder
 {
     public function __construct(
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly AstResolver $astResolver,
-        private readonly NodeNameResolver $nodeNameResolver,
+        private PhpDocInfoFactory $phpDocInfoFactory,
+        private ReflectionResolver $reflectionResolver,
+        private AstResolver $astResolver,
+        private NodeNameResolver $nodeNameResolver,
     ) {
     }
 

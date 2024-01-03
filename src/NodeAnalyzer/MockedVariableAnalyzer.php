@@ -17,12 +17,12 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
-final class MockedVariableAnalyzer
+final readonly class MockedVariableAnalyzer
 {
     public function __construct(
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly NodeTypeResolver $nodeTypeResolver
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private NodeNameResolver $nodeNameResolver,
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -32,7 +32,7 @@ final class MockedVariableAnalyzer
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classMethod, function (Node $node) use (
             &$doesContainMock
-        ) {
+        ): null {
             if ($this->isMockeryStaticCall($node)) {
                 $doesContainMock = true;
                 return null;

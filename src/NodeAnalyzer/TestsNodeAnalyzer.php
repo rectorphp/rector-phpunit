@@ -15,7 +15,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\Reflection\ReflectionResolver;
 
-final class TestsNodeAnalyzer
+final readonly class TestsNodeAnalyzer
 {
     /**
      * @var string[]
@@ -23,10 +23,10 @@ final class TestsNodeAnalyzer
     private const TEST_CASE_OBJECT_CLASSES = ['PHPUnit\Framework\TestCase', 'PHPUnit_Framework_TestCase'];
 
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly ReflectionResolver $reflectionResolver
+        private NodeTypeResolver $nodeTypeResolver,
+        private NodeNameResolver $nodeNameResolver,
+        private PhpDocInfoFactory $phpDocInfoFactory,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 
