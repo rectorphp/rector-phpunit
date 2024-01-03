@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\ValueObject;
 
-final class AnnotationWithValueToAttribute
+final readonly class AnnotationWithValueToAttribute
 {
     /**
      * @param array<mixed, mixed> $valueMap
      */
     public function __construct(
-        private readonly string $annotationName,
-        private readonly string $attributeClass,
-        private readonly array $valueMap = []
+        private string $annotationName,
+        private string $attributeClass,
+        private array $valueMap = []
     ) {
     }
 

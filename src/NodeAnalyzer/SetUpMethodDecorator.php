@@ -13,10 +13,10 @@ use Rector\ValueObject\MethodName;
 /**
  * Decorate setUp() and tearDown() with "void" when local TestClass class uses them
  */
-final class SetUpMethodDecorator
+final readonly class SetUpMethodDecorator
 {
     public function __construct(
-        private readonly AstResolver $astResolver
+        private AstResolver $astResolver
     ) {
     }
 

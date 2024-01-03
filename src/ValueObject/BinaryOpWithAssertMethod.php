@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\ValueObject;
 
-final class BinaryOpWithAssertMethod
+final readonly class BinaryOpWithAssertMethod
 {
     public function __construct(
-        private readonly string $binaryOpClass,
-        private readonly string $assetMethodName,
-        private readonly string $notAssertMethodName
+        private string $binaryOpClass,
+        private string $assetMethodName,
+        private string $notAssertMethodName
     ) {
     }
 
