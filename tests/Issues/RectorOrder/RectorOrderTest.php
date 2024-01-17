@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\Tests\Issues\RectorOrder;
 
 use Iterator;
-
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
