@@ -33,6 +33,7 @@ return static function (RectorConfig $rectorConfig): void {
             __DIR__ . '/src/Rector/Class_/TestListenerToHooksRector.php',
             __DIR__ . '/src/NodeAnalyzer/TestsNodeAnalyzer.php',
             __DIR__ . '/config',
+            __DIR__ . '/src/NodeFinder/DataProviderClassMethodFinder.php',
         ],
     ]);
 
