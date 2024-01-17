@@ -63,7 +63,10 @@ final readonly class DataProviderClassMethodFinder
      */
     public function findDataProviderNamesForClassMethod(ClassMethod $classMethod): array
     {
-        $dataProviderAttributes = $this->findAttributesByClass($classMethod, 'PHPUnit\Framework\Attributes\DataProvider');
+        $dataProviderAttributes = $this->findAttributesByClass(
+            $classMethod,
+            'PHPUnit\Framework\Attributes\DataProvider'
+        );
 
         if ($dataProviderAttributes !== []) {
             return $this->resolveAttributeMethodNames($dataProviderAttributes);
