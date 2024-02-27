@@ -6,6 +6,7 @@ namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -100,11 +101,18 @@ CODE_SAMPLE
         }
 
         $callArgs = $node->getArgs();
-        if (! $callArgs[0]->value instanceof MethodCall) {
+        $firstArg = $callArgs[0];
+
+        // special case for new map
+        if ($firstArg->value instanceof New_) {
+            return $this->refactorNew($firstArg->value, $node);
+        }
+
+        if (! $firstArg->value instanceof MethodCall) {
             return null;
         }
 
-        $nestedMethodCall = $callArgs[0]->value;
+        $nestedMethodCall = $firstArg->value;
 
         foreach (self::NESTED_METHOD_TO_RENAME_MAP as $oldMethodName => $newParentMethodName) {
             if (! $this->isName($nestedMethodCall->name, $oldMethodName)) {
@@ -120,5 +128,17 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function refactorNew(New_ $new, StaticCall|MethodCall $call): null|MethodCall|StaticCall
+    {
+        if (! $this->isName($new->class, 'PHPUnit\Framework\MockObject\Stub\ReturnValueMap')) {
+            return null;
+        }
+
+        $call->name = new Identifier('willReturnMap');
+        $call->args = $new->args;
+
+        return $call;
     }
 }
