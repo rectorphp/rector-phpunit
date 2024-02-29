@@ -106,13 +106,16 @@ CODE_SAMPLE
 
             $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
             $node->attrGroups = array_merge($node->attrGroups, $coversAttributeGroups);
+
+            return $node;
         }
 
-        if ($node instanceof ClassMethod) {
-            $this->removeMethodCoversAnnotations($node);
-            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
+        $hasChanged = $this->removeMethodCoversAnnotations($node);
+        if ($hasChanged === false) {
+            return null;
         }
 
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
         return $node;
     }
 
@@ -226,12 +229,14 @@ CODE_SAMPLE
         return $attributeGroups;
     }
 
-    private function removeMethodCoversAnnotations(ClassMethod $classMethod): void
+    private function removeMethodCoversAnnotations(ClassMethod $classMethod): bool
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($classMethod);
         if (! $phpDocInfo instanceof PhpDocInfo) {
-            return;
+            return false;
         }
+
+        $hasChanged = false;
 
         $desiredTagValueNodes = $phpDocInfo->getTagsByName('covers');
         foreach ($desiredTagValueNodes as $desiredTagValueNode) {
@@ -240,7 +245,10 @@ CODE_SAMPLE
             }
 
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
+            $hasChanged = true;
         }
+
+        return $hasChanged;
     }
 
     private function getClass(string $classWithMethod): string
