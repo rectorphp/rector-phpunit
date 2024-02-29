@@ -7,6 +7,7 @@ namespace Rector\PHPUnit\Rector\StmtsAwareInterface;
 use PhpParser\BuilderFactory;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ClosureUse;
@@ -14,12 +15,16 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
+use PhpParser\Node\Stmt\Throw_;
 use PhpParser\NodeTraverser;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -133,7 +138,7 @@ CODE_SAMPLE
         }
 
         $withConsecutiveMethodCall = $this->findMethodCall($node, 'withConsecutive');
-        if ($withConsecutiveMethodCall === null) {
+        if (! $withConsecutiveMethodCall instanceof MethodCall) {
             return null;
         }
 
@@ -143,35 +148,39 @@ CODE_SAMPLE
 
         $returnStmts = [];
         $willReturn = $this->findMethodCall($node, 'willReturn');
-        if ($willReturn !== null) {
+        if ($willReturn instanceof MethodCall) {
             $args = $willReturn->getArgs();
             if (count($args) !== 1 || (! $args[0] instanceof Arg)) {
                 return null;
             }
-            $returnStmts = [new Node\Stmt\Return_($args[0]->value)];
+
+            $returnStmts = [new Return_($args[0]->value)];
         }
 
         $willReturnSelf = $this->findMethodCall($node, 'willReturnSelf');
-        if ($willReturnSelf !== null) {
+        if ($willReturnSelf instanceof MethodCall) {
             if ($returnStmts !== []) {
                 return null;
             }
+
             $selfVariable = $willReturnSelf;
             while (true) {
                 if (! $selfVariable instanceof MethodCall) {
                     break;
                 }
+
                 $selfVariable = $selfVariable->var;
             }
 
-            $returnStmts = [new Node\Stmt\Return_($selfVariable)];
+            $returnStmts = [new Return_($selfVariable)];
         }
 
         $willReturnArgument = $this->findMethodCall($node, 'willReturnArgument');
-        if ($willReturnArgument !== null) {
+        if ($willReturnArgument instanceof MethodCall) {
             if ($returnStmts !== []) {
                 return null;
             }
+
             $parametersVariable = new Variable('parameters');
 
             $args = $willReturnArgument->getArgs();
@@ -179,54 +188,58 @@ CODE_SAMPLE
                 return null;
             }
 
-            $returnStmts = [new Node\Stmt\Return_(new Node\Expr\ArrayDimFetch(
-                $parametersVariable,
-                $args[0]->value
-            ))];
+            $returnStmts = [new Return_(new ArrayDimFetch($parametersVariable, $args[0]->value))];
         }
 
         $willReturnOnConsecutiveCallsArgument = $this->findMethodCall($node, 'willReturnOnConsecutiveCalls');
-        if ($willReturnOnConsecutiveCallsArgument !== null) {
+        if ($willReturnOnConsecutiveCallsArgument instanceof MethodCall) {
             if ($returnStmts !== []) {
                 return null;
             }
+
             $matcherVariable = new Variable('matcher');
             $numberOfInvocationsMethodCall = new MethodCall($matcherVariable, new Identifier('numberOfInvocations'));
 
             $switchCases = [];
             foreach ($willReturnOnConsecutiveCallsArgument->getArgs() as $key => $arg) {
-                $switchCases[] = new Case_(new LNumber($key + 1), [new Node\Stmt\Return_($arg->value)]);
+                $switchCases[] = new Case_(new LNumber($key + 1), [new Return_($arg->value)]);
             }
+
             $returnStmts = [new Switch_($numberOfInvocationsMethodCall, $switchCases)];
         }
 
         $willReturnReferenceArgument = $this->findMethodCall($node, 'willReturnReference');
         $referenceVariable = null;
-        if ($willReturnReferenceArgument !== null) {
+        if ($willReturnReferenceArgument instanceof MethodCall) {
             if ($returnStmts !== []) {
                 return null;
             }
+
             $args = $willReturnReferenceArgument->args;
             if (count($args) !== 1 || (! $args[0] instanceof Arg)) {
                 return null;
             }
+
             $referenceVariable = $args[0]->value;
             if (! $referenceVariable instanceof Variable) {
                 return null;
             }
-            $returnStmts = [new Node\Stmt\Return_($referenceVariable)];
+
+            $returnStmts = [new Return_($referenceVariable)];
         }
 
         $willThrowException = $this->findMethodCall($node, 'willThrowException');
-        if ($willThrowException !== null) {
+        if ($willThrowException instanceof MethodCall) {
             if ($returnStmts !== []) {
                 return null;
             }
+
             $args = $willThrowException->getArgs();
             if (count($args) !== 1 || (! $args[0] instanceof Arg)) {
                 return null;
             }
-            $returnStmts = [new Node\Stmt\Throw_($args[0]->value)];
+
+            $returnStmts = [new Throw_($args[0]->value)];
         }
 
         /**
@@ -300,7 +313,7 @@ CODE_SAMPLE
         ?Variable $referenceVariable
     ): Closure {
         $closure = new Closure();
-        $byRef = $referenceVariable !== null;
+        $byRef = $referenceVariable instanceof Variable;
         $closure->byRef = $byRef;
 
         $matcherVariable = new Variable('matcher');
@@ -315,12 +328,13 @@ CODE_SAMPLE
             if ($byRef && $this->getName($usedVariable) === $this->getName($referenceVariable)) {
                 $closureUse->byRef = true;
             }
+
             $closure->uses[] = $closureUse;
         }
 
         $parametersVariable = new Variable('parameters');
         $switch = $this->createSwitch($matcherVariable, $expectsMethodCall, $parametersVariable);
-        $closure->params[] = new Node\Param($parametersVariable);
+        $closure->params[] = new Param($parametersVariable);
         $closure->stmts = [$switch, ...$returnStmts];
 
         return $closure;
@@ -389,10 +403,7 @@ CODE_SAMPLE
         $switchCases = [];
         foreach ($expectsMethodCall->getArgs() as $key => $arg) {
             $assertEquals = $this->builderFactory->staticCall('self', 'assertEquals', [$arg, $parameters]);
-            $switchCases[] = new Case_(new LNumber($key + 1), [
-                new Expression($assertEquals),
-                new Node\Stmt\Break_(),
-            ]);
+            $switchCases[] = new Case_(new LNumber($key + 1), [new Expression($assertEquals), new Break_()]);
         }
 
         return new Switch_($numberOfInvocationsMethodCall, $switchCases);
@@ -428,10 +439,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            if ($this->isNames($node->name, ['willReturnMap', 'will'])) {
-                return true;
-            }
-            return false;
+            return $this->isNames($node->name, ['willReturnMap', 'will']);
         });
 
         return $nodesWithWillReturnMap !== [];
@@ -454,6 +462,7 @@ CODE_SAMPLE
             ]))) {
                 return null;
             }
+
             return $node->var;
         });
     }
