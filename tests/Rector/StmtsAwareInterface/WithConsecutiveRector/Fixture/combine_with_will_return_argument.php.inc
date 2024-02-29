@@ -4,7 +4,7 @@ namespace Rector\PHPUnit\Tests\Rector\StmtsAwareInterface\WithConsecutiveRector\
 
 use PHPUnit\Framework\TestCase;
 
-final class SomeTest extends TestCase
+final class CombineWithWillReturnArgument extends TestCase
 {
     public function test()
     {
@@ -13,7 +13,8 @@ final class SomeTest extends TestCase
             ->withConsecutive(
                 [1, 2],
                 [3, 4],
-            );
+            )
+            ->willReturnArgument(0);
     }
 }
 
@@ -25,7 +26,7 @@ namespace Rector\PHPUnit\Tests\Rector\StmtsAwareInterface\WithConsecutiveRector\
 
 use PHPUnit\Framework\TestCase;
 
-final class SomeTest extends TestCase
+final class CombineWithWillReturnArgument extends TestCase
 {
     public function test()
     {
@@ -40,6 +41,7 @@ final class SomeTest extends TestCase
                     self::assertEquals([3, 4], $parameters);
                     break;
             }
+            return $parameters[0];
         });
     }
 }

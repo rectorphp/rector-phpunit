@@ -4,7 +4,7 @@ namespace Rector\PHPUnit\Tests\Rector\StmtsAwareInterface\WithConsecutiveRector\
 
 use PHPUnit\Framework\TestCase;
 
-final class SomeTest extends TestCase
+final class CombineWithWillReturnOnConsecutiveCalls extends TestCase
 {
     public function test()
     {
@@ -13,7 +13,8 @@ final class SomeTest extends TestCase
             ->withConsecutive(
                 [1, 2],
                 [3, 4],
-            );
+            )
+            ->willReturnOnConsecutiveCalls(5, 6);
     }
 }
 
@@ -25,7 +26,7 @@ namespace Rector\PHPUnit\Tests\Rector\StmtsAwareInterface\WithConsecutiveRector\
 
 use PHPUnit\Framework\TestCase;
 
-final class SomeTest extends TestCase
+final class CombineWithWillReturnOnConsecutiveCalls extends TestCase
 {
     public function test()
     {
@@ -39,6 +40,12 @@ final class SomeTest extends TestCase
                 case 2:
                     self::assertEquals([3, 4], $parameters);
                     break;
+            }
+            switch ($matcher->numberOfInvocations()) {
+                case 1:
+                    return 5;
+                case 2:
+                    return 6;
             }
         });
     }

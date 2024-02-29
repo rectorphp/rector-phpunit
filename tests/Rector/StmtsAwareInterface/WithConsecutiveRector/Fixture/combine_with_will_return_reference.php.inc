@@ -4,16 +4,18 @@ namespace Rector\PHPUnit\Tests\Rector\StmtsAwareInterface\WithConsecutiveRector\
 
 use PHPUnit\Framework\TestCase;
 
-final class SomeTest extends TestCase
+final class CombineWithWillReturnReference extends TestCase
 {
     public function test()
     {
+        $value = 42;
         $this->userServiceMock->expects(self::exactly(2))
             ->method('prepare')
             ->withConsecutive(
                 [1, 2],
                 [3, 4],
-            );
+            )
+            ->willReturnReference($value);
     }
 }
 
@@ -25,13 +27,14 @@ namespace Rector\PHPUnit\Tests\Rector\StmtsAwareInterface\WithConsecutiveRector\
 
 use PHPUnit\Framework\TestCase;
 
-final class SomeTest extends TestCase
+final class CombineWithWillReturnReference extends TestCase
 {
     public function test()
     {
+        $value = 42;
         $matcher = self::exactly(2);
         $this->userServiceMock->expects($matcher)
-            ->method('prepare')->willReturnCallback(function ($parameters) use ($matcher) {
+            ->method('prepare')->willReturnCallback(function &($parameters) use ($matcher, &$value) {
             switch ($matcher->numberOfInvocations()) {
                 case 1:
                     self::assertEquals([1, 2], $parameters);
@@ -40,6 +43,7 @@ final class SomeTest extends TestCase
                     self::assertEquals([3, 4], $parameters);
                     break;
             }
+            return $value;
         });
     }
 }

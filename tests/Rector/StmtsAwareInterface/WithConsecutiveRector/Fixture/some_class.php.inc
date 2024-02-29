@@ -31,11 +31,15 @@ final class SomeTest extends TestCase
     {
         $matcher = $this->exactly(2);
         $this->personServiceMock->expects($matcher)
-            ->method('prepare')->willReturnCallback(function () use ($matcher) {
-            return match ($matcher->numberOfInvocations()) {
-                1 => [1, 2],
-                2 => [3, 4],
-            };
+            ->method('prepare')->willReturnCallback(function ($parameters) use ($matcher) {
+            switch ($matcher->numberOfInvocations()) {
+                case 1:
+                    self::assertEquals([1, 2], $parameters);
+                    break;
+                case 2:
+                    self::assertEquals([3, 4], $parameters);
+                    break;
+            }
         });
     }
 }
