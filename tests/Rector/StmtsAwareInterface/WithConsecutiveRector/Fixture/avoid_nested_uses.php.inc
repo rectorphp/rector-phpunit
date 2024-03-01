@@ -44,17 +44,13 @@ final class AvoidNestedUses extends TestCase
 
         $this->personServiceMock->expects($matcher)
             ->method('prepare')->willReturnCallback(function ($parameters) use ($matcher, $value) {
-            switch ($matcher->numberOfInvocations()) {
-                case 1:
-                    self::assertEquals([1, $value], $parameters);
-                    break;
-                case 2:
-                    self::assertEquals([2, function ($nested) {
-                        $nestedReturn = 1000;
-                        return $nestedReturn;
-                    }], $parameters);
-                    break;
-            }
+            match ($matcher->numberOfInvocations()) {
+                1 => self::assertEquals([1, $value], $parameters),
+                2 => self::assertEquals([2, function ($nested) {
+                    $nestedReturn = 1000;
+                    return $nestedReturn;
+                }], $parameters),
+            };
         });
     }
 

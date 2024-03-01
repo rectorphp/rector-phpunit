@@ -33,20 +33,14 @@ final class CombineWithWillReturnOnConsecutiveCalls extends TestCase
         $matcher = self::exactly(2);
         $this->userServiceMock->expects($matcher)
             ->method('prepare')->willReturnCallback(function ($parameters) use ($matcher) {
-            switch ($matcher->numberOfInvocations()) {
-                case 1:
-                    self::assertEquals([1, 2], $parameters);
-                    break;
-                case 2:
-                    self::assertEquals([3, 4], $parameters);
-                    break;
-            }
-            switch ($matcher->numberOfInvocations()) {
-                case 1:
-                    return 5;
-                case 2:
-                    return 6;
-            }
+            match ($matcher->numberOfInvocations()) {
+                1 => self::assertEquals([1, 2], $parameters),
+                2 => self::assertEquals([3, 4], $parameters),
+            };
+            return match ($matcher->numberOfInvocations()) {
+                1 => 5,
+                2 => 6,
+            };
         });
     }
 }

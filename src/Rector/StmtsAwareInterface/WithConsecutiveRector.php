@@ -11,19 +11,18 @@ use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ClosureUse;
+use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\MatchArm;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\LNumber;
-use PhpParser\Node\Stmt\Break_;
-use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_;
 use PhpParser\NodeTraverser;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -89,14 +88,10 @@ final class SomeTest extends TestCase
         $this->personServiceMock->expects($matcher)
             ->method('prepare')
             ->willReturnCallback(function ($parameters) use ($matcher) {
-                switch ($matcher->numberOfInvocations()) {
-                    case 1:
-                        self::assertEquals([1, 2], $parameters);
-                        break;
-                    case 2:
-                        self::assertEquals([3, 4], $parameters);
-                        break;
-                }
+                match ($matcher->numberOfInvocations()) {
+                    1 => self::assertEquals([1, 2], $parameters),
+                    2 => self::assertEquals([3, 4], $parameters),
+                };
             });
 
         $matcher = self::exactly(2);
@@ -104,13 +99,9 @@ final class SomeTest extends TestCase
         $this->userServiceMock->expects($matcher)
             ->method('prepare')
             ->willReturnCallback(function ($parameters) use ($matcher) {
-                switch ($matcher->numberOfInvocations()) {
-                    case 1:
-                        self::assertEquals([1, 2], $parameters);
-                        break;
-                    case 2:
-                        self::assertEquals([3, 4], $parameters);
-                        break;
+                match ($matcher->numberOfInvocations()) {
+                    1 => self::assertEquals([1, 2], $parameters),
+                    2 => self::assertEquals([3, 4], $parameters),
                 }
             });
     }
@@ -200,12 +191,12 @@ CODE_SAMPLE
             $matcherVariable = new Variable('matcher');
             $numberOfInvocationsMethodCall = new MethodCall($matcherVariable, new Identifier('numberOfInvocations'));
 
-            $switchCases = [];
+            $matchArms = [];
             foreach ($willReturnOnConsecutiveCallsArgument->getArgs() as $key => $arg) {
-                $switchCases[] = new Case_(new LNumber($key + 1), [new Return_($arg->value)]);
+                $matchArms[] = new MatchArm([new LNumber($key + 1)], $arg->value);
             }
 
-            $returnStmts = [new Switch_($numberOfInvocationsMethodCall, $switchCases)];
+            $returnStmts = [new Return_(new Match_($numberOfInvocationsMethodCall, $matchArms))];
         }
 
         $willReturnReferenceArgument = $this->findMethodCall($node, 'willReturnReference');
@@ -333,9 +324,9 @@ CODE_SAMPLE
         }
 
         $parametersVariable = new Variable('parameters');
-        $switch = $this->createSwitch($matcherVariable, $expectsMethodCall, $parametersVariable);
+        $match = $this->createMatch($matcherVariable, $expectsMethodCall, $parametersVariable);
         $closure->params[] = new Param($parametersVariable);
-        $closure->stmts = [$switch, ...$returnStmts];
+        $closure->stmts = [new Expression($match), ...$returnStmts];
 
         return $closure;
     }
@@ -393,20 +384,20 @@ CODE_SAMPLE
         return $methodCall;
     }
 
-    private function createSwitch(
+    private function createMatch(
         Variable $matcherVariable,
         MethodCall $expectsMethodCall,
         Variable $parameters
-    ): Switch_ {
+    ): Match_ {
         $numberOfInvocationsMethodCall = new MethodCall($matcherVariable, new Identifier('numberOfInvocations'));
 
-        $switchCases = [];
+        $matchArms = [];
         foreach ($expectsMethodCall->getArgs() as $key => $arg) {
             $assertEquals = $this->builderFactory->staticCall('self', 'assertEquals', [$arg, $parameters]);
-            $switchCases[] = new Case_(new LNumber($key + 1), [new Expression($assertEquals), new Break_()]);
+            $matchArms[] = new MatchArm([new LNumber($key + 1)], $assertEquals);
         }
 
-        return new Switch_($numberOfInvocationsMethodCall, $switchCases);
+        return new Match_($numberOfInvocationsMethodCall, $matchArms);
     }
 
     /**
