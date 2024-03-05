@@ -85,7 +85,15 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstArg = $node->getArgs()[0];
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
+        $firstArg = $node->getArgs()[0] ?? null;
+        if (! $firstArg instanceof Arg) {
+            return null;
+        }
+
         $firstArgType = $this->getType($firstArg->value);
 
         if (! $firstArgType instanceof UnionType) {
