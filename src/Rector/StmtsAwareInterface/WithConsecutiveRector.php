@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\Rector\StmtsAwareInterface;
 
+use PhpParser\BuilderFactory;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ClosureUse;
@@ -15,11 +17,13 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\MatchArm;
+use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\Throw_;
 use PhpParser\NodeTraverser;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -39,6 +43,7 @@ final class WithConsecutiveRector extends AbstractRector implements MinPhpVersio
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private readonly BuilderFactory $builderFactory,
     ) {
     }
 
@@ -82,23 +87,23 @@ final class SomeTest extends TestCase
 
         $this->personServiceMock->expects($matcher)
             ->method('prepare')
-            ->willReturnCallback(function () use ($matcher) {
-                return match ($matcher->numberOfInvocations()) {
-                    1 => [1, 2],
-                    2 => [3, 4]
+            ->willReturnCallback(function ($parameters) use ($matcher) {
+                match ($matcher->numberOfInvocations()) {
+                    1 => self::assertEquals([1, 2], $parameters),
+                    2 => self::assertEquals([3, 4], $parameters),
                 };
-        });
+            });
 
         $matcher = self::exactly(2);
 
         $this->userServiceMock->expects($matcher)
             ->method('prepare')
-            ->willReturnCallback(function () use ($matcher) {
-                return match ($matcher->numberOfInvocations()) {
-                    1 => [1, 2],
-                    2 => [3, 4]
-                };
-        });
+            ->willReturnCallback(function ($parameters) use ($matcher) {
+                match ($matcher->numberOfInvocations()) {
+                    1 => self::assertEquals([1, 2], $parameters),
+                    2 => self::assertEquals([3, 4], $parameters),
+                }
+            });
     }
 }
 CODE_SAMPLE
@@ -123,10 +128,116 @@ CODE_SAMPLE
             return null;
         }
 
-        $withConsecutiveMethodCall = $this->findWithConsecutiveMethodCall($node);
+        $withConsecutiveMethodCall = $this->findMethodCall($node, 'withConsecutive');
         if (! $withConsecutiveMethodCall instanceof MethodCall) {
             return null;
         }
+
+        if ($this->hasWillReturnMapOrWill($node)) {
+            return null;
+        }
+
+        $returnStmts = [];
+        $willReturn = $this->findMethodCall($node, 'willReturn');
+        if ($willReturn instanceof MethodCall) {
+            $args = $willReturn->getArgs();
+            if (count($args) !== 1 || (! $args[0] instanceof Arg)) {
+                return null;
+            }
+
+            $returnStmts = [new Return_($args[0]->value)];
+        }
+
+        $willReturnSelf = $this->findMethodCall($node, 'willReturnSelf');
+        if ($willReturnSelf instanceof MethodCall) {
+            if ($returnStmts !== []) {
+                return null;
+            }
+
+            $selfVariable = $willReturnSelf;
+            while (true) {
+                if (! $selfVariable instanceof MethodCall) {
+                    break;
+                }
+
+                $selfVariable = $selfVariable->var;
+            }
+
+            $returnStmts = [new Return_($selfVariable)];
+        }
+
+        $willReturnArgument = $this->findMethodCall($node, 'willReturnArgument');
+        if ($willReturnArgument instanceof MethodCall) {
+            if ($returnStmts !== []) {
+                return null;
+            }
+
+            $parametersVariable = new Variable('parameters');
+
+            $args = $willReturnArgument->getArgs();
+            if (count($args) !== 1 || (! $args[0] instanceof Arg)) {
+                return null;
+            }
+
+            $returnStmts = [new Return_(new ArrayDimFetch($parametersVariable, $args[0]->value))];
+        }
+
+        $willReturnOnConsecutiveCallsArgument = $this->findMethodCall($node, 'willReturnOnConsecutiveCalls');
+        if ($willReturnOnConsecutiveCallsArgument instanceof MethodCall) {
+            if ($returnStmts !== []) {
+                return null;
+            }
+
+            $matcherVariable = new Variable('matcher');
+            $numberOfInvocationsMethodCall = new MethodCall($matcherVariable, new Identifier('numberOfInvocations'));
+
+            $matchArms = [];
+            foreach ($willReturnOnConsecutiveCallsArgument->getArgs() as $key => $arg) {
+                $matchArms[] = new MatchArm([new LNumber($key + 1)], $arg->value);
+            }
+
+            $returnStmts = [new Return_(new Match_($numberOfInvocationsMethodCall, $matchArms))];
+        }
+
+        $willReturnReferenceArgument = $this->findMethodCall($node, 'willReturnReference');
+        $referenceVariable = null;
+        if ($willReturnReferenceArgument instanceof MethodCall) {
+            if ($returnStmts !== []) {
+                return null;
+            }
+
+            $args = $willReturnReferenceArgument->args;
+            if (count($args) !== 1 || (! $args[0] instanceof Arg)) {
+                return null;
+            }
+
+            $referenceVariable = $args[0]->value;
+            if (! $referenceVariable instanceof Variable) {
+                return null;
+            }
+
+            $returnStmts = [new Return_($referenceVariable)];
+        }
+
+        $willThrowException = $this->findMethodCall($node, 'willThrowException');
+        if ($willThrowException instanceof MethodCall) {
+            if ($returnStmts !== []) {
+                return null;
+            }
+
+            $args = $willThrowException->getArgs();
+            if (count($args) !== 1 || (! $args[0] instanceof Arg)) {
+                return null;
+            }
+
+            $returnStmts = [new Throw_($args[0]->value)];
+        }
+
+        /**
+         * remove willReturn, willReturnArgument, willReturnOnConsecutiveCalls, willReturnReference
+         * willReturnSelf and willThrowException
+         */
+        $this->removeWills($node);
 
         $expectsCall = $this->matchAndRefactorExpectsMethodCall($node);
         if (! $expectsCall instanceof MethodCall && ! $expectsCall instanceof StaticCall) {
@@ -135,8 +246,9 @@ CODE_SAMPLE
 
         // 2. rename and replace withConsecutive()
         $withConsecutiveMethodCall->name = new Identifier('willReturnCallback');
-        $withConsecutiveMethodCall->args = [new Arg($this->createClosure($withConsecutiveMethodCall))];
-
+        $withConsecutiveMethodCall->args = [
+            new Arg($this->createClosure($withConsecutiveMethodCall, $returnStmts, $referenceVariable)),
+        ];
         $matcherAssign = new Assign(new Variable('matcher'), $expectsCall);
 
         return [new Expression($matcherAssign), $node];
@@ -183,20 +295,38 @@ CODE_SAMPLE
         return $foundNodes;
     }
 
-    private function createClosure(MethodCall $expectsMethodCall): Closure
-    {
+    /**
+     * @param Node\Stmt[] $returnStmts
+     */
+    private function createClosure(
+        MethodCall $expectsMethodCall,
+        array $returnStmts,
+        ?Variable $referenceVariable
+    ): Closure {
         $closure = new Closure();
+        $byRef = $referenceVariable instanceof Variable;
+        $closure->byRef = $byRef;
 
         $matcherVariable = new Variable('matcher');
         $closure->uses[] = new ClosureUse($matcherVariable);
 
-        $usedVariables = $this->resolveUniqueUsedVariables($expectsMethodCall);
+        $usedVariables = $this->resolveUniqueUsedVariables([
+            ...$expectsMethodCall->getArgs(),
+            ...$this->resolveUniqueUsedVariables($returnStmts),
+        ]);
         foreach ($usedVariables as $usedVariable) {
-            $closure->uses[] = new ClosureUse($usedVariable);
+            $closureUse = new ClosureUse($usedVariable);
+            if ($byRef && $this->getName($usedVariable) === $this->getName($referenceVariable)) {
+                $closureUse->byRef = true;
+            }
+
+            $closure->uses[] = $closureUse;
         }
 
-        $match = $this->createMatch($matcherVariable, $expectsMethodCall);
-        $closure->stmts[] = new Return_($match);
+        $parametersVariable = new Variable('parameters');
+        $match = $this->createMatch($matcherVariable, $expectsMethodCall, $parametersVariable);
+        $closure->params[] = new Param($parametersVariable);
+        $closure->stmts = [new Expression($match), ...$returnStmts];
 
         return $closure;
     }
@@ -235,47 +365,54 @@ CODE_SAMPLE
         return $exactlyCall;
     }
 
-    private function findWithConsecutiveMethodCall(Expression $expression): ?MethodCall
+    private function findMethodCall(Expression $expression, string $methodName): ?MethodCall
     {
         if (! $expression->expr instanceof MethodCall) {
             return null;
         }
 
-        /** @var MethodCall|null $withConsecutiveMethodCall */
-        $withConsecutiveMethodCall = $this->betterNodeFinder->findFirst($expression->expr, function (Node $node): bool {
+        /** @var MethodCall|null $methodCall */
+        $methodCall = $this->betterNodeFinder->findFirst($expression->expr, function (Node $node) use (
+            $methodName
+        ): bool {
             if (! $node instanceof MethodCall) {
                 return false;
             }
 
-            return $this->isName($node->name, 'withConsecutive');
+            return $this->isName($node->name, $methodName);
         });
-        return $withConsecutiveMethodCall;
+        return $methodCall;
     }
 
-    private function createMatch(Variable $matcherVariable, MethodCall $expectsMethodCall): Match_
-    {
+    private function createMatch(
+        Variable $matcherVariable,
+        MethodCall $expectsMethodCall,
+        Variable $parameters
+    ): Match_ {
         $numberOfInvocationsMethodCall = new MethodCall($matcherVariable, new Identifier('numberOfInvocations'));
 
         $matchArms = [];
         foreach ($expectsMethodCall->getArgs() as $key => $arg) {
-            $matchArms[] = new MatchArm([new LNumber($key + 1)], $arg->value);
+            $assertEquals = $this->builderFactory->staticCall('self', 'assertEquals', [$arg, $parameters]);
+            $matchArms[] = new MatchArm([new LNumber($key + 1)], $assertEquals);
         }
 
         return new Match_($numberOfInvocationsMethodCall, $matchArms);
     }
 
     /**
+     * @param Node[] $nodes
      * @return Variable[]
      */
-    private function resolveUniqueUsedVariables(MethodCall $expectsMethodCall): array
+    private function resolveUniqueUsedVariables(array $nodes): array
     {
         /** @var Variable[] $usedVariables */
-        $usedVariables = $this->findInstancesOfScoped($expectsMethodCall->getArgs(), Variable::class);
+        $usedVariables = $this->findInstancesOfScoped($nodes, Variable::class);
 
         $uniqueUsedVariables = [];
 
         foreach ($usedVariables as $usedVariable) {
-            if ($this->isName($usedVariable, 'this')) {
+            if ($this->isNames($usedVariable, ['this', 'matcher', 'parameters'])) {
                 continue;
             }
 
@@ -284,5 +421,40 @@ CODE_SAMPLE
         }
 
         return $uniqueUsedVariables;
+    }
+
+    private function hasWillReturnMapOrWill(Expression|Node $node): bool
+    {
+        $nodesWithWillReturnMap = $this->betterNodeFinder->find($node, function (Node $node): bool {
+            if (! $node instanceof MethodCall) {
+                return false;
+            }
+
+            return $this->isNames($node->name, ['willReturnMap', 'will']);
+        });
+
+        return $nodesWithWillReturnMap !== [];
+    }
+
+    private function removeWills(Expression|Node $expression): void
+    {
+        $this->traverseNodesWithCallable($expression, function (Node $node): ?Node {
+            if (! $node instanceof MethodCall) {
+                return null;
+            }
+
+            if (! ($this->isNames($node->name, [
+                'willReturn',
+                'willReturnArgument',
+                'willReturnSelf',
+                'willReturnOnConsecutiveCalls',
+                'willReturnReference',
+                'willThrowException',
+            ]))) {
+                return null;
+            }
+
+            return $node->var;
+        });
     }
 }
