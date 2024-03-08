@@ -83,15 +83,15 @@ CODE_SAMPLE
                 return null;
             }
 
+            if (! str_starts_with($methodName, 'assert')) {
+                return null;
+            }
+
             if (! $this->isName($node->var, 'this')) {
                 return null;
             }
 
             if (! $this->isObjectType($node->var, new ObjectType('PHPUnit\Framework\TestCase'))) {
-                return null;
-            }
-
-            if (! str_starts_with($methodName, 'assert')) {
                 return null;
             }
 
