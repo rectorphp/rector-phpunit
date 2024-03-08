@@ -86,7 +86,7 @@ CODE_SAMPLE
             if (! str_starts_with($methodName, 'assert')) {
                 return null;
             }
-            
+
             if (! $this->isName($node->var, 'this')) {
                 return null;
             }
