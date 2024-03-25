@@ -1,4 +1,4 @@
-parameters:
+    parameters:
     level: 8
 
     paths:
@@ -27,9 +27,3 @@ parameters:
         - '#Access to an undefined property Rector\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
 
         - '#PhpParser\\Node\\Stmt\\Expression is not generic#'
-
-        # false positive
-        -
-            path: 'rules/CodeQuality/Rector/Class_/AddCoversClassAttributeRector.php'
-            message: '#Parameter \#2 \$callback of function array_filter expects \(callable\(string\|null\)\: bool\)\|null, Closure\(string\)\: bool given#'
-            count: 1
