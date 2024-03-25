@@ -129,7 +129,11 @@ final class AddCoversClassAttributeRector extends AbstractRector
 
         $partsWithoutTests = array_filter(
             $classNameParts,
-            static fn (string|null $part): bool => $part === null ? false : ! in_array(strtolower($part), ['test', 'tests'], true),
+            static fn (string|null $part): bool => $part === null ? false : ! in_array(
+                strtolower($part),
+                ['test', 'tests'],
+                true
+            ),
         );
 
         $possibleTestClassNames[] = implode('\\', $partsWithoutTests);
