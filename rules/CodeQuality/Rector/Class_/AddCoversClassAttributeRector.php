@@ -8,9 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ReflectionProvider;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversFunction;
-use PHPUnit\Framework\Attributes\CoversNothing;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -95,9 +92,9 @@ final class AddCoversClassAttributeRector extends AbstractRector
         }
 
         if ($this->phpAttributeAnalyzer->hasPhpAttributes($node, [
-            CoversNothing::class,
-            CoversClass::class,
-            CoversFunction::class,
+            'PHPUnit\\Framework\\Attributes\\CoversNothing',
+            'PHPUnit\\Framework\\Attributes\\CoversClass',
+            'PHPUnit\\Framework\\Attributes\\CoversFunction',
         ])) {
             return null;
         }
