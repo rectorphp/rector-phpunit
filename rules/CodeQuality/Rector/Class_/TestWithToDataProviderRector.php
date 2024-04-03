@@ -122,7 +122,6 @@ CODE_SAMPLE
     {
         $arrayItemsSingleLine = [];
         $arrayMultiLine = null;
-        $hasChanged = false;
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($classMethod);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return;
@@ -153,10 +152,12 @@ CODE_SAMPLE
             }
 
             //cleanup
-            $hasChanged = $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $testWithPhpDocTagNode);
+            if ($this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $testWithPhpDocTagNode)) {
+                $this->hasChanged = true;
+            }
         }
 
-        if (! $hasChanged) {
+        if (! $this->hasChanged) {
             return;
         }
 
@@ -176,8 +177,6 @@ CODE_SAMPLE
         $providerMethod->flags = Class_::MODIFIER_PUBLIC;
         $providerMethod->stmts[] = new Return_($returnValue);
         $this->classInsertManipulator->addAsFirstMethod($class, $providerMethod);
-
-        $this->hasChanged = true;
     }
 
     /**
