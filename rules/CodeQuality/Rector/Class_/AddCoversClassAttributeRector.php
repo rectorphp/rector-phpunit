@@ -116,7 +116,7 @@ final class AddCoversClassAttributeRector extends AbstractRector
     /**
      * @return string[]
      */
-    public function resolveSourceClassNames(string $className): array
+    private function resolveSourceClassNames(string $className): array
     {
         $classNameParts = explode('\\', $className);
         $partCount = count($classNameParts);
