@@ -33,6 +33,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class TestWithToDataProviderRector extends AbstractRector
 {
+    private bool $hasChanged = false;
+
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
@@ -99,12 +101,18 @@ CODE_SAMPLE
             return null;
         }
 
+        $this->hasChanged = false;
+
         foreach ($node->stmts as $classMethod) {
             if (! $classMethod instanceof ClassMethod) {
                 continue;
             }
 
             $this->refactorClassMethod($node, $classMethod);
+        }
+
+        if (! $this->hasChanged) {
+            return null;
         }
 
         return $node;
@@ -168,6 +176,8 @@ CODE_SAMPLE
         $providerMethod->flags = Class_::MODIFIER_PUBLIC;
         $providerMethod->stmts[] = new Return_($returnValue);
         $this->classInsertManipulator->addAsFirstMethod($class, $providerMethod);
+
+        $this->hasChanged = true;
     }
 
     /**
