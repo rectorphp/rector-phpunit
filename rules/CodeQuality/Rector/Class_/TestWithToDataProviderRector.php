@@ -33,6 +33,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class TestWithToDataProviderRector extends AbstractRector
 {
+    private bool $hasChanged = false;
+
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
@@ -99,12 +101,18 @@ CODE_SAMPLE
             return null;
         }
 
+        $this->hasChanged = false;
+
         foreach ($node->stmts as $classMethod) {
             if (! $classMethod instanceof ClassMethod) {
                 continue;
             }
 
             $this->refactorClassMethod($node, $classMethod);
+        }
+
+        if (! $this->hasChanged) {
+            return null;
         }
 
         return $node;
@@ -114,7 +122,6 @@ CODE_SAMPLE
     {
         $arrayItemsSingleLine = [];
         $arrayMultiLine = null;
-        $hasChanged = false;
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($classMethod);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return;
@@ -145,10 +152,12 @@ CODE_SAMPLE
             }
 
             //cleanup
-            $hasChanged = $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $testWithPhpDocTagNode);
+            if ($this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $testWithPhpDocTagNode)) {
+                $this->hasChanged = true;
+            }
         }
 
-        if (! $hasChanged) {
+        if (! $this->hasChanged) {
             return;
         }
 
