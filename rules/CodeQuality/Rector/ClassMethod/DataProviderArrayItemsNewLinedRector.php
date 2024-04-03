@@ -22,13 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DataProviderArrayItemsNewLinedRector extends AbstractRector
 {
     public function __construct(
-        /**
-         * @readonly
-         */
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        /**
-         * @readonly
-         */
         private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
