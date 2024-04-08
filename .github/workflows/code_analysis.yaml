@@ -18,8 +18,9 @@ jobs:
                 actions:
                     -
                         name: 'Active Classes'
-                        run: vendor/bin/class-leak check config src rules \
-                            --skip-type="Rector\\PHPUnit\\CodeQuality\\Rector\\Class_\\AddCoversClassAttributeRector"
+                        run: |
+                            vendor/bin/class-leak check config src rules \
+                                --skip-type="Rector\\PHPUnit\\CodeQuality\\Rector\\Class_\\AddCoversClassAttributeRector"
 
         name: ${{ matrix.actions.name }}
         runs-on: ubuntu-latest
