@@ -120,7 +120,7 @@ final class AddCoversClassAttributeRector extends AbstractRector
     {
         $classNameParts = explode('\\', $className);
         $partCount = count($classNameParts);
-        $classNameParts[$partCount - 1] = preg_replace('#Test$#', '', $classNameParts[$partCount - 1]);
+        $classNameParts[$partCount - 1] = preg_replace(['#TestCase$#', '#Test$#'], '', $classNameParts[$partCount - 1]);
 
         $possibleTestClassNames = [implode('\\', $classNameParts)];
 
