@@ -153,6 +153,10 @@ final class AddCoversClassAttributeRector extends AbstractRector
                 continue;
             }
 
+            if ($classReflection->isTrait()) {
+                continue;
+            }
+
             return $className;
         }
 
