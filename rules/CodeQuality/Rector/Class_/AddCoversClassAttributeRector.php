@@ -148,6 +148,15 @@ final class AddCoversClassAttributeRector extends AbstractRector
                 continue;
             }
 
+            $classReflection = $this->reflectionProvider->getClass($className);
+            if ($classReflection->isInterface()) {
+                continue;
+            }
+
+            if ($classReflection->isTrait()) {
+                continue;
+            }
+
             return $className;
         }
 
