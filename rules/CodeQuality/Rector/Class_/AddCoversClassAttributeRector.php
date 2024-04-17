@@ -157,6 +157,10 @@ final class AddCoversClassAttributeRector extends AbstractRector
                 continue;
             }
 
+            if ($classReflection->isAbstract()) {
+                continue;
+            }
+
             return $className;
         }
 
