@@ -16,7 +16,6 @@ use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-
 use function array_keys;
 use function array_merge;
 
@@ -28,7 +27,10 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
     /**
      * @var array<string, string>
      */
-    private const RENAME_METHODS_MAP = ['assertTrue' => 'assertInstanceOf', 'assertFalse' => 'assertNotInstanceOf'];
+    private const RENAME_METHODS_MAP = [
+        'assertTrue' => 'assertInstanceOf',
+        'assertFalse' => 'assertNotInstanceOf',
+    ];
 
     public function __construct(
         private readonly IdentifierManipulator $identifierManipulator,
@@ -67,14 +69,15 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
     public function refactor(Node $node): ?Node
     {
         $oldMethodNames = array_keys(self::RENAME_METHODS_MAP);
-        if (!$this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, $oldMethodNames)) {
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, $oldMethodNames)) {
             return null;
         }
         if ($node->isFirstClassCallable()) {
             return null;
         }
-        $firstArgumentValue = $node->getArgs()[0]->value;
-        if (!$firstArgumentValue instanceof Instanceof_) {
+        $firstArgumentValue = $node->getArgs()[0]
+->value;
+        if (! $firstArgumentValue instanceof Instanceof_) {
             return null;
         }
 
