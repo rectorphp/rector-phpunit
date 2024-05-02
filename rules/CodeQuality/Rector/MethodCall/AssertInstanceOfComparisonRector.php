@@ -9,6 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Variable;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PHPUnit\NodeAnalyzer\IdentifierManipulator;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -31,7 +32,7 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
 
     public function __construct(
         private readonly IdentifierManipulator $identifierManipulator,
-        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
     ) {
     }
 
@@ -42,13 +43,13 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
             [
                 new CodeSample(
                     '$this->assertTrue($foo instanceof Foo, "message");',
-                    '$this->assertInstanceOf("Foo", $foo, "message");'
+                    '$this->assertInstanceOf("Foo", $foo, "message");',
                 ),
                 new CodeSample(
                     '$this->assertFalse($foo instanceof Foo, "message");',
-                    '$this->assertNotInstanceOf("Foo", $foo, "message");'
+                    '$this->assertNotInstanceOf("Foo", $foo, "message");',
                 ),
-            ]
+            ],
         );
     }
 
@@ -95,16 +96,17 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
 
         $argument = $comparison->expr;
         unset($oldArguments[0]);
+        if ($comparison->class instanceof Variable) {
+            $firstArgument = new Arg($comparison->class);
+        } else {
+            $className = $this->getName($comparison->class);
+            if ($className === null) {
+                throw new ShouldNotHappenException();
+            }
 
-        $className = $this->getName($comparison->class);
-        if ($className === null) {
-            throw new ShouldNotHappenException();
+            $firstArgument = new Arg($this->nodeFactory->createClassConstReference($className));
         }
 
-        $node->args = [
-            new Arg($this->nodeFactory->createClassConstReference($className)),
-            new Arg($argument),
-            ...$oldArguments,
-        ];
+        $node->args = array_merge([$firstArgument, new Arg($argument)], $oldArguments);
     }
 }
