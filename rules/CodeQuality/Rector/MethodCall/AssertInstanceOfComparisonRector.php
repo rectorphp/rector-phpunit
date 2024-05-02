@@ -9,12 +9,16 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PHPStan\Type\ObjectType;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PHPUnit\NodeAnalyzer\IdentifierManipulator;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+
+use function array_keys;
+use function array_merge;
 
 /**
  * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertInstanceOfComparisonRector\AssertInstanceOfComparisonRectorTest
@@ -24,10 +28,7 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
     /**
      * @var array<string, string>
      */
-    private const RENAME_METHODS_MAP = [
-        'assertTrue' => 'assertInstanceOf',
-        'assertFalse' => 'assertNotInstanceOf',
-    ];
+    private const RENAME_METHODS_MAP = ['assertTrue' => 'assertInstanceOf', 'assertFalse' => 'assertNotInstanceOf'];
 
     public function __construct(
         private readonly IdentifierManipulator $identifierManipulator,
@@ -42,13 +43,13 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
             [
                 new CodeSample(
                     '$this->assertTrue($foo instanceof Foo, "message");',
-                    '$this->assertInstanceOf("Foo", $foo, "message");'
+                    '$this->assertInstanceOf("Foo", $foo, "message");',
                 ),
                 new CodeSample(
                     '$this->assertFalse($foo instanceof Foo, "message");',
-                    '$this->assertNotInstanceOf("Foo", $foo, "message");'
+                    '$this->assertNotInstanceOf("Foo", $foo, "message");',
                 ),
-            ]
+            ],
         );
     }
 
@@ -66,17 +67,14 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
     public function refactor(Node $node): ?Node
     {
         $oldMethodNames = array_keys(self::RENAME_METHODS_MAP);
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, $oldMethodNames)) {
+        if (!$this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, $oldMethodNames)) {
             return null;
         }
-
         if ($node->isFirstClassCallable()) {
             return null;
         }
-
-        $firstArgumentValue = $node->getArgs()[0]
-->value;
-        if (! $firstArgumentValue instanceof Instanceof_) {
+        $firstArgumentValue = $node->getArgs()[0]->value;
+        if (!$firstArgumentValue instanceof Instanceof_) {
             return null;
         }
 
@@ -95,16 +93,16 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
 
         $argument = $comparison->expr;
         unset($oldArguments[0]);
-
-        $className = $this->getName($comparison->class);
-        if ($className === null) {
-            throw new ShouldNotHappenException();
+        if ($this->getType($comparison->class) instanceof ObjectType) {
+            $className = $this->getName($comparison->class);
+            if ($className === null) {
+                throw new ShouldNotHappenException();
+            }
+            $firstArgument = new Arg($this->nodeFactory->createClassConstReference($className));
+        } else {
+            $firstArgument = new Arg($comparison->class);
         }
 
-        $node->args = [
-            new Arg($this->nodeFactory->createClassConstReference($className)),
-            new Arg($argument),
-            ...$oldArguments,
-        ];
+        $node->args = array_merge([$firstArgument, new Arg($argument)], $oldArguments);
     }
 }
