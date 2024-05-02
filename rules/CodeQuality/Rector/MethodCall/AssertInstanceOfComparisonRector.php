@@ -16,8 +16,6 @@ use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use function array_keys;
-use function array_merge;
 
 /**
  * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertInstanceOfComparisonRector\AssertInstanceOfComparisonRectorTest
@@ -105,6 +103,7 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
             if ($className === null) {
                 throw new ShouldNotHappenException();
             }
+
             $firstArgument = new Arg($this->nodeFactory->createClassConstReference($className));
         }
 
