@@ -9,7 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PHPStan\Type\ObjectType;
+use PhpParser\Node\Expr\Variable;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PHPUnit\NodeAnalyzer\IdentifierManipulator;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -34,7 +34,7 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
 
     public function __construct(
         private readonly IdentifierManipulator $identifierManipulator,
-        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
     ) {
     }
 
@@ -98,15 +98,14 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
 
         $argument = $comparison->expr;
         unset($oldArguments[0]);
-        if ($this->getType($comparison->class) instanceof ObjectType) {
+        if ($comparison->class instanceof Variable) {
+            $firstArgument = new Arg($comparison->class);
+        } else {
             $className = $this->getName($comparison->class);
             if ($className === null) {
                 throw new ShouldNotHappenException();
             }
-
             $firstArgument = new Arg($this->nodeFactory->createClassConstReference($className));
-        } else {
-            $firstArgument = new Arg($comparison->class);
         }
 
         $node->args = array_merge([$firstArgument, new Arg($argument)], $oldArguments);
