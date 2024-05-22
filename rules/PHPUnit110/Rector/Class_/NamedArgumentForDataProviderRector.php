@@ -93,13 +93,12 @@ final class NamedArgumentForDataProviderRector extends AbstractRector
         return [Class_::class];
     }
 
+    /**
+     * @param Class_ $node
+     */
     public function refactor(Node $node): Node|null
     {
         if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
-            return null;
-        }
-
-        if (! $node instanceof Class_) {
             return null;
         }
 
