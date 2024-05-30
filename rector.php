@@ -5,24 +5,18 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
-use Rector\Set\ValueObject\LevelSetList;
-use Rector\Set\ValueObject\SetList;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->importNames();
-    $rectorConfig->removeUnusedImports();
-
-    $rectorConfig->paths([
+return RectorConfig::configure()
+    ->withImportNames(removeUnusedImports: true)
+    ->withPaths([
         __DIR__ . '/config',
         __DIR__ . '/src',
         __DIR__ . '/tests',
         __DIR__ . '/rules',
         __DIR__ . '/rules-tests',
-        __DIR__ . '/rector.php',
-        __DIR__ . '/ecs.php',
-    ]);
-
-    $rectorConfig->skip([
+    ])
+    ->withRootFiles()
+    ->withSkip([
         // for tests
         '*/Source/*',
         '*/Fixture/*',
@@ -35,24 +29,24 @@ return static function (RectorConfig $rectorConfig): void {
             __DIR__ . '/config',
             __DIR__ . '/src/NodeFinder/DataProviderClassMethodFinder.php',
         ],
-    ]);
-
-    $rectorConfig->sets([
-        LevelSetList::UP_TO_PHP_82,
-        SetList::DEAD_CODE,
+    ])
+    ->withPhpSets(php82: true)
+    ->withPreparedSets(
+        deadCode: true,
+        codeQuality: true,
+        codingStyle: true,
+        earlyReturn: true,
+        naming: true,
+        typeDeclarations: true,
+        privatization: true,
+        rectorPreset: true
+    )
+    ->withSets([
         PHPUnitSetList::PHPUNIT_100,
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
-        SetList::CODE_QUALITY,
-        SetList::CODING_STYLE,
-        SetList::EARLY_RETURN,
-        SetList::NAMING,
-        SetList::TYPE_DECLARATION,
-        SetList::PRIVATIZATION,
-    ]);
-
-    $rectorConfig->ruleWithConfiguration(StringClassNameToClassConstantRector::class, [
+    ])
+    ->withConfiguredRule(StringClassNameToClassConstantRector::class, [
         // keep unprefixed to protected from downgrade
         'PHPUnit\Framework\*',
         'Prophecy\Prophet',
     ]);
-};
