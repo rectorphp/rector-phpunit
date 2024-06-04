@@ -8,9 +8,11 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Class_;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -21,6 +23,7 @@ final class PreferPHPUnitSelfCallRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly ReflectionResolver $reflectionResolver,
     ) {
     }
 
@@ -95,8 +98,17 @@ CODE_SAMPLE
                 return null;
             }
 
-            $hasChanged = true;
-            return $this->nodeFactory->createStaticCall('self', $methodName, $node->getArgs());
+            $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+            if ($classReflection instanceof ClassReflection && $classReflection->hasNativeMethod($methodName)) {
+                $method = $classReflection->getNativeMethod($methodName);
+                if ($method->isStatic()) {
+                    $hasChanged = true;
+
+                    return $this->nodeFactory->createStaticCall('self', $methodName, $node->getArgs());
+                }
+            }
+
+            return null;
         });
 
         if ($hasChanged) {
