@@ -21,6 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @see https://github.com/sebastianbergmann/phpunit/blob/11.0.0/ChangeLog-11.0.md and https://github.com/sebastianbergmann/phpunit/pull/5225
  * @see \Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\StaticDataProviderClassMethodRector\StaticDataProviderClassMethodRectorTest
  */
 final class NamedArgumentForDataProviderRector extends AbstractRector
@@ -126,10 +127,9 @@ final class NamedArgumentForDataProviderRector extends AbstractRector
             $namedArgumentsFromTestClass = $this->getNamedArguments($classMethod);
 
             foreach ($this->extractDataProviderArrayItem($dataProviderMethod) as $dataProviderArrayItem) {
-                $wasChanged = $this->refactorArrayKey(
-                    $dataProviderArrayItem,
-                    $namedArgumentsFromTestClass
-                ) || $wasChanged;
+                if ($this->refactorArrayKey($dataProviderArrayItem, $namedArgumentsFromTestClass)) {
+                    $wasChanged = true;
+                }
             }
         }
 
