@@ -21,7 +21,8 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see https://github.com/sebastianbergmann/phpunit/blob/11.0.0/ChangeLog-11.0.md and https://github.com/sebastianbergmann/phpunit/pull/5225
+ * @see https://github.com/sebastianbergmann/phpunit/blob/11.0.0/ChangeLog-11.0.md
+ * @see https://github.com/sebastianbergmann/phpunit/pull/5225
  * @see \Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\StaticDataProviderClassMethodRector\StaticDataProviderClassMethodRectorTest
  */
 final class NamedArgumentForDataProviderRector extends AbstractRector
@@ -153,7 +154,7 @@ final class NamedArgumentForDataProviderRector extends AbstractRector
 
     /**
      * @param list<Node\Stmt> $stmts
-     * @return array<string, Node\Expr\Array_>
+     * @return array<string, Array_>
      */
     public function getResolvedVariables(array $stmts): array
     {
@@ -246,7 +247,7 @@ final class NamedArgumentForDataProviderRector extends AbstractRector
     }
 
     /**
-     * @return iterable<Node\Expr\Array_>
+     * @return iterable<Array_>
      */
     private function extractDataProviderArrayItem(ClassMethod $classMethod): iterable
     {
