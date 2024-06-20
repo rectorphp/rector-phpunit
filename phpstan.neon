@@ -19,6 +19,13 @@ parameters:
         - */Fixture/*
         - */Expected/*
 
+    # see https://github.com/rectorphp/type-perfect/
+    type_perfect:
+        no_mixed: true
+        null_over_false: true
+        narrow_param: true
+        narrow_return: true
+
     ignoreErrors:
         # phpstan false positive
         - '#Parameter \#1 \$className of method Rector\\PhpParser\\AstResolver\:\:resolveClassMethod\(\) expects class\-string, string given#'
