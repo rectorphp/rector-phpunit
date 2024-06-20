@@ -8,7 +8,7 @@ parameters:
         - rules
         - rules-tests
 
-    reportUnmatchedIgnoredErrors: false
+    # reportUnmatchedIgnoredErrors: false
 
     scanDirectories:
         - stubs
