@@ -6,6 +6,7 @@ use Rector\Config\RectorConfig;
 use Rector\PHPUnit\PHPUnit100\Rector\Class_\AddProphecyTraitRector;
 use Rector\PHPUnit\PHPUnit100\Rector\Class_\PublicDataProviderClassMethodRector;
 use Rector\PHPUnit\PHPUnit100\Rector\Class_\StaticDataProviderClassMethodRector;
+use Rector\PHPUnit\PHPUnit100\Rector\MethodCall\AssertIssetToAssertObjectHasPropertyRector;
 use Rector\PHPUnit\PHPUnit100\Rector\MethodCall\RemoveSetMethodsMethodCallRector;
 use Rector\PHPUnit\Rector\StmtsAwareInterface\WithConsecutiveRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
@@ -16,6 +17,7 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->sets([PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES]);
 
     $rectorConfig->rules([
+        AssertIssetToAssertObjectHasPropertyRector::class,
         StaticDataProviderClassMethodRector::class,
         PublicDataProviderClassMethodRector::class,
         AddProphecyTraitRector::class,

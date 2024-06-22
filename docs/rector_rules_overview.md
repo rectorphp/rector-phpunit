@@ -1,4 +1,4 @@
-# 53 Rules Overview
+# 54 Rules Overview
 
 ## AddCoversClassAttributeRector
 
@@ -266,6 +266,28 @@ Turns instanceof comparisons to their method name alternatives in PHPUnit TestCa
 ```diff
 -$this->assertFalse($foo instanceof Foo, "message");
 +$this->assertNotInstanceOf("Foo", $foo, "message");
+```
+
+<br>
+
+## AssertIssetToAssertObjectHasPropertyRector
+
+Change `"isset()"` to check property, to `assertObjectHasAttribute()method`
+
+- class: [`Rector\PHPUnit\PHPUnit100\Rector\MethodCall\AssertIssetToAssertObjectHasPropertyRector`](../rules/PHPUnit100/Rector/MethodCall/AssertIssetToAssertObjectHasPropertyRector.php)
+
+```diff
+ use PHPUnit\Framework\TestCase;
+
+ final class SomeTest extends TestCase
+ {
+     public function test()
+     {
+         $object = new stdClass();
+-        $this->assertTrue(isset($object->someProperty));
++        $this->assertObjectHasProperty('someProperty', $object);
+     }
+ }
 ```
 
 <br>

@@ -5,18 +5,14 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PHPStan\Reflection\ClassReflection;
-use PHPStan\Type\ObjectWithoutClassType;
-use PHPStan\Type\TypeWithClassName;
+use Rector\PHPUnit\Enum\AssertMethod;
 use Rector\PHPUnit\NodeAnalyzer\IdentifierManipulator;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ClassReflectionAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -25,20 +21,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AssertIssetToSpecificMethodRector extends AbstractRector
 {
-    /**
-     * @var string
-     */
-    private const ASSERT_TRUE = 'assertTrue';
-
-    /**
-     * @var string
-     */
-    private const ASSERT_FALSE = 'assertFalse';
-
     public function __construct(
         private readonly IdentifierManipulator $identifierManipulator,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly ClassReflectionAnalyzer $classReflectionAnalyzer
     ) {
     }
 
@@ -68,7 +53,10 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, [self::ASSERT_TRUE, self::ASSERT_FALSE])) {
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames(
+            $node,
+            [AssertMethod::ASSERT_TRUE, AssertMethod::ASSERT_FALSE]
+        )) {
             return null;
         }
 
@@ -76,52 +64,27 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
             return null;
         }
 
-        $firstArgumentValue = $node->getArgs()[0]
-->value;
+        $firstArg = $node->getArgs()[0];
+        $firstArgumentValue = $firstArg->value;
+
         // is property access
         if (! $firstArgumentValue instanceof Isset_) {
             return null;
         }
 
-        $variableNodeClass = $firstArgumentValue->vars[0];
-        if (! $variableNodeClass instanceof ArrayDimFetch) {
+        $issetVariable = $firstArgumentValue->vars[0];
+        if (! $issetVariable instanceof ArrayDimFetch) {
             return null;
         }
 
-        $issetNodeArg = $firstArgumentValue->vars[0];
-        return $this->refactorArrayDimFetchNode($node, $issetNodeArg);
-    }
-
-    private function hasMagicIsset(Expr $expr): bool
-    {
-        $type = $this->nodeTypeResolver->getType($expr);
-
-        if (! $type instanceof TypeWithClassName) {
-            // object not found, skip
-            return $type instanceof ObjectWithoutClassType;
-        }
-
-        $classReflection = $type->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            return false;
-        }
-
-        if ($classReflection->hasMethod('__isset')) {
-            return true;
-        }
-
-        if (! $classReflection->isClass()) {
-            return false;
-        }
-
-        return $this->classReflectionAnalyzer->resolveParentClassName($classReflection) !== null;
+        return $this->refactorArrayDimFetchNode($node, $issetVariable);
     }
 
     private function refactorArrayDimFetchNode(MethodCall|StaticCall $node, ArrayDimFetch $arrayDimFetch): Node
     {
         $this->identifierManipulator->renameNodeWithMap($node, [
-            self::ASSERT_TRUE => 'assertArrayHasKey',
-            self::ASSERT_FALSE => 'assertArrayNotHasKey',
+            AssertMethod::ASSERT_TRUE => 'assertArrayHasKey',
+            AssertMethod::ASSERT_FALSE => 'assertArrayNotHasKey',
         ]);
 
         $oldArgs = $node->getArgs();
