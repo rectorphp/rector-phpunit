@@ -43,7 +43,6 @@ final class AssertCompareToSpecificMethodRector extends AbstractRector
             new FunctionNameWithAssertMethods('count', self::ASSERT_COUNT, self::ASSERT_NOT_COUNT),
             new FunctionNameWithAssertMethods('sizeof', self::ASSERT_COUNT, self::ASSERT_NOT_COUNT),
             new FunctionNameWithAssertMethods('iterator_count', self::ASSERT_COUNT, self::ASSERT_NOT_COUNT),
-            new FunctionNameWithAssertMethods('gettype', 'assertInternalType', 'assertNotInternalType'),
             new FunctionNameWithAssertMethods('get_class', 'assertInstanceOf', 'assertNotInstanceOf'),
         ];
     }
