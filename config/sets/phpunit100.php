@@ -31,7 +31,7 @@ return static function (RectorConfig $rectorConfig): void {
 
         // https://github.com/sebastianbergmann/phpunit/issues/5220
         new MethodCallRename('PHPUnit\Framework\Assert', 'assertObjectHasAttribute', 'assertObjectHasProperty'),
-        new MethodCallRename('PHPUnit\Framework\Assert', 'assertObjectNotHasAttribute', 'assertObjectHasNotProperty'),
+        new MethodCallRename('PHPUnit\Framework\Assert', 'assertObjectNotHasAttribute', 'assertObjectNotHasProperty'),
 
         new MethodCallRename(
             'PHPUnit\Framework\MockObject\Rule\InvocationOrder',
