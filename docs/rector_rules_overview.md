@@ -272,20 +272,13 @@ Turns instanceof comparisons to their method name alternatives in PHPUnit TestCa
 
 ## AssertIssetToSpecificMethodRector
 
-Turns isset comparisons to their method name alternatives in PHPUnit TestCase
+Turns `assertTrue()` + `isset()` comparisons to more precise `assertArrayHasKey()` method
 
 - class: [`Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertIssetToSpecificMethodRector`](../rules/CodeQuality/Rector/MethodCall/AssertIssetToSpecificMethodRector.php)
 
 ```diff
--$this->assertTrue(isset($anything->foo));
-+$this->assertObjectHasAttribute("foo", $anything);
-```
-
-<br>
-
-```diff
--$this->assertFalse(isset($anything["foo"]), "message");
-+$this->assertArrayNotHasKey("foo", $anything, "message");
+-$this->assertTrue(isset($anything["foo"]), "message");
++$this->assertArrayHasKey("foo", $anything, "message");
 ```
 
 <br>

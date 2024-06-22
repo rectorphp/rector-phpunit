@@ -9,9 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Scalar\String_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\TypeWithClassName;
@@ -47,15 +45,11 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Turns isset comparisons to their method name alternatives in PHPUnit TestCase',
+            'Turns assertTrue() + isset() comparisons to more precise assertArrayHasKey() method',
             [
                 new CodeSample(
-                    '$this->assertTrue(isset($anything->foo));',
-                    '$this->assertObjectHasAttribute("foo", $anything);'
-                ),
-                new CodeSample(
-                    '$this->assertFalse(isset($anything["foo"]), "message");',
-                    '$this->assertArrayNotHasKey("foo", $anything, "message");'
+                    '$this->assertTrue(isset($anything["foo"]), "message");',
+                    '$this->assertArrayHasKey("foo", $anything, "message");'
                 ),
             ]
         );
@@ -89,30 +83,13 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
             return null;
         }
 
-        $variableNodeClass = $firstArgumentValue->vars[0]::class;
-        if (! in_array($variableNodeClass, [ArrayDimFetch::class, PropertyFetch::class], true)) {
+        $variableNodeClass = $firstArgumentValue->vars[0];
+        if (! $variableNodeClass instanceof ArrayDimFetch) {
             return null;
         }
 
-        /** @var Isset_ $issetNode */
-        $issetNode = $node->getArgs()[0]
-->value;
-
-        $issetNodeArg = $issetNode->vars[0];
-
-        if ($issetNodeArg instanceof PropertyFetch) {
-            if ($this->hasMagicIsset($issetNodeArg->var)) {
-                return null;
-            }
-
-            return $this->refactorPropertyFetchNode($node, $issetNodeArg);
-        }
-
-        if ($issetNodeArg instanceof ArrayDimFetch) {
-            return $this->refactorArrayDimFetchNode($node, $issetNodeArg);
-        }
-
-        return $node;
+        $issetNodeArg = $firstArgumentValue->vars[0];
+        return $this->refactorArrayDimFetchNode($node, $issetNodeArg);
     }
 
     private function hasMagicIsset(Expr $expr): bool
@@ -138,26 +115,6 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
         }
 
         return $this->classReflectionAnalyzer->resolveParentClassName($classReflection) !== null;
-    }
-
-    private function refactorPropertyFetchNode(MethodCall|StaticCall $node, PropertyFetch $propertyFetch): ?Node
-    {
-        $name = $this->getName($propertyFetch);
-        if ($name === null) {
-            return null;
-        }
-
-        $this->identifierManipulator->renameNodeWithMap($node, [
-            self::ASSERT_TRUE => 'assertObjectHasAttribute',
-            self::ASSERT_FALSE => 'assertObjectNotHasAttribute',
-        ]);
-
-        $oldArgs = $node->getArgs();
-        unset($oldArgs[0]);
-
-        $newArgs = $this->nodeFactory->createArgs([new String_($name), $propertyFetch->var]);
-        $node->args = [...$newArgs, ...$oldArgs];
-        return $node;
     }
 
     private function refactorArrayDimFetchNode(MethodCall|StaticCall $node, ArrayDimFetch $arrayDimFetch): Node
