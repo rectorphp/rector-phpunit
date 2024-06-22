@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\MethodCall\PropertyExistsWithoutAssertRector;
+namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\MethodCall\AssertIssetToAssertObjectHasPropertyRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class PropertyExistsWithoutAssertRectorTest extends AbstractRectorTestCase
+final class AssertIssetToAssertObjectHasPropertyRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

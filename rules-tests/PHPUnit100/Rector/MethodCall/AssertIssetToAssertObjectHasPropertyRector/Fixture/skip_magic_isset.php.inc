@@ -1,14 +1,15 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertIssetToSpecificMethodRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\MethodCall\AssertIssetToAssertObjectHasPropertyRector\Fixture;
 
-final class CustomIsset {
+final class CustomIsset
+{
     public function __isset($property) {
         return false;
     }
 }
 
-final class SkipCustomIsset extends \PHPUnit\Framework\TestCase
+final class SkipMagicIsset extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
@@ -16,5 +17,3 @@ final class SkipCustomIsset extends \PHPUnit\Framework\TestCase
         $this->assertTrue(isset($foo->bar));
     }
 }
-
-?>
