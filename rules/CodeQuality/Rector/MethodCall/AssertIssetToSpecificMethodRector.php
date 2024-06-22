@@ -72,12 +72,12 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
             return null;
         }
 
-        $issetVariable = $firstArgumentValue->vars[0];
-        if (! $issetVariable instanceof ArrayDimFetch) {
+        $issetExpr = $firstArgumentValue->vars[0];
+        if (! $issetExpr instanceof ArrayDimFetch) {
             return null;
         }
 
-        return $this->refactorArrayDimFetchNode($node, $issetVariable);
+        return $this->refactorArrayDimFetchNode($node, $issetExpr);
     }
 
     private function refactorArrayDimFetchNode(MethodCall|StaticCall $node, ArrayDimFetch $arrayDimFetch): Node
