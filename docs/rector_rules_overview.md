@@ -1,4 +1,4 @@
-# 54 Rules Overview
+# 53 Rules Overview
 
 ## AddCoversClassAttributeRector
 
@@ -747,21 +747,6 @@ Changes PHPUnit calls from self::assert*() to `$this->assert*()`
 +        $this->assertEquals('expected', $result);
      }
  }
-```
-
-<br>
-
-## PropertyExistsWithoutAssertRector
-
-Turns PHPUnit TestCase assertObjectHasAttribute into `property_exists` comparisons
-
-- class: [`Rector\PHPUnit\PHPUnit100\Rector\MethodCall\PropertyExistsWithoutAssertRector`](../rules/PHPUnit100/Rector/MethodCall/PropertyExistsWithoutAssertRector.php)
-
-```diff
--$this->assertClassHasAttribute("property", "Class");
--$this->assertClassNotHasAttribute("property", "Class");
-+$this->assertFalse(property_exists(new Class, "property"));
-+$this->assertTrue(property_exists(new Class, "property"));
 ```
 
 <br>

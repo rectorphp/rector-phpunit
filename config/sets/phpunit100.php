@@ -6,7 +6,6 @@ use Rector\Config\RectorConfig;
 use Rector\PHPUnit\PHPUnit100\Rector\Class_\AddProphecyTraitRector;
 use Rector\PHPUnit\PHPUnit100\Rector\Class_\PublicDataProviderClassMethodRector;
 use Rector\PHPUnit\PHPUnit100\Rector\Class_\StaticDataProviderClassMethodRector;
-use Rector\PHPUnit\PHPUnit100\Rector\MethodCall\PropertyExistsWithoutAssertRector;
 use Rector\PHPUnit\PHPUnit100\Rector\MethodCall\RemoveSetMethodsMethodCallRector;
 use Rector\PHPUnit\Rector\StmtsAwareInterface\WithConsecutiveRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
@@ -19,7 +18,6 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
         StaticDataProviderClassMethodRector::class,
         PublicDataProviderClassMethodRector::class,
-        PropertyExistsWithoutAssertRector::class,
         AddProphecyTraitRector::class,
         WithConsecutiveRector::class,
         RemoveSetMethodsMethodCallRector::class,
@@ -28,6 +26,10 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(RenameMethodRector::class, [
         // https://github.com/sebastianbergmann/phpunit/issues/4087
         new MethodCallRename('PHPUnit\Framework\Assert', 'assertRegExp', 'assertMatchesRegularExpression'),
+
+        // https://github.com/sebastianbergmann/phpunit/issues/5220
+        new MethodCallRename('PHPUnit\Framework\Assert', 'assertObjectHasAttribute', 'assertObjectHasProperty'),
+        new MethodCallRename('PHPUnit\Framework\Assert', 'assertObjectNotHasAttribute', 'assertObjectHasNotProperty'),
 
         new MethodCallRename(
             'PHPUnit\Framework\MockObject\Rule\InvocationOrder',
