@@ -272,7 +272,7 @@ Turns instanceof comparisons to their method name alternatives in PHPUnit TestCa
 
 ## AssertIssetToAssertObjectHasPropertyRector
 
-Change `"isset()"` to check property, to `assertObjectHasAttribute()method`
+Change `"isset()"` property check, to `assertObjectHasProperty()` method
 
 - class: [`Rector\PHPUnit\PHPUnit100\Rector\MethodCall\AssertIssetToAssertObjectHasPropertyRector`](../rules/PHPUnit100/Rector/MethodCall/AssertIssetToAssertObjectHasPropertyRector.php)
 

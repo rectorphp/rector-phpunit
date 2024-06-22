@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\PHPUnit100\Rector\MethodCall;
 
-use PhpParser\Node\Scalar\String_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Scalar\String_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\TypeWithClassName;
@@ -38,7 +38,7 @@ final class AssertIssetToAssertObjectHasPropertyRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change "isset()" to check property, to assertObjectHasAttribute()method', [
+        return new RuleDefinition('Change "isset()" property check, to assertObjectHasProperty() method', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;
