@@ -7,6 +7,9 @@ namespace Rector\PHPUnit\Set\SetProvider;
 use Rector\Set\Contract\SetProviderInterface;
 use Rector\Set\ValueObject\ComposerTriggeredSet;
 
+/**
+ * @api collected in core
+ */
 final class PHPUnitSetProvider implements SetProviderInterface
 {
     /**
