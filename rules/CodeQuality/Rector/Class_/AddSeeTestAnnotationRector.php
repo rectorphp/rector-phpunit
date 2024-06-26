@@ -12,7 +12,6 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\PHPUnit\Naming\TestClassNameResolver;
 use Rector\Rector\AbstractRector;
@@ -92,6 +91,9 @@ CODE_SAMPLE
         }
 
         $className = $this->getName($node);
+        if ($className === null) {
+            return null;
+        }
 
         $possibleTestClassNames = $this->testClassNameResolver->resolve($className);
         $matchingTestClassName = $this->matchExistingClassName($possibleTestClassNames);
