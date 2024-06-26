@@ -31,7 +31,6 @@ final class AddSeeTestAnnotationRector extends AbstractRector
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly TestClassNameResolver $testClassNameResolver,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
@@ -88,22 +87,16 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $className = $this->getName($node);
-        if ($className === null) {
-            return null;
-        }
-
-        $possibleTestClassNames = $this->testClassNameResolver->resolve($className);
-        $matchingTestClassName = $this->matchExistingClassName($possibleTestClassNames);
-
         if ($this->shouldSkipClass($node)) {
             return null;
         }
 
+        $className = $this->getName($node);
+
+        $possibleTestClassNames = $this->testClassNameResolver->resolve($className);
+        $matchingTestClassName = $this->matchExistingClassName($possibleTestClassNames);
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
-        $this->removeNonExistingClassSeeAnnotation($phpDocInfo);
-
         if ($matchingTestClassName === null) {
             return null;
         }
@@ -179,39 +172,6 @@ CODE_SAMPLE
         }
 
         return false;
-    }
-
-    private function removeNonExistingClassSeeAnnotation(PhpDocInfo $phpDocInfo): void
-    {
-        /** @var PhpDocTagNode[] $seePhpDocTagNodes */
-        $seePhpDocTagNodes = $phpDocInfo->getTagsByName(self::SEE);
-
-        foreach ($seePhpDocTagNodes as $seePhpDocTagNode) {
-            if (! $seePhpDocTagNode->value instanceof GenericTagValueNode) {
-                continue;
-            }
-
-            $possibleClassName = $seePhpDocTagNode->value->value;
-            if (! $this->isSeeTestCaseClass($possibleClassName)) {
-                continue;
-            }
-
-            if ($this->reflectionProvider->hasClass($possibleClassName)) {
-                continue;
-            }
-
-            // remove old annotation
-            $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $seePhpDocTagNode);
-        }
-    }
-
-    private function isSeeTestCaseClass(string $possibleClassName): bool
-    {
-        if (! \str_starts_with($possibleClassName, '\\')) {
-            return false;
-        }
-
-        return \str_ends_with($possibleClassName, 'Test');
     }
 
     /**
