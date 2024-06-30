@@ -184,7 +184,7 @@ final class NamedArgumentForDataProviderRector extends AbstractRector
 
     private function getDataProviderMethodName(ClassMethod $classMethod): string|null
     {
-        $attributeClassName = DataProvider::class;
+        $attributeClassName = 'PHPUnit\Framework\Attributes\DataProvider';
         foreach ($classMethod->attrGroups as $attributeGroup) {
             foreach ($attributeGroup->attrs as $attribute) {
                 if (! $this->isName($attribute->name, $attributeClassName)) {
