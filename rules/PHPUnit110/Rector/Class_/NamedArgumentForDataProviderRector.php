@@ -14,7 +14,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -184,7 +183,7 @@ final class NamedArgumentForDataProviderRector extends AbstractRector
 
     private function getDataProviderMethodName(ClassMethod $classMethod): string|null
     {
-        $attributeClassName = DataProvider::class;
+        $attributeClassName = 'PHPUnit\Framework\Attributes\DataProvider';
         foreach ($classMethod->attrGroups as $attributeGroup) {
             foreach ($attributeGroup->attrs as $attribute) {
                 if (! $this->isName($attribute->name, $attributeClassName)) {
