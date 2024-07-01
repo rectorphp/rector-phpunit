@@ -113,22 +113,24 @@ final class NamedArgumentForDataProviderRector extends AbstractRector
                 continue;
             }
 
-            $dataProviderMethodName = $this->getDataProviderMethodName($classMethod);
+            $dataProviderMethodNames = $this->getDataProviderMethodNames($classMethod);
 
-            if ($dataProviderMethodName === null) {
+            if ($dataProviderMethodNames === []) {
                 continue;
             }
 
-            $dataProviderMethod = $node->getMethod($dataProviderMethodName);
-            if ($dataProviderMethod === null) {
-                continue;
-            }
+            foreach ($dataProviderMethodNames as $dataProviderMethodName) {
+                $dataProviderMethod = $node->getMethod($dataProviderMethodName);
+                if ($dataProviderMethod === null) {
+                    continue;
+                }
 
-            $namedArgumentsFromTestClass = $this->getNamedArguments($classMethod);
+                $namedArgumentsFromTestClass = $this->getNamedArguments($classMethod);
 
-            foreach ($this->extractDataProviderArrayItem($dataProviderMethod) as $dataProviderArrayItem) {
-                if ($this->refactorArrayKey($dataProviderArrayItem, $namedArgumentsFromTestClass)) {
-                    $wasChanged = true;
+                foreach ($this->extractDataProviderArrayItem($dataProviderMethod) as $dataProviderArrayItem) {
+                    if ($this->refactorArrayKey($dataProviderArrayItem, $namedArgumentsFromTestClass)) {
+                        $wasChanged = true;
+                    }
                 }
             }
         }
@@ -181,8 +183,12 @@ final class NamedArgumentForDataProviderRector extends AbstractRector
         return $variables;
     }
 
-    private function getDataProviderMethodName(ClassMethod $classMethod): string|null
+    /**
+     * @return list<string>
+     */
+    private function getDataProviderMethodNames(ClassMethod $classMethod): array
     {
+        $dataProviderMethodNames = [];
         $attributeClassName = 'PHPUnit\Framework\Attributes\DataProvider';
         foreach ($classMethod->attrGroups as $attributeGroup) {
             foreach ($attributeGroup->attrs as $attribute) {
@@ -192,13 +198,13 @@ final class NamedArgumentForDataProviderRector extends AbstractRector
 
                 foreach ($attribute->args as $arg) {
                     if ($arg->value instanceof String_) {
-                        return $arg->value->value;
+                        $dataProviderMethodNames[] = $arg->value->value;
                     }
                 }
             }
         }
 
-        return null;
+        return $dataProviderMethodNames;
     }
 
     /**
