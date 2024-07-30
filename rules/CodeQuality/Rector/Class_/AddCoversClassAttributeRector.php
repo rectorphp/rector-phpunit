@@ -102,7 +102,7 @@ final class AddCoversClassAttributeRector extends AbstractRector
         $possibleTestClassNames = $this->resolveSourceClassNames($className);
         $matchingTestClassName = $this->matchExistingClassName($possibleTestClassNames);
 
-        if ($matchingTestClassName === null) {
+        if (! is_string($matchingTestClassName)) {
             return null;
         }
 
