@@ -1,4 +1,4 @@
-# 54 Rules Overview
+# 55 Rules Overview
 
 ## AddCoversClassAttributeRector
 
@@ -906,6 +906,37 @@ Replace `@test` with prefixed function
 +    public function testOnePlusOneShouldBeTwo()
      {
          $this->assertSame(2, 1+1);
+     }
+ }
+```
+
+<br>
+
+## SetUpBeforeClassToSetUpRector
+
+Change `setUpBeforeClass()` to `setUp()` if not needed
+
+- class: [`Rector\PHPUnit\CodeQuality\Rector\Class_\SetUpBeforeClassToSetUpRector`](../rules/CodeQuality/Rector/Class_/SetUpBeforeClassToSetUpRector.php)
+
+```diff
+ use PHPUnit\Framework\TestCase;
+
+ final class SomeTest extends TestCase
+ {
+-    private static $someService;
++    private $someService;
+
+-    public static function setUpBeforeClass(): void
++    protected function setUp(): void
+     {
+-        self::$someService = new SomeService();
++        $this->someService = new SomeService();
+     }
+
+     public function test()
+     {
+-        $result = self::$someService->getValue();
++        $result = $this->someService->getValue();
      }
  }
 ```
