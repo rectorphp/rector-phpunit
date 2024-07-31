@@ -3,7 +3,7 @@
 namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
-use PHPUnit100\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Source\SomeClassWithMagicMethods;
+use Rector\PHPUnit\Tests\PHPUnit100\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Source\SomeClassWithMagicMethods;
 
 final class KeepIfMethodIsMagic extends TestCase
 {
@@ -22,7 +22,7 @@ final class KeepIfMethodIsMagic extends TestCase
 namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
-use PHPUnit100\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Source\SomeClassWithMagicMethods;
+use Rector\PHPUnit\Tests\PHPUnit100\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Source\SomeClassWithMagicMethods;
 
 final class KeepIfMethodIsMagic extends TestCase
 {

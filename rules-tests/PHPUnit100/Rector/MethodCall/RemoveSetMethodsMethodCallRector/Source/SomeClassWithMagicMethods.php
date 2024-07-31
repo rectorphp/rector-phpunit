@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPUnit100\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Source;
+namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\MethodCall\RemoveSetMethodsMethodCallRector\Source;
 
 /**
  * @method void magicMethod()
