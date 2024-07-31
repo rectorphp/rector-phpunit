@@ -87,6 +87,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         if (! $this->isName($node->name, 'setMethods')) {
             return null;
         }
@@ -147,10 +151,23 @@ CODE_SAMPLE
         return array_keys($classReflection->getMethodTags());
     }
 
-    private function resolveSetMethodNames(MethodCall $setMethodsMethodCall): mixed
+    /**
+     * @return string[]
+     */
+    private function resolveSetMethodNames(MethodCall $setMethodsMethodCall): array
     {
+        if ($setMethodsMethodCall->isFirstClassCallable()) {
+            return [];
+        }
+
         $firstArg = $setMethodsMethodCall->getArgs()[0];
-        return $this->valueResolver->getValue($firstArg->value);
+        $value = $this->valueResolver->getValue($firstArg->value);
+
+        if (! is_array($value)) {
+            return [];
+        }
+
+        return $value;
     }
 
     private function resolveMockedClassName(MethodCall $setMethodsMethodCall): mixed
@@ -159,6 +176,10 @@ CODE_SAMPLE
 
         while ($parentMethodCall instanceof MethodCall) {
             if ($this->isName($parentMethodCall->name, 'getMockBuilder')) {
+                if ($parentMethodCall->isFirstClassCallable()) {
+                    return null;
+                }
+
                 // resolve mocked class name
                 $firstArg = $parentMethodCall->getArgs()[0];
 
