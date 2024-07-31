@@ -870,7 +870,7 @@ Remove `expect($this->any())` from mocks as it has no added value
 
 ## RemoveSetMethodsMethodCallRector
 
-Remove `"setMethods()"` method as never used
+Remove `"setMethods()"` method as never used, move methods to `"addMethods()"` if non-existent or `@method` magic
 
 - class: [`Rector\PHPUnit\PHPUnit100\Rector\MethodCall\RemoveSetMethodsMethodCallRector`](../rules/PHPUnit100/Rector/MethodCall/RemoveSetMethodsMethodCallRector.php)
 
