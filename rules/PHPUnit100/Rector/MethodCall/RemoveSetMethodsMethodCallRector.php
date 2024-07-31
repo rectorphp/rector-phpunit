@@ -151,6 +151,9 @@ CODE_SAMPLE
         return array_keys($classReflection->getMethodTags());
     }
 
+    /**
+     * @return string[]
+     */
     private function resolveSetMethodNames(MethodCall $setMethodsMethodCall): array
     {
         if ($setMethodsMethodCall->isFirstClassCallable()) {
