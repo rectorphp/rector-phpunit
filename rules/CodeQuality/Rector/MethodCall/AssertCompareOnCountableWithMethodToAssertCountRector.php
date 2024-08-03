@@ -1,9 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 
 use Countable;
 use PhpParser\Node;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PHPStan\Type\ObjectType;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -17,48 +23,52 @@ class AssertCompareOnCountableWithMethodToAssertCountRector extends AbstractRect
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('', [
-            new CodeSample(<<<'CODE_SAMPLE'
+            new CodeSample(
+                <<<'CODE_SAMPLE'
 $this->assertSame(1, $countable->count());
 CODE_SAMPLE
-,
-            <<<'CODE_SAMPLE'
+                ,
+                <<<'CODE_SAMPLE'
 $this->assertCount(1, $countable);
 CODE_SAMPLE
-            )
+            ),
         ]);
     }
 
     /**
-     * @return array<class-string<Node\Expr\MethodCall>>
+     * @return array<class-string<MethodCall|StaticCall>>
      */
     public function getNodeTypes(): array
     {
-        return [Node\Expr\MethodCall::class, Node\Expr\StaticCall::class];
+        return [MethodCall::class, StaticCall::class];
     }
 
     /**
-     * @param Node\Expr\MethodCall|Node\Expr\StaticCall $node
-     * @throws \PHPStan\ShouldNotHappenException
+     * @param MethodCall|StaticCall $node
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): MethodCall|StaticCall|null
     {
-        $class = $node instanceof Node\Expr\StaticCall ? $node->class : $node->var;
+        $class = $node instanceof StaticCall ? $node->class : $node->var;
 
         if ($this->getType($class)->isSuperTypeOf(new ObjectType('PHPUnit\Framework\TestCase'))->no()) {
             return null;
         }
 
-        if (!$node->name instanceof Node\Identifier || $node->name->toLowerString() !== 'assertsame') {
+        if (
+            ! $node->name instanceof Identifier ||
+            ($node->name->toLowerString() !== 'assertsame' && $node->name->toLowerString() !== 'assertequals')
+        ) {
             return null;
         }
 
-        $right = $node->getArgs()[1]->value;
+        $right = $node->getArgs()[1]
+->value;
 
         if (
-            ($right instanceof Node\Expr\MethodCall)
-            && $right->name instanceof Node\Identifier
+            ($right instanceof MethodCall)
+            && $right->name instanceof Identifier
             && $right->name->toLowerString() === 'count'
-            && count($right->getArgs()) === 0
+            && $right->getArgs() === []
         ) {
             $type = $this->getType($right->var);
 
@@ -66,11 +76,11 @@ CODE_SAMPLE
                 $args = $node->getArgs();
                 $args[1] = $right->var;
 
-                if ($node instanceof Node\Expr\MethodCall) {
+                if ($node instanceof MethodCall) {
                     return $this->nodeFactory->createMethodCall($node->var, 'assertCount', $args);
                 }
 
-                if ($node instanceof Node\Expr\StaticCall && $node->class instanceof Node\Name) {
+                if ($node->class instanceof Name) {
                     return $this->nodeFactory->createStaticCall($node->class->toString(), 'assertCount', $args);
                 }
             }

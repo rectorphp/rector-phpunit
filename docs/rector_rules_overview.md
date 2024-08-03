@@ -1,4 +1,4 @@
-# 55 Rules Overview
+# 56 Rules Overview
 
 ## AddCoversClassAttributeRector
 
@@ -110,6 +110,19 @@ Change annotations with value to attribute
  final class SomeTest extends TestCase
  {
  }
+```
+
+<br>
+
+## AssertCompareOnCountableWithMethodToAssertCountRector
+
+
+
+- class: [`Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertCompareOnCountableWithMethodToAssertCountRector`](../rules/CodeQuality/Rector/MethodCall/AssertCompareOnCountableWithMethodToAssertCountRector.php)
+
+```diff
+-$this->assertSame(1, $countable->count());
++$this->assertCount(1, $countable);
 ```
 
 <br>
