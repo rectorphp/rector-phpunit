@@ -77,13 +77,8 @@ CODE_SAMPLE
                 $args = $node->getArgs();
                 $args[1] = $right->var;
 
-                if ($node instanceof MethodCall) {
-                    return $this->nodeFactory->createMethodCall($node->var, 'assertCount', $args);
-                }
-
-                if ($node->class instanceof Name) {
-                    return $this->nodeFactory->createStaticCall($node->class->toString(), 'assertCount', $args);
-                }
+                $node->args = $args;
+                $node->name = new Identifier('assertCount');
             }
         }
 
