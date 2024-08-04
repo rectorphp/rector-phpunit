@@ -9,7 +9,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 use PHPStan\Type\ObjectType;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -75,7 +74,7 @@ CODE_SAMPLE
 
             if ((new ObjectType(Countable::class))->isSuperTypeOf($type)->yes()) {
                 $args = $node->getArgs();
-                $args[1] = $right->var;
+                $args[1] = new Node\Arg($right->var);
 
                 $node->args = $args;
                 $node->name = new Identifier('assertCount');
