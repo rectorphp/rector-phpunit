@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PHPStan\Type\ObjectType;
+use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -20,6 +21,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 class AssertCompareOnCountableWithMethodToAssertCountRector extends AbstractRector
 {
+    public function __construct(
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('', [
@@ -48,16 +54,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): MethodCall|StaticCall|null
     {
-        $class = $node instanceof StaticCall ? $node->class : $node->var;
-
-        if ($this->getType($class)->isSuperTypeOf(new ObjectType('PHPUnit\Framework\TestCase'))->no()) {
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, ['assertSame', 'assertEquals'])) {
             return null;
         }
 
-        if (
-            ! $node->name instanceof Identifier ||
-            ($node->name->toLowerString() !== 'assertsame' && $node->name->toLowerString() !== 'assertequals')
-        ) {
+        if (count($node->getArgs()) < 2) {
             return null;
         }
 
