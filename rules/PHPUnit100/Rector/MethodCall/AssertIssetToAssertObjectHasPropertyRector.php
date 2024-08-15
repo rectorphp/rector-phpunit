@@ -115,8 +115,8 @@ CODE_SAMPLE
         }
 
         $this->identifierManipulator->renameNodeWithMap($node, [
-            AssertMethod::ASSERT_TRUE => 'assertObjectHasAttribute',
-            AssertMethod::ASSERT_FALSE => 'assertObjectNotHasAttribute',
+            AssertMethod::ASSERT_TRUE => 'assertObjectHasProperty',
+            AssertMethod::ASSERT_FALSE => 'assertObjectNotHasProperty',
         ]);
 
         $oldArgs = $node->getArgs();
