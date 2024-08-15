@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 
-use Countable;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
@@ -28,17 +27,20 @@ class AssertCompareOnCountableWithMethodToAssertCountRector extends AbstractRect
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('', [
-            new CodeSample(
-                <<<'CODE_SAMPLE'
-$this->assertSame(1, $countable->count());
-CODE_SAMPLE
-                ,
-                <<<'CODE_SAMPLE'
-$this->assertCount(1, $countable);
-CODE_SAMPLE
-            ),
-        ]);
+        return new RuleDefinition(
+            'Replaces use of assertSame and assertEquals on Countable objects with count method',
+            [
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
+    $this->assertSame(1, $countable->count());
+    CODE_SAMPLE
+                    ,
+                    <<<'CODE_SAMPLE'
+    $this->assertCount(1, $countable);
+    CODE_SAMPLE
+                ),
+            ]
+        );
     }
 
     /**
@@ -73,7 +75,7 @@ CODE_SAMPLE
         ) {
             $type = $this->getType($right->var);
 
-            if ((new ObjectType(Countable::class))->isSuperTypeOf($type)->yes()) {
+            if ((new ObjectType('Countable'))->isSuperTypeOf($type)->yes()) {
                 $args = $node->getArgs();
                 $args[1] = new Arg($right->var);
 
