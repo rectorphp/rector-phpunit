@@ -26,7 +26,7 @@ final class SomeIssetToProperty extends TestCase
     public function test()
     {
         $object = new \stdClass();
-        $this->assertObjectHasAttribute('someProperty', $object);
+        $this->assertObjectHasProperty('someProperty', $object);
     }
 }
 
