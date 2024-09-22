@@ -1,9 +1,9 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\ClassMethod\CreateMockToAnonymousClassRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\CreateMockToAnonymousClassRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
-use Rector\PHPUnit\Tests\Rector\ClassMethod\CreateMockToAnonymousClassRector\Source\ToBeFixturedClass;
+use Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\CreateMockToAnonymousClassRector\Source\ToBeFixturedClass;
 
 final class SomeTest extends TestCase
 {
@@ -20,10 +20,10 @@ final class SomeTest extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\ClassMethod\CreateMockToAnonymousClassRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\CreateMockToAnonymousClassRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
-use Rector\PHPUnit\Tests\Rector\ClassMethod\CreateMockToAnonymousClassRector\Source\ToBeFixturedClass;
+use Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\CreateMockToAnonymousClassRector\Source\ToBeFixturedClass;
 
 final class SomeTest extends TestCase
 {

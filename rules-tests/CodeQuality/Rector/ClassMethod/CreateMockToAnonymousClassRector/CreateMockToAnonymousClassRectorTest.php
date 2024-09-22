@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Tests\Rector\Class_\PreferPHPUnitSelfCallRector;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\CreateMockToAnonymousClassRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class PreferPHPUnitSelfCallRectorTest extends AbstractRectorTestCase
+final class CreateMockToAnonymousClassRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
