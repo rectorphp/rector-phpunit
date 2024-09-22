@@ -222,8 +222,11 @@ CODE_SAMPLE
         $this->removeWills($node);
 
         $expectsCall = $this->matchAndRefactorExpectsMethodCall($node);
+
         if (! $expectsCall instanceof MethodCall && ! $expectsCall instanceof StaticCall) {
-            return null;
+            // fallback to default by case count
+            $callCountNumber = new LNumber(\count($withConsecutiveMethodCall->args));
+            $expectsCall = new MethodCall(new Variable('this'), new Identifier('exactly'), [new Arg($callCountNumber)]);
         }
 
         // 2. rename and replace withConsecutive()
@@ -231,6 +234,7 @@ CODE_SAMPLE
         $withConsecutiveMethodCall->args = [
             new Arg($this->createClosure($withConsecutiveMethodCall, $returnStmts, $referenceVariable)),
         ];
+
         $matcherAssign = new Assign(new Variable('matcher'), $expectsCall);
 
         return [new Expression($matcherAssign), $node];
