@@ -17,19 +17,16 @@ use PhpParser\Node\MatchArm;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\Function_;
-use PhpParser\NodeTraverser;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpParser\Node\BetterNodeFinder;
 
 final readonly class WithConsecutiveMatchFactory
 {
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
+        private BetterNodeFinder $betterNodeFinder,
         private BuilderFactory $builderFactory,
-        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
     ) {
     }
 
@@ -95,7 +92,7 @@ final readonly class WithConsecutiveMatchFactory
     private function resolveUniqueUsedVariables(array $nodes): array
     {
         /** @var Variable[] $usedVariables */
-        $usedVariables = $this->findInstancesOfScoped($nodes, Variable::class);
+        $usedVariables = $this->betterNodeFinder->findInstancesOfScoped($nodes, Variable::class);
 
         $uniqueUsedVariables = [];
 
@@ -109,37 +106,5 @@ final readonly class WithConsecutiveMatchFactory
         }
 
         return $uniqueUsedVariables;
-    }
-
-    /**
-     * @todo should be part of core in BetterNodeFinder
-     *
-     * @template T of Node
-     * @param Node[] $nodes
-     * @param class-string<T> $type
-     * @return T[]
-     */
-    private function findInstancesOfScoped(array $nodes, string $type): array
-    {
-        /** @var T[] $foundNodes */
-        $foundNodes = [];
-
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            $nodes,
-            static function (Node $subNode) use ($type, &$foundNodes): ?int {
-                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-                }
-
-                if ($subNode instanceof $type) {
-                    $foundNodes[] = $subNode;
-                    return null;
-                }
-
-                return null;
-            }
-        );
-
-        return $foundNodes;
     }
 }
