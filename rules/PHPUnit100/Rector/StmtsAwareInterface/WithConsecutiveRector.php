@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Rector\StmtsAwareInterface;
+namespace Rector\PHPUnit\PHPUnit100\Rector\StmtsAwareInterface;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;

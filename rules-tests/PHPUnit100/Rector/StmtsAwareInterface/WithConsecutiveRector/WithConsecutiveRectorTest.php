@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Tests\Rector\StmtsAwareInterface\WithConsecutiveRector;
+namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\StmtsAwareInterface\WithConsecutiveRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

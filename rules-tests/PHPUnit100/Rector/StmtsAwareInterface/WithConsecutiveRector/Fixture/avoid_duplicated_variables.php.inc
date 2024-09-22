@@ -1,10 +1,10 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\StmtsAwareInterface\WithConsecutiveRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\StmtsAwareInterface\WithConsecutiveRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
-final class AvoidNestedUses extends TestCase
+final class AvoidDuplicatedVariables extends TestCase
 {
     public function test()
     {
@@ -14,10 +14,7 @@ final class AvoidNestedUses extends TestCase
             ->method('prepare')
             ->withConsecutive(
                 [1, $value],
-                [2, function ($nested) {
-                    $nestedReturn = 1000;
-                    return $nestedReturn;
-                }],
+                [2, $value],
             );
     }
 
@@ -31,11 +28,11 @@ final class AvoidNestedUses extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\StmtsAwareInterface\WithConsecutiveRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\StmtsAwareInterface\WithConsecutiveRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
-final class AvoidNestedUses extends TestCase
+final class AvoidDuplicatedVariables extends TestCase
 {
     public function test()
     {
@@ -46,10 +43,7 @@ final class AvoidNestedUses extends TestCase
             ->method('prepare')->willReturnCallback(function ($parameters) use ($matcher, $value) {
             match ($matcher->numberOfInvocations()) {
                 1 => self::assertEquals([1, $value], $parameters),
-                2 => self::assertEquals([2, function ($nested) {
-                    $nestedReturn = 1000;
-                    return $nestedReturn;
-                }], $parameters),
+                2 => self::assertEquals([2, $value], $parameters),
             };
         });
     }

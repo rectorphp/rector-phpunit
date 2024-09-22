@@ -1,10 +1,10 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\StmtsAwareInterface\WithConsecutiveRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\StmtsAwareInterface\WithConsecutiveRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
-final class AvoidDuplicatedVariables extends TestCase
+final class AvoidUsingThisVariable extends TestCase
 {
     public function test()
     {
@@ -14,7 +14,7 @@ final class AvoidDuplicatedVariables extends TestCase
             ->method('prepare')
             ->withConsecutive(
                 [1, $value],
-                [2, $value],
+                [3, $this->some(4)],
             );
     }
 
@@ -28,11 +28,11 @@ final class AvoidDuplicatedVariables extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\StmtsAwareInterface\WithConsecutiveRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\StmtsAwareInterface\WithConsecutiveRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
-final class AvoidDuplicatedVariables extends TestCase
+final class AvoidUsingThisVariable extends TestCase
 {
     public function test()
     {
@@ -43,7 +43,7 @@ final class AvoidDuplicatedVariables extends TestCase
             ->method('prepare')->willReturnCallback(function ($parameters) use ($matcher, $value) {
             match ($matcher->numberOfInvocations()) {
                 1 => self::assertEquals([1, $value], $parameters),
-                2 => self::assertEquals([2, $value], $parameters),
+                2 => self::assertEquals([3, $this->some(4)], $parameters),
             };
         });
     }

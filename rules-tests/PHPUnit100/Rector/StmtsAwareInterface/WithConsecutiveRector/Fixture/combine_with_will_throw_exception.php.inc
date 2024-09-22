@@ -1,10 +1,11 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\StmtsAwareInterface\WithConsecutiveRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\StmtsAwareInterface\WithConsecutiveRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
-final class CombineWithWillReturnArgument extends TestCase
+final class CombineWithWillThrowException extends TestCase
 {
     public function test()
     {
@@ -14,7 +15,7 @@ final class CombineWithWillReturnArgument extends TestCase
                 [1, 2],
                 [3, 4],
             )
-            ->willReturnArgument(0);
+            ->willThrowException(new RuntimeException());
     }
 }
 
@@ -22,11 +23,12 @@ final class CombineWithWillReturnArgument extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\Rector\StmtsAwareInterface\WithConsecutiveRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\StmtsAwareInterface\WithConsecutiveRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
-final class CombineWithWillReturnArgument extends TestCase
+final class CombineWithWillThrowException extends TestCase
 {
     public function test()
     {
@@ -37,7 +39,7 @@ final class CombineWithWillReturnArgument extends TestCase
                 1 => self::assertEquals([1, 2], $parameters),
                 2 => self::assertEquals([3, 4], $parameters),
             };
-            return $parameters[0];
+            throw new RuntimeException();
         });
     }
 }
