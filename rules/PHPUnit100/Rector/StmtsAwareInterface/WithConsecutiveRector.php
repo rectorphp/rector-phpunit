@@ -386,6 +386,16 @@ CODE_SAMPLE
             )),
         ];
 
+        $hasExpects = $this->findMethodCall($expression, 'expects') instanceof MethodCall;
+        if ($hasExpects === false) {
+            /** @var MethodCall $mockMethodCall */
+            $mockMethodCall = $expression->expr;
+
+            $mockMethodCall->var = new MethodCall($mockMethodCall->var, 'expects', [
+                new Arg(new Variable('matcher')),
+            ]);
+        }
+
         $matcherAssign = new Assign(new Variable('matcher'), $expectsCall);
         return [new Expression($matcherAssign), $expression];
     }
