@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\NodeFactory;
 
+use PhpParser\Node\Expr\BinaryOp\Minus;
 use PhpParser\BuilderFactory;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ClosureUse;
 use PhpParser\Node\Expr\Match_;
@@ -65,6 +68,7 @@ final readonly class WithConsecutiveMatchFactory
         $match = $this->createParametersMatch($matcherVariable, $expectsMethodCall, $parametersVariable);
         $closure->params[] = new Param($parametersVariable);
         $closure->stmts = [new Expression($match), ...$returnStmts];
+        $closure->returnType = new Identifier('void');
 
         return $closure;
     }
@@ -73,7 +77,12 @@ final readonly class WithConsecutiveMatchFactory
         Variable $matcherVariable,
         MethodCall $expectsMethodCall,
         Variable $parameters
-    ): Match_ {
+    ): Match_|MethodCall {
+        $firstArg = $expectsMethodCall->getArgs()[0] ?? null;
+        if ($firstArg instanceof Arg && $firstArg->unpack) {
+            return $this->createAssertSameDimFetch($firstArg, $matcherVariable, $parameters);
+        }
+
         $numberOfInvocationsMethodCall = new MethodCall($matcherVariable, new Identifier('numberOfInvocations'));
 
         $matchArms = [];
@@ -106,5 +115,20 @@ final readonly class WithConsecutiveMatchFactory
         }
 
         return $uniqueUsedVariables;
+    }
+
+    private function createAssertSameDimFetch(
+        Arg $firstArg,
+        Variable $matcherVariable,
+        Variable $parameters
+    ): MethodCall {
+        $currentValueArrayDimFetch = new ArrayDimFetch($firstArg->value, new Minus(
+            new MethodCall($matcherVariable, new Identifier('numberOfInvocations')),
+            new LNumber(1)
+        ));
+
+        $compareArgs = [new Arg($currentValueArrayDimFetch), new Arg(new ArrayDimFetch($parameters, new LNumber(0)))];
+
+        return $this->builderFactory->methodCall(new Variable('this'), 'assertSame', $compareArgs);
     }
 }
