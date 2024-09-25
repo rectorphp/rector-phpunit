@@ -33,7 +33,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\Rector\StmtsAwareInterface\WithConsecutiveRector\WithConsecutiveRectorTest
+ * @see \Rector\PHPUnit\Tests\PHPUnit100\Rector\StmtsAwareInterface\WithConsecutiveRector\WithConsecutiveRectorTest
  */
 final class WithConsecutiveRector extends AbstractRector implements MinPhpVersionInterface
 {
@@ -385,6 +385,16 @@ CODE_SAMPLE
                 $referenceVariable
             )),
         ];
+
+        $hasExpects = $this->findMethodCall($expression, 'expects') instanceof MethodCall;
+        if ($hasExpects === false) {
+            /** @var MethodCall $mockMethodCall */
+            $mockMethodCall = $expression->expr;
+
+            $mockMethodCall->var = new MethodCall($mockMethodCall->var, 'expects', [
+                new Arg(new Variable('matcher')),
+            ]);
+        }
 
         $matcherAssign = new Assign(new Variable('matcher'), $expectsCall);
         return [new Expression($matcherAssign), $expression];
