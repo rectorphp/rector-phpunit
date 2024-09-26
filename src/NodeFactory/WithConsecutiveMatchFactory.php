@@ -37,34 +37,39 @@ final readonly class WithConsecutiveMatchFactory
      * @param Stmt[] $returnStmts
      */
     public function createClosure(
-        MethodCall $expectsMethodCall,
+        MethodCall $withConsecutiveMethodCall,
         array $returnStmts,
-        Variable|Expr|null $referenceVariable
+        Variable|Expr|null $referenceVariable,
+        bool $isWithConsecutiveVariadic
     ): Closure {
         $matcherVariable = new Variable('matcher');
-        $usedVariables = $this->resolveUsedVariables($expectsMethodCall, $returnStmts);
+        $usedVariables = $this->resolveUsedVariables($withConsecutiveMethodCall, $returnStmts);
 
-        $isByRef = $this->isByRef($usedVariables, $referenceVariable);
+        $isByRef = $this->isByRef($referenceVariable);
         $uses = $this->createUses($matcherVariable, $usedVariables);
 
         $parametersVariable = new Variable('parameters');
-        $match = $this->createParametersMatch($matcherVariable, $expectsMethodCall, $parametersVariable);
+        $match = $this->createParametersMatch($matcherVariable, $withConsecutiveMethodCall, $parametersVariable);
+
+        $parametersParam = new Param($parametersVariable);
+        if ($isWithConsecutiveVariadic) {
+            $parametersParam->variadic = true;
+        }
 
         return new Closure([
             'byRef' => $isByRef,
             'uses' => $uses,
-            'params' => [new Param($parametersVariable)],
-            'returnType' => new Identifier('void'),
+            'params' => [$parametersParam],
             'stmts' => [new Expression($match), ...$returnStmts],
         ]);
     }
 
     public function createParametersMatch(
         Variable $matcherVariable,
-        MethodCall $expectsMethodCall,
+        MethodCall $withConsecutiveMethodCall,
         Variable $parameters
     ): Match_|MethodCall {
-        $firstArg = $expectsMethodCall->getArgs()[0] ?? null;
+        $firstArg = $withConsecutiveMethodCall->getArgs()[0] ?? null;
         if ($firstArg instanceof Arg && $firstArg->unpack) {
             return $this->createAssertSameDimFetch($firstArg, $matcherVariable, $parameters);
         }
@@ -72,7 +77,7 @@ final readonly class WithConsecutiveMatchFactory
         $numberOfInvocationsMethodCall = new MethodCall($matcherVariable, new Identifier('numberOfInvocations'));
 
         $matchArms = [];
-        foreach ($expectsMethodCall->getArgs() as $key => $arg) {
+        foreach ($withConsecutiveMethodCall->getArgs() as $key => $arg) {
             $assertEquals = $this->builderFactory->staticCall('self', 'assertEquals', [$arg, $parameters]);
             $matchArms[] = new MatchArm([new LNumber($key + 1)], $assertEquals);
         }
@@ -122,28 +127,17 @@ final readonly class WithConsecutiveMatchFactory
      * @param Stmt[] $returnStmts
      * @return Variable[]
      */
-    private function resolveUsedVariables(MethodCall $expectsMethodCall, array $returnStmts): array
+    private function resolveUsedVariables(MethodCall $withConsecutiveMethodCall, array $returnStmts): array
     {
-        return $this->resolveUniqueUsedVariables([
-            ...$expectsMethodCall->getArgs(),
-            ...$this->resolveUniqueUsedVariables($returnStmts),
-        ]);
+        $consecutiveArgs = $withConsecutiveMethodCall->getArgs();
+        $stmtVariables = $this->resolveUniqueUsedVariables($returnStmts);
+
+        return $this->resolveUniqueUsedVariables(array_merge($consecutiveArgs, $stmtVariables));
     }
 
-    /**
-     * @param Variable[] $usedVariables
-     */
-    private function isByRef(array $usedVariables, Expr|Variable|null $referenceVariable): bool
+    private function isByRef(Expr|Variable|null $referenceVariable): bool
     {
-        $byRef = $referenceVariable instanceof Variable;
-
-        foreach ($usedVariables as $usedVariable) {
-            if ($byRef && $this->nodeNameResolver->areNamesEqual($usedVariable, $referenceVariable)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $referenceVariable instanceof Variable;
     }
 
     /**

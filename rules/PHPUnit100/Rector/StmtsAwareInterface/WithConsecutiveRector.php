@@ -121,6 +121,9 @@ CODE_SAMPLE
             return null;
         }
 
+        $firstArg = $withConsecutiveMethodCall->getArgs()[0];
+        $isWithConsecutiveVariadic = $firstArg->unpack;
+
         $returnStmts = [];
         $willReturn = $this->findMethodCall($node, 'willReturn');
         if ($willReturn instanceof MethodCall) {
@@ -232,19 +235,15 @@ CODE_SAMPLE
             $returnStmts,
             $referenceVariable,
             $expectsCall,
-            $node
+            $node,
+            $isWithConsecutiveVariadic
         );
     }
 
     public function provideMinPhpVersion(): int
     {
-        /**
-         * This rule just work for phpunit 10,
-         * And as php 8.1 is the min version supported by phpunit 10, then we decided to let this version as minimum.
-         *
-         * You can see more detail in this issue: https://github.com/rectorphp/rector-phpunit/issues/272
-         */
-        return PhpVersion::PHP_81;
+        // This rule uses PHP 8.0 match
+        return PhpVersion::PHP_80;
     }
 
     /**
@@ -322,14 +321,16 @@ CODE_SAMPLE
         array $returnStmts,
         Expr|Variable|null $referenceVariable,
         StaticCall|MethodCall $expectsCall,
-        Expression $expression
+        Expression $expression,
+        bool $isWithConsecutiveVariadic
     ): array {
         $withConsecutiveMethodCall->name = new Identifier('willReturnCallback');
         $withConsecutiveMethodCall->args = [
             new Arg($this->withConsecutiveMatchFactory->createClosure(
                 $withConsecutiveMethodCall,
                 $returnStmts,
-                $referenceVariable
+                $referenceVariable,
+                $isWithConsecutiveVariadic
             )),
         ];
 
@@ -394,19 +395,19 @@ CODE_SAMPLE
         });
     }
 
-    private function createWillReturnStmt(MethodCall $willReturn): Return_
+    private function createWillReturnStmt(MethodCall $willReturnMethodCall): Return_
     {
-        $firstArg = $willReturn->getArgs()[0] ?? null;
+        $firstArg = $willReturnMethodCall->getArgs()[0] ?? null;
         if (! $firstArg instanceof Arg) {
-            return throw new ShouldNotHappenException();
+            throw new ShouldNotHappenException();
         }
 
         return new Return_($firstArg->value);
     }
 
-    private function createWillReturnSelfStmts(MethodCall $willReturnSelf): Return_
+    private function createWillReturnSelfStmts(MethodCall $willReturnSelfMethodCall): Return_
     {
-        $selfVariable = $willReturnSelf;
+        $selfVariable = $willReturnSelfMethodCall;
         while (true) {
             if (! $selfVariable instanceof MethodCall) {
                 break;

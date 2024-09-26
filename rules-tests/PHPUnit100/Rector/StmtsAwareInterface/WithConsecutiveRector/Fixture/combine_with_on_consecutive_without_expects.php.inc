@@ -30,7 +30,7 @@ final class CombineWithOnConsecutiveWithoutExcepts extends TestCase
     public function test()
     {
         $matcher = $this->exactly(2);
-        $this->userServiceMock->method('prepare')->expects($matcher)->willReturnCallback(function ($parameters) use ($matcher) : void {
+        $this->userServiceMock->method('prepare')->expects($matcher)->willReturnCallback(function ($parameters) use ($matcher) {
             match ($matcher->numberOfInvocations()) {
                 1 => self::assertEquals([1, 2], $parameters),
                 2 => self::assertEquals([3, 4], $parameters),

@@ -32,7 +32,7 @@ final class WithArraySpread extends TestCase
         $this->personServiceMock->method('prepare')
             ->expects($matcher)
             ->willReturnCallback(
-                function (...$parameters) use ($matcher, $items) : void {
+                function (...$parameters) use ($matcher, $items) {
                     $this->assertSame($items[$matcher->numberOfInvocations() - 1], $parameters[0]);
                 }
             );
