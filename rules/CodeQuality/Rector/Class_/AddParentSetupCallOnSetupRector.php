@@ -89,7 +89,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $isSetupExists = $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+        $isSetupExists = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
             $setUpMethod,
             function (Node $subNode): bool {
                 if (! $subNode instanceof StaticCall) {
@@ -104,7 +104,7 @@ CODE_SAMPLE
             }
         );
 
-        if ($isSetupExists instanceof Node) {
+        if ($isSetupExists) {
             return null;
         }
 
