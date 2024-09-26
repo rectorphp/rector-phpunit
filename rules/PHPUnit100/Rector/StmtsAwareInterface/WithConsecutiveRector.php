@@ -22,6 +22,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
+use PhpParser\NodeTraverser;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -277,6 +278,23 @@ CODE_SAMPLE
             return $node;
         });
 
+        // add expects() method
+        if (! $exactlyCall instanceof Expr) {
+            $this->traverseNodesWithCallable($expression, function (Node $node): ?int {
+                if (! $node instanceof MethodCall) {
+                    return null;
+                }
+
+                if ($node->var instanceof MethodCall) {
+                    return null;
+                }
+
+                $node->var = new MethodCall($node->var, 'expects', [new Arg(new Variable('matcher'))]);
+
+                return NodeTraverser::STOP_TRAVERSAL;
+            });
+        }
+
         return $exactlyCall;
     }
 
@@ -334,17 +352,9 @@ CODE_SAMPLE
             )),
         ];
 
-        $hasExpects = $this->findMethodCall($expression, 'expects') instanceof MethodCall;
-
         $matcherVariable = new Variable('matcher');
-        if ($hasExpects === false) {
-            /** @var MethodCall $mockMethodCall */
-            $mockMethodCall = $expression->expr;
-
-            $mockMethodCall->var = new MethodCall($mockMethodCall->var, 'expects', [new Arg($matcherVariable)]);
-        }
-
         $matcherAssign = new Assign($matcherVariable, $expectsCall);
+
         return [new Expression($matcherAssign), $expression];
     }
 

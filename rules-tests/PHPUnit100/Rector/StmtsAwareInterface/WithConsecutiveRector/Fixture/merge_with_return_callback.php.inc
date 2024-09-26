@@ -38,7 +38,7 @@ final class MergeWithReturnCallback extends TestCase
     public function test()
     {
         $matcher = self::exactly(2);
-        $this->userServiceMock->method('prepare')
+        $this->userServiceMock->expects($matcher)->method('prepare')
             ->willReturnCallback(function ($parameters) use ($matcher) {
                 match ($matcher->numberOfInvocations()) {
                     1 => self::assertEquals([1, 2], $parameters),
