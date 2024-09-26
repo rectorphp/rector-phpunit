@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\NodeFactory;
 
-use PhpParser\Node\Expr\BinaryOp\Minus;
 use PhpParser\BuilderFactory;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\BinaryOp\Minus;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ClosureUse;
 use PhpParser\Node\Expr\Match_;
@@ -41,36 +41,22 @@ final readonly class WithConsecutiveMatchFactory
         array $returnStmts,
         Variable|Expr|null $referenceVariable
     ): Closure {
-        $byRef = $referenceVariable instanceof Variable;
-
-        $closure = new Closure([
-            'byRef' => $byRef,
-        ]);
-
         $matcherVariable = new Variable('matcher');
-        $closure->uses[] = new ClosureUse($matcherVariable);
+        $usedVariables = $this->resolveUsedVariables($expectsMethodCall, $returnStmts);
 
-        $usedVariables = $this->resolveUniqueUsedVariables([
-            ...$expectsMethodCall->getArgs(),
-            ...$this->resolveUniqueUsedVariables($returnStmts),
-        ]);
-        foreach ($usedVariables as $usedVariable) {
-            $closureUse = new ClosureUse($usedVariable);
-            if ($byRef && $this->nodeNameResolver->areNamesEqual($usedVariable, $referenceVariable)) {
-                $closureUse->byRef = true;
-            }
-
-            $closure->uses[] = $closureUse;
-        }
+        $isByRef = $this->isByRef($usedVariables, $referenceVariable);
+        $uses = $this->createUses($matcherVariable, $usedVariables);
 
         $parametersVariable = new Variable('parameters');
-
         $match = $this->createParametersMatch($matcherVariable, $expectsMethodCall, $parametersVariable);
-        $closure->params[] = new Param($parametersVariable);
-        $closure->stmts = [new Expression($match), ...$returnStmts];
-        $closure->returnType = new Identifier('void');
 
-        return $closure;
+        return new Closure([
+            'byRef' => $isByRef,
+            'uses' => $uses,
+            'params' => [new Param($parametersVariable)],
+            'returnType' => new Identifier('void'),
+            'stmts' => [new Expression($match), ...$returnStmts],
+        ]);
     }
 
     public function createParametersMatch(
@@ -130,5 +116,48 @@ final readonly class WithConsecutiveMatchFactory
         $compareArgs = [new Arg($currentValueArrayDimFetch), new Arg(new ArrayDimFetch($parameters, new LNumber(0)))];
 
         return $this->builderFactory->methodCall(new Variable('this'), 'assertSame', $compareArgs);
+    }
+
+    /**
+     * @param Stmt[] $returnStmts
+     * @return Variable[]
+     */
+    private function resolveUsedVariables(MethodCall $expectsMethodCall, array $returnStmts): array
+    {
+        return $this->resolveUniqueUsedVariables([
+            ...$expectsMethodCall->getArgs(),
+            ...$this->resolveUniqueUsedVariables($returnStmts),
+        ]);
+    }
+
+    /**
+     * @param Variable[] $usedVariables
+     */
+    private function isByRef(array $usedVariables, Expr|Variable|null $referenceVariable): bool
+    {
+        $byRef = $referenceVariable instanceof Variable;
+
+        foreach ($usedVariables as $usedVariable) {
+            if ($byRef && $this->nodeNameResolver->areNamesEqual($usedVariable, $referenceVariable)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Variable[] $usedVariables
+     * @return ClosureUse[]
+     */
+    private function createUses(Variable $matcherVariable, array $usedVariables): array
+    {
+        $uses = [new ClosureUse($matcherVariable)];
+
+        foreach ($usedVariables as $usedVariable) {
+            $uses[] = new ClosureUse($usedVariable);
+        }
+
+        return $uses;
     }
 }
