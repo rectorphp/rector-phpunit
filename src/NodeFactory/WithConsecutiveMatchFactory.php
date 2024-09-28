@@ -106,7 +106,7 @@ final readonly class WithConsecutiveMatchFactory
             new LNumber(1)
         ));
 
-        $compareArgs = [new Arg($currentValueArrayDimFetch), new Arg(new ArrayDimFetch($variable, new LNumber(0)))];
+        $compareArgs = [new Arg($currentValueArrayDimFetch), new Arg($variable)];
 
         return $this->builderFactory->methodCall(new Variable('this'), 'assertSame', $compareArgs);
     }
