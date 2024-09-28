@@ -160,8 +160,6 @@ CODE_SAMPLE
             $referenceVariable = new Variable('parameters');
         }
 
-
-
         $this->removeMethodCalls($node, [
             'willReturn',
             'willReturnArgument',
