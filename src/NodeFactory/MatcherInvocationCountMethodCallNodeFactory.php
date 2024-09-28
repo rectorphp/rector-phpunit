@@ -8,8 +8,9 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use Rector\PHPUnit\Composer\ProjectPackageVersionResolver;
+use Rector\PHPUnit\Enum\ConsecutiveVariable;
 
-final readonly class MatcherNodeFactory
+final readonly class MatcherInvocationCountMethodCallNodeFactory
 {
     public function __construct(
         private ProjectPackageVersionResolver $projectPackageVersionResolver
@@ -20,7 +21,7 @@ final readonly class MatcherNodeFactory
     {
         $invocationMethodName = $this->getInvocationMethodName();
 
-        $matcherVariable = new Variable('matcher');
+        $matcherVariable = new Variable(ConsecutiveVariable::MATCHER);
 
         return new MethodCall($matcherVariable, new Identifier($invocationMethodName));
     }

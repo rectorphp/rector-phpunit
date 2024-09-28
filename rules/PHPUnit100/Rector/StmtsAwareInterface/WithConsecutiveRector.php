@@ -25,8 +25,9 @@ use PhpParser\Node\Stmt\Throw_;
 use PhpParser\NodeTraverser;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\PHPUnit\Enum\ConsecutiveVariable;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
-use Rector\PHPUnit\NodeFactory\MatcherNodeFactory;
+use Rector\PHPUnit\NodeFactory\MatcherInvocationCountMethodCallNodeFactory;
 use Rector\PHPUnit\NodeFactory\WithConsecutiveMatchFactory;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersion;
@@ -48,7 +49,7 @@ final class WithConsecutiveRector extends AbstractRector implements MinPhpVersio
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly WithConsecutiveMatchFactory $withConsecutiveMatchFactory,
-        private readonly MatcherNodeFactory $matcherNodeFactory,
+        private readonly MatcherInvocationCountMethodCallNodeFactory $matcherInvocationCountMethodCallNodeFactory,
     ) {
     }
 
@@ -85,7 +86,7 @@ final class SomeTest extends TestCase
 
         $this->personServiceMock->expects($matcher)
             ->method('prepare')
-            ->willReturnCallback(function ($parameters) use ($matcher) {
+            ->willReturnCallback(function (...$parameters) use ($matcher) {
                 match ($matcher->numberOfInvocations()) {
                     1 => self::assertEquals([1, 2], $parameters),
                     2 => self::assertEquals([3, 4], $parameters),
@@ -124,10 +125,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstArg = $withConsecutiveMethodCall->getArgs()[0];
-        $isWithConsecutiveVariadic = $firstArg->unpack;
-
         $returnStmts = [];
+
         $willReturn = $this->findMethodCall($node, 'willReturn');
         if ($willReturn instanceof MethodCall) {
             $returnStmts[] = $this->createWillReturnStmt($willReturn);
@@ -145,18 +144,12 @@ CODE_SAMPLE
 
         $willReturnOnConsecutiveCallsArgument = $this->findMethodCall($node, 'willReturnOnConsecutiveCalls');
         if ($willReturnOnConsecutiveCallsArgument instanceof MethodCall) {
-            if ($returnStmts !== []) {
-                return null;
-            }
+            $returnStmts[] = $this->createReturnMatch($willReturnOnConsecutiveCallsArgument);
+        }
 
-            $numberOfInvocationsMethodCall = $this->matcherNodeFactory->create();
-
-            $matchArms = [];
-            foreach ($willReturnOnConsecutiveCallsArgument->getArgs() as $key => $arg) {
-                $matchArms[] = new MatchArm([new LNumber($key + 1)], $arg->value);
-            }
-
-            $returnStmts = [new Return_(new Match_($numberOfInvocationsMethodCall, $matchArms))];
+        $willThrowException = $this->findMethodCall($node, 'willThrowException');
+        if ($willThrowException instanceof MethodCall) {
+            $returnStmts[] = $this->createWillThrowException($willThrowException);
         }
 
         $willReturnReferenceArgument = $this->findMethodCall($node, 'willReturnReference');
@@ -164,13 +157,8 @@ CODE_SAMPLE
         if ($willReturnReferenceArgument instanceof MethodCall) {
             $returnStmts[] = $this->createWillReturn($willReturnReferenceArgument);
 
-            // return pased args
+            // returns passed args
             $referenceVariable = new Variable('parameters');
-        }
-
-        $willThrowException = $this->findMethodCall($node, 'willThrowException');
-        if ($willThrowException instanceof MethodCall) {
-            $returnStmts[] = $this->createWillThrowException($willThrowException);
         }
 
         $this->removeMethodCalls($node, [
@@ -207,7 +195,6 @@ CODE_SAMPLE
             $referenceVariable,
             $expectsCall,
             $node,
-            $isWithConsecutiveVariadic
         );
     }
 
@@ -243,7 +230,7 @@ CODE_SAMPLE
 
             $exactlyCall = $firstArg->value;
 
-            $node->args = [new Arg(new Variable('matcher'))];
+            $node->args = [new Arg(new Variable(ConsecutiveVariable::MATCHER))];
 
             return $node;
         });
@@ -259,7 +246,9 @@ CODE_SAMPLE
                     return null;
                 }
 
-                $node->var = new MethodCall($node->var, 'expects', [new Arg(new Variable('matcher'))]);
+                $node->var = new MethodCall($node->var, 'expects', [
+                    new Arg(new Variable(ConsecutiveVariable::MATCHER)),
+                ]);
 
                 return NodeTraverser::STOP_TRAVERSAL;
             });
@@ -311,19 +300,17 @@ CODE_SAMPLE
         Expr|Variable|null $referenceVariable,
         StaticCall|MethodCall $expectsCall,
         Expression $expression,
-        bool $isWithConsecutiveVariadic
     ): array {
-        $withConsecutiveMethodCall->name = new Identifier('willReturnCallback');
-        $withConsecutiveMethodCall->args = [
-            new Arg($this->withConsecutiveMatchFactory->createClosure(
-                $withConsecutiveMethodCall,
-                $returnStmts,
-                $referenceVariable,
-                $isWithConsecutiveVariadic
-            )),
-        ];
+        $closure = $this->withConsecutiveMatchFactory->createClosure(
+            $withConsecutiveMethodCall,
+            $returnStmts,
+            $referenceVariable,
+        );
 
-        $matcherVariable = new Variable('matcher');
+        $withConsecutiveMethodCall->name = new Identifier('willReturnCallback');
+        $withConsecutiveMethodCall->args = [new Arg($closure)];
+
+        $matcherVariable = new Variable(ConsecutiveVariable::MATCHER);
         $matcherAssign = new Assign($matcherVariable, $expectsCall);
 
         return [new Expression($matcherAssign), $expression];
@@ -341,15 +328,14 @@ CODE_SAMPLE
 
         $callbackClosure = $callbackArg->value;
 
-        $parametersVariable = new Variable('parameters');
+        $callbackClosure->params[] = new Param(new Variable(ConsecutiveVariable::PARAMETERS));
 
-        $parametersMatch = $this->withConsecutiveMatchFactory->createParametersMatch(
-            $withConsecutiveMethodCall,
-            $parametersVariable
-        );
-
-        $callbackClosure->params[] = new Param($parametersVariable);
-        $callbackClosure->stmts = array_merge([new Expression($parametersMatch)], $callbackClosure->stmts);
+        $parametersMatch = $this->withConsecutiveMatchFactory->createParametersMatch($withConsecutiveMethodCall);
+        if (is_array($parametersMatch)) {
+            $callbackClosure->stmts = array_merge($parametersMatch, $callbackClosure->stmts);
+        } else {
+            $callbackClosure->stmts = array_merge([new Expression($parametersMatch)], $callbackClosure->stmts);
+        }
 
         $this->removeMethodCalls($expression, [self::WITH_CONSECUTIVE_METHOD]);
 
@@ -366,7 +352,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! ($this->isNames($node->name, $methodNames))) {
+            if (! $this->isNames($node->name, $methodNames)) {
                 return null;
             }
 
@@ -433,5 +419,17 @@ CODE_SAMPLE
         }
 
         return new Return_(new ArrayDimFetch($parametersVariable, $firstArgs->value));
+    }
+
+    private function createReturnMatch(MethodCall $willReturnOnConsecutiveCallsMethodCall): Return_
+    {
+        $numberOfInvocationsMethodCall = $this->matcherInvocationCountMethodCallNodeFactory->create();
+
+        $matchArms = [];
+        foreach ($willReturnOnConsecutiveCallsMethodCall->getArgs() as $key => $arg) {
+            $matchArms[] = new MatchArm([new LNumber($key + 1)], $arg->value);
+        }
+
+        return new Return_(new Match_($numberOfInvocationsMethodCall, $matchArms));
     }
 }
