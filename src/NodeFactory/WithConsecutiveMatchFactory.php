@@ -40,8 +40,7 @@ final readonly class WithConsecutiveMatchFactory
     public function createClosure(
         MethodCall $withConsecutiveMethodCall,
         array $returnStmts,
-        Variable|Expr|null $referenceVariable,
-        bool $isWithConsecutiveVariadic
+        Variable|Expr|null $referenceVariable
     ): Closure {
         $matcherVariable = new Variable('matcher');
         $usedVariables = $this->resolveUsedVariables($withConsecutiveMethodCall, $returnStmts);
@@ -53,9 +52,7 @@ final readonly class WithConsecutiveMatchFactory
         $match = $this->createParametersMatch($withConsecutiveMethodCall, $parametersVariable);
 
         $parametersParam = new Param($parametersVariable);
-        if ($isWithConsecutiveVariadic) {
-            $parametersParam->variadic = true;
-        }
+        $parametersParam->variadic = true;
 
         return new Closure([
             'byRef' => $isByRef,

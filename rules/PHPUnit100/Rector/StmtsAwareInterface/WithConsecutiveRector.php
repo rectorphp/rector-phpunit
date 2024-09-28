@@ -124,9 +124,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstArg = $withConsecutiveMethodCall->getArgs()[0];
-        $isWithConsecutiveVariadic = $firstArg->unpack;
-
         $returnStmts = [];
 
         $willReturn = $this->findMethodCall($node, 'willReturn');
@@ -199,7 +196,6 @@ CODE_SAMPLE
             $referenceVariable,
             $expectsCall,
             $node,
-            $isWithConsecutiveVariadic
         );
     }
 
@@ -303,17 +299,15 @@ CODE_SAMPLE
         Expr|Variable|null $referenceVariable,
         StaticCall|MethodCall $expectsCall,
         Expression $expression,
-        bool $isWithConsecutiveVariadic
     ): array {
+        $closure = $this->withConsecutiveMatchFactory->createClosure(
+            $withConsecutiveMethodCall,
+            $returnStmts,
+            $referenceVariable,
+        );
+
         $withConsecutiveMethodCall->name = new Identifier('willReturnCallback');
-        $withConsecutiveMethodCall->args = [
-            new Arg($this->withConsecutiveMatchFactory->createClosure(
-                $withConsecutiveMethodCall,
-                $returnStmts,
-                $referenceVariable,
-                $isWithConsecutiveVariadic
-            )),
-        ];
+        $withConsecutiveMethodCall->args = [new Arg($closure)];
 
         $matcherVariable = new Variable('matcher');
         $matcherAssign = new Assign($matcherVariable, $expectsCall);

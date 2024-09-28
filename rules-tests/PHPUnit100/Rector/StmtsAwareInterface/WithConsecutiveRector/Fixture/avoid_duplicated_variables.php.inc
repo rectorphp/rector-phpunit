@@ -40,7 +40,7 @@ final class AvoidDuplicatedVariables extends TestCase
         $matcher = $this->exactly(2);
 
         $this->personServiceMock->expects($matcher)
-            ->method('prepare')->willReturnCallback(function ($parameters) use ($matcher, $value) {
+            ->method('prepare')->willReturnCallback(function (...$parameters) use ($matcher, $value) {
             match ($matcher->numberOfInvocations()) {
                 1 => self::assertEquals([1, $value], $parameters),
                 2 => self::assertEquals([2, $value], $parameters),
