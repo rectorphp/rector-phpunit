@@ -85,7 +85,7 @@ final class SomeTest extends TestCase
 
         $this->personServiceMock->expects($matcher)
             ->method('prepare')
-            ->willReturnCallback(function ($parameters) use ($matcher) {
+            ->willReturnCallback(function (...$parameters) use ($matcher) {
                 match ($matcher->numberOfInvocations()) {
                     1 => self::assertEquals([1, 2], $parameters),
                     2 => self::assertEquals([3, 4], $parameters),
@@ -128,6 +128,7 @@ CODE_SAMPLE
         $isWithConsecutiveVariadic = $firstArg->unpack;
 
         $returnStmts = [];
+
         $willReturn = $this->findMethodCall($node, 'willReturn');
         if ($willReturn instanceof MethodCall) {
             $returnStmts[] = $this->createWillReturnStmt($willReturn);
@@ -145,18 +146,12 @@ CODE_SAMPLE
 
         $willReturnOnConsecutiveCallsArgument = $this->findMethodCall($node, 'willReturnOnConsecutiveCalls');
         if ($willReturnOnConsecutiveCallsArgument instanceof MethodCall) {
-            if ($returnStmts !== []) {
-                return null;
-            }
+            $returnStmts[] = $this->createReturnMatch($willReturnOnConsecutiveCallsArgument);
+        }
 
-            $numberOfInvocationsMethodCall = $this->matcherNodeFactory->create();
-
-            $matchArms = [];
-            foreach ($willReturnOnConsecutiveCallsArgument->getArgs() as $key => $arg) {
-                $matchArms[] = new MatchArm([new LNumber($key + 1)], $arg->value);
-            }
-
-            $returnStmts = [new Return_(new Match_($numberOfInvocationsMethodCall, $matchArms))];
+        $willThrowException = $this->findMethodCall($node, 'willThrowException');
+        if ($willThrowException instanceof MethodCall) {
+            $returnStmts[] = $this->createWillThrowException($willThrowException);
         }
 
         $willReturnReferenceArgument = $this->findMethodCall($node, 'willReturnReference');
@@ -164,14 +159,11 @@ CODE_SAMPLE
         if ($willReturnReferenceArgument instanceof MethodCall) {
             $returnStmts[] = $this->createWillReturn($willReturnReferenceArgument);
 
-            // return pased args
+            // returns passed args
             $referenceVariable = new Variable('parameters');
         }
 
-        $willThrowException = $this->findMethodCall($node, 'willThrowException');
-        if ($willThrowException instanceof MethodCall) {
-            $returnStmts[] = $this->createWillThrowException($willThrowException);
-        }
+
 
         $this->removeMethodCalls($node, [
             'willReturn',
@@ -433,5 +425,17 @@ CODE_SAMPLE
         }
 
         return new Return_(new ArrayDimFetch($parametersVariable, $firstArgs->value));
+    }
+
+    private function createReturnMatch(MethodCall $willReturnOnConsecutiveCallsMethodCall): Return_
+    {
+        $numberOfInvocationsMethodCall = $this->matcherNodeFactory->create();
+
+        $matchArms = [];
+        foreach ($willReturnOnConsecutiveCallsMethodCall->getArgs() as $key => $arg) {
+            $matchArms[] = new MatchArm([new LNumber($key + 1)], $arg->value);
+        }
+
+        return new Return_(new Match_($numberOfInvocationsMethodCall, $matchArms));
     }
 }
