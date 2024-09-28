@@ -30,6 +30,7 @@ final readonly class WithConsecutiveMatchFactory
         private NodeNameResolver $nodeNameResolver,
         private BetterNodeFinder $betterNodeFinder,
         private BuilderFactory $builderFactory,
+        private MatcherNodeFactory $matcherNodeFactory,
     ) {
     }
 
@@ -49,7 +50,7 @@ final readonly class WithConsecutiveMatchFactory
         $uses = $this->createUses($matcherVariable, $usedVariables);
 
         $parametersVariable = new Variable('parameters');
-        $match = $this->createParametersMatch($matcherVariable, $withConsecutiveMethodCall, $parametersVariable);
+        $match = $this->createParametersMatch($withConsecutiveMethodCall, $parametersVariable);
 
         $parametersParam = new Param($parametersVariable);
         if ($isWithConsecutiveVariadic) {
@@ -65,20 +66,19 @@ final readonly class WithConsecutiveMatchFactory
     }
 
     public function createParametersMatch(
-        Variable $matcherVariable,
         MethodCall $withConsecutiveMethodCall,
-        Variable $parameters
+        Variable $parametersVariable
     ): Match_|MethodCall {
         $firstArg = $withConsecutiveMethodCall->getArgs()[0] ?? null;
         if ($firstArg instanceof Arg && $firstArg->unpack) {
-            return $this->createAssertSameDimFetch($firstArg, $matcherVariable, $parameters);
+            return $this->createAssertSameDimFetch($firstArg, new Variable('matcher'), $parametersVariable);
         }
 
-        $numberOfInvocationsMethodCall = new MethodCall($matcherVariable, new Identifier('numberOfInvocations'));
+        $numberOfInvocationsMethodCall = $this->matcherNodeFactory->create();
 
         $matchArms = [];
         foreach ($withConsecutiveMethodCall->getArgs() as $key => $arg) {
-            $assertEquals = $this->builderFactory->staticCall('self', 'assertEquals', [$arg, $parameters]);
+            $assertEquals = $this->builderFactory->staticCall('self', 'assertEquals', [$arg, $parametersVariable]);
             $matchArms[] = new MatchArm([new LNumber($key + 1)], $assertEquals);
         }
 

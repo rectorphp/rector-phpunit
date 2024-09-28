@@ -26,6 +26,7 @@ use PhpParser\NodeTraverser;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
+use Rector\PHPUnit\NodeFactory\MatcherNodeFactory;
 use Rector\PHPUnit\NodeFactory\WithConsecutiveMatchFactory;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersion;
@@ -43,15 +44,11 @@ final class WithConsecutiveRector extends AbstractRector implements MinPhpVersio
      */
     private const WITH_CONSECUTIVE_METHOD = 'withConsecutive';
 
-    /**
-     * @var string
-     */
-    private const NUMBER_OF_INVOCATIONS_METHOD = 'numberOfInvocations';
-
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly WithConsecutiveMatchFactory $withConsecutiveMatchFactory,
+        private readonly MatcherNodeFactory $matcherNodeFactory,
     ) {
     }
 
@@ -152,10 +149,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $matcherVariable = new Variable('matcher');
-            $numberOfInvocationsMethodCall = new MethodCall($matcherVariable, new Identifier(
-                self::NUMBER_OF_INVOCATIONS_METHOD
-            ));
+            $numberOfInvocationsMethodCall = $this->matcherNodeFactory->create();
 
             $matchArms = [];
             foreach ($willReturnOnConsecutiveCallsArgument->getArgs() as $key => $arg) {
@@ -347,11 +341,9 @@ CODE_SAMPLE
 
         $callbackClosure = $callbackArg->value;
 
-        $matcherVariable = new Variable('matcher');
         $parametersVariable = new Variable('parameters');
 
         $parametersMatch = $this->withConsecutiveMatchFactory->createParametersMatch(
-            $matcherVariable,
             $withConsecutiveMethodCall,
             $parametersVariable
         );
