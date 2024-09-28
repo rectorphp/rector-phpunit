@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\NodeFactory;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
@@ -21,15 +20,12 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
-use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\PhpParser\Node\BetterNodeFinder;
 
 final readonly class WithConsecutiveMatchFactory
 {
     public function __construct(
-        private NodeNameResolver $nodeNameResolver,
-        private BetterNodeFinder $betterNodeFinder,
         private BuilderFactory $builderFactory,
+        private UsedVariablesResolver $usedVariablesResolver,
         private MatcherNodeFactory $matcherNodeFactory,
     ) {
     }
@@ -43,10 +39,7 @@ final readonly class WithConsecutiveMatchFactory
         Variable|Expr|null $referenceVariable
     ): Closure {
         $matcherVariable = new Variable('matcher');
-        $usedVariables = $this->resolveUsedVariables($withConsecutiveMethodCall, $returnStmts);
-
-        $isByRef = $this->isByRef($referenceVariable);
-        $uses = $this->createUses($matcherVariable, $usedVariables);
+        $usedVariables = $this->usedVariablesResolver->resolveUsedVariables($withConsecutiveMethodCall, $returnStmts);
 
         $parametersVariable = new Variable('parameters');
         $match = $this->createParametersMatch($withConsecutiveMethodCall, $parametersVariable);
@@ -55,8 +48,8 @@ final readonly class WithConsecutiveMatchFactory
         $parametersParam->variadic = true;
 
         return new Closure([
-            'byRef' => $isByRef,
-            'uses' => $uses,
+            'byRef' => $this->isByRef($referenceVariable),
+            'uses' => $this->createClosureUses($matcherVariable, $usedVariables),
             'params' => [$parametersParam],
             'stmts' => [new Expression($match), ...$returnStmts],
         ]);
@@ -82,29 +75,6 @@ final readonly class WithConsecutiveMatchFactory
         return new Match_($numberOfInvocationsMethodCall, $matchArms);
     }
 
-    /**
-     * @param Node[] $nodes
-     * @return Variable[]
-     */
-    private function resolveUniqueUsedVariables(array $nodes): array
-    {
-        /** @var Variable[] $usedVariables */
-        $usedVariables = $this->betterNodeFinder->findInstancesOfScoped($nodes, Variable::class);
-
-        $uniqueUsedVariables = [];
-
-        foreach ($usedVariables as $usedVariable) {
-            if ($this->nodeNameResolver->isNames($usedVariable, ['this', 'matcher', 'parameters'])) {
-                continue;
-            }
-
-            $usedVariableName = $this->nodeNameResolver->getName($usedVariable);
-            $uniqueUsedVariables[$usedVariableName] = $usedVariable;
-        }
-
-        return $uniqueUsedVariables;
-    }
-
     private function createAssertSameDimFetch(
         Arg $firstArg,
         Variable $matcherVariable,
@@ -120,18 +90,6 @@ final readonly class WithConsecutiveMatchFactory
         return $this->builderFactory->methodCall(new Variable('this'), 'assertSame', $compareArgs);
     }
 
-    /**
-     * @param Stmt[] $returnStmts
-     * @return Variable[]
-     */
-    private function resolveUsedVariables(MethodCall $withConsecutiveMethodCall, array $returnStmts): array
-    {
-        $consecutiveArgs = $withConsecutiveMethodCall->getArgs();
-        $stmtVariables = $this->resolveUniqueUsedVariables($returnStmts);
-
-        return $this->resolveUniqueUsedVariables(array_merge($consecutiveArgs, $stmtVariables));
-    }
-
     private function isByRef(Expr|Variable|null $referenceVariable): bool
     {
         return $referenceVariable instanceof Variable;
@@ -141,7 +99,7 @@ final readonly class WithConsecutiveMatchFactory
      * @param Variable[] $usedVariables
      * @return ClosureUse[]
      */
-    private function createUses(Variable $matcherVariable, array $usedVariables): array
+    private function createClosureUses(Variable $matcherVariable, array $usedVariables): array
     {
         $uses = [new ClosureUse($matcherVariable)];
 

@@ -31,11 +31,11 @@ final class WithConsecutiveInnerAssert extends TestCase
     {
         $matcher = self::exactly(2);
 
-        $this->someMock->expects($matcher)
-            ->method('publish')->willReturnCallback(function (...$parameters) use ($matcher) {
-            match ($matcher->numberOfInvocations()) {
-                1 => self::assertEquals('one', $parameters[0]) && self::assertEquals('two', $parameters[1]),
-            };
+        $this->someMock->expects($matcher)->method('publish')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertEquals('once', $parameters[0]);
+                $this->assertEquals('two', $parameters[1]);
+            }
         });
     }
 }
