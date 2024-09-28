@@ -10,8 +10,9 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\PHPUnit\Enum\ConsecutiveVariable;
 
-final class UsedVariablesResolver
+final readonly class UsedVariablesResolver
 {
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
@@ -43,7 +44,10 @@ final class UsedVariablesResolver
         $uniqueUsedVariables = [];
 
         foreach ($usedVariables as $usedVariable) {
-            if ($this->nodeNameResolver->isNames($usedVariable, ['this', 'matcher', 'parameters'])) {
+            if ($this->nodeNameResolver->isNames(
+                $usedVariable,
+                ['this', ConsecutiveVariable::MATCHER, ConsecutiveVariable::PARAMETERS]
+            )) {
                 continue;
             }
 

@@ -30,13 +30,14 @@ final class WithConsecutiveInnerAssert extends TestCase
     public function test()
     {
         $matcher = self::exactly(2);
-
-        $this->someMock->expects($matcher)->method('publish')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertEquals('once', $parameters[0]);
-                $this->assertEquals('two', $parameters[1]);
-            }
-        });
+        $this->someMock->expects($matcher)->method('publish')->willReturnCallback(
+            function (...$parameters) use ($matcher) {
+                if ($matcher->numberOfInvocations() === 1) {
+                    $this->assertEquals('one', $parameters[0]);
+                    $this->assertEquals('two', $parameters[1]);
+                }
+            },
+        );
     }
 }
 
