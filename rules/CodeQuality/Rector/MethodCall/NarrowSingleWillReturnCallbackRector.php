@@ -7,6 +7,7 @@ namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
@@ -122,7 +123,7 @@ CODE_SAMPLE
         // we look for $this->assertSame(...)
         $expectedExpr = $matchAndReturnMatch->getConsecutiveMatchExpr();
 
-        if ($expectedExpr instanceof Expr\Array_) {
+        if ($expectedExpr instanceof Array_) {
             $args = $this->nodeFactory->createArgs($expectedExpr->items);
         } else {
             $args = [new Arg($expectedExpr)];

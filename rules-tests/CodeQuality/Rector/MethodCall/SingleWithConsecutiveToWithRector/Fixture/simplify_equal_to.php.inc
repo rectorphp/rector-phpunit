@@ -5,7 +5,7 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\SingleWithConsecuti
 use PHPUnit\Framework\TestCase;
 use Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\SingleWithConsecutiveToWithRector\Source\SomeMockedClass;
 
-final class WithAssertInside extends TestCase
+final class SimplifyEqualTo extends TestCase
 {
     public function test()
     {
@@ -13,10 +13,7 @@ final class WithAssertInside extends TestCase
         $someServiceMock->expects($this->exactly(3))
             ->method('prepare')
             ->withConsecutive(
-                [
-                    $this->equalTo('first'),
-                    $this->equalTo('second')
-                ]
+                [$this->equalTo(1)],
             );
     }
 }
@@ -30,13 +27,16 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\SingleWithConsecuti
 use PHPUnit\Framework\TestCase;
 use Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\SingleWithConsecutiveToWithRector\Source\SomeMockedClass;
 
-final class WithAssertInside extends TestCase
+final class SimplifyEqualTo extends TestCase
 {
     public function test()
     {
         $someServiceMock = $this->createMock(SomeMockedClass::class);
         $someServiceMock->expects($this->exactly(3))
-            ->method('prepare')->with('first', 'second');
+            ->method('prepare')
+            ->with(
+                1,
+            );
     }
 }
 
