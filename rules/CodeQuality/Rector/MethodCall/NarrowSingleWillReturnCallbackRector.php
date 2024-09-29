@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 
-use PhpParser\Node\Expr\Array_;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
