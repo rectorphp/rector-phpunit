@@ -14,6 +14,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
+use Rector\PHPUnit\CodeQuality\ValueObject\MatchAndReturnMatch;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -104,39 +105,46 @@ CODE_SAMPLE
 
         $firstArg = $node->getArgs()[0];
 
-        $match = $this->matchClosureSingleStmtMatch($firstArg->value);
-        if (! $match instanceof Match_) {
+        $matchAndReturnMatch = $this->matchClosureSingleStmtMatch($firstArg->value);
+        if (! $matchAndReturnMatch instanceof MatchAndReturnMatch) {
             return null;
         }
 
-        $matchArmBody = $this->matchSingleMatchArmBodyWithConditionOne($match);
-        //        if (! $matchArmBody instanceof MethodCall && ! $matchArmBody instanceof Expr\StaticCall) {
-        //            return null;
-        //        }
+        $matchArmBody = $this->matchSingleMatchArmBodyWithConditionOne($matchAndReturnMatch->getConsecutiveMatch());
+        if (! $matchArmBody instanceof Expr) {
+            return null;
+        }
 
         if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($matchArmBody, ['assertSame', 'assertEquals'])) {
             return null;
         }
 
         // we look for $this->assertSame(...)
-        $expectedArg = $matchArmBody->getArgs()[0];
+        $expectedExpr = $matchAndReturnMatch->getConsecutiveMatchExpr();
 
         $node->name = new Identifier('with');
-        $node->args = [new Arg($expectedArg->value)];
+        $node->args = [new Arg($expectedExpr)];
 
         // remove the returnCallback if present
+        if ($matchAndReturnMatch->getWillReturnMatch() instanceof Match_) {
+            return new MethodCall(
+                $node,
+                new Identifier('willReturn'),
+                [new Arg($matchAndReturnMatch->getWillReturnMatchExpr())]
+            );
+        }
 
         return $node;
     }
 
-    private function matchClosureSingleStmtMatch(Expr $expr): null|Match_
+    private function matchClosureSingleStmtMatch(Expr $expr): ?MatchAndReturnMatch
     {
         if (! $expr instanceof Closure) {
             return null;
         }
 
         // we need match or match + return match
-        if (count($expr->stmts) < 1 && count($expr->stmts) > 2) {
+        if (count($expr->stmts) < 1 || count($expr->stmts) > 2) {
             return null;
         }
 
@@ -149,6 +157,8 @@ CODE_SAMPLE
             return null;
         }
 
+        $returnMatch = null;
+
         if (count($expr->stmts) === 2) {
             $secondStmt = $expr->stmts[1];
             if (! $secondStmt instanceof Return_) {
@@ -158,9 +168,11 @@ CODE_SAMPLE
             if (! $secondStmt->expr instanceof Match_) {
                 return null;
             }
+
+            $returnMatch = $secondStmt->expr;
         }
 
-        return $onlyStmts->expr;
+        return new MatchAndReturnMatch($onlyStmts->expr, $returnMatch);
     }
 
     private function matchSingleMatchArmBodyWithConditionOne(Match_ $match): ?Expr

@@ -55,9 +55,8 @@ final class WithMatchReturn extends TestCase
         $someMockedClass->expects($matcher)
             ->method('prepare')
             ->with([
-                'some_value'
-            ])
-            ->willReturn(4);
+                'some_value',
+            ])->willReturn(4);
     }
 }
 
