@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Return_;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -109,19 +110,21 @@ CODE_SAMPLE
         }
 
         $matchArmBody = $this->matchSingleMatchArmBodyWithConditionOne($match);
-        if (! $matchArmBody instanceof MethodCall) {
+        //        if (! $matchArmBody instanceof MethodCall && ! $matchArmBody instanceof Expr\StaticCall) {
+        //            return null;
+        //        }
+
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($matchArmBody, ['assertSame', 'assertEquals'])) {
             return null;
         }
 
         // we look for $this->assertSame(...)
-        if (! $this->isLocalMethodCall($matchArmBody, 'assertSame')) {
-            return null;
-        }
-
         $expectedArg = $matchArmBody->getArgs()[0];
 
         $node->name = new Identifier('with');
         $node->args = [new Arg($expectedArg->value)];
+
+        // remove the returnCallback if present
 
         return $node;
     }
@@ -132,8 +135,8 @@ CODE_SAMPLE
             return null;
         }
 
-        // handle easy path of single stmt first
-        if (count($expr->stmts) !== 1) {
+        // we need match or match + return match
+        if (count($expr->stmts) < 1 && count($expr->stmts) > 2) {
             return null;
         }
 
@@ -146,20 +149,18 @@ CODE_SAMPLE
             return null;
         }
 
+        if (count($expr->stmts) === 2) {
+            $secondStmt = $expr->stmts[1];
+            if (! $secondStmt instanceof Return_) {
+                return null;
+            }
+
+            if (! $secondStmt->expr instanceof Match_) {
+                return null;
+            }
+        }
+
         return $onlyStmts->expr;
-    }
-
-    private function isLocalMethodCall(Expr $expr, string $methodName): bool
-    {
-        if (! $expr instanceof MethodCall) {
-            return false;
-        }
-
-        if (! $this->isName($expr->var, 'this')) {
-            return false;
-        }
-
-        return $this->isName($expr->name, $methodName);
     }
 
     private function matchSingleMatchArmBodyWithConditionOne(Match_ $match): ?Expr

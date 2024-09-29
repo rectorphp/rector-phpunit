@@ -54,7 +54,9 @@ final class WithMatchReturn extends TestCase
 
         $someMockedClass->expects($matcher)
             ->method('prepare')
-            ->with($this->equalTo('some_value'))
+            ->with([
+                'some_value'
+            ])
             ->willReturn(4);
     }
 }
