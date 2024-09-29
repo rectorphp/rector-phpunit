@@ -65,7 +65,7 @@ final class SomeTest extends TestCase
         $matcher = $this->exactly(1);
 
         $this->personServiceMock->expects($matcher)
-            ->with([1], $parameters);
+            ->with(1, $parameters);
     }
 }
 CODE_SAMPLE
@@ -122,8 +122,14 @@ CODE_SAMPLE
         // we look for $this->assertSame(...)
         $expectedExpr = $matchAndReturnMatch->getConsecutiveMatchExpr();
 
+        if ($expectedExpr instanceof Expr\Array_) {
+            $args = $this->nodeFactory->createArgs($expectedExpr->items);
+        } else {
+            $args = [new Arg($expectedExpr)];
+        }
+
         $node->name = new Identifier('with');
-        $node->args = [new Arg($expectedExpr)];
+        $node->args = $args;
 
         // remove the returnCallback if present
         if ($matchAndReturnMatch->getWillReturnMatch() instanceof Match_) {

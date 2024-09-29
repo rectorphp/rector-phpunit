@@ -38,7 +38,7 @@ final class SingleMatch extends TestCase
         $someServiceMock = $this->createMock(SomeMockedClass::class);
         $someServiceMock->expects($matcher)
             ->method('prepare')
-            ->with([1]);
+            ->with(1);
     }
 }
 
