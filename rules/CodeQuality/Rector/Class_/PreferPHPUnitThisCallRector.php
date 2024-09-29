@@ -98,6 +98,10 @@ CODE_SAMPLE
                 return null;
             }
 
+            if ($node->isFirstClassCallable()) {
+                return null;
+            }
+
             $hasChanged = true;
             return $this->nodeFactory->createMethodCall('this', $methodName, $node->getArgs());
         });
