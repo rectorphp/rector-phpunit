@@ -7,7 +7,6 @@ namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -27,7 +26,7 @@ final class SingleWithConsecutiveToWithRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change single withConsecutive() to with() call',
+            'Change single-value withConsecutive() to with() call, willReturnOnConsecutiveCalls() to willReturn() call',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -65,7 +64,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return array<class-string<MethodCall|StaticCall>>
+     * @return array<class-string<MethodCall>>
      */
     public function getNodeTypes(): array
     {
@@ -73,15 +72,15 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall|StaticCall $node
+     * @param MethodCall $node
      */
-    public function refactor(Node $node): MethodCall|StaticCall|null
+    public function refactor(Node $node): MethodCall|null
     {
         if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
             return null;
         }
 
-        if (! $this->isName($node->name, 'withConsecutive')) {
+        if (! $this->isNames($node->name, ['withConsecutive', 'willReturnOnConsecutiveCalls'])) {
             return null;
         }
 
@@ -91,8 +90,13 @@ CODE_SAMPLE
 
         $firstArg = $node->getArgs()[0];
 
-        // use simpler with() instead
-        $node->name = new Identifier('with');
+        // use simpler with()/willReturn() instead
+        if ($this->isName($node->name, 'withConsecutive')) {
+            $node->name = new Identifier('with');
+        } else {
+            $node->name = new Identifier('willReturn');
+        }
+
         $node->args = [new Arg($firstArg->value)];
 
         return $node;

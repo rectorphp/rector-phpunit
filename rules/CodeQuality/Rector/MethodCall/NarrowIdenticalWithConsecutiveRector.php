@@ -7,7 +7,6 @@ namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\PrettyPrinter\Standard;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -28,7 +27,7 @@ final class NarrowIdenticalWithConsecutiveRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Narrow identical withConsecutive() to single call',
+            'Narrow identical withConsecutive() and willReturnOnConsecutiveCalls() to single call',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -44,6 +43,11 @@ final class SomeTest extends TestCase
                 [1],
                 [1],
                 [1],
+            )
+            ->willReturnOnConsecutiveCalls(
+                [2],
+                [2],
+                [2],
             );
     }
 }
@@ -58,7 +62,8 @@ final class SomeTest extends TestCase
     {
         $this->personServiceMock->expects($this->exactly(3))
             ->method('prepare')
-            ->with([1]);
+            ->with([1])
+            ->willReturn([2]);
     }
 }
 CODE_SAMPLE
@@ -68,7 +73,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return array<class-string<MethodCall|StaticCall>>
+     * @return array<class-string<MethodCall>>
      */
     public function getNodeTypes(): array
     {
@@ -76,15 +81,15 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall|StaticCall $node
+     * @param MethodCall $node
      */
-    public function refactor(Node $node): MethodCall|StaticCall|null
+    public function refactor(Node $node): MethodCall|null
     {
         if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
             return null;
         }
 
-        if (! $this->isName($node->name, 'withConsecutive')) {
+        if (! $this->isNames($node->name, ['withConsecutive', 'willReturnOnConsecutiveCalls'])) {
             return null;
         }
 
@@ -104,8 +109,13 @@ CODE_SAMPLE
 
         $firstArg = $node->getArgs()[0];
 
+        if ($this->isName($node->name, 'withConsecutive')) {
+            $node->name = new Identifier('with');
+        } else {
+            $node->name = new Identifier('willReturn');
+        }
+
         // use simpler with() instead
-        $node->name = new Identifier('with');
         $node->args = [new Arg($firstArg->value)];
 
         return $node;
