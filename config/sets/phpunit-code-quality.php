@@ -28,6 +28,7 @@ use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertSameTrueFalseToAssertTrue
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\NarrowIdenticalWithConsecutiveRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\RemoveExpectAnyFromMockRector;
+use Rector\PHPUnit\CodeQuality\Rector\MethodCall\SingleWithConsecutiveToWithRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\UseSpecificWillMethodRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\UseSpecificWithMethodRector;
 
@@ -46,6 +47,7 @@ return static function (RectorConfig $rectorConfig): void {
 
         // narrow with consecutive
         NarrowIdenticalWithConsecutiveRector::class,
+        SingleWithConsecutiveToWithRector::class,
 
         // specific asserts
         AssertCompareOnCountableWithMethodToAssertCountRector::class,

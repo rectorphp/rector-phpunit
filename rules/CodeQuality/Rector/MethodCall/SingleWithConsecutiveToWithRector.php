@@ -9,16 +9,15 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
-use PhpParser\PrettyPrinter\Standard;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\NarrowIdenticalWithConsecutiveRector\NarrowIdenticalWithConsecutiveRectorTest
+ * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\SingleWithConsecutiveToWithRector\SingleWithConsecutiveToWithRectorTest
  */
-final class NarrowIdenticalWithConsecutiveRector extends AbstractRector
+final class SingleWithConsecutiveToWithRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer
@@ -28,7 +27,7 @@ final class NarrowIdenticalWithConsecutiveRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Narrow identical withConsecutive() to single call',
+            'Change single withConsecutive() to with() call',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -41,8 +40,6 @@ final class SomeTest extends TestCase
         $this->personServiceMock->expects($this->exactly(3))
             ->method('prepare')
             ->withConsecutive(
-                [1],
-                [1],
                 [1],
             );
     }
@@ -88,17 +85,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $printerStandard = new Standard();
-
-        $cachedValues = [];
-        foreach ($node->getArgs() as $arg) {
-            $cachedValues[] = $printerStandard->prettyPrintExpr($arg->value);
-        }
-
-        $uniqueArgValues = array_unique($cachedValues);
-
-        // multiple unique values
-        if (count($uniqueArgValues) !== 1) {
+        if (count($node->getArgs()) !== 1) {
             return null;
         }
 
