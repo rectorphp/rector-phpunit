@@ -121,6 +121,20 @@ CODE_SAMPLE
             }
         );
 
+        // replace $this->equalsTo() with direct value
+        $this->traverseNodesWithCallable($firstArg->value, function (Node $node): ?Node {
+            if (! $node instanceof MethodCall) {
+                return null;
+            }
+
+            if (! $this->isName($node->name, 'equalTo')) {
+                return null;
+            }
+
+            return $node->getArgs()[0]
+->value;
+        });
+
         if ($hasAssertInside && $firstArg->value instanceof Array_) {
             $args = $this->nodeFactory->createArgs($firstArg->value->items);
         } else {

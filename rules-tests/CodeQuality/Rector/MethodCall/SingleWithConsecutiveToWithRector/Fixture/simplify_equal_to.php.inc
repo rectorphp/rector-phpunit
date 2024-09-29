@@ -35,7 +35,7 @@ final class SimplifyEqualTo extends TestCase
         $someServiceMock->expects($this->exactly(3))
             ->method('prepare')
             ->with(
-                [1],
+                1,
             );
     }
 }

@@ -36,7 +36,7 @@ final class WithAssertInside extends TestCase
     {
         $someServiceMock = $this->createMock(SomeMockedClass::class);
         $someServiceMock->expects($this->exactly(3))
-            ->method('prepare')->with($this->equalTo('first'), $this->equalTo('second'));
+            ->method('prepare')->with('first', 'second');
     }
 }
 
