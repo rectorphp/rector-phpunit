@@ -33,7 +33,7 @@ final class WithArraySpread extends TestCase
             ->expects($matcher)
             ->willReturnCallback(
                 function (...$parameters) use ($matcher, $items) {
-                    $this->assertSame($items[$matcher->numberOfInvocations() - 1], $parameters[0]);
+                    $this->assertSame($items[$matcher->numberOfInvocations() - 1], $parameters);
                 }
             );
     }
