@@ -90,6 +90,11 @@ CODE_SAMPLE
 
         $firstArg = $node->getArgs()[0];
 
+        // skip as multiple unique values
+        if ($firstArg->unpack) {
+            return null;
+        }
+
         // use simpler with()/willReturn() instead
         if ($this->isName($node->name, 'withConsecutive')) {
             $node->name = new Identifier('with');

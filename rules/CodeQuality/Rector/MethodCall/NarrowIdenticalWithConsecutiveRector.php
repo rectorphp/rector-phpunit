@@ -93,14 +93,14 @@ CODE_SAMPLE
             return null;
         }
 
-        $printerStandard = new Standard();
+        $firstArg = $node->getArgs()[0];
 
-        $cachedValues = [];
-        foreach ($node->getArgs() as $arg) {
-            $cachedValues[] = $printerStandard->prettyPrintExpr($arg->value);
+        // skip as most likely nested array of unique values
+        if ($firstArg->unpack) {
+            return null;
         }
 
-        $uniqueArgValues = array_unique($cachedValues);
+        $uniqueArgValues = $this->resolveUniqueArgValues($node);
 
         // multiple unique values
         if (count($uniqueArgValues) !== 1) {
@@ -119,5 +119,20 @@ CODE_SAMPLE
         $node->args = [new Arg($firstArg->value)];
 
         return $node;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function resolveUniqueArgValues(MethodCall $methodCall): array
+    {
+        $printerStandard = new Standard();
+        $printedValues = [];
+
+        foreach ($methodCall->getArgs() as $arg) {
+            $printedValues[] = $printerStandard->prettyPrintExpr($arg->value);
+        }
+
+        return array_unique($printedValues);
     }
 }
