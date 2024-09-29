@@ -18,7 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertCompareOnCountableWithMethodToAssertCountRector\AssertCompareOnCountableWithMethodToAssertCountRectorTest
  */
-class AssertCompareOnCountableWithMethodToAssertCountRector extends AbstractRector
+final class AssertCompareOnCountableWithMethodToAssertCountRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer
