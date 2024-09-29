@@ -93,6 +93,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         $firstArg = $node->getArgs()[0];
 
         // skip as most likely nested array of unique values

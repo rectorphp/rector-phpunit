@@ -71,6 +71,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         $args = $node->getArgs();
 
         $firstValue = $args[0]->value;
