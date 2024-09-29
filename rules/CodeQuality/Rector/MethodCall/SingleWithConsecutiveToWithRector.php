@@ -6,8 +6,10 @@ namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -19,7 +21,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class SingleWithConsecutiveToWithRector extends AbstractRector
 {
     public function __construct(
-        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -102,7 +105,25 @@ CODE_SAMPLE
             $node->name = new Identifier('willReturn');
         }
 
-        $node->args = [new Arg($firstArg->value)];
+        // has assert inside?
+        $hasAssertInside = (bool) $this->betterNodeFinder->findFirst(
+            $firstArg->value,
+            function (Node $node): bool {
+                if (! $node instanceof MethodCall) {
+                    return false;
+                }
+
+                return $this->isNames($node->name, ['equalTo', 'instanceOf']);
+            }
+        );
+
+        if ($hasAssertInside && $firstArg->value instanceof Array_) {
+            $args = $this->nodeFactory->createArgs($firstArg->value->items);
+        } else {
+            $args = [new Arg($firstArg->value)];
+        }
+
+        $node->args = $args;
 
         return $node;
     }
