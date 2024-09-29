@@ -47,14 +47,7 @@ return static function (RectorConfig $rectorConfig): void {
 
         // narrow with consecutive
         NarrowIdenticalWithConsecutiveRector::class,
-<<<<<<< HEAD
-<<<<<<< HEAD
         SingleWithConsecutiveToWithRector::class,
-=======
->>>>>>> 4c3932b (register rule to code quality set)
-=======
-        SingleWithConsecutiveToWithRector::class,
->>>>>>> 7d29f98 ([CodeQuality] Add SingleWithConsecutiveToWithRector)
 
         // specific asserts
         AssertCompareOnCountableWithMethodToAssertCountRector::class,
