@@ -31,14 +31,14 @@ final class CombineWithOnConsecutiveWithoutExcepts extends TestCase
     {
         $matcher = $this->exactly(2);
         $this->userServiceMock->expects($matcher)->method('prepare')->willReturnCallback(function (...$parameters) use ($matcher) {
-            match ($matcher->numberOfInvocations()) {
-                1 => self::assertEquals([1, 2], $parameters),
-                2 => self::assertEquals([3, 4], $parameters),
-            };
-            return match ($matcher->numberOfInvocations()) {
-                1 => 5,
-                2 => 6,
-            };
+            if ($matcher->numberOfInvocations() === 1) {
+                $this->assertSame([1, 2], $parameters);
+                return 5;
+            }
+            if ($matcher->numberOfInvocations() === 2) {
+                $this->assertSame([3, 4], $parameters);
+                return 6;
+            }
         });
     }
 }
