@@ -17,5 +17,19 @@ final class SkipWill extends TestCase
             )
             ->will($this->returnValue($value));
     }
+
+    public function testWillReturnMap()
+    {
+        $this->userServiceMock->expects(self::exactly(2))
+            ->method('prepare')
+            ->withConsecutive(
+                [1, 2],
+                [3, 4],
+            )
+            ->willReturnMap([
+                [1, 2, 5],
+                [3, 4, 6],
+            ]);
+    }
 }
 

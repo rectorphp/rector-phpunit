@@ -17,11 +17,6 @@ final class AvoidDuplicatedVariables extends TestCase
                 [2, $value],
             );
     }
-
-    private function some()
-    {
-
-    }
 }
 
 ?>
@@ -46,11 +41,6 @@ final class AvoidDuplicatedVariables extends TestCase
                 2 => self::assertEquals([2, $value], $parameters),
             };
         });
-    }
-
-    private function some()
-    {
-
     }
 }
 
