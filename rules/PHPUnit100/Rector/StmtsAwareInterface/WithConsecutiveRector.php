@@ -27,6 +27,7 @@ use Rector\PHPUnit\Enum\ConsecutiveVariable;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFactory\ConsecutiveIfsFactory;
 use Rector\PHPUnit\NodeFactory\WithConsecutiveMatchFactory;
+use Rector\PHPUnit\NodeFinder\MethodCallNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -48,6 +49,7 @@ final class WithConsecutiveRector extends AbstractRector implements MinPhpVersio
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly WithConsecutiveMatchFactory $withConsecutiveMatchFactory,
         private readonly ConsecutiveIfsFactory $consecutiveIfsFactory,
+        private readonly MethodCallNodeFinder $methodCallNodeFinder,
     ) {
     }
 
@@ -114,7 +116,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $withConsecutiveMethodCall = $this->findMethodCall($node, self::WITH_CONSECUTIVE_METHOD);
+        $withConsecutiveMethodCall = $this->methodCallNodeFinder->findByName($node, self::WITH_CONSECUTIVE_METHOD);
         if (! $withConsecutiveMethodCall instanceof MethodCall) {
             return null;
         }
@@ -125,19 +127,19 @@ CODE_SAMPLE
 
         $returnStmts = [];
 
-        $willReturn = $this->findMethodCall($node, 'willReturn');
+        $willReturn = $this->methodCallNodeFinder->findByName($node, 'willReturn');
         if ($willReturn instanceof MethodCall) {
             $this->removeMethodCall($node, 'willReturn');
             $returnStmts[] = $this->createWillReturnStmt($willReturn);
         }
 
-        $willReturnSelf = $this->findMethodCall($node, 'willReturnSelf');
+        $willReturnSelf = $this->methodCallNodeFinder->findByName($node, 'willReturnSelf');
         if ($willReturnSelf instanceof MethodCall) {
             $this->removeMethodCall($node, 'willReturnSelf');
             $returnStmts[] = $this->createWillReturnSelfStmts($willReturnSelf);
         }
 
-        $willReturnArgument = $this->findMethodCall($node, 'willReturnArgument');
+        $willReturnArgument = $this->methodCallNodeFinder->findByName($node, 'willReturnArgument');
         if ($willReturnArgument instanceof MethodCall) {
             $this->removeMethodCall($node, 'willReturnArgument');
             $returnStmts[] = $this->createWillReturnArgument($willReturnArgument);
@@ -145,7 +147,10 @@ CODE_SAMPLE
 
         $areIfsPreferred = false;
 
-        $willReturnOnConsecutiveCallsArgument = $this->findMethodCall($node, 'willReturnOnConsecutiveCalls');
+        $willReturnOnConsecutiveCallsArgument = $this->methodCallNodeFinder->findByName(
+            $node,
+            'willReturnOnConsecutiveCalls'
+        );
         if ($willReturnOnConsecutiveCallsArgument instanceof MethodCall) {
             $this->removeMethodCall($node, 'willReturnOnConsecutiveCalls');
             $returnStmts = $this->consecutiveIfsFactory->createCombinedIfs(
@@ -155,13 +160,13 @@ CODE_SAMPLE
             $areIfsPreferred = true;
         }
 
-        $willThrowException = $this->findMethodCall($node, 'willThrowException');
+        $willThrowException = $this->methodCallNodeFinder->findByName($node, 'willThrowException');
         if ($willThrowException instanceof MethodCall) {
             $this->removeMethodCall($node, 'willThrowException');
             $returnStmts[] = $this->createWillThrowException($willThrowException);
         }
 
-        $willReturnReferenceArgument = $this->findMethodCall($node, 'willReturnReference');
+        $willReturnReferenceArgument = $this->methodCallNodeFinder->findByName($node, 'willReturnReference');
         $referenceVariable = null;
         if ($willReturnReferenceArgument instanceof MethodCall) {
             $this->removeMethodCall($node, 'willReturnReference');
@@ -180,7 +185,7 @@ CODE_SAMPLE
         }
 
         // 2. does willReturnCallback() exist? just merge them together
-        $existingWillReturnCallback = $this->findMethodCall($node, 'willReturnCallback');
+        $existingWillReturnCallback = $this->methodCallNodeFinder->findByName($node, 'willReturnCallback');
         if ($existingWillReturnCallback instanceof MethodCall) {
             return $this->refactorWithExistingWillReturnCallback(
                 $existingWillReturnCallback,
@@ -261,26 +266,6 @@ CODE_SAMPLE
         }
 
         return $exactlyCall;
-    }
-
-    private function findMethodCall(Expression $expression, string $methodName): ?MethodCall
-    {
-        if (! $expression->expr instanceof MethodCall) {
-            return null;
-        }
-
-        /** @var MethodCall|null $methodCall */
-        $methodCall = $this->betterNodeFinder->findFirst($expression->expr, function (Node $node) use (
-            $methodName
-        ): bool {
-            if (! $node instanceof MethodCall) {
-                return false;
-            }
-
-            return $this->isName($node->name, $methodName);
-        });
-
-        return $methodCall;
     }
 
     private function hasWillReturnMapOrWill(Expression $expression): bool
