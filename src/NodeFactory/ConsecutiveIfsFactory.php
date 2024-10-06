@@ -95,12 +95,7 @@ final readonly class ConsecutiveIfsFactory
                 $assertMethodCall = $assertArrayItem->value;
 
                 if ($this->nodeNameResolver->isName($assertMethodCall->name, 'equalTo')) {
-                    $assertMethodCallExpression = $this->createAssertMethodCall(
-                        $assertMethodCall,
-                        $parametersVariable,
-                        $assertKey
-                    );
-                    $ifStmts[] = $assertMethodCallExpression;
+                    $ifStmts[] = $this->createAssertMethodCall($assertMethodCall, $parametersVariable, $assertKey);
                 } elseif ($this->nodeNameResolver->isName($assertMethodCall->name, 'callback')) {
                     $ifStmts = array_merge(
                         $ifStmts,
