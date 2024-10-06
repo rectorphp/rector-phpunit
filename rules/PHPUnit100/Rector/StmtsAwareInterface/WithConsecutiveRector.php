@@ -20,7 +20,6 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
-use PhpParser\NodeTraverser;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\Enum\ConsecutiveMethodName;
@@ -46,6 +45,7 @@ final class WithConsecutiveRector extends AbstractRector implements MinPhpVersio
         private readonly WithConsecutiveMatchFactory $withConsecutiveMatchFactory,
         private readonly ConsecutiveIfsFactory $consecutiveIfsFactory,
         private readonly MethodCallNodeFinder $methodCallNodeFinder,
+        private readonly ExpectsMethodCallDecorator $expectsMethodCallDecorator,
     ) {
     }
 
@@ -187,7 +187,7 @@ CODE_SAMPLE
             $referenceVariable = new Variable('parameters');
         }
 
-        $expectsCall = $this->matchAndRefactorExpectsMethodCall($node);
+        $expectsCall = $this->expectsMethodCallDecorator->decorate($node);
 
         if (! $expectsCall instanceof MethodCall && ! $expectsCall instanceof StaticCall) {
             // fallback to default by case count
@@ -223,63 +223,6 @@ CODE_SAMPLE
     {
         // This rule uses PHP 8.0 match
         return PhpVersion::PHP_80;
-    }
-
-    /**
-     * Replace $this->expects(...)
-     *
-     * @param Expression<MethodCall> $expression
-     */
-    private function matchAndRefactorExpectsMethodCall(Expression $expression): MethodCall|StaticCall|null
-    {
-        /** @var MethodCall|StaticCall|null $exactlyCall */
-        $exactlyCall = null;
-
-        $this->traverseNodesWithCallable($expression, function (Node $node) use (&$exactlyCall): ?MethodCall {
-            if (! $node instanceof MethodCall) {
-                return null;
-            }
-
-            if (! $this->isName($node->name, 'expects')) {
-                return null;
-            }
-
-            if ($node->isFirstClassCallable()) {
-                return null;
-            }
-
-            $firstArg = $node->getArgs()[0];
-            if (! $firstArg->value instanceof MethodCall && ! $firstArg->value instanceof StaticCall) {
-                return null;
-            }
-
-            $exactlyCall = $firstArg->value;
-
-            $node->args = [new Arg(new Variable(ConsecutiveVariable::MATCHER))];
-
-            return $node;
-        });
-
-        // add expects() method
-        if (! $exactlyCall instanceof Expr) {
-            $this->traverseNodesWithCallable($expression, function (Node $node): ?int {
-                if (! $node instanceof MethodCall) {
-                    return null;
-                }
-
-                if ($node->var instanceof MethodCall) {
-                    return null;
-                }
-
-                $node->var = new MethodCall($node->var, 'expects', [
-                    new Arg(new Variable(ConsecutiveVariable::MATCHER)),
-                ]);
-
-                return NodeTraverser::STOP_TRAVERSAL;
-            });
-        }
-
-        return $exactlyCall;
     }
 
     private function hasWillReturnMapOrWill(Expression $expression): bool
