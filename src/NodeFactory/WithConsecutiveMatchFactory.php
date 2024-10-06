@@ -21,6 +21,7 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PHPUnit\Enum\ConsecutiveVariable;
@@ -43,17 +44,22 @@ final readonly class WithConsecutiveMatchFactory
     public function createClosure(
         MethodCall $withConsecutiveMethodCall,
         array $returnStmts,
-        Variable|Expr|null $referenceVariable
+        Variable|Expr|null $referenceVariable,
+        bool $areIfsPreferred
     ): Closure {
         $matcherVariable = new Variable(ConsecutiveVariable::MATCHER);
         $usedVariables = $this->usedVariablesResolver->resolveUsedVariables($withConsecutiveMethodCall, $returnStmts);
 
-        $matchOrIfs = $this->createParametersMatch($withConsecutiveMethodCall);
-
-        if (is_array($matchOrIfs)) {
-            $closureStmts = array_merge($matchOrIfs, $returnStmts);
+        if ($areIfsPreferred) {
+            $closureStmts = $returnStmts;
         } else {
-            $closureStmts = [new Expression($matchOrIfs), ...$returnStmts];
+            $matchOrIfs = $this->createParametersMatch($withConsecutiveMethodCall);
+
+            if (is_array($matchOrIfs)) {
+                $closureStmts = array_merge($matchOrIfs, $returnStmts);
+            } else {
+                $closureStmts = [new Expression($matchOrIfs), ...$returnStmts];
+            }
         }
 
         $parametersParam = new Param(new Variable(ConsecutiveVariable::PARAMETERS));
@@ -68,7 +74,7 @@ final readonly class WithConsecutiveMatchFactory
     }
 
     /**
-     * @return Match_|MethodCall|Stmt\If_[]
+     * @return Match_|MethodCall|If_[]
      */
     public function createParametersMatch(MethodCall $withConsecutiveMethodCall): Match_|MethodCall|array
     {

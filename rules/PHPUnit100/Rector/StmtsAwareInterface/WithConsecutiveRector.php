@@ -10,12 +10,10 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\MatchArm;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
@@ -27,7 +25,7 @@ use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\Enum\ConsecutiveVariable;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
-use Rector\PHPUnit\NodeFactory\MatcherInvocationCountMethodCallNodeFactory;
+use Rector\PHPUnit\NodeFactory\ConsecutiveIfsFactory;
 use Rector\PHPUnit\NodeFactory\WithConsecutiveMatchFactory;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersion;
@@ -49,7 +47,7 @@ final class WithConsecutiveRector extends AbstractRector implements MinPhpVersio
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly WithConsecutiveMatchFactory $withConsecutiveMatchFactory,
-        private readonly MatcherInvocationCountMethodCallNodeFactory $matcherInvocationCountMethodCallNodeFactory,
+        private readonly ConsecutiveIfsFactory $consecutiveIfsFactory,
     ) {
     }
 
@@ -142,9 +140,15 @@ CODE_SAMPLE
             $returnStmts[] = $this->createWillReturnArgument($willReturnArgument);
         }
 
+        $areIfsPreferred = false;
+
         $willReturnOnConsecutiveCallsArgument = $this->findMethodCall($node, 'willReturnOnConsecutiveCalls');
         if ($willReturnOnConsecutiveCallsArgument instanceof MethodCall) {
-            $returnStmts[] = $this->createReturnMatch($willReturnOnConsecutiveCallsArgument);
+            $returnStmts = $this->consecutiveIfsFactory->createCombinedIfs(
+                $withConsecutiveMethodCall,
+                $willReturnOnConsecutiveCallsArgument
+            );
+            $areIfsPreferred = true;
         }
 
         $willThrowException = $this->findMethodCall($node, 'willThrowException');
@@ -195,6 +199,7 @@ CODE_SAMPLE
             $referenceVariable,
             $expectsCall,
             $node,
+            $areIfsPreferred
         );
     }
 
@@ -304,11 +309,13 @@ CODE_SAMPLE
         Expr|Variable|null $referenceVariable,
         StaticCall|MethodCall $expectsCall,
         Expression $expression,
+        bool $areIfsPreferred
     ): array {
         $closure = $this->withConsecutiveMatchFactory->createClosure(
             $withConsecutiveMethodCall,
             $returnStmts,
             $referenceVariable,
+            $areIfsPreferred
         );
 
         $withConsecutiveMethodCall->name = new Identifier('willReturnCallback');
@@ -423,17 +430,5 @@ CODE_SAMPLE
         }
 
         return new Return_(new ArrayDimFetch($parametersVariable, $firstArgs->value));
-    }
-
-    private function createReturnMatch(MethodCall $willReturnOnConsecutiveCallsMethodCall): Return_
-    {
-        $numberOfInvocationsMethodCall = $this->matcherInvocationCountMethodCallNodeFactory->create();
-
-        $matchArms = [];
-        foreach ($willReturnOnConsecutiveCallsMethodCall->getArgs() as $key => $arg) {
-            $matchArms[] = new MatchArm([new LNumber($key + 1)], $arg->value);
-        }
-
-        return new Return_(new Match_($numberOfInvocationsMethodCall, $matchArms));
     }
 }

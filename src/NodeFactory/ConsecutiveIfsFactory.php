@@ -17,6 +17,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Return_;
 use Rector\Exception\NotImplementedYetException;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -28,6 +29,40 @@ final readonly class ConsecutiveIfsFactory
         private MatcherInvocationCountMethodCallNodeFactory $matcherInvocationCountMethodCallNodeFactory,
         private NodeNameResolver $nodeNameResolver,
     ) {
+    }
+
+    /**
+     * @return If_[]
+     */
+    public function createCombinedIfs(
+        MethodCall $withConsecutiveMethodCall,
+        MethodCall $willReturnOnConsecutiveCallsArgument
+    ): array {
+        $ifs = [];
+        $matcherMethodCall = $this->matcherInvocationCountMethodCallNodeFactory->create();
+
+        $willReturnArgs = $willReturnOnConsecutiveCallsArgument->getArgs();
+
+        foreach ($withConsecutiveMethodCall->getArgs() as $key => $withConsecutiveArg) {
+            if (! $withConsecutiveArg->value instanceof Array_) {
+                throw new ShouldNotHappenException();
+            }
+
+            $ifStmts = [];
+            $args = [new Arg($withConsecutiveArg->value), new Arg(new Variable('parameters'))];
+            $ifStmts[] = new Expression(new MethodCall(new Variable('this'), 'assertSame', $args));
+
+            $willReturnArg = $willReturnArgs[$key] ?? null;
+            if ($willReturnArg instanceof Arg) {
+                $ifStmts[] = new Return_($willReturnArg->value);
+            }
+
+            $ifs[] = new If_(new Identical($matcherMethodCall, new LNumber($key + 1)), [
+                'stmts' => $ifStmts,
+            ]);
+        }
+
+        return $ifs;
     }
 
     /**
@@ -52,7 +87,9 @@ final readonly class ConsecutiveIfsFactory
                 }
 
                 if (! $assertArrayItem->value instanceof MethodCall) {
-                    throw new NotImplementedYetException();
+                    $args = [new Arg($assertArrayItem), new Arg(new Variable('parameters'))];
+                    $ifStmts[] = new Expression(new MethodCall(new Variable('this'), 'assertSame', $args));
+                    continue;
                 }
 
                 $assertMethodCall = $assertArrayItem->value;
