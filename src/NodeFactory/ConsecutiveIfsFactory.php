@@ -8,9 +8,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrayItem;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Identical;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
@@ -21,6 +19,7 @@ use PhpParser\Node\Stmt\Return_;
 use Rector\Exception\NotImplementedYetException;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\PHPUnit\CodeQuality\NodeFactory\NestedClosureAssertFactory;
 use Rector\PHPUnit\Enum\ConsecutiveVariable;
 
 final readonly class ConsecutiveIfsFactory
@@ -28,6 +27,7 @@ final readonly class ConsecutiveIfsFactory
     public function __construct(
         private MatcherInvocationCountMethodCallNodeFactory $matcherInvocationCountMethodCallNodeFactory,
         private NodeNameResolver $nodeNameResolver,
+        private readonly NestedClosureAssertFactory $nestedClosureAssertFactory
     ) {
     }
 
@@ -102,8 +102,10 @@ final readonly class ConsecutiveIfsFactory
                     );
                     $ifStmts[] = $assertMethodCallExpression;
                 } elseif ($this->nodeNameResolver->isName($assertMethodCall->name, 'callback')) {
-                    $ifStmts[] = $this->createClosureAssignExpression($assertMethodCall);
-                    $ifStmts[] = $this->createAssertClosureExpression($parametersVariable, $assertKey);
+                    $ifStmts = array_merge(
+                        $ifStmts,
+                        $this->nestedClosureAssertFactory->create($assertMethodCall, $assertKey)
+                    );
                 } else {
                     $methodName = $this->nodeNameResolver->getName($assertMethodCall->name);
                     throw new NotImplementedYetException($methodName ?? 'dynamic name');
@@ -129,28 +131,5 @@ final readonly class ConsecutiveIfsFactory
         $assertMethodCall->args[] = new Arg($parametersArrayDimFetch);
 
         return new Expression($assertMethodCall);
-    }
-
-    private function createClosureAssignExpression(MethodCall $assertMethodCall): Expression
-    {
-        $callableFirstArg = $assertMethodCall->getArgs()[0];
-
-        $callbackVariable = new Variable('callback');
-        $callbackAssign = new Assign($callbackVariable, $callableFirstArg->value);
-
-        return new Expression($callbackAssign);
-    }
-
-    private function createAssertClosureExpression(Variable $parametersVariable, int $parameterPositionKey): Expression
-    {
-        $callbackVariable = new Variable('callback');
-        $parametersArrayDimFetch = new ArrayDimFetch($parametersVariable, new LNumber($parameterPositionKey));
-
-        $callbackFuncCall = new FuncCall($callbackVariable, [new Arg($parametersArrayDimFetch)]);
-
-        // add assert true to the callback
-        $assertTrueMethodCall = new MethodCall(new Variable('this'), 'assertTrue', [new Arg($callbackFuncCall)]);
-
-        return new Expression($assertTrueMethodCall);
     }
 }

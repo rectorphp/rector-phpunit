@@ -20,13 +20,14 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
-use PhpParser\NodeTraverser;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\PHPUnit\Enum\ConsecutiveMethodName;
 use Rector\PHPUnit\Enum\ConsecutiveVariable;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFactory\ConsecutiveIfsFactory;
 use Rector\PHPUnit\NodeFactory\WithConsecutiveMatchFactory;
+use Rector\PHPUnit\NodeFinder\MethodCallNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -38,16 +39,13 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class WithConsecutiveRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const WITH_CONSECUTIVE_METHOD = 'withConsecutive';
-
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly WithConsecutiveMatchFactory $withConsecutiveMatchFactory,
         private readonly ConsecutiveIfsFactory $consecutiveIfsFactory,
+        private readonly MethodCallNodeFinder $methodCallNodeFinder,
+        private readonly ExpectsMethodCallDecorator $expectsMethodCallDecorator,
     ) {
     }
 
@@ -114,7 +112,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $withConsecutiveMethodCall = $this->findMethodCall($node, self::WITH_CONSECUTIVE_METHOD);
+        $withConsecutiveMethodCall = $this->methodCallNodeFinder->findByName(
+            $node,
+            ConsecutiveMethodName::WITH_CONSECUTIVE
+        );
         if (! $withConsecutiveMethodCall instanceof MethodCall) {
             return null;
         }
@@ -125,56 +126,68 @@ CODE_SAMPLE
 
         $returnStmts = [];
 
-        $willReturn = $this->findMethodCall($node, 'willReturn');
+        $willReturn = $this->methodCallNodeFinder->findByName($node, ConsecutiveMethodName::WILL_RETURN);
         if ($willReturn instanceof MethodCall) {
+            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN);
             $returnStmts[] = $this->createWillReturnStmt($willReturn);
         }
 
-        $willReturnSelf = $this->findMethodCall($node, 'willReturnSelf');
+        $willReturnSelf = $this->methodCallNodeFinder->findByName($node, ConsecutiveMethodName::WILL_RETURN_SELF);
         if ($willReturnSelf instanceof MethodCall) {
+            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_SELF);
             $returnStmts[] = $this->createWillReturnSelfStmts($willReturnSelf);
         }
 
-        $willReturnArgument = $this->findMethodCall($node, 'willReturnArgument');
+        $willReturnArgument = $this->methodCallNodeFinder->findByName(
+            $node,
+            ConsecutiveMethodName::WILL_RETURN_ARGUMENT
+        );
         if ($willReturnArgument instanceof MethodCall) {
+            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_ARGUMENT);
             $returnStmts[] = $this->createWillReturnArgument($willReturnArgument);
         }
 
         $areIfsPreferred = false;
 
-        $willReturnOnConsecutiveCallsArgument = $this->findMethodCall($node, 'willReturnOnConsecutiveCalls');
+        $willReturnOnConsecutiveCallsArgument = $this->methodCallNodeFinder->findByName(
+            $node,
+            ConsecutiveMethodName::WILL_RETURN_ON_CONSECUTIVE_CALLS,
+        );
+
         if ($willReturnOnConsecutiveCallsArgument instanceof MethodCall) {
+            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_ON_CONSECUTIVE_CALLS);
+
             $returnStmts = $this->consecutiveIfsFactory->createCombinedIfs(
                 $withConsecutiveMethodCall,
                 $willReturnOnConsecutiveCallsArgument
             );
+
             $areIfsPreferred = true;
         }
 
-        $willThrowException = $this->findMethodCall($node, 'willThrowException');
+        $willThrowException = $this->methodCallNodeFinder->findByName(
+            $node,
+            ConsecutiveMethodName::WILL_THROW_EXCEPTION
+        );
         if ($willThrowException instanceof MethodCall) {
+            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_THROW_EXCEPTION);
             $returnStmts[] = $this->createWillThrowException($willThrowException);
         }
 
-        $willReturnReferenceArgument = $this->findMethodCall($node, 'willReturnReference');
+        $willReturnReferenceArgument = $this->methodCallNodeFinder->findByName(
+            $node,
+            ConsecutiveMethodName::WILL_RETURN_REFERENCE
+        );
         $referenceVariable = null;
         if ($willReturnReferenceArgument instanceof MethodCall) {
+            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_REFERENCE);
             $returnStmts[] = $this->createWillReturn($willReturnReferenceArgument);
 
             // returns passed args
             $referenceVariable = new Variable('parameters');
         }
 
-        $this->removeMethodCalls($node, [
-            'willReturn',
-            'willReturnArgument',
-            'willReturnSelf',
-            'willReturnOnConsecutiveCalls',
-            'willReturnReference',
-            'willThrowException',
-        ]);
-
-        $expectsCall = $this->matchAndRefactorExpectsMethodCall($node);
+        $expectsCall = $this->expectsMethodCallDecorator->decorate($node);
 
         if (! $expectsCall instanceof MethodCall && ! $expectsCall instanceof StaticCall) {
             // fallback to default by case count
@@ -182,8 +195,11 @@ CODE_SAMPLE
             $expectsCall = new MethodCall(new Variable('this'), new Identifier('exactly'), [new Arg($lNumber)]);
         }
 
-        // 2. does willReturnCallback() exist? just merge
-        $existingWillReturnCallback = $this->findMethodCall($node, 'willReturnCallback');
+        // 2. does willReturnCallback() exist? just merge them together
+        $existingWillReturnCallback = $this->methodCallNodeFinder->findByName(
+            $node,
+            ConsecutiveMethodName::WILL_RETURN_CALLBACK
+        );
         if ($existingWillReturnCallback instanceof MethodCall) {
             return $this->refactorWithExistingWillReturnCallback(
                 $existingWillReturnCallback,
@@ -207,83 +223,6 @@ CODE_SAMPLE
     {
         // This rule uses PHP 8.0 match
         return PhpVersion::PHP_80;
-    }
-
-    /**
-     * Replace $this->expects(...)
-     *
-     * @param Expression<MethodCall> $expression
-     */
-    private function matchAndRefactorExpectsMethodCall(Expression $expression): MethodCall|StaticCall|null
-    {
-        /** @var MethodCall|StaticCall|null $exactlyCall */
-        $exactlyCall = null;
-
-        $this->traverseNodesWithCallable($expression, function (Node $node) use (&$exactlyCall): ?MethodCall {
-            if (! $node instanceof MethodCall) {
-                return null;
-            }
-
-            if (! $this->isName($node->name, 'expects')) {
-                return null;
-            }
-
-            if ($node->isFirstClassCallable()) {
-                return null;
-            }
-
-            $firstArg = $node->getArgs()[0];
-            if (! $firstArg->value instanceof MethodCall && ! $firstArg->value instanceof StaticCall) {
-                return null;
-            }
-
-            $exactlyCall = $firstArg->value;
-
-            $node->args = [new Arg(new Variable(ConsecutiveVariable::MATCHER))];
-
-            return $node;
-        });
-
-        // add expects() method
-        if (! $exactlyCall instanceof Expr) {
-            $this->traverseNodesWithCallable($expression, function (Node $node): ?int {
-                if (! $node instanceof MethodCall) {
-                    return null;
-                }
-
-                if ($node->var instanceof MethodCall) {
-                    return null;
-                }
-
-                $node->var = new MethodCall($node->var, 'expects', [
-                    new Arg(new Variable(ConsecutiveVariable::MATCHER)),
-                ]);
-
-                return NodeTraverser::STOP_TRAVERSAL;
-            });
-        }
-
-        return $exactlyCall;
-    }
-
-    private function findMethodCall(Expression $expression, string $methodName): ?MethodCall
-    {
-        if (! $expression->expr instanceof MethodCall) {
-            return null;
-        }
-
-        /** @var MethodCall|null $methodCall */
-        $methodCall = $this->betterNodeFinder->findFirst($expression->expr, function (Node $node) use (
-            $methodName
-        ): bool {
-            if (! $node instanceof MethodCall) {
-                return false;
-            }
-
-            return $this->isName($node->name, $methodName);
-        });
-
-        return $methodCall;
     }
 
     private function hasWillReturnMapOrWill(Expression $expression): bool
@@ -318,7 +257,7 @@ CODE_SAMPLE
             $areIfsPreferred
         );
 
-        $withConsecutiveMethodCall->name = new Identifier('willReturnCallback');
+        $withConsecutiveMethodCall->name = new Identifier(ConsecutiveMethodName::WILL_RETURN_CALLBACK);
         $withConsecutiveMethodCall->args = [new Arg($closure)];
 
         $matcherVariable = new Variable(ConsecutiveVariable::MATCHER);
@@ -338,7 +277,6 @@ CODE_SAMPLE
         }
 
         $callbackClosure = $callbackArg->value;
-
         $callbackClosure->params[] = new Param(new Variable(ConsecutiveVariable::PARAMETERS));
 
         $parametersMatch = $this->withConsecutiveMatchFactory->createParametersMatch($withConsecutiveMethodCall);
@@ -348,22 +286,19 @@ CODE_SAMPLE
             $callbackClosure->stmts = array_merge([new Expression($parametersMatch)], $callbackClosure->stmts);
         }
 
-        $this->removeMethodCalls($expression, [self::WITH_CONSECUTIVE_METHOD]);
+        $this->removeMethodCall($expression, ConsecutiveMethodName::WITH_CONSECUTIVE);
 
         return $expression;
     }
 
-    /**
-     * @param string[] $methodNames
-     */
-    private function removeMethodCalls(Expression $expression, array $methodNames): void
+    private function removeMethodCall(Expression $expression, string $methodName): void
     {
-        $this->traverseNodesWithCallable($expression, function (Node $node) use ($methodNames): ?Node {
+        $this->traverseNodesWithCallable($expression, function (Node $node) use ($methodName): ?Node {
             if (! $node instanceof MethodCall) {
                 return null;
             }
 
-            if (! $this->isNames($node->name, $methodNames)) {
+            if (! $this->isName($node->name, $methodName)) {
                 return null;
             }
 
