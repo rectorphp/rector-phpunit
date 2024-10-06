@@ -38,8 +38,7 @@ final class NestedCallback extends TestCase
                 function (...$parameters) use ($matcher) {
                     if ($matcher->numberOfInvocations() === 1) {
                         $this->assertEquals(50, $parameters[0]);
-                        $callback = fn ($item): bool => $item === 5;
-                        $this->assertTrue($callback($parameters[1]));
+                        $this->assertSame(5, $parameters[1]);
                     }
                 }
             );
