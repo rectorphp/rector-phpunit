@@ -10,7 +10,7 @@ use PhpParser\Node\Stmt\Expression;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
-final class MethodCallNodeFinder
+final readonly class MethodCallNodeFinder
 {
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
