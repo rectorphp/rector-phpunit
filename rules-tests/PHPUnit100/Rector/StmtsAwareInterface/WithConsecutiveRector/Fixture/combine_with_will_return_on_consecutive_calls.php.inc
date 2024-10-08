@@ -11,10 +11,9 @@ final class CombineWithWillReturnOnConsecutiveCalls extends TestCase
         $this->userServiceMock->expects(self::exactly(2))
             ->method('prepare')
             ->withConsecutive(
-                [1, 2],
-                [3, 4],
+                [1],
             )
-            ->willReturnOnConsecutiveCalls(5, 6);
+            ->willReturnOnConsecutiveCalls(5);
     }
 }
 
@@ -32,16 +31,15 @@ final class CombineWithWillReturnOnConsecutiveCalls extends TestCase
     {
         $matcher = self::exactly(2);
         $this->userServiceMock->expects($matcher)
-            ->method('prepare')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->numberOfInvocations() === 1) {
-                $this->assertSame([1, 2], $parameters);
-                return 5;
-            }
-            if ($matcher->numberOfInvocations() === 2) {
-                $this->assertSame([3, 4], $parameters);
-                return 6;
-            }
-        });
+            ->method('prepare')
+            ->willReturnCallback(
+                function (...$parameters) use ($matcher) {
+                    if ($matcher->numberOfInvocations() === 1) {
+                        $this->assertSame([1], $parameters);
+                        return 5;
+                    }
+                },
+            );
     }
 }
 

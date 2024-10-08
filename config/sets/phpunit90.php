@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\PHPUnit\PHPUnit100\Rector\StmtsAwareInterface\WithConsecutiveRector;
 use Rector\PHPUnit\PHPUnit90\Rector\Class_\TestListenerToHooksRector;
 use Rector\PHPUnit\PHPUnit90\Rector\MethodCall\ExplicitPhpErrorApiRector;
 use Rector\PHPUnit\PHPUnit90\Rector\MethodCall\SpecificAssertContainsWithoutIdentityRector;
@@ -14,6 +15,7 @@ return static function (RectorConfig $rectorConfig): void {
         TestListenerToHooksRector::class,
         ExplicitPhpErrorApiRector::class,
         SpecificAssertContainsWithoutIdentityRector::class,
+        WithConsecutiveRector::class,
     ]);
 
     $rectorConfig->ruleWithConfiguration(RenameMethodRector::class, [
