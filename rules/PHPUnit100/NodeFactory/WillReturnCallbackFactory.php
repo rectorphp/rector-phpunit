@@ -41,14 +41,20 @@ final readonly class WillReturnCallbackFactory
         $usedVariables = $this->usedVariablesResolver->resolveUsedVariables($withConsecutiveMethodCall, $returnStmt);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> e2766a6 (single return stmt)
         $closureStmts = $this->createParametersMatch($withConsecutiveMethodCall);
         if ($returnStmt instanceof Stmt) {
             $closureStmts[] = $returnStmt;
         }
+<<<<<<< HEAD
 =======
         $ifs = $this->createParametersMatch($withConsecutiveMethodCall);
         $closureStmts = array_merge($ifs, $returnStmts);
 >>>>>>> f9d5473 (extract WillReturnPerIfNodeDecorator)
+=======
+>>>>>>> e2766a6 (single return stmt)
 
         $parametersParam = new Param(new Variable(ConsecutiveVariable::PARAMETERS));
         $parametersParam->variadic = true;
