@@ -129,9 +129,15 @@ CODE_SAMPLE
 
         $willReturn = $this->methodCallNodeFinder->findByName($node, ConsecutiveMethodName::WILL_RETURN);
         if ($willReturn instanceof MethodCall) {
+<<<<<<< HEAD
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN);
             $expr = $this->getFirstArgValue($willReturn);
             $returnStmt = new Return_($expr);
+=======
+            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN);
+            $expr = $this->getFirstArgValue($willReturn);
+            $returnStmts[] = new Return_($expr);
+>>>>>>> 9a6e06d (narrow)
         }
 
         $willReturnSelf = $this->methodCallNodeFinder->findByName($node, ConsecutiveMethodName::WILL_RETURN_SELF);
@@ -163,9 +169,15 @@ CODE_SAMPLE
             ConsecutiveMethodName::WILL_THROW_EXCEPTION
         );
         if ($willThrowException instanceof MethodCall) {
+<<<<<<< HEAD
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_THROW_EXCEPTION);
             $expr = $this->getFirstArgValue($willThrowException);
             $returnStmt = new Throw_($expr);
+=======
+            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_THROW_EXCEPTION);
+            $expr = $this->getFirstArgValue($willThrowException);
+            $returnStmts[] = new Throw_($expr);
+>>>>>>> 9a6e06d (narrow)
         }
 
         $willReturnReferenceArgument = $this->methodCallNodeFinder->findByName(
@@ -175,9 +187,15 @@ CODE_SAMPLE
 
         $referenceVariable = null;
         if ($willReturnReferenceArgument instanceof MethodCall) {
+<<<<<<< HEAD
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_REFERENCE);
             $expr = $this->getFirstArgValue($willReturnReferenceArgument);
             $returnStmt = new Return_($expr);
+=======
+            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_REFERENCE);
+            $expr = $this->getFirstArgValue($willReturnReferenceArgument);
+            $returnStmts[] = new Return_($expr);
+>>>>>>> 9a6e06d (narrow)
 
             // returns passed args
             $referenceVariable = new Variable('parameters');
@@ -264,6 +282,24 @@ CODE_SAMPLE
         return $expression;
     }
 
+<<<<<<< HEAD
+=======
+    private function removeMethodCall(Expression $expression, string $methodName): void
+    {
+        $this->traverseNodesWithCallable($expression, function (Node $node) use ($methodName): ?Node {
+            if (! $node instanceof MethodCall) {
+                return null;
+            }
+
+            if (! $this->isName($node->name, $methodName)) {
+                return null;
+            }
+
+            return $node->var;
+        });
+    }
+
+>>>>>>> 9a6e06d (narrow)
     private function createWillReturnSelfStmts(MethodCall $willReturnSelfMethodCall): Return_
     {
         $selfVariable = $willReturnSelfMethodCall;
