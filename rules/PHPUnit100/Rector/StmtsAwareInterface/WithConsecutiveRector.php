@@ -130,7 +130,7 @@ CODE_SAMPLE
         $willReturn = $this->methodCallNodeFinder->findByName($node, ConsecutiveMethodName::WILL_RETURN);
         if ($willReturn instanceof MethodCall) {
             $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN);
-            $returnStmts[] = $this->createWillReturnStmt($willReturn);
+            $returnStmts[] = $this->createReturnStmt($willReturn);
         }
 
         $willReturnSelf = $this->methodCallNodeFinder->findByName($node, ConsecutiveMethodName::WILL_RETURN_SELF);
@@ -182,7 +182,7 @@ CODE_SAMPLE
         $referenceVariable = null;
         if ($willReturnReferenceArgument instanceof MethodCall) {
             $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_REFERENCE);
-            $returnStmts[] = $this->createWillReturn($willReturnReferenceArgument);
+            $returnStmts[] = $this->createReturnStmt($willReturnReferenceArgument);
 
             // returns passed args
             $referenceVariable = new Variable('parameters');
@@ -297,14 +297,10 @@ CODE_SAMPLE
         });
     }
 
-    private function createWillReturnStmt(MethodCall $willReturnMethodCall): Return_
+    private function createReturnStmt(MethodCall $methodCall): Return_
     {
-        $firstArg = $willReturnMethodCall->getArgs()[0] ?? null;
-        if (! $firstArg instanceof Arg) {
-            throw new ShouldNotHappenException();
-        }
-
-        return new Return_($firstArg->value);
+        $expr = $this->getFirstArgValue($methodCall);
+        return new Return_($expr);
     }
 
     private function createWillReturnSelfStmts(MethodCall $willReturnSelfMethodCall): Return_
@@ -323,38 +319,25 @@ CODE_SAMPLE
 
     private function createWillThrowException(MethodCall $willThrowExceptionMethodCall): Throw_
     {
-        $firstArg = $willThrowExceptionMethodCall->getArgs()[0] ?? null;
-        if (! $firstArg instanceof Arg) {
-            throw new ShouldNotHappenException();
-        }
-
-        return new Throw_($firstArg->value);
-    }
-
-    private function createWillReturn(MethodCall $willReturnReferenceMethodCall): Return_
-    {
-        $firstArg = $willReturnReferenceMethodCall->getArgs()[0] ?? null;
-        if (! $firstArg instanceof Arg) {
-            throw new ShouldNotHappenException();
-        }
-
-        $referenceVariable = $firstArg->value;
-        if (! $referenceVariable instanceof Variable) {
-            throw new ShouldNotHappenException();
-        }
-
-        return new Return_($referenceVariable);
+        $expr = $this->getFirstArgValue($willThrowExceptionMethodCall);
+        return new Throw_($expr);
     }
 
     private function createWillReturnArgument(MethodCall $willReturnArgumentMethodCall): Return_
     {
         $parametersVariable = new Variable(ConsecutiveVariable::PARAMETERS);
 
-        $firstArgs = $willReturnArgumentMethodCall->getArgs()[0];
-        if (! $firstArgs instanceof Arg) {
+        $expr = $this->getFirstArgValue($willReturnArgumentMethodCall);
+        return new Return_(new ArrayDimFetch($parametersVariable, $expr));
+    }
+
+    private function getFirstArgValue(MethodCall $methodCall): Expr
+    {
+        $firstArg = $methodCall->getArgs()[0] ?? null;
+        if (! $firstArg instanceof Arg) {
             throw new ShouldNotHappenException();
         }
 
-        return new Return_(new ArrayDimFetch($parametersVariable, $firstArgs->value));
+        return $firstArg->value;
     }
 }
