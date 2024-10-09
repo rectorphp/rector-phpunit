@@ -10,7 +10,11 @@ use PhpParser\Node\Stmt\Expression;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
+<<<<<<< HEAD
 final readonly class MethodCallRemover
+=======
+final class MethodCallRemover
+>>>>>>> 320f0bc (extract method call remoiver)
 {
     public function __construct(
         private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
