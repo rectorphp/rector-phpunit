@@ -40,6 +40,10 @@ final class WithConsecutiveRector extends AbstractRector
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly WillReturnCallbackFactory $willReturnCallbackFactory,
+<<<<<<< HEAD
+=======
+        private readonly ConsecutiveIfsFactory $consecutiveIfsFactory,
+>>>>>>> f9d5473 (extract WillReturnPerIfNodeDecorator)
         private readonly WillReturnPerIfNodeDecorator $willReturnPerIfNodeDecorator,
         private readonly MethodCallNodeFinder $methodCallNodeFinder,
         private readonly ExpectsMethodCallDecorator $expectsMethodCallDecorator,
@@ -177,6 +181,7 @@ CODE_SAMPLE
         );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         if ($willReturnOnConsecutiveMethodCall instanceof MethodCall) {
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_ON_CONSECUTIVE_CALLS);
 =======
@@ -190,6 +195,10 @@ CODE_SAMPLE
 
             $areIfsPreferred = true;
 >>>>>>> 320f0bc (extract method call remoiver)
+=======
+        if ($willReturnOnConsecutiveMethodCall instanceof MethodCall) {
+            $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_ON_CONSECUTIVE_CALLS);
+>>>>>>> f9d5473 (extract WillReturnPerIfNodeDecorator)
         }
 
         $willThrowException = $this->methodCallNodeFinder->findByName(

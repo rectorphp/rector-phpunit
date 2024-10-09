@@ -40,10 +40,15 @@ final readonly class WillReturnCallbackFactory
         $matcherVariable = new Variable(ConsecutiveVariable::MATCHER);
         $usedVariables = $this->usedVariablesResolver->resolveUsedVariables($withConsecutiveMethodCall, $returnStmt);
 
+<<<<<<< HEAD
         $closureStmts = $this->createParametersMatch($withConsecutiveMethodCall);
         if ($returnStmt instanceof Stmt) {
             $closureStmts[] = $returnStmt;
         }
+=======
+        $ifs = $this->createParametersMatch($withConsecutiveMethodCall);
+        $closureStmts = array_merge($ifs, $returnStmts);
+>>>>>>> f9d5473 (extract WillReturnPerIfNodeDecorator)
 
         $parametersParam = new Param(new Variable(ConsecutiveVariable::PARAMETERS));
         $parametersParam->variadic = true;
