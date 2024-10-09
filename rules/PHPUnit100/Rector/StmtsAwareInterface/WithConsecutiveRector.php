@@ -40,25 +40,10 @@ final class WithConsecutiveRector extends AbstractRector
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly WillReturnCallbackFactory $willReturnCallbackFactory,
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-        private readonly ConsecutiveIfsFactory $consecutiveIfsFactory,
->>>>>>> f9d5473 (extract WillReturnPerIfNodeDecorator)
-        private readonly WillReturnPerIfNodeDecorator $willReturnPerIfNodeDecorator,
+        private readonly MethodCallRemover $methodCallRemover,
         private readonly MethodCallNodeFinder $methodCallNodeFinder,
         private readonly ExpectsMethodCallDecorator $expectsMethodCallDecorator,
-<<<<<<< HEAD
-        private readonly MethodCallRemover $methodCallRemover
-=======
-        private readonly \Rector\PHPUnit\MethodCallRemover $methodCallRemover
->>>>>>> 320f0bc (extract method call remoiver)
-=======
-        private readonly WillReturnIfNodeDecorator $willReturnPerIfNodeDecorator,
-        private readonly MethodCallNodeFinder $methodCallNodeFinder,
-        private readonly ExpectsMethodCallDecorator $expectsMethodCallDecorator,
-        private readonly MethodCallRemover $methodCallRemover
->>>>>>> e2766a6 (single return stmt)
+        private readonly WillReturnIfNodeDecorator $willReturnIfNodeDecorator
     ) {
     }
 
@@ -144,36 +129,15 @@ CODE_SAMPLE
 
         $willReturn = $this->methodCallNodeFinder->findByName($node, ConsecutiveMethodName::WILL_RETURN);
         if ($willReturn instanceof MethodCall) {
-<<<<<<< HEAD
-<<<<<<< HEAD
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN);
             $expr = $this->getFirstArgValue($willReturn);
             $returnStmt = new Return_($expr);
-<<<<<<< HEAD
-=======
-            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN);
-=======
-            $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN);
->>>>>>> 320f0bc (extract method call remoiver)
-            $expr = $this->getFirstArgValue($willReturn);
-            $returnStmts[] = new Return_($expr);
->>>>>>> 9a6e06d (narrow)
-=======
->>>>>>> e2766a6 (single return stmt)
         }
 
         $willReturnSelf = $this->methodCallNodeFinder->findByName($node, ConsecutiveMethodName::WILL_RETURN_SELF);
         if ($willReturnSelf instanceof MethodCall) {
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_SELF);
-<<<<<<< HEAD
-<<<<<<< HEAD
             $returnStmt = $this->createWillReturnSelfStmts($willReturnSelf);
-=======
-            $returnStmts[] = $this->createWillReturnSelfStmts($willReturnSelf);
->>>>>>> 320f0bc (extract method call remoiver)
-=======
-            $returnStmt = $this->createWillReturnSelfStmts($willReturnSelf);
->>>>>>> e2766a6 (single return stmt)
         }
 
         $willReturnArgument = $this->methodCallNodeFinder->findByName(
@@ -182,15 +146,7 @@ CODE_SAMPLE
         );
         if ($willReturnArgument instanceof MethodCall) {
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_ARGUMENT);
-<<<<<<< HEAD
-<<<<<<< HEAD
             $returnStmt = $this->createWillReturnArgument($willReturnArgument);
-=======
-            $returnStmts[] = $this->createWillReturnArgument($willReturnArgument);
->>>>>>> 320f0bc (extract method call remoiver)
-=======
-            $returnStmt = $this->createWillReturnArgument($willReturnArgument);
->>>>>>> e2766a6 (single return stmt)
         }
 
         $willReturnOnConsecutiveMethodCall = $this->methodCallNodeFinder->findByName(
@@ -198,48 +154,19 @@ CODE_SAMPLE
             ConsecutiveMethodName::WILL_RETURN_ON_CONSECUTIVE_CALLS,
         );
 
-<<<<<<< HEAD
-<<<<<<< HEAD
         if ($willReturnOnConsecutiveMethodCall instanceof MethodCall) {
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_ON_CONSECUTIVE_CALLS);
-=======
-        if ($willReturnOnConsecutiveCallsArgument instanceof MethodCall) {
-            $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_ON_CONSECUTIVE_CALLS);
-
-            $returnStmts = $this->consecutiveIfsFactory->createCombinedIfs(
-                $withConsecutiveMethodCall,
-                $willReturnOnConsecutiveCallsArgument
-            );
-
-            $areIfsPreferred = true;
->>>>>>> 320f0bc (extract method call remoiver)
-=======
-        if ($willReturnOnConsecutiveMethodCall instanceof MethodCall) {
-            $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_ON_CONSECUTIVE_CALLS);
->>>>>>> f9d5473 (extract WillReturnPerIfNodeDecorator)
         }
 
         $willThrowException = $this->methodCallNodeFinder->findByName(
             $node,
             ConsecutiveMethodName::WILL_THROW_EXCEPTION
         );
+
         if ($willThrowException instanceof MethodCall) {
-<<<<<<< HEAD
-<<<<<<< HEAD
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_THROW_EXCEPTION);
             $expr = $this->getFirstArgValue($willThrowException);
             $returnStmt = new Throw_($expr);
-<<<<<<< HEAD
-=======
-            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_THROW_EXCEPTION);
-=======
-            $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_THROW_EXCEPTION);
->>>>>>> 320f0bc (extract method call remoiver)
-            $expr = $this->getFirstArgValue($willThrowException);
-            $returnStmts[] = new Throw_($expr);
->>>>>>> 9a6e06d (narrow)
-=======
->>>>>>> e2766a6 (single return stmt)
         }
 
         $willReturnReferenceArgument = $this->methodCallNodeFinder->findByName(
@@ -249,22 +176,9 @@ CODE_SAMPLE
 
         $referenceVariable = null;
         if ($willReturnReferenceArgument instanceof MethodCall) {
-<<<<<<< HEAD
-<<<<<<< HEAD
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_REFERENCE);
             $expr = $this->getFirstArgValue($willReturnReferenceArgument);
             $returnStmt = new Return_($expr);
-<<<<<<< HEAD
-=======
-            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_REFERENCE);
-=======
-            $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_REFERENCE);
->>>>>>> 320f0bc (extract method call remoiver)
-            $expr = $this->getFirstArgValue($willReturnReferenceArgument);
-            $returnStmts[] = new Return_($expr);
->>>>>>> 9a6e06d (narrow)
-=======
->>>>>>> e2766a6 (single return stmt)
 
             // returns passed args
             $referenceVariable = new Variable('parameters');
@@ -325,7 +239,7 @@ CODE_SAMPLE
         $matcherVariable = new Variable(ConsecutiveVariable::MATCHER);
         $matcherAssign = new Assign($matcherVariable, $expectsCall);
 
-        $this->willReturnPerIfNodeDecorator->decorate($closure, $willReturnOnConsecutiveMethodCall);
+        $this->willReturnIfNodeDecorator->decorate($closure, $willReturnOnConsecutiveMethodCall);
 
         return [new Expression($matcherAssign), $expression];
     }
@@ -351,27 +265,6 @@ CODE_SAMPLE
         return $expression;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    private function removeMethodCall(Expression $expression, string $methodName): void
-    {
-        $this->traverseNodesWithCallable($expression, function (Node $node) use ($methodName): ?Node {
-            if (! $node instanceof MethodCall) {
-                return null;
-            }
-
-            if (! $this->isName($node->name, $methodName)) {
-                return null;
-            }
-
-            return $node->var;
-        });
-    }
-
->>>>>>> 9a6e06d (narrow)
-=======
->>>>>>> 320f0bc (extract method call remoiver)
     private function createWillReturnSelfStmts(MethodCall $willReturnSelfMethodCall): Return_
     {
         $selfVariable = $willReturnSelfMethodCall;

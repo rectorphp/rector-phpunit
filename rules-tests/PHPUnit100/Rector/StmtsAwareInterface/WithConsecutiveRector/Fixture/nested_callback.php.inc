@@ -43,6 +43,8 @@ final class NestedCallback extends TestCase
                         $this->assertEquals(50, $parameters[0]);
                         $this->assertSame(5, $parameters[1]);
                         $this->assertSame(5, $parameters[2]);
+                        $this->assertNotEmpty($parameters[3]);
+                        $this->assertEmpty($parameters[4]);
                     }
                 }
             );
