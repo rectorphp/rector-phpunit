@@ -42,6 +42,7 @@ final class WithConsecutiveRector extends AbstractRector
         private readonly ConsecutiveIfsFactory $consecutiveIfsFactory,
         private readonly MethodCallNodeFinder $methodCallNodeFinder,
         private readonly ExpectsMethodCallDecorator $expectsMethodCallDecorator,
+        private readonly \Rector\PHPUnit\MethodCallRemover $methodCallRemover
     ) {
     }
 
@@ -127,14 +128,14 @@ CODE_SAMPLE
 
         $willReturn = $this->methodCallNodeFinder->findByName($node, ConsecutiveMethodName::WILL_RETURN);
         if ($willReturn instanceof MethodCall) {
-            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN);
+            $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN);
             $expr = $this->getFirstArgValue($willReturn);
             $returnStmts[] = new Return_($expr);
         }
 
         $willReturnSelf = $this->methodCallNodeFinder->findByName($node, ConsecutiveMethodName::WILL_RETURN_SELF);
         if ($willReturnSelf instanceof MethodCall) {
-            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_SELF);
+            $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_SELF);
             $returnStmts[] = $this->createWillReturnSelfStmts($willReturnSelf);
         }
 
@@ -143,7 +144,7 @@ CODE_SAMPLE
             ConsecutiveMethodName::WILL_RETURN_ARGUMENT
         );
         if ($willReturnArgument instanceof MethodCall) {
-            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_ARGUMENT);
+            $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_ARGUMENT);
             $returnStmts[] = $this->createWillReturnArgument($willReturnArgument);
         }
 
@@ -155,7 +156,7 @@ CODE_SAMPLE
         );
 
         if ($willReturnOnConsecutiveCallsArgument instanceof MethodCall) {
-            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_ON_CONSECUTIVE_CALLS);
+            $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_ON_CONSECUTIVE_CALLS);
 
             $returnStmts = $this->consecutiveIfsFactory->createCombinedIfs(
                 $withConsecutiveMethodCall,
@@ -170,7 +171,7 @@ CODE_SAMPLE
             ConsecutiveMethodName::WILL_THROW_EXCEPTION
         );
         if ($willThrowException instanceof MethodCall) {
-            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_THROW_EXCEPTION);
+            $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_THROW_EXCEPTION);
             $expr = $this->getFirstArgValue($willThrowException);
             $returnStmts[] = new Throw_($expr);
         }
@@ -182,7 +183,7 @@ CODE_SAMPLE
 
         $referenceVariable = null;
         if ($willReturnReferenceArgument instanceof MethodCall) {
-            $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_REFERENCE);
+            $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_REFERENCE);
             $expr = $this->getFirstArgValue($willReturnReferenceArgument);
             $returnStmts[] = new Return_($expr);
 
@@ -266,24 +267,9 @@ CODE_SAMPLE
         $parametersMatch = $this->willReturnCallbackFactory->createParametersMatch($withConsecutiveMethodCall);
         $callbackClosure->stmts = array_merge($parametersMatch, $callbackClosure->stmts);
 
-        $this->removeMethodCall($expression, ConsecutiveMethodName::WITH_CONSECUTIVE);
+        $this->methodCallRemover->removeMethodCall($expression, ConsecutiveMethodName::WITH_CONSECUTIVE);
 
         return $expression;
-    }
-
-    private function removeMethodCall(Expression $expression, string $methodName): void
-    {
-        $this->traverseNodesWithCallable($expression, function (Node $node) use ($methodName): ?Node {
-            if (! $node instanceof MethodCall) {
-                return null;
-            }
-
-            if (! $this->isName($node->name, $methodName)) {
-                return null;
-            }
-
-            return $node->var;
-        });
     }
 
     private function createWillReturnSelfStmts(MethodCall $willReturnSelfMethodCall): Return_
