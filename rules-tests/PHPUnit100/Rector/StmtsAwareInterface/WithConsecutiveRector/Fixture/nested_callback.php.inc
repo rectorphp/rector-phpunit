@@ -13,7 +13,10 @@ final class NestedCallback extends TestCase
             ->withConsecutive(
                 [
                     $this->equalTo(50),
-                    $this->callback(fn ($item): bool => $item === 5)
+                    $this->callback(fn ($item): bool => $item === 5),
+                    $this->callback(fn ($item): bool => 5 === $item),
+                    $this->callback(fn ($item): bool => ! empty($item)),
+                    $this->callback(fn ($item): bool => empty($item))
                 ]
             );
     }
@@ -39,6 +42,9 @@ final class NestedCallback extends TestCase
                     if ($matcher->numberOfInvocations() === 1) {
                         $this->assertEquals(50, $parameters[0]);
                         $this->assertSame(5, $parameters[1]);
+                        $this->assertSame(5, $parameters[2]);
+                        $this->assertNotEmpty($parameters[3]);
+                        $this->assertEmpty($parameters[4]);
                     }
                 }
             );

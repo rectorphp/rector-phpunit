@@ -26,7 +26,7 @@ use Rector\PHPUnit\Enum\ConsecutiveVariable;
 use Rector\PHPUnit\MethodCallRemover;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFinder\MethodCallNodeFinder;
-use Rector\PHPUnit\PHPUnit100\NodeDecorator\WillReturnPerIfNodeDecorator;
+use Rector\PHPUnit\PHPUnit100\NodeDecorator\WillReturnIfNodeDecorator;
 use Rector\PHPUnit\PHPUnit100\NodeFactory\WillReturnCallbackFactory;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -40,10 +40,10 @@ final class WithConsecutiveRector extends AbstractRector
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly WillReturnCallbackFactory $willReturnCallbackFactory,
-        private readonly WillReturnPerIfNodeDecorator $willReturnPerIfNodeDecorator,
+        private readonly MethodCallRemover $methodCallRemover,
         private readonly MethodCallNodeFinder $methodCallNodeFinder,
         private readonly ExpectsMethodCallDecorator $expectsMethodCallDecorator,
-        private readonly MethodCallRemover $methodCallRemover
+        private readonly WillReturnIfNodeDecorator $willReturnIfNodeDecorator
     ) {
     }
 
@@ -162,6 +162,7 @@ CODE_SAMPLE
             $node,
             ConsecutiveMethodName::WILL_THROW_EXCEPTION
         );
+
         if ($willThrowException instanceof MethodCall) {
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_THROW_EXCEPTION);
             $expr = $this->getFirstArgValue($willThrowException);
@@ -238,7 +239,7 @@ CODE_SAMPLE
         $matcherVariable = new Variable(ConsecutiveVariable::MATCHER);
         $matcherAssign = new Assign($matcherVariable, $expectsCall);
 
-        $this->willReturnPerIfNodeDecorator->decorate($closure, $willReturnOnConsecutiveMethodCall);
+        $this->willReturnIfNodeDecorator->decorate($closure, $willReturnOnConsecutiveMethodCall);
 
         return [new Expression($matcherAssign), $expression];
     }
