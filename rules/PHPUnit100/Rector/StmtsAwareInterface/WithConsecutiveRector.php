@@ -23,8 +23,8 @@ use PhpParser\Node\Stmt\Throw_;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PHPUnit\Enum\ConsecutiveMethodName;
 use Rector\PHPUnit\Enum\ConsecutiveVariable;
+use Rector\PHPUnit\MethodCallRemover;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
-use Rector\PHPUnit\NodeFactory\ConsecutiveIfsFactory;
 use Rector\PHPUnit\NodeFinder\MethodCallNodeFinder;
 use Rector\PHPUnit\PHPUnit100\NodeDecorator\WillReturnPerIfNodeDecorator;
 use Rector\PHPUnit\PHPUnit100\NodeFactory\WillReturnCallbackFactory;
@@ -40,11 +40,10 @@ final class WithConsecutiveRector extends AbstractRector
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly WillReturnCallbackFactory $willReturnCallbackFactory,
-        private readonly ConsecutiveIfsFactory $consecutiveIfsFactory,
         private readonly WillReturnPerIfNodeDecorator $willReturnPerIfNodeDecorator,
         private readonly MethodCallNodeFinder $methodCallNodeFinder,
         private readonly ExpectsMethodCallDecorator $expectsMethodCallDecorator,
-        private readonly \Rector\PHPUnit\MethodCallRemover $methodCallRemover
+        private readonly MethodCallRemover $methodCallRemover
     ) {
     }
 
@@ -126,19 +125,19 @@ CODE_SAMPLE
             return null;
         }
 
-        $returnStmts = [];
+        $returnStmt = null;
 
         $willReturn = $this->methodCallNodeFinder->findByName($node, ConsecutiveMethodName::WILL_RETURN);
         if ($willReturn instanceof MethodCall) {
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN);
             $expr = $this->getFirstArgValue($willReturn);
-            $returnStmts[] = new Return_($expr);
+            $returnStmt = new Return_($expr);
         }
 
         $willReturnSelf = $this->methodCallNodeFinder->findByName($node, ConsecutiveMethodName::WILL_RETURN_SELF);
         if ($willReturnSelf instanceof MethodCall) {
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_SELF);
-            $returnStmts[] = $this->createWillReturnSelfStmts($willReturnSelf);
+            $returnStmt = $this->createWillReturnSelfStmts($willReturnSelf);
         }
 
         $willReturnArgument = $this->methodCallNodeFinder->findByName(
@@ -147,7 +146,7 @@ CODE_SAMPLE
         );
         if ($willReturnArgument instanceof MethodCall) {
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_ARGUMENT);
-            $returnStmts[] = $this->createWillReturnArgument($willReturnArgument);
+            $returnStmt = $this->createWillReturnArgument($willReturnArgument);
         }
 
         $willReturnOnConsecutiveMethodCall = $this->methodCallNodeFinder->findByName(
@@ -166,7 +165,7 @@ CODE_SAMPLE
         if ($willThrowException instanceof MethodCall) {
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_THROW_EXCEPTION);
             $expr = $this->getFirstArgValue($willThrowException);
-            $returnStmts[] = new Throw_($expr);
+            $returnStmt = new Throw_($expr);
         }
 
         $willReturnReferenceArgument = $this->methodCallNodeFinder->findByName(
@@ -178,7 +177,7 @@ CODE_SAMPLE
         if ($willReturnReferenceArgument instanceof MethodCall) {
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_REFERENCE);
             $expr = $this->getFirstArgValue($willReturnReferenceArgument);
-            $returnStmts[] = new Return_($expr);
+            $returnStmt = new Return_($expr);
 
             // returns passed args
             $referenceVariable = new Variable('parameters');
@@ -208,7 +207,7 @@ CODE_SAMPLE
         // 3. rename and replace withConsecutive()
         return $this->refactorToWillReturnCallback(
             $withConsecutiveMethodCall,
-            $returnStmts,
+            $returnStmt,
             $referenceVariable,
             $expectsCall,
             $node,
@@ -217,12 +216,11 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Stmt[] $returnStmts
      * @return Stmt[]
      */
     private function refactorToWillReturnCallback(
         MethodCall $withConsecutiveMethodCall,
-        array $returnStmts,
+        ?Stmt $returnStmt,
         Expr|Variable|null $referenceVariable,
         StaticCall|MethodCall $expectsCall,
         Expression $expression,
@@ -230,7 +228,7 @@ CODE_SAMPLE
     ): array {
         $closure = $this->willReturnCallbackFactory->createClosure(
             $withConsecutiveMethodCall,
-            $returnStmts,
+            $returnStmt,
             $referenceVariable,
         );
 

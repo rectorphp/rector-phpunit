@@ -13,7 +13,7 @@ final class WillReturnPerIfNodeDecorator
 {
     public function decorate(Closure $callbackClosure, ?MethodCall $willReturnOnConsecutiveMethodCall): void
     {
-        if ($willReturnOnConsecutiveMethodCall) {
+        if ($willReturnOnConsecutiveMethodCall instanceof MethodCall) {
             foreach ($callbackClosure->stmts as $key => $stmt) {
                 if ($stmt instanceof If_) {
                     $currentArg = $willReturnOnConsecutiveMethodCall->getArgs()[$key];

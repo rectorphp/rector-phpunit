@@ -10,7 +10,7 @@ use PhpParser\Node\Stmt\Expression;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
-final class MethodCallRemover
+final readonly class MethodCallRemover
 {
     public function __construct(
         private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
