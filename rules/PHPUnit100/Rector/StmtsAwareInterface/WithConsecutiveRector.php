@@ -128,7 +128,8 @@ CODE_SAMPLE
         $willReturn = $this->methodCallNodeFinder->findByName($node, ConsecutiveMethodName::WILL_RETURN);
         if ($willReturn instanceof MethodCall) {
             $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN);
-            $returnStmts[] = $this->createReturnStmt($willReturn);
+            $expr = $this->getFirstArgValue($willReturn);
+            $returnStmts[] = new Return_($expr);
         }
 
         $willReturnSelf = $this->methodCallNodeFinder->findByName($node, ConsecutiveMethodName::WILL_RETURN_SELF);
@@ -170,17 +171,20 @@ CODE_SAMPLE
         );
         if ($willThrowException instanceof MethodCall) {
             $this->removeMethodCall($node, ConsecutiveMethodName::WILL_THROW_EXCEPTION);
-            $returnStmts[] = $this->createWillThrowException($willThrowException);
+            $expr = $this->getFirstArgValue($willThrowException);
+            $returnStmts[] = new Throw_($expr);
         }
 
         $willReturnReferenceArgument = $this->methodCallNodeFinder->findByName(
             $node,
             ConsecutiveMethodName::WILL_RETURN_REFERENCE
         );
+
         $referenceVariable = null;
         if ($willReturnReferenceArgument instanceof MethodCall) {
             $this->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_REFERENCE);
-            $returnStmts[] = $this->createReturnStmt($willReturnReferenceArgument);
+            $expr = $this->getFirstArgValue($willReturnReferenceArgument);
+            $returnStmts[] = new Return_($expr);
 
             // returns passed args
             $referenceVariable = new Variable('parameters');
@@ -282,12 +286,6 @@ CODE_SAMPLE
         });
     }
 
-    private function createReturnStmt(MethodCall $methodCall): Return_
-    {
-        $expr = $this->getFirstArgValue($methodCall);
-        return new Return_($expr);
-    }
-
     private function createWillReturnSelfStmts(MethodCall $willReturnSelfMethodCall): Return_
     {
         $selfVariable = $willReturnSelfMethodCall;
@@ -300,12 +298,6 @@ CODE_SAMPLE
         }
 
         return new Return_($selfVariable);
-    }
-
-    private function createWillThrowException(MethodCall $willThrowExceptionMethodCall): Throw_
-    {
-        $expr = $this->getFirstArgValue($willThrowExceptionMethodCall);
-        return new Throw_($expr);
     }
 
     private function createWillReturnArgument(MethodCall $willReturnArgumentMethodCall): Return_
