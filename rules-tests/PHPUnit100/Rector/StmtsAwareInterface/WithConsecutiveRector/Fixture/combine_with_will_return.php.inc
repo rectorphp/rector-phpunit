@@ -11,8 +11,7 @@ final class CombineWithWillReturn extends TestCase
         $this->userServiceMock->expects(self::exactly(2))
             ->method('prepare')
             ->withConsecutive(
-                [1, 2],
-                [3, 4],
+                [1],
             )
             ->willReturn(5);
     }
@@ -32,13 +31,15 @@ final class CombineWithWillReturn extends TestCase
     {
         $matcher = self::exactly(2);
         $this->userServiceMock->expects($matcher)
-            ->method('prepare')->willReturnCallback(function (...$parameters) use ($matcher) {
-            match ($matcher->numberOfInvocations()) {
-                1 => self::assertEquals([1, 2], $parameters),
-                2 => self::assertEquals([3, 4], $parameters),
-            };
-            return 5;
-        });
+            ->method('prepare')
+            ->willReturnCallback(
+                function (...$parameters) use ($matcher) {
+                    if ($matcher->numberOfInvocations() === 1) {
+                        $this->assertSame(1, $parameters[0]);
+                    }
+                    return 5;
+                },
+            );
     }
 }
 

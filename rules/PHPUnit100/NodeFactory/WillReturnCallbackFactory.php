@@ -2,38 +2,32 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\NodeFactory;
+namespace Rector\PHPUnit\PHPUnit100\NodeFactory;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\BinaryOp\Minus;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ClosureUse;
-use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\MatchArm;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\If_;
-use PhpParser\NodeFinder;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PHPUnit\Enum\ConsecutiveVariable;
+use Rector\PHPUnit\NodeFactory\ConsecutiveIfsFactory;
+use Rector\PHPUnit\NodeFactory\MatcherInvocationCountMethodCallNodeFactory;
+use Rector\PHPUnit\NodeFactory\UsedVariablesResolver;
 
-final readonly class WithConsecutiveMatchFactory
+final readonly class WillReturnCallbackFactory
 {
     public function __construct(
         private BuilderFactory $builderFactory,
         private UsedVariablesResolver $usedVariablesResolver,
         private MatcherInvocationCountMethodCallNodeFactory $matcherInvocationCountMethodCallNodeFactory,
-        private NodeFinder $nodeFinder,
-        private NodeNameResolver $nodeNameResolver,
         private ConsecutiveIfsFactory $consecutiveIfsFactory,
     ) {
     }
@@ -53,13 +47,8 @@ final readonly class WithConsecutiveMatchFactory
         if ($areIfsPreferred) {
             $closureStmts = $returnStmts;
         } else {
-            $matchOrIfs = $this->createParametersMatch($withConsecutiveMethodCall);
-
-            if (is_array($matchOrIfs)) {
-                $closureStmts = array_merge($matchOrIfs, $returnStmts);
-            } else {
-                $closureStmts = [new Expression($matchOrIfs), ...$returnStmts];
-            }
+            $ifs = $this->createParametersMatch($withConsecutiveMethodCall);
+            $closureStmts = array_merge($ifs, $returnStmts);
         }
 
         $parametersParam = new Param(new Variable(ConsecutiveVariable::PARAMETERS));
@@ -74,33 +63,21 @@ final readonly class WithConsecutiveMatchFactory
     }
 
     /**
-     * @return Match_|MethodCall|If_[]
+     * @return Stmt[]
      */
-    public function createParametersMatch(MethodCall $withConsecutiveMethodCall): Match_|MethodCall|array
+    public function createParametersMatch(MethodCall $withConsecutiveMethodCall): array
     {
         $parametersVariable = new Variable(ConsecutiveVariable::PARAMETERS);
 
         $firstArg = $withConsecutiveMethodCall->getArgs()[0] ?? null;
         if ($firstArg instanceof Arg && $firstArg->unpack) {
-            return $this->createAssertSameDimFetch($firstArg, $parametersVariable);
+            $assertSameMethodCall = $this->createAssertSameDimFetch($firstArg, $parametersVariable);
+            return [new Expression($assertSameMethodCall)];
         }
 
         $numberOfInvocationsMethodCall = $this->matcherInvocationCountMethodCallNodeFactory->create();
 
-        // A. has assert inside the on consecutive? create ifs
-        if ($this->hasInnerAssertCall($withConsecutiveMethodCall)) {
-            return $this->consecutiveIfsFactory->createIfs($withConsecutiveMethodCall);
-        }
-
-        // B. if not, create match
-
-        $matchArms = [];
-        foreach ($withConsecutiveMethodCall->getArgs() as $key => $arg) {
-            $assertEquals = $this->builderFactory->staticCall('self', 'assertEquals', [$arg, $parametersVariable]);
-            $matchArms[] = new MatchArm([new LNumber($key + 1)], $assertEquals);
-        }
-
-        return new Match_($numberOfInvocationsMethodCall, $matchArms);
+        return $this->consecutiveIfsFactory->createIfs($withConsecutiveMethodCall, $numberOfInvocationsMethodCall);
     }
 
     private function createAssertSameDimFetch(Arg $firstArg, Variable $variable): MethodCall
@@ -135,32 +112,5 @@ final readonly class WithConsecutiveMatchFactory
         }
 
         return $uses;
-    }
-
-    /**
-     * We look for $this->assert/equals*() calls inside the consecutive calls
-     */
-    private function hasInnerAssertCall(MethodCall $withConsecutiveMethodCall): bool
-    {
-        return (bool) $this->nodeFinder->findFirst($withConsecutiveMethodCall->getArgs(), function (Node $node): bool {
-            if (! $node instanceof MethodCall) {
-                return false;
-            }
-
-            if (! $node->var instanceof Variable) {
-                return false;
-            }
-
-            if (! $this->nodeNameResolver->isName($node->var, 'this')) {
-                return false;
-            }
-
-            if (! $node->name instanceof Identifier) {
-                return false;
-            }
-
-            // is one of assert methods
-            return str_starts_with($node->name->toString(), 'equal');
-        });
     }
 }

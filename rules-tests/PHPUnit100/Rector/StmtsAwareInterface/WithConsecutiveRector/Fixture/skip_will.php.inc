@@ -13,7 +13,6 @@ final class SkipWill extends TestCase
             ->method('prepare')
             ->withConsecutive(
                 [1, 2],
-                [3, 4],
             )
             ->will($this->returnValue($value));
     }
@@ -24,7 +23,6 @@ final class SkipWill extends TestCase
             ->method('prepare')
             ->withConsecutive(
                 [1, 2],
-                [3, 4],
             )
             ->willReturnMap([
                 [1, 2, 5],

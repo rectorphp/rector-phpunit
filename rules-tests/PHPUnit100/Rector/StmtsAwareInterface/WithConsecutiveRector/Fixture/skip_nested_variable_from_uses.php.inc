@@ -33,9 +33,7 @@ final class SkipNestedVariableFromUses extends TestCase
             ->method('prepare')
             ->willReturnCallback(
                 function (...$parameters) use ($matcher) {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertEquals($this->callback(fn ($item): bool => $item === 5), $parameters),
-                    };
+                    $this->assertSame(5, $parameters[0]);
                 },
             );
     }
