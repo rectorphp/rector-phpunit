@@ -35,7 +35,7 @@ final class CombineWithWillReturnOnConsecutiveCalls extends TestCase
             ->willReturnCallback(
                 function (...$parameters) use ($matcher) {
                     if ($matcher->numberOfInvocations() === 1) {
-                        $this->assertSame([1], $parameters);
+                        $this->assertSame(1, $parameters[0]);
                         return 5;
                     }
                 },

@@ -32,23 +32,17 @@ final readonly class WillReturnCallbackFactory
     ) {
     }
 
-    /**
-     * @param Stmt[] $returnStmts
-     */
     public function createClosure(
         MethodCall $withConsecutiveMethodCall,
-        array $returnStmts,
+        ?Stmt $returnStmt,
         Variable|Expr|null $referenceVariable,
-        bool $areIfsPreferred
     ): Closure {
         $matcherVariable = new Variable(ConsecutiveVariable::MATCHER);
-        $usedVariables = $this->usedVariablesResolver->resolveUsedVariables($withConsecutiveMethodCall, $returnStmts);
+        $usedVariables = $this->usedVariablesResolver->resolveUsedVariables($withConsecutiveMethodCall, $returnStmt);
 
-        if ($areIfsPreferred) {
-            $closureStmts = $returnStmts;
-        } else {
-            $ifs = $this->createParametersMatch($withConsecutiveMethodCall);
-            $closureStmts = array_merge($ifs, $returnStmts);
+        $closureStmts = $this->createParametersMatch($withConsecutiveMethodCall);
+        if ($returnStmt instanceof Stmt) {
+            $closureStmts[] = $returnStmt;
         }
 
         $parametersParam = new Param(new Variable(ConsecutiveVariable::PARAMETERS));
