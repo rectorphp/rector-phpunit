@@ -26,6 +26,7 @@ use Rector\PHPUnit\Enum\ConsecutiveVariable;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFactory\ConsecutiveIfsFactory;
 use Rector\PHPUnit\NodeFinder\MethodCallNodeFinder;
+use Rector\PHPUnit\PHPUnit100\NodeDecorator\WillReturnPerIfNodeDecorator;
 use Rector\PHPUnit\PHPUnit100\NodeFactory\WillReturnCallbackFactory;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -40,6 +41,7 @@ final class WithConsecutiveRector extends AbstractRector
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly WillReturnCallbackFactory $willReturnCallbackFactory,
         private readonly ConsecutiveIfsFactory $consecutiveIfsFactory,
+        private readonly WillReturnPerIfNodeDecorator $willReturnPerIfNodeDecorator,
         private readonly MethodCallNodeFinder $methodCallNodeFinder,
         private readonly ExpectsMethodCallDecorator $expectsMethodCallDecorator,
         private readonly \Rector\PHPUnit\MethodCallRemover $methodCallRemover
@@ -148,22 +150,13 @@ CODE_SAMPLE
             $returnStmts[] = $this->createWillReturnArgument($willReturnArgument);
         }
 
-        $areIfsPreferred = false;
-
-        $willReturnOnConsecutiveCallsArgument = $this->methodCallNodeFinder->findByName(
+        $willReturnOnConsecutiveMethodCall = $this->methodCallNodeFinder->findByName(
             $node,
             ConsecutiveMethodName::WILL_RETURN_ON_CONSECUTIVE_CALLS,
         );
 
-        if ($willReturnOnConsecutiveCallsArgument instanceof MethodCall) {
+        if ($willReturnOnConsecutiveMethodCall instanceof MethodCall) {
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_RETURN_ON_CONSECUTIVE_CALLS);
-
-            $returnStmts = $this->consecutiveIfsFactory->createCombinedIfs(
-                $withConsecutiveMethodCall,
-                $willReturnOnConsecutiveCallsArgument
-            );
-
-            $areIfsPreferred = true;
         }
 
         $willThrowException = $this->methodCallNodeFinder->findByName(
@@ -219,7 +212,7 @@ CODE_SAMPLE
             $referenceVariable,
             $expectsCall,
             $node,
-            $areIfsPreferred
+            $willReturnOnConsecutiveMethodCall
         );
     }
 
@@ -233,13 +226,12 @@ CODE_SAMPLE
         Expr|Variable|null $referenceVariable,
         StaticCall|MethodCall $expectsCall,
         Expression $expression,
-        bool $areIfsPreferred
+        ?MethodCall $willReturnOnConsecutiveMethodCall
     ): array {
         $closure = $this->willReturnCallbackFactory->createClosure(
             $withConsecutiveMethodCall,
             $returnStmts,
             $referenceVariable,
-            $areIfsPreferred
         );
 
         $withConsecutiveMethodCall->name = new Identifier(ConsecutiveMethodName::WILL_RETURN_CALLBACK);
@@ -247,6 +239,8 @@ CODE_SAMPLE
 
         $matcherVariable = new Variable(ConsecutiveVariable::MATCHER);
         $matcherAssign = new Assign($matcherVariable, $expectsCall);
+
+        $this->willReturnPerIfNodeDecorator->decorate($closure, $willReturnOnConsecutiveMethodCall);
 
         return [new Expression($matcherAssign), $expression];
     }

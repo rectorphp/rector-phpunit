@@ -39,17 +39,12 @@ final readonly class WillReturnCallbackFactory
         MethodCall $withConsecutiveMethodCall,
         array $returnStmts,
         Variable|Expr|null $referenceVariable,
-        bool $areIfsPreferred
     ): Closure {
         $matcherVariable = new Variable(ConsecutiveVariable::MATCHER);
         $usedVariables = $this->usedVariablesResolver->resolveUsedVariables($withConsecutiveMethodCall, $returnStmts);
 
-        if ($areIfsPreferred) {
-            $closureStmts = $returnStmts;
-        } else {
-            $ifs = $this->createParametersMatch($withConsecutiveMethodCall);
-            $closureStmts = array_merge($ifs, $returnStmts);
-        }
+        $ifs = $this->createParametersMatch($withConsecutiveMethodCall);
+        $closureStmts = array_merge($ifs, $returnStmts);
 
         $parametersParam = new Param(new Variable(ConsecutiveVariable::PARAMETERS));
         $parametersParam->variadic = true;

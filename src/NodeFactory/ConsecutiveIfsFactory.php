@@ -17,9 +17,7 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
-use PhpParser\Node\Stmt\Return_;
 use Rector\Exception\NotImplementedYetException;
-use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PHPUnit\CodeQuality\NodeFactory\NestedClosureAssertFactory;
 use Rector\PHPUnit\Enum\ConsecutiveVariable;
@@ -27,44 +25,9 @@ use Rector\PHPUnit\Enum\ConsecutiveVariable;
 final readonly class ConsecutiveIfsFactory
 {
     public function __construct(
-        private MatcherInvocationCountMethodCallNodeFactory $matcherInvocationCountMethodCallNodeFactory,
         private NodeNameResolver $nodeNameResolver,
         private readonly NestedClosureAssertFactory $nestedClosureAssertFactory
     ) {
-    }
-
-    /**
-     * @return If_[]
-     */
-    public function createCombinedIfs(
-        MethodCall $withConsecutiveMethodCall,
-        MethodCall $willReturnOnConsecutiveCallsArgument
-    ): array {
-        $ifs = [];
-        $matcherMethodCall = $this->matcherInvocationCountMethodCallNodeFactory->create();
-
-        $willReturnArgs = $willReturnOnConsecutiveCallsArgument->getArgs();
-
-        foreach ($withConsecutiveMethodCall->getArgs() as $key => $withConsecutiveArg) {
-            if (! $withConsecutiveArg->value instanceof Array_) {
-                throw new ShouldNotHappenException();
-            }
-
-            $ifStmts = [];
-            $args = [new Arg($withConsecutiveArg->value), new Arg(new Variable('parameters'))];
-            $ifStmts[] = new Expression(new MethodCall(new Variable('this'), 'assertSame', $args));
-
-            $willReturnArg = $willReturnArgs[$key] ?? null;
-            if ($willReturnArg instanceof Arg) {
-                $ifStmts[] = new Return_($willReturnArg->value);
-            }
-
-            $ifs[] = new If_(new Identical($matcherMethodCall, new LNumber($key + 1)), [
-                'stmts' => $ifStmts,
-            ]);
-        }
-
-        return $ifs;
     }
 
     /**
