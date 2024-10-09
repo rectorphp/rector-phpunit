@@ -21,7 +21,6 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
 use Rector\Exception\ShouldNotHappenException;
-use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\Enum\ConsecutiveMethodName;
 use Rector\PHPUnit\Enum\ConsecutiveVariable;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -39,7 +38,6 @@ final class WithConsecutiveRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly WillReturnCallbackFactory $willReturnCallbackFactory,
         private readonly ConsecutiveIfsFactory $consecutiveIfsFactory,
         private readonly MethodCallNodeFinder $methodCallNodeFinder,
@@ -121,7 +119,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->hasWillReturnMapOrWill($node)) {
+        if ($this->methodCallNodeFinder->hasByNames($node, ['willReturnMap', 'will'])) {
             return null;
         }
 
@@ -218,19 +216,6 @@ CODE_SAMPLE
             $node,
             $areIfsPreferred
         );
-    }
-
-    private function hasWillReturnMapOrWill(Expression $expression): bool
-    {
-        $nodesWithWillReturnMap = $this->betterNodeFinder->find($expression, function (Node $node): bool {
-            if (! $node instanceof MethodCall) {
-                return false;
-            }
-
-            return $this->isNames($node->name, ['willReturnMap', 'will']);
-        });
-
-        return $nodesWithWillReturnMap !== [];
     }
 
     /**
