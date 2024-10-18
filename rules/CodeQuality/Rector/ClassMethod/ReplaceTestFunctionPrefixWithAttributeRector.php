@@ -71,7 +71,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! str_starts_with($node->name->toString(), 'test')) {
+        if (!str_starts_with($node->name->toString(), 'test')) {
             return null;
         }
 
@@ -79,10 +79,12 @@ CODE_SAMPLE
             return null;
         }
 
-        if (str_starts_with($node->name->toString(), 'test_')) {
-            $node->name->name = lcfirst(substr($node->name->name, 5));
-        } elseif (str_starts_with($node->name->toString(), 'test')) {
-            $node->name->name = lcfirst(substr($node->name->name, 4));
+        if ($node->name->toString() !== 'test' && $node->name->toString() !== 'test_') {
+            if (str_starts_with($node->name->toString(), 'test_')) {
+                $node->name->name = lcfirst(substr($node->name->name, 5));
+            } elseif (str_starts_with($node->name->toString(), 'test')) {
+                $node->name->name = lcfirst(substr($node->name->name, 4));
+            }
         }
 
         $coversAttributeGroup = $this->createAttributeGroup();
