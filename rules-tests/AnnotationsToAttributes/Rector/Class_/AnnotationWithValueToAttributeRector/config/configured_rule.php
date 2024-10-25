@@ -13,5 +13,6 @@ return static function (RectorConfig $rectorConfig): void {
             'disabled' => false,
         ]),
         new AnnotationWithValueToAttribute('dataProvider', 'PHPUnit\Framework\Attributes\DataProvider'),
+        new AnnotationWithValueToAttribute('uses', 'PHPUnit\Framework\Attributes\UsesClass'),
     ]);
 };
