@@ -71,7 +71,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (!str_starts_with($node->name->toString(), 'test')) {
+        if (! str_starts_with($node->name->toString(), 'test')) {
             return null;
         }
 
