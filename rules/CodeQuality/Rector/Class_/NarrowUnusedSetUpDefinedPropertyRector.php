@@ -87,9 +87,15 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
+        $isFinalClass = $node->isFinal();
 
         foreach ($node->stmts as $key => $classStmt) {
             if (! $classStmt instanceof Property) {
+                continue;
+            }
+
+            // possibly used by child
+            if (! $isFinalClass && ! $classStmt->isPrivate()) {
                 continue;
             }
 
