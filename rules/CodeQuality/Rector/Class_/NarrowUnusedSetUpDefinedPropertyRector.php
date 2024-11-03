@@ -108,7 +108,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->isPropertyUsedOutsideSetUpClassMethod($node, $setUpClassMethod, $property)) {
+            if ($this->isPropertyUsedOutsideSetUpClassMethod($node, $setUpClassMethod, $property)) {
                 continue;
             }
 

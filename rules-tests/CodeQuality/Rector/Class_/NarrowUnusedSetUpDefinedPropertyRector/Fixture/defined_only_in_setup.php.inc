@@ -36,12 +36,12 @@ use Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\NarrowUnusedSetUpDefinedPrope
 
 final class DefinedOnlyInSetup extends TestCase
 {
-    private MockObject $someMock;
+    private MockObject $anotherMock;
 
     protected function setUp(): void
     {
-        $this->someMock = $this->createMock(SomeType::class);
-        $anotherMock = $this->createMock(SomeType::class);
+        $someMock = $this->createMock(SomeType::class);
+        $this->anotherMock = $this->createMock(SomeType::class);
     }
 
     public function test()
