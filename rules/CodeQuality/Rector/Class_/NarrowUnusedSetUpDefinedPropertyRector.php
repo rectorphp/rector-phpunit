@@ -7,7 +7,6 @@ namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
@@ -23,11 +22,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class NarrowUnusedSetUpDefinedPropertyRector extends AbstractRector
 {
-    /**
-     * @var string
-     */
-    private const MOCK_OBJECT_CLASS = 'PHPUnit\Framework\MockObject\MockObject';
-
     private readonly NodeFinder $nodeFinder;
 
     public function __construct(
@@ -100,15 +94,7 @@ CODE_SAMPLE
             }
 
             $property = $classStmt;
-            if (! $property->type instanceof Name) {
-                continue;
-            }
-
-            if (! $this->isName($property->type, self::MOCK_OBJECT_CLASS)) {
-                continue;
-            }
-
-            if (! $this->isPropertyUsedOutsideSetUpClassMethod($node, $setUpClassMethod, $property)) {
+            if ($this->isPropertyUsedOutsideSetUpClassMethod($node, $setUpClassMethod, $property)) {
                 continue;
             }
 
@@ -150,6 +136,7 @@ CODE_SAMPLE
         Property $property
     ): bool {
         $isPropertyUsed = false;
+        $propertyName = $property->props[0]->name->toString();
 
         foreach ($class->getMethods() as $classMethod) {
             // skip setUp() method
@@ -159,7 +146,7 @@ CODE_SAMPLE
 
             // check if property is used anywhere else than setup
             $usedPropertyFetch = $this->nodeFinder->findFirst($classMethod, function (Node $node) use (
-                $property
+                $propertyName
             ): bool {
                 if (! $node instanceof PropertyFetch) {
                     return false;
@@ -169,7 +156,6 @@ CODE_SAMPLE
                     return false;
                 }
 
-                $propertyName = $property->props[0]->name->toString();
                 return $this->isName($node->name, $propertyName);
             });
 

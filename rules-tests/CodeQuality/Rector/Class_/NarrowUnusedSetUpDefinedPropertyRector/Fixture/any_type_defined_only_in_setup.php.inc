@@ -6,16 +6,18 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\NarrowUnusedSetUpDefinedPropertyRector\Source\SomeType;
 
-final class DefinedOnlyInSetup extends TestCase
+final class AnyTypeDefinedOnlyInSetup extends TestCase
 {
-    private MockObject $someMock;
+    private $startValue;
 
     private MockObject $anotherMock;
 
     protected function setUp(): void
     {
-        $this->someMock = $this->createMock(SomeType::class);
-        $this->anotherMock = $this->createMock(SomeType::class);
+        $this->startValue = 100;
+
+        $this->anotherMock = $this->createMock(SomeType::class)
+            ->expects($this->once())->willReturn($this->startValue);
     }
 
     public function test()
@@ -34,14 +36,16 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\NarrowUnusedSetUpDefinedPropertyRector\Source\SomeType;
 
-final class DefinedOnlyInSetup extends TestCase
+final class AnyTypeDefinedOnlyInSetup extends TestCase
 {
     private MockObject $anotherMock;
 
     protected function setUp(): void
     {
-        $someMock = $this->createMock(SomeType::class);
-        $this->anotherMock = $this->createMock(SomeType::class);
+        $startValue = 100;
+
+        $this->anotherMock = $this->createMock(SomeType::class)
+            ->expects($this->once())->willReturn($startValue);
     }
 
     public function test()
