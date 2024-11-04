@@ -84,8 +84,7 @@ final class AssertCompareOnCountableWithMethodToAssertCountRector extends Abstra
 
         if (
             ($comparedExpr instanceof MethodCall)
-            && $comparedExpr->name instanceof Identifier
-            && $comparedExpr->name->toLowerString() === 'count'
+            && $this->isName($comparedExpr->name, 'count')
             && $comparedExpr->getArgs() === []
         ) {
             $type = $this->getType($comparedExpr->var);
