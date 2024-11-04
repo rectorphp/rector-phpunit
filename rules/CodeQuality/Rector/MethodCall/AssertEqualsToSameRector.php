@@ -6,6 +6,7 @@ namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Scalar\Encapsed;
@@ -88,8 +89,7 @@ final class AssertEqualsToSameRector extends AbstractRector
         }
 
         $firstArgValue = $args[0]->value;
-
-        if (! $this->isScalarValue($firstArgValue)) {
+        if (! $this->isScalarOrEnumValue($firstArgValue)) {
             return null;
         }
 
@@ -146,8 +146,12 @@ final class AssertEqualsToSameRector extends AbstractRector
         return false;
     }
 
-    private function isScalarValue(Expr $expr): bool
+    private function isScalarOrEnumValue(Expr $expr): bool
     {
+        if ($expr instanceof ClassConstFetch) {
+            return true;
+        }
+
         if ($expr instanceof Encapsed) {
             return true;
         }
