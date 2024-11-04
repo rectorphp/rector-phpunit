@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 final class CoversMethod extends TestCase
 {
     /**
-     * @covers \Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Source\ExistingClass
+     * @covers \Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Source\ExistingClass::foo
      */
     public function test()
     {
@@ -22,7 +22,7 @@ namespace Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\CoversAnnot
 
 use PHPUnit\Framework\TestCase;
 
-#[\PHPUnit\Framework\Attributes\CoversClass(\Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Source\ExistingClass::class)]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Source\ExistingClass::class, 'foo')]
 final class CoversMethod extends TestCase
 {
     public function test()
