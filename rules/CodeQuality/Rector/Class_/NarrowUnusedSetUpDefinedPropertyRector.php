@@ -11,10 +11,12 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\NodeFinder;
+use PHPStan\Reflection\ClassReflection;
+use Rector\NodeManipulator\PropertyManipulator;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -28,6 +30,8 @@ final class NarrowUnusedSetUpDefinedPropertyRector extends AbstractRector
 
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly PropertyManipulator $propertyManipulator,
     ) {
         $this->nodeFinder = new NodeFinder();
     }
@@ -91,11 +95,9 @@ CODE_SAMPLE
         $hasChanged = false;
         $isFinalClass = $node->isFinal();
 
-        // early verify trait, ensure no overlapped property vs trait definition
-        foreach ($node->stmts as $stmt) {
-            if ($stmt instanceof TraitUse) {
-                return null;
-            }
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
         }
 
         foreach ($node->stmts as $key => $classStmt) {
@@ -104,7 +106,9 @@ CODE_SAMPLE
             }
 
             $property = $classStmt;
-            if ($this->shouldSkipProperty($isFinalClass, $property)) {
+            $propertyName = $property->props[0]->name->toString();
+
+            if ($this->shouldSkipProperty($isFinalClass, $property, $classReflection, $propertyName)) {
                 continue;
             }
 
@@ -115,7 +119,6 @@ CODE_SAMPLE
             $hasChanged = true;
 
             unset($node->stmts[$key]);
-            $propertyName = $property->props[0]->name->toString();
 
             // change property to variable in setUp() method
             $this->traverseNodesWithCallable($setUpClassMethod, function (Node $node) use (
@@ -181,8 +184,12 @@ CODE_SAMPLE
         return $isPropertyUsed;
     }
 
-    private function shouldSkipProperty(bool $isFinalClass, Property $property): bool
-    {
+    private function shouldSkipProperty(
+        bool $isFinalClass,
+        Property $property,
+        ClassReflection $classReflection,
+        string $propertyName
+    ): bool {
         // possibly used by child
         if (! $isFinalClass && ! $property->isPrivate()) {
             return true;
@@ -193,6 +200,10 @@ CODE_SAMPLE
             return true;
         }
 
-        return $property->props[0]->default instanceof Expr;
+        if ($property->props[0]->default instanceof Expr) {
+            return true;
+        }
+
+        return $this->propertyManipulator->isUsedByTrait($classReflection, $propertyName);
     }
 }
