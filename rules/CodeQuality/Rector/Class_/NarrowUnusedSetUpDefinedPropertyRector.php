@@ -106,6 +106,11 @@ CODE_SAMPLE
             }
 
             $property = $classStmt;
+
+            if (count($property->props) !== 1) {
+                continue;
+            }
+
             $propertyName = $property->props[0]->name->toString();
 
             if ($this->shouldSkipProperty($isFinalClass, $property, $classReflection, $propertyName)) {
