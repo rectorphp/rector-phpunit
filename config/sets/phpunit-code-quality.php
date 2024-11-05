@@ -6,6 +6,7 @@ use Rector\Config\RectorConfig;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\ConstructClassMethodToSetUpTestCaseRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\NarrowUnusedSetUpDefinedPropertyRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
+use Rector\PHPUnit\CodeQuality\Rector\Class_\SingleMockPropertyTypeRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\TestWithToDataProviderRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\YieldDataProviderRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\DataProviderArrayItemsNewLinedRector;
@@ -84,5 +85,6 @@ return static function (RectorConfig $rectorConfig): void {
          * @see https://davegebler.com/post/php/better-php-unit-testing-avoiding-mocks
          */
         RemoveExpectAnyFromMockRector::class,
+        SingleMockPropertyTypeRector::class,
     ]);
 };
