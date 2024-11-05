@@ -2,7 +2,7 @@
 
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\NarrowUnusedSetUpDefinedPropertyRector\Source;
 
-trait SomeTraitTest
+trait SomeTrait
 {
     public function init()
     {

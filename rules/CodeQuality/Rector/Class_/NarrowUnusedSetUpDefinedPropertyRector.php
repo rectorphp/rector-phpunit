@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\NodeFinder;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -89,6 +90,13 @@ CODE_SAMPLE
 
         $hasChanged = false;
         $isFinalClass = $node->isFinal();
+
+        // early verify trait, ensure no overlapped property vs trait definition
+        foreach ($node->stmts as $stmt) {
+            if ($stmt instanceof TraitUse) {
+                return null;
+            }
+        }
 
         foreach ($node->stmts as $key => $classStmt) {
             if (! $classStmt instanceof Property) {
