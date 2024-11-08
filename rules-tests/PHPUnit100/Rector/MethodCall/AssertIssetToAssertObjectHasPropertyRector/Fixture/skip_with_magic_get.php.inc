@@ -6,7 +6,7 @@ use ArrayAccess;
 use PHPUnit\Framework\TestCase;
 use Rector\PHPUnit\Tests\PHPUnit100\Rector\MethodCall\AssertIssetToAssertObjectHasPropertyRector\Source\WithMagicGet;
 
-final class SkipArrayAccess extends TestCase
+final class SkipWithMagicGet extends TestCase
 {
     public function test()
     {
@@ -14,5 +14,3 @@ final class SkipArrayAccess extends TestCase
         $this->assertTrue(isset($object->one));
     }
 }
-
-?>
