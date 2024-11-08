@@ -144,6 +144,10 @@ CODE_SAMPLE
             return true;
         }
 
+        if ($classReflection->hasMethod('__get')) {
+            return true;
+        }
+
         if (! $classReflection->isClass()) {
             return false;
         }
