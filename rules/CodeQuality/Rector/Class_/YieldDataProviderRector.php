@@ -10,13 +10,15 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
+use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\DeadCode\NodeAnalyzer\IsClassMethodUsedAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\NodeTransformer;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFinder\DataProviderClassMethodFinder;
-use Rector\Rector\AbstractRector;
+use Rector\Rector\AbstractScopeAwareRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -26,13 +28,14 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\YieldDataProviderRector\YieldDataProviderRectorTest
  */
-final class YieldDataProviderRector extends AbstractRector
+final class YieldDataProviderRector extends AbstractScopeAwareRector
 {
     public function __construct(
         private readonly NodeTransformer $nodeTransformer,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly DataProviderClassMethodFinder $dataProviderClassMethodFinder,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly IsClassMethodUsedAnalyzer $isClassMethodUsedAnalyzer
     ) {
     }
 
@@ -79,7 +82,7 @@ CODE_SAMPLE
     /**
      * @param Class_ $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Class_
     {
         if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
             return null;
@@ -92,6 +95,10 @@ CODE_SAMPLE
         foreach ($dataProviderClassMethods as $dataProviderClassMethod) {
             $array = $this->collectReturnArrayNodesFromClassMethod($dataProviderClassMethod);
             if (! $array instanceof Array_) {
+                continue;
+            }
+
+            if ($this->isClassMethodUsedAnalyzer->isClassMethodUsed($node, $dataProviderClassMethod, $scope)) {
                 continue;
             }
 
