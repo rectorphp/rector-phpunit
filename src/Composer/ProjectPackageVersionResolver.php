@@ -14,14 +14,16 @@ use Rector\Composer\InstalledPackageResolver;
  */
 final readonly class ProjectPackageVersionResolver
 {
-    public function __construct(
-        private InstalledPackageResolver $installedPackageResolver,
-    ) {
+    private InstalledPackageResolver $installedPackageResolver;
+
+    public function __construct()
+    {
+        $this->installedPackageResolver = new InstalledPackageResolver(getcwd());
     }
 
     public function findPackageVersion(string $packageName): ?string
     {
-        $rootProjectInstalledPackages = $this->installedPackageResolver->resolve(getcwd());
+        $rootProjectInstalledPackages = $this->installedPackageResolver->resolve();
 
         foreach ($rootProjectInstalledPackages as $rootProjectInstalledPackage) {
             if ($rootProjectInstalledPackage->getName() === $packageName) {
