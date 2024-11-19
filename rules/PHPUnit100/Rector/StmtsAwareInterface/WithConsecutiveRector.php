@@ -221,7 +221,7 @@ CODE_SAMPLE
      */
     private function refactorToWillReturnCallback(
         MethodCall $withConsecutiveMethodCall,
-        ?Stmt $returnStmt,
+        Return_|Throw_|null $returnStmt,
         Expr|Variable|null $referenceVariable,
         StaticCall|MethodCall $expectsCall,
         Expression $expression,
