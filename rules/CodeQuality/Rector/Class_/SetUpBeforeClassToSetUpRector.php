@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
+use PhpParser\Modifiers;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -134,13 +135,13 @@ CODE_SAMPLE
         }
 
         // remove static flag
-        $setUpBeforeClassMethod->flags -= Class_::MODIFIER_STATIC;
+        $setUpBeforeClassMethod->flags -= Modifiers::STATIC;
 
         // remove public flag
-        $setUpBeforeClassMethod->flags -= Class_::MODIFIER_PUBLIC;
+        $setUpBeforeClassMethod->flags -= Modifiers::PUBLIC;
 
         // make protected
-        $setUpBeforeClassMethod->flags += Class_::MODIFIER_PROTECTED;
+        $setUpBeforeClassMethod->flags += Modifiers::PROTECTED;
 
         $setUpBeforeClassMethod->name = new Identifier('setUp');
 
@@ -150,7 +151,7 @@ CODE_SAMPLE
             }
 
             if ($this->isNames($property, $changedPropertyNames)) {
-                $property->flags -= Class_::MODIFIER_STATIC;
+                $property->flags -= Modifiers::STATIC;
             }
         }
 
