@@ -39,7 +39,7 @@
             "@docs",
             "phpunit"
         ],
-        "phpstan": "vendor/bin/phpstan analyse --ansi --error-format symplify",
+        "phpstan": "vendor/bin/phpstan analyse --ansi",
         "check-cs": "vendor/bin/ecs check --ansi",
         "class-leak": "vendor/bin/class-leak check config src rules --skip-suffix \"Rector\"",
         "fix-cs": "vendor/bin/ecs check --fix --ansi",
