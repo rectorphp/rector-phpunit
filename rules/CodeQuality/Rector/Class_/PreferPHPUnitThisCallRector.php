@@ -21,6 +21,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class PreferPHPUnitThisCallRector extends AbstractRector
 {
+    /**
+     * @var string[]
+     */
+    private const NON_ASSERT_STATIC_METHODS = ['createMock'];
+
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
     ) {
@@ -75,15 +80,21 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
+
         $this->traverseNodesWithCallable($node, function (Node $node) use (&$hasChanged): int|null|MethodCall {
-            $isStatic = ($node instanceof ClassMethod && $node->isStatic()) || ($node instanceof Closure && $node->static);
-            if ($isStatic) {
+            $isInsideStaticFunctionLike = ($node instanceof ClassMethod && $node->isStatic()) || ($node instanceof Closure && $node->static);
+            if ($isInsideStaticFunctionLike) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if (! $node instanceof StaticCall) {
                 return null;
             }
+
+            if ($node->isFirstClassCallable()) {
+                return null;
+            }
+
 
             $methodName = $this->getName($node->name);
             if (! is_string($methodName)) {
@@ -94,11 +105,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! str_starts_with($methodName, 'assert')) {
-                return null;
-            }
-
-            if ($node->isFirstClassCallable()) {
+            if (! str_starts_with($methodName, 'assert') && ! in_array($methodName, self::NON_ASSERT_STATIC_METHODS)) {
                 return null;
             }
 
