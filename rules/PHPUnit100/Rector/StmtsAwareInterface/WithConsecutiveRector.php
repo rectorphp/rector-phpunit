@@ -19,7 +19,7 @@ use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\Stmt\Throw_;
+use PhpParser\Node\Expr\Throw_;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PHPUnit\Enum\ConsecutiveMethodName;
 use Rector\PHPUnit\Enum\ConsecutiveVariable;
@@ -166,7 +166,7 @@ CODE_SAMPLE
         if ($willThrowException instanceof MethodCall) {
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_THROW_EXCEPTION);
             $expr = $this->getFirstArgValue($willThrowException);
-            $returnStmt = new Throw_($expr);
+            $returnStmt = new Expression(new Throw_($expr));
         }
 
         $willReturnReferenceArgument = $this->methodCallNodeFinder->findByName(
@@ -221,7 +221,7 @@ CODE_SAMPLE
      */
     private function refactorToWillReturnCallback(
         MethodCall $withConsecutiveMethodCall,
-        Return_|Throw_|null $returnStmt,
+        Return_|Expression|null $returnStmt,
         Expr|Variable|null $referenceVariable,
         StaticCall|MethodCall $expectsCall,
         Expression $expression,

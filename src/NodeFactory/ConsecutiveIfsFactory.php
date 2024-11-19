@@ -50,7 +50,7 @@ final readonly class ConsecutiveIfsFactory
 
                     if (! $assertArrayItem->value instanceof MethodCall) {
                         $parametersDimFetch = new ArrayDimFetch(new Variable('parameters'), new Int_($assertKey));
-                        $args = [new Arg($assertArrayItem), new Arg($parametersDimFetch)];
+                        $args = [new Arg($assertArrayItem->value), new Arg($parametersDimFetch)];
                         $ifStmts[] = new Expression(new MethodCall(new Variable('this'), 'assertSame', $args));
                         continue;
                     }
