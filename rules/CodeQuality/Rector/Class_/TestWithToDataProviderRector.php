@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
-use PhpParser\Node\ArrayItem;
-use PhpParser\Modifiers;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
+use PhpParser\Modifiers;
 use PhpParser\Node;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ConstFetch;

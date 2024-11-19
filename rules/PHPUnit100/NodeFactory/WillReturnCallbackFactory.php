@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\PHPUnit100\NodeFactory;
 
-use PhpParser\Node\Scalar\Int_;
-use PhpParser\Node\ClosureUse;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Arg;
+use PhpParser\Node\ClosureUse;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\BinaryOp\Minus;
@@ -15,6 +14,7 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use Rector\PHPUnit\Enum\ConsecutiveVariable;
