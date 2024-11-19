@@ -24,7 +24,7 @@ final class PreferPHPUnitThisCallRector extends AbstractRector
     /**
      * @var string[]
      */
-    private const NON_ASSERT_STATIC_METHODS = ['createMock'];
+    private const NON_ASSERT_STATIC_METHODS = ['createMock', 'atLeast', 'atLeastOnce', 'once', 'never'];
 
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
@@ -94,7 +94,6 @@ CODE_SAMPLE
             if ($node->isFirstClassCallable()) {
                 return null;
             }
-
 
             $methodName = $this->getName($node->name);
             if (! is_string($methodName)) {

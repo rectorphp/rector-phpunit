@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
-use Rector\PHPUnit\Set\PHPUnitSetList;
 
 return RectorConfig::configure()
     ->withImportNames(removeUnusedImports: true)
@@ -30,7 +29,8 @@ return RectorConfig::configure()
             __DIR__ . '/src/NodeFinder/DataProviderClassMethodFinder.php',
         ],
     ])
-    ->withPhpSets(php82: true)
+    ->withPhpSets()
+    ->withAttributesSets(all: true)
     ->withPreparedSets(
         deadCode: true,
         codeQuality: true,
@@ -39,12 +39,9 @@ return RectorConfig::configure()
         naming: true,
         typeDeclarations: true,
         privatization: true,
-        rectorPreset: true
+        rectorPreset: true,
+        phpunitCodeQuality: true
     )
-    ->withSets([
-        PHPUnitSetList::PHPUNIT_100,
-        PHPUnitSetList::PHPUNIT_CODE_QUALITY,
-    ])
     ->withConfiguredRule(StringClassNameToClassConstantRector::class, [
         // keep unprefixed to protected from downgrade
         'PHPUnit\Framework\*',
