@@ -7,7 +7,7 @@
         "php": ">=8.2"
     },
     "require-dev": {
-        "rector/rector-src": "dev-upgrade-to-php-parser5-and-phpstan-2",
+        "rector/rector-src": "dev-main",
         "phpunit/phpunit": "^10.5",
         "phpstan/phpstan": "^2.0",
         "symplify/easy-coding-standard": "^12.3",
