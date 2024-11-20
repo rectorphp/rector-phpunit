@@ -10,6 +10,8 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ReflectionProvider;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
@@ -35,6 +37,7 @@ final class DataProviderAnnotationToAttributeRector extends AbstractRector imple
         private readonly ReflectionResolver $reflectionResolver,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly ReflectionProvider $reflectionProvider,
     ) {
     }
 
@@ -117,6 +120,11 @@ CODE_SAMPLE
         }
 
         if (! $classReflection->isClass()) {
+            return null;
+        }
+
+        // safety check, no to upgrade phpunit annotations to soon
+        if (! $this->reflectionProvider->hasClass('PHPUnit\Framework\Attributes\DataProvider')) {
             return null;
         }
 

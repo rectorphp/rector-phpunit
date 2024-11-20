@@ -14,6 +14,11 @@ use Rector\PHPUnit\AnnotationsToAttributes\Rector\ClassMethod\TestWithAnnotation
 use Rector\PHPUnit\ValueObject\AnnotationWithValueToAttribute;
 
 return static function (RectorConfig $rectorConfig): void {
+    // safety check, not to run on PHPUnit 9 and bellow where are no attributes
+    if (! class_exists('PHPUnit\Framework\Attributes\DataProvider')) {
+        return;
+    }
+
     $rectorConfig->rules([
         TicketAnnotationToAttributeRector::class,
         TestWithAnnotationToAttributeRector::class,
