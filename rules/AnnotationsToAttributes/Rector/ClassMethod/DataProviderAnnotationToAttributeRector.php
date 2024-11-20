@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
@@ -28,6 +29,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DataProviderAnnotationToAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
+    /**
+     * @var string
+     */
+    private const DATA_PROVIDER_CLASS = 'PHPUnit\Framework\Attributes\DataProvider';
+
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
@@ -35,6 +41,7 @@ final class DataProviderAnnotationToAttributeRector extends AbstractRector imple
         private readonly ReflectionResolver $reflectionResolver,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -100,6 +107,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $this->reflectionProvider->hasClass(self::DATA_PROVIDER_CLASS)) {
+            return null;
+        }
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return null;
@@ -158,9 +169,6 @@ CODE_SAMPLE
             );
         }
 
-        return $this->phpAttributeGroupFactory->createFromClassWithItems(
-            'PHPUnit\Framework\Attributes\DataProvider',
-            [$methodName]
-        );
+        return $this->phpAttributeGroupFactory->createFromClassWithItems(self::DATA_PROVIDER_CLASS, [$methodName]);
     }
 }

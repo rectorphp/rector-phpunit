@@ -52,34 +52,6 @@ return static function (RectorConfig $rectorConfig): void {
         new AnnotationWithValueToAttribute('uses', 'PHPUnit\Framework\Attributes\UsesClass'),
         new AnnotationWithValueToAttribute('testDox', 'PHPUnit\Framework\Attributes\TestDox'),
         new AnnotationWithValueToAttribute('testdox', 'PHPUnit\Framework\Attributes\TestDox'),
-
-        // new AnnotationToAttribute('dataProvider', 'PHPUnit\Framework\Attributes\DataProviderExternal'),
-
-        // depends
-        // new AnnotationToAttribute('depends', 'PHPUnit\Framework\Attributes\DependsExternal'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\DependsExternalUsingDeepClone'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\DependsExternalUsingShallowClone'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\DependsOnClass'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\DependsOnClassUsingDeepClone'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\DependsOnClassUsingShallowClone'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\DependsUsingDeepClone'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\DependsUsingShallowClone'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\ExcludeGlobalVariableFromBackup'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\ExcludeStaticPropertyFromBackup'),
-
-        // requires
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\RequiresFunction'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\RequiresMethod'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\RequiresOperatingSystem'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\RequiresOperatingSystemFamily'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\RequiresPhp'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\RequiresPhpExtension'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\RequiresPhpunit'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\RequiresSetting'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\RunClassInSeparateProcess'),
-
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\TestWithJson'),
-        // new AnnotationToAttribute('PHPUnit\Framework\Attributes\UsesFunction'),
     ]);
 
     $rectorConfig->ruleWithConfiguration(AnnotationToAttributeRector::class, [
