@@ -218,7 +218,7 @@ final class NamedArgumentForDataProviderRector extends AbstractRector
         $allArrayKeyNames = [];
 
         foreach ($array->items as $arrayItem) {
-            if ($arrayItem?->key instanceof String_) {
+            if ($arrayItem->key instanceof String_) {
                 $needToSetAllKeyNames = true;
                 $allArrayKeyNames[] = $arrayItem->key->value;
             }
@@ -230,10 +230,6 @@ final class NamedArgumentForDataProviderRector extends AbstractRector
         }
 
         foreach ($array->items as $arrayIndex => $arrayItem) {
-            if ($arrayItem === null) {
-                continue;
-            }
-
             if (! isset($dataProviderNameMapping[$arrayIndex])) {
                 continue;
             }
@@ -271,13 +267,13 @@ final class NamedArgumentForDataProviderRector extends AbstractRector
                 $dataProviderTestCases = $stmt->expr;
 
                 foreach ($dataProviderTestCases->items as $dataProviderTestCase) {
-                    $arrayItem = $dataProviderTestCase?->value;
+                    $arrayItem = $dataProviderTestCase->value;
 
                     if ($arrayItem instanceof Array_) {
                         yield $arrayItem;
                     }
 
-                    $variableName = $arrayItem === null ? null : $this->getName($arrayItem);
+                    $variableName = $this->getName($arrayItem);
                     if (
                         $arrayItem instanceof Variable
                         && $variableName !== null
@@ -285,7 +281,7 @@ final class NamedArgumentForDataProviderRector extends AbstractRector
                     ) {
                         $dataProviderList = $resolvedVariables[$variableName];
                         foreach ($dataProviderList->items as $dataProviderItem) {
-                            if ($dataProviderItem?->value instanceof Array_) {
+                            if ($dataProviderItem->value instanceof Array_) {
                                 yield $dataProviderItem->value;
                             }
                         }

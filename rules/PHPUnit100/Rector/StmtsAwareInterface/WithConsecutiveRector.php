@@ -12,14 +12,14 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
-use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\Stmt\Throw_;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PHPUnit\Enum\ConsecutiveMethodName;
 use Rector\PHPUnit\Enum\ConsecutiveVariable;
@@ -106,8 +106,9 @@ CODE_SAMPLE
 
     /**
      * @param Expression $node
+     * @return null|Stmt[]|Expression
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): null|array|Expression
     {
         if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
             return null;
@@ -166,7 +167,7 @@ CODE_SAMPLE
         if ($willThrowException instanceof MethodCall) {
             $this->methodCallRemover->removeMethodCall($node, ConsecutiveMethodName::WILL_THROW_EXCEPTION);
             $expr = $this->getFirstArgValue($willThrowException);
-            $returnStmt = new Throw_($expr);
+            $returnStmt = new Expression(new Throw_($expr));
         }
 
         $willReturnReferenceArgument = $this->methodCallNodeFinder->findByName(
@@ -188,8 +189,8 @@ CODE_SAMPLE
 
         if (! $expectsCall instanceof MethodCall && ! $expectsCall instanceof StaticCall) {
             // fallback to default by case count
-            $lNumber = new LNumber(\count($withConsecutiveMethodCall->args));
-            $expectsCall = new MethodCall(new Variable('this'), new Identifier('exactly'), [new Arg($lNumber)]);
+            $int = new Int_(\count($withConsecutiveMethodCall->args));
+            $expectsCall = new MethodCall(new Variable('this'), new Identifier('exactly'), [new Arg($int)]);
         }
 
         // 2. does willReturnCallback() exist? just merge them together
@@ -221,7 +222,7 @@ CODE_SAMPLE
      */
     private function refactorToWillReturnCallback(
         MethodCall $withConsecutiveMethodCall,
-        ?Stmt $returnStmt,
+        Return_|Expression|null $returnStmt,
         Expr|Variable|null $referenceVariable,
         StaticCall|MethodCall $expectsCall,
         Expression $expression,

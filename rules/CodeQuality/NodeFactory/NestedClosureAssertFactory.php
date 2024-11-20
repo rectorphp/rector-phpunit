@@ -16,7 +16,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use Rector\PHPUnit\Enum\ConsecutiveVariable;
@@ -59,7 +59,7 @@ final class NestedClosureAssertFactory
 
         $stmts = [new Expression($callbackAssign)];
 
-        $parametersArrayDimFetch = new ArrayDimFetch(new Variable('parameters'), new LNumber($assertKey));
+        $parametersArrayDimFetch = new ArrayDimFetch(new Variable('parameters'), new Int_($assertKey));
         $callbackFuncCall = new FuncCall($callbackVariable, [new Arg($parametersArrayDimFetch)]);
 
         // add assert true to the callback
@@ -77,7 +77,7 @@ final class NestedClosureAssertFactory
         // use assert same directly instead
         $args = [
             new Arg($comparedExpr),
-            new Arg(new ArrayDimFetch(new Variable('parameters'), new LNumber($assertKey))),
+            new Arg(new ArrayDimFetch(new Variable('parameters'), new Int_($assertKey))),
         ];
 
         $assertSameMethodCall = new MethodCall(new Variable('this'), new Identifier('assertSame'), $args);
@@ -90,7 +90,7 @@ final class NestedClosureAssertFactory
      */
     private function createAssertNotEmpty(int $assertKey, string $emptyMethodName): array
     {
-        $arrayDimFetch = new ArrayDimFetch(new Variable(ConsecutiveVariable::PARAMETERS), new LNumber($assertKey));
+        $arrayDimFetch = new ArrayDimFetch(new Variable(ConsecutiveVariable::PARAMETERS), new Int_($assertKey));
 
         $assertEmptyMethodCall = new MethodCall(new Variable('this'), new Identifier($emptyMethodName), [
             new Arg($arrayDimFetch),

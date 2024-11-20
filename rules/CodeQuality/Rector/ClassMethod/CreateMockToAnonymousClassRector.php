@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Rector\ClassMethod;
 
+use PhpParser\Modifiers;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -246,7 +247,7 @@ CODE_SAMPLE
             ->value;
 
         return new ClassMethod($methodName, [
-            'flags' => Class_::MODIFIER_PUBLIC,
+            'flags' => Modifiers::PUBLIC,
             'stmts' => [new Return_($returnedExpr)],
         ]);
     }

@@ -12,7 +12,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Exception\ShouldNotHappenException;
@@ -159,7 +159,7 @@ final class AssertRegExpRector extends AbstractRector
 
     private function resolveOldCondition(Expr $expr): int
     {
-        if ($expr instanceof LNumber) {
+        if ($expr instanceof Int_) {
             return $expr->value;
         }
 

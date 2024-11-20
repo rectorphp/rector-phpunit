@@ -9,7 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Name;
-use PhpParser\Node\Scalar\DNumber;
+use PhpParser\Node\Scalar\Float_;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFactory\AssertCallFactory;
 use Rector\Rector\AbstractRector;
@@ -74,7 +74,7 @@ CODE_SAMPLE
         $args = $node->getArgs();
 
         $firstValue = $args[0]->value;
-        if (! $firstValue instanceof DNumber) {
+        if (! $firstValue instanceof Float_) {
             return null;
         }
 

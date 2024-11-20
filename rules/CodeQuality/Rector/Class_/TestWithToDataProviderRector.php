@@ -6,10 +6,11 @@ namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
+use PhpParser\Modifiers;
 use PhpParser\Node;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
@@ -174,7 +175,7 @@ CODE_SAMPLE
         }
 
         $providerMethod = new ClassMethod($dataProviderName);
-        $providerMethod->flags = Class_::MODIFIER_PUBLIC;
+        $providerMethod->flags = Modifiers::PUBLIC;
         $providerMethod->stmts[] = new Return_($returnValue);
         $this->classInsertManipulator->addAsFirstMethod($class, $providerMethod);
     }

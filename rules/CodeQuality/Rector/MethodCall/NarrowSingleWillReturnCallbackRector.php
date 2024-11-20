@@ -12,7 +12,7 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use Rector\PHPUnit\CodeQuality\ValueObject\MatchAndReturnMatch;
@@ -204,7 +204,7 @@ CODE_SAMPLE
 
     private function isNumberOne(Expr $expr): bool
     {
-        if (! $expr instanceof LNumber) {
+        if (! $expr instanceof Int_) {
             return false;
         }
 
