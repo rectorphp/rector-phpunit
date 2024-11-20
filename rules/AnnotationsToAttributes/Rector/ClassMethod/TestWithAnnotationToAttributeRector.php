@@ -9,6 +9,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
@@ -29,12 +30,18 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class TestWithAnnotationToAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
+    /**
+     * @var string
+     */
+    private const TEST_WITH_ATTRIBUTE = 'PHPUnit\Framework\Attributes\TestWith';
+
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -94,6 +101,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // make sure the attribute class exists
+        if (! $this->reflectionProvider->hasClass(self::TEST_WITH_ATTRIBUTE)) {
+            return null;
+        }
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return null;
@@ -128,7 +140,7 @@ CODE_SAMPLE
                 $jsonArray = Json::decode(trim($testWithItem), Json::FORCE_ARRAY);
 
                 $attributeGroups[] = $this->phpAttributeGroupFactory->createFromClassWithItems(
-                    'PHPUnit\Framework\Attributes\TestWith',
+                    self::TEST_WITH_ATTRIBUTE,
                     [$jsonArray]
                 );
             }

@@ -10,6 +10,7 @@ use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
@@ -27,12 +28,23 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class CoversAnnotationWithValueToAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
+    /**
+     * @var string
+     */
+    private const COVERS_FUNCTION_ATTRIBUTE = 'PHPUnit\Framework\Attributes\CoversFunction';
+
+    /**
+     * @var string
+     */
+    private const COVERTS_CLASS_ATTRIBUTE = 'PHPUnit\Framework\Attributes\CoversClass';
+
     public function __construct(
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -98,6 +110,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $this->reflectionProvider->hasClass(self::COVERS_FUNCTION_ATTRIBUTE)) {
+            return null;
+        }
+
         if ($node instanceof Class_) {
             $coversAttributeGroups = $this->resolveClassAttributes($node);
             if ($coversAttributeGroups === []) {
@@ -122,10 +138,10 @@ CODE_SAMPLE
     private function createAttributeGroup(string $annotationValue): AttributeGroup
     {
         if (str_starts_with($annotationValue, '::')) {
-            $attributeClass = 'PHPUnit\Framework\Attributes\CoversFunction';
+            $attributeClass = self::COVERS_FUNCTION_ATTRIBUTE;
             $attributeValue = trim($annotationValue, ':()');
         } else {
-            $attributeClass = 'PHPUnit\Framework\Attributes\CoversClass';
+            $attributeClass = self::COVERTS_CLASS_ATTRIBUTE;
             $attributeValue = trim($annotationValue) . '::class';
         }
 

@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
@@ -26,12 +27,18 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DependsAnnotationWithValueToAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
+    /**
+     * @var string
+     */
+    private const DEPENDS_ATTRIBUTE = 'PHPUnit\Framework\Attributes\Depends';
+
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -92,6 +99,10 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
+            return null;
+        }
+
+        if (! $this->reflectionProvider->hasClass(self::DEPENDS_ATTRIBUTE)) {
             return null;
         }
 
@@ -178,7 +189,7 @@ CODE_SAMPLE
             $originalAttributeValue
         );
 
-        $attributeName = 'PHPUnit\Framework\Attributes\Depends';
+        $attributeName = self::DEPENDS_ATTRIBUTE;
         if (! is_string($attributeValue)) {
             // other: depends other Class_
             $attributeValue = $this->resolveDependsClass($originalAttributeValue);
