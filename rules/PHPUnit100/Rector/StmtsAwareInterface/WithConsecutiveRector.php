@@ -106,8 +106,9 @@ CODE_SAMPLE
 
     /**
      * @param Expression $node
+     * @return null|Stmt[]|Expression
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): null|array|Expression
     {
         if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
             return null;
