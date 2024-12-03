@@ -133,7 +133,7 @@ CODE_SAMPLE
                     // has dynamic return?
                     if ($hasDynamicReturnExprs === false) {
                         $returnedExpr = $methodCall->getArgs()[0]
-->value;
+                            ->value;
                         $hasDynamicReturnExprs = ! $returnedExpr instanceof Scalar && ! $returnedExpr instanceof Array_;
                     }
 

@@ -92,7 +92,7 @@ CODE_SAMPLE
         }
 
         $onlyArgument = $node->getArgs()[0]
-->value;
+            ->value;
         if (! $this->isMethodCallOnVariableNamed($onlyArgument, 'this', 'any')) {
             return null;
         }

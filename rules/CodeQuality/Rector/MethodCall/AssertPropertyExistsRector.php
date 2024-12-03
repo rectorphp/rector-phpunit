@@ -86,7 +86,7 @@ CODE_SAMPLE
         }
 
         $firstArgumentValue = $node->getArgs()[0]
-->value;
+            ->value;
         if (! $firstArgumentValue instanceof FuncCall) {
             return null;
         }
@@ -96,7 +96,7 @@ CODE_SAMPLE
         }
 
         $propertyExistsMethodCall = $node->getArgs()[0]
-->value;
+            ->value;
         if (! $propertyExistsMethodCall instanceof FuncCall) {
             return null;
         }

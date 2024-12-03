@@ -173,7 +173,7 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
     private function moveFunctionArgumentsUp(MethodCall|StaticCall $node): void
     {
         $funcCallOrEmptyNode = $node->getArgs()[0]
-->value;
+            ->value;
 
         if ($funcCallOrEmptyNode instanceof FuncCall) {
             $funcCallOrEmptyNodeName = $this->getName($funcCallOrEmptyNode);

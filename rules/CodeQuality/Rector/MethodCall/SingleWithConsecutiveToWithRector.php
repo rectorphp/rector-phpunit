@@ -132,7 +132,7 @@ CODE_SAMPLE
             }
 
             return $node->getArgs()[0]
-->value;
+                ->value;
         });
 
         if ($hasAssertInside && $firstArg->value instanceof Array_) {
