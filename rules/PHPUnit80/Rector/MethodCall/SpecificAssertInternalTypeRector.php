@@ -106,7 +106,7 @@ CODE_SAMPLE
         }
 
         $typeNode = $node->getArgs()[0]
-->value;
+            ->value;
         if (! $typeNode instanceof String_) {
             return null;
         }
