@@ -11,7 +11,10 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\Type\ArrayType;
+use PHPStan\Type\Generic\GenericObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\DeadCode\NodeAnalyzer\IsClassMethodUsedAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\NodeTransformer;
@@ -35,7 +38,8 @@ final class YieldDataProviderRector extends AbstractRector
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly DataProviderClassMethodFinder $dataProviderClassMethodFinder,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly IsClassMethodUsedAnalyzer $isClassMethodUsedAnalyzer
+        private readonly IsClassMethodUsedAnalyzer $isClassMethodUsedAnalyzer,
+        private readonly PhpDocTypeChanger $phpDocTypeChanger,
     ) {
     }
 
@@ -166,6 +170,20 @@ CODE_SAMPLE
     private function removeReturnTag(ClassMethod $classMethod): void
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-        $phpDocInfo->removeByType(ReturnTagValueNode::class);
+
+        if ($phpDocInfo->getReturnType() instanceof ArrayType) {
+            $keyType = $phpDocInfo->getReturnType()
+                ->getIterableKeyType();
+            $itemType = $phpDocInfo->getReturnType()
+                ->getIterableValueType();
+
+            $this->phpDocTypeChanger->changeReturnType(
+                $classMethod,
+                $phpDocInfo,
+                new GenericObjectType('Iterator', [$keyType, $itemType])
+            );
+        } else {
+            $phpDocInfo->removeByType(ReturnTagValueNode::class);
+        }
     }
 }
