@@ -4,7 +4,7 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\YieldDataProviderRector
 
 use PHPUnit\Framework\TestCase;
 
-final class UseDataProviderTest extends TestCase
+final class UseDataProviderTestPhpdoc extends TestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('dataProvider')]
     #[\PHPUnit\Framework\Attributes\DataProvider('provideDataForProvider')]
