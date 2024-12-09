@@ -15,6 +15,7 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\Generic\GenericObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\DeadCode\NodeAnalyzer\IsClassMethodUsedAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\NodeTransformer;
@@ -40,6 +41,7 @@ final class YieldDataProviderRector extends AbstractRector
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly IsClassMethodUsedAnalyzer $isClassMethodUsedAnalyzer,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly DocBlockUpdater $docBlockUpdater
     ) {
     }
 
@@ -184,6 +186,7 @@ CODE_SAMPLE
             );
         } else {
             $phpDocInfo->removeByType(ReturnTagValueNode::class);
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
         }
     }
 }
