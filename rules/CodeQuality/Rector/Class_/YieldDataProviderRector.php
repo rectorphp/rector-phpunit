@@ -173,6 +173,10 @@ CODE_SAMPLE
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
 
+        if (! $phpDocInfo->getReturnTagValue() instanceof ReturnTagValueNode) {
+            return;
+        }
+
         if ($phpDocInfo->getReturnType() instanceof ArrayType) {
             $keyType = $phpDocInfo->getReturnType()
                 ->getIterableKeyType();
