@@ -177,7 +177,7 @@ CODE_SAMPLE
             return;
         }
 
-        if ($phpDocInfo->getReturnType() instanceof ArrayType) {
+        if ($phpDocInfo->getReturnType()->isArray()->yes()) {
             $keyType = $phpDocInfo->getReturnType()
                 ->getIterableKeyType();
             $itemType = $phpDocInfo->getReturnType()
