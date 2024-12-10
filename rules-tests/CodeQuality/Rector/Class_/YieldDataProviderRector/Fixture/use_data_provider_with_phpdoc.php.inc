@@ -20,6 +20,7 @@ final class UseDataProviderTestPhpdoc extends TestCase
         ];
     }
 
+    /** @return list<array<string>> */
     public static function dataProvider()
     {
         return [
@@ -51,6 +52,7 @@ final class UseDataProviderTestPhpdoc extends TestCase
         yield ['<?php implode("", $foo, );', '<?php implode($foo, "", );'];
     }
 
+    /** @return \Iterator<int<0, max>, array<string>> */
     public static function dataProvider(): \Iterator
     {
         yield ['<?php implode(\'\', $foo, );', '<?php implode($foo, );'];
