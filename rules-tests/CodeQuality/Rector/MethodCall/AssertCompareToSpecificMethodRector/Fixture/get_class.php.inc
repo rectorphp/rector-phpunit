@@ -27,7 +27,7 @@ final class GetClass extends \PHPUnit\Framework\TestCase
     public function test()
     {
         $something = new stdClass();
-        $this->assertInstanceOf('stdClass', $something);
+        $this->assertSame(get_class($something), 'stdClass');
         self::assertInstanceOf('stdClass', $something);
     }
 }

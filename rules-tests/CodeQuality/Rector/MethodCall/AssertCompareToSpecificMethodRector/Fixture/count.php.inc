@@ -7,6 +7,8 @@ final class Count extends \PHPUnit\Framework\TestCase
     public function test()
     {
         $this->assertSame(5, count($something));
+        $this->assertSame(count($something), 5);
+
         $this->assertEquals(10, iterator_count($something));
 
         $count = 92;
@@ -25,6 +27,8 @@ final class Count extends \PHPUnit\Framework\TestCase
     public function test()
     {
         $this->assertCount(5, $something);
+        $this->assertSame(count($something), 5);
+
         $this->assertCount(10, $something);
 
         $count = 92;
