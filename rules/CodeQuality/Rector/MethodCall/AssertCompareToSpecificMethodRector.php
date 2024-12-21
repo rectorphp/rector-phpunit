@@ -57,7 +57,7 @@ final class AssertCompareToSpecificMethodRector extends AbstractRector
                     '$this->assertCount(10, $anything, "message");'
                 ),
                 new CodeSample(
-                    '$this->assertNotEquals(get_class($value), SomeInstance::class);',
+                    '$this->assertNotEquals(SomeInstance::class, get_class($value));',
                     '$this->assertNotInstanceOf(SomeInstance::class, $value);'
                 ),
             ]
@@ -101,10 +101,6 @@ final class AssertCompareToSpecificMethodRector extends AbstractRector
 
         if ($secondArgumentValue instanceof FuncCall) {
             return $this->processFuncCallArgumentValue($node, $secondArgumentValue, $firstArgument);
-        }
-
-        if ($firstArgumentValue instanceof FuncCall) {
-            return $this->processFuncCallArgumentValue($node, $firstArgumentValue, $secondArgument);
         }
 
         return null;
