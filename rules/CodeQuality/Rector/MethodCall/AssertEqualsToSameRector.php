@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 
+use PHPStan\Type\Constant\ConstantBooleanType;
+use PHPStan\Type\BooleanType;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -143,7 +145,11 @@ final class AssertEqualsToSameRector extends AbstractRector
             }
         }
 
-        return false;
+        if ($valueNodeType instanceof ConstantBooleanType) {
+            return false;
+        }
+
+        return $valueNodeType instanceof BooleanType;
     }
 
     private function isScalarOrEnumValue(Expr $expr): bool
