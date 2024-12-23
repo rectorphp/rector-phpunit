@@ -13,6 +13,11 @@ final class Count extends \PHPUnit\Framework\TestCase
         $this->assertEquals(5, $collection->count());
         \PHPUnit\Framework\TestCase::assertSame(5, $collection->count());
         self::assertSame(5, $collection->count());
+
+        $this->assertNotSame(6, $collection->count());
+        $this->assertNotEquals(6, $collection->count());
+        \PHPUnit\Framework\TestCase::assertNotSame(6, $collection->count());
+        self::assertNotSame(6, $collection->count());
     }
 }
 
@@ -33,6 +38,11 @@ final class Count extends \PHPUnit\Framework\TestCase
         $this->assertCount(5, $collection);
         \PHPUnit\Framework\TestCase::assertCount(5, $collection);
         self::assertCount(5, $collection);
+
+        $this->assertNotCount(6, $collection);
+        $this->assertNotCount(6, $collection);
+        \PHPUnit\Framework\TestCase::assertNotCount(6, $collection);
+        self::assertNotCount(6, $collection);
     }
 }
 

@@ -40,6 +40,10 @@ final class AssertCompareOnCountableWithMethodToAssertCountRector extends Abstra
     $this->assertCount(1, $countable);
     CODE_SAMPLE
                 ),
+                new CodeSample(
+                    '$this->assertSame(10, count($anything), "message");',
+                    '$this->assertCount(10, $anything, "message");'
+                ),
             ]
         );
     }
@@ -57,7 +61,10 @@ final class AssertCompareOnCountableWithMethodToAssertCountRector extends Abstra
      */
     public function refactor(Node $node): MethodCall|StaticCall|null
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, ['assertSame', 'assertEquals'])) {
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames(
+            $node,
+            ['assertSame', 'assertNotSame', 'assertEquals', 'assertNotEquals']
+        )) {
             return null;
         }
 
@@ -72,12 +79,15 @@ final class AssertCompareOnCountableWithMethodToAssertCountRector extends Abstra
 
         $comparedExpr = $assertArgs[1]->value;
 
-        if ($comparedExpr instanceof FuncCall && $this->isName($comparedExpr->name, 'count')) {
+        if (
+            $comparedExpr instanceof FuncCall
+            && $this->isNames($comparedExpr->name, ['count', 'sizeof', 'iterator_count'])
+        ) {
             $countArg = $comparedExpr->getArgs()[0];
             $assertArgs[1] = new Arg($countArg->value);
 
             $node->args = $assertArgs;
-            $node->name = new Identifier('assertCount');
+            $this->renameMethod($node);
 
             return $node;
         }
@@ -94,10 +104,19 @@ final class AssertCompareOnCountableWithMethodToAssertCountRector extends Abstra
                 $args[1] = new Arg($comparedExpr->var);
 
                 $node->args = $args;
-                $node->name = new Identifier('assertCount');
+                $this->renameMethod($node);
             }
         }
 
         return null;
+    }
+
+    private function renameMethod(MethodCall|StaticCall $node): void
+    {
+        if ($this->isNames($node->name, ['assertSame', 'assertEquals'])) {
+            $node->name = new Identifier('assertCount');
+        } elseif ($this->isNames($node->name, ['assertNotSame', 'assertNotEquals'])) {
+            $node->name = new Identifier('assertNotCount');
+        }
     }
 }

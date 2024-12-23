@@ -8,6 +8,7 @@ final class DirectCountCall extends \PHPUnit\Framework\TestCase
     {
         $items = [1, 2, 3];
         $this->assertSame(3, count($items));
+        $this->assertNotSame(4, count($items));
     }
 }
 
@@ -23,6 +24,7 @@ final class DirectCountCall extends \PHPUnit\Framework\TestCase
     {
         $items = [1, 2, 3];
         $this->assertCount(3, $items);
+        $this->assertNotCount(4, $items);
     }
 }
 
