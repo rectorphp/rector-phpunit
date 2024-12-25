@@ -16,6 +16,7 @@ use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\NeverType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
@@ -124,6 +125,11 @@ final class AssertEqualsToSameRector extends AbstractRector
 
             // compare to mixed type is can be anything
             if ($secondArgType instanceof MixedType) {
+                return null;
+            }
+
+            // can happen with magic process
+            if ($secondArgType instanceof NeverType) {
                 return null;
             }
         }
