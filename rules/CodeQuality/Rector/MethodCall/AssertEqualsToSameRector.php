@@ -101,19 +101,18 @@ final class AssertEqualsToSameRector extends AbstractRector
             return null;
         }
 
-        $firstArgType = $this->nodeTypeResolver->getNativeType($args[0]->value);
-        $secondArgType = $this->nodeTypeResolver->getNativeType($args[1]->value);
+        if ($this->isName($node->name, 'assertEquals')) {
+            $firstArgType = $this->nodeTypeResolver->getNativeType($args[0]->value);
+            $secondArgType = $this->nodeTypeResolver->getNativeType($args[1]->value);
 
-        if ($firstArgType instanceof FloatType && $secondArgType instanceof IntegerType) {
-            return null;
-        }
+            // loose comparison
+            if ($firstArgType instanceof IntegerType && ($secondArgType instanceof FloatType || $secondArgType instanceof MixedType)) {
+                return null;
+            }
 
-        if ($firstArgType instanceof IntegerType && $secondArgType instanceof FloatType) {
-            return null;
-        }
-
-        if ($args[1]->value instanceof ArrayDimFetch && $secondArgType instanceof MixedType) {
-            return null;
+            if ($firstArgType instanceof FloatType && ($secondArgType instanceof IntegerType || $secondArgType instanceof MixedType)) {
+                return null;
+            }
         }
 
         $hasChanged = $this->identifierManipulator->renameNodeWithMap($node, self::RENAME_METHODS_MAP);
