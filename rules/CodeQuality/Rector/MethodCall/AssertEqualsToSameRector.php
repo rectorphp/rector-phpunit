@@ -6,6 +6,7 @@ namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -15,6 +16,7 @@ use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use Rector\PHPUnit\NodeAnalyzer\IdentifierManipulator;
@@ -107,6 +109,10 @@ final class AssertEqualsToSameRector extends AbstractRector
         }
 
         if ($firstArgType instanceof IntegerType && $secondArgType instanceof FloatType) {
+            return null;
+        }
+
+        if ($args[1]->value instanceof ArrayDimFetch && $secondArgType instanceof MixedType) {
             return null;
         }
 
