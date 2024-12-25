@@ -116,7 +116,7 @@ final class AssertEqualsToSameRector extends AbstractRector
             }
 
             if ($firstArgType instanceof StringType && $secondArgType instanceof ObjectType && $this->isObjectType(
-                $node->args[1]->value,
+                $args[1]->value,
                 new ObjectType('Stringable')
             )) {
                 return null;
