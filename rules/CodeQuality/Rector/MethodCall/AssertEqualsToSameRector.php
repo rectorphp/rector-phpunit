@@ -107,11 +107,11 @@ final class AssertEqualsToSameRector extends AbstractRector
             $secondArgType = TypeCombinator::removeNull($this->nodeTypeResolver->getNativeType($args[1]->value));
 
             // loose comparison
-            if ($firstArgType instanceof IntegerType && ($secondArgType instanceof FloatType || $secondArgType instanceof MixedType)) {
+            if ($firstArgType instanceof IntegerType && $secondArgType instanceof FloatType) {
                 return null;
             }
 
-            if ($firstArgType instanceof FloatType && ($secondArgType instanceof IntegerType || $secondArgType instanceof MixedType)) {
+            if ($firstArgType instanceof FloatType && $secondArgType instanceof IntegerType) {
                 return null;
             }
 
@@ -119,6 +119,11 @@ final class AssertEqualsToSameRector extends AbstractRector
                 $args[1]->value,
                 new ObjectType('Stringable')
             )) {
+                return null;
+            }
+
+            // compare to mixed type is can be anything
+            if ($secondArgType instanceof MixedType) {
                 return null;
             }
         }

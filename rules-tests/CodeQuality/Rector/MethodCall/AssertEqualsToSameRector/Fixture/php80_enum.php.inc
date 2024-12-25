@@ -7,7 +7,7 @@ use Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertEqualsToSameRector\
 
 final class Php80Enum extends TestCase
 {
-    public function test($result)
+    public function test(string $result)
     {
         $this->assertEquals(SimpleEnum::LEFT, $result);
     }
@@ -24,7 +24,7 @@ use Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertEqualsToSameRector\
 
 final class Php80Enum extends TestCase
 {
-    public function test($result)
+    public function test(string $result)
     {
         $this->assertSame(SimpleEnum::LEFT, $result);
     }
