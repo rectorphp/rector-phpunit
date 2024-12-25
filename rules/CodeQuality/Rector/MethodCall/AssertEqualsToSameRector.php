@@ -86,7 +86,7 @@ final class AssertEqualsToSameRector extends AbstractRector
         }
 
         $args = $node->getArgs();
-        if (! isset($args[0])) {
+        if (! isset($args[0], $args[1])) {
             return null;
         }
 
@@ -99,13 +99,24 @@ final class AssertEqualsToSameRector extends AbstractRector
             return null;
         }
 
+        $firstArgType = $this->nodeTypeResolver->getNativeType($args[0]->value);
+        $secondArgType = $this->nodeTypeResolver->getNativeType($args[1]->value);
+
+        if ($firstArgType instanceof FloatType && $secondArgType instanceof IntegerType) {
+            return null;
+        }
+
+        if ($firstArgType instanceof IntegerType && $secondArgType instanceof FloatType) {
+            return null;
+        }
+
         $hasChanged = $this->identifierManipulator->renameNodeWithMap($node, self::RENAME_METHODS_MAP);
         return $hasChanged ? $node : null;
     }
 
     private function shouldSkipConstantArrayType(Expr $expr): bool
     {
-        $type = $this->getType($expr);
+        $type = $this->nodeTypeResolver->getNativeType($expr);
 
         if (! $type instanceof ConstantArrayType) {
             return false;
@@ -162,7 +173,7 @@ final class AssertEqualsToSameRector extends AbstractRector
             return true;
         }
 
-        $valueNodeType = $this->nodeTypeResolver->getType($expr);
+        $valueNodeType = $this->nodeTypeResolver->getNativeType($expr);
         return $this->isScalarType($valueNodeType);
     }
 }
