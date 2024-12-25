@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 final class AssertSameConstantArray extends TestCase
 {
-    public function test($result)
+    public function test(array $result)
     {
         $expected = [1 => 2];
         $this->assertEquals($expected, $result);
@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
 
 final class AssertSameConstantArray extends TestCase
 {
-    public function test($result)
+    public function test(array $result)
     {
         $expected = [1 => 2];
         $this->assertSame($expected, $result);
