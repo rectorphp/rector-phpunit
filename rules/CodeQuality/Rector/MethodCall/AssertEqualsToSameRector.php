@@ -108,11 +108,11 @@ final class AssertEqualsToSameRector extends AbstractRector
             $secondArgType = TypeCombinator::removeNull($this->nodeTypeResolver->getNativeType($args[1]->value));
 
             // loose comparison
-            if ($firstArgType instanceof IntegerType && $secondArgType instanceof FloatType) {
+            if ($firstArgType instanceof IntegerType && ($secondArgType instanceof FloatType || $secondArgType instanceof StringType)) {
                 return null;
             }
 
-            if ($firstArgType instanceof FloatType && $secondArgType instanceof IntegerType) {
+            if ($firstArgType instanceof FloatType && ($secondArgType instanceof IntegerType || $secondArgType instanceof StringType)) {
                 return null;
             }
 
