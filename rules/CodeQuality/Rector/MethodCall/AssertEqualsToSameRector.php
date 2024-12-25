@@ -102,7 +102,7 @@ final class AssertEqualsToSameRector extends AbstractRector
 
         if ($this->isName($node->name, 'assertEquals')) {
             $firstArgType = $this->nodeTypeResolver->getNativeType($args[0]->value);
-            $secondArgType = $this->nodeTypeResolver->getNativeType($args[1]->value);
+            $secondArgType = \PHPStan\Type\TypeCombinator::removeNull($this->nodeTypeResolver->getNativeType($args[1]->value));
 
             // loose comparison
             if ($firstArgType instanceof IntegerType && ($secondArgType instanceof FloatType || $secondArgType instanceof MixedType)) {
