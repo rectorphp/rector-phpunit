@@ -96,10 +96,10 @@ CODE_SAMPLE
             foreach ($dataProvider->getStmts() ?? [] as $stmt) {
                 $expr = $stmt->expr;
                 if ($expr instanceof Node\Expr\Yield_) {
-                    $this->handleYieldStmt($expr);
+                    $this->handleStmt($expr->value);
                     $hasChanged = true;
                 } elseif ($expr instanceof Node\Expr\Array_) {
-                    $this->handleReturnStmt($expr);
+                    $this->handleStmt($expr);
                     $hasChanged = true;
                 }
             }
@@ -112,21 +112,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function handleYieldStmt(Node\Expr\Yield_ $expr): void
-    {
-        /** @var Node\Expr\Array_ $value */
-        $value = $expr->value;
-        foreach ($value->items as $item) {
-            if (! $item instanceof ArrayItem) {
-                continue;
-            }
-            if (! $item->key instanceof Node\Scalar\Int_) {
-                $item->key = null;
-            }
-        }
-    }
-
-    private function handleReturnStmt(Node\Expr\Array_ $expr): void
+    private function handleStmt(Node\Expr\Array_ $expr): void
     {
         foreach ($expr->items as $item) {
             if (! $item instanceof ArrayItem) {
