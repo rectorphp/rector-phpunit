@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\PHPUnit100\Rector\Class_;
 
+use PhpParser\Node\Expr\Yield_;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Scalar\Int_;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Stmt\Class_;
@@ -92,13 +96,13 @@ CODE_SAMPLE
 
         $dataProviders = $this->dataProviderClassMethodFinder->find($node);
         foreach ($dataProviders as $dataProvider) {
-            /** @var Node\Stmt\Expression $stmt */
+            /** @var Expression $stmt */
             foreach ($dataProvider->getStmts() ?? [] as $stmt) {
                 $expr = $stmt->expr;
-                if ($expr instanceof Node\Expr\Yield_) {
+                if ($expr instanceof Yield_) {
                     $this->handleStmt($expr->value);
                     $hasChanged = true;
-                } elseif ($expr instanceof Node\Expr\Array_) {
+                } elseif ($expr instanceof Array_) {
                     $this->handleStmt($expr);
                     $hasChanged = true;
                 }
@@ -112,13 +116,14 @@ CODE_SAMPLE
         return null;
     }
 
-    private function handleStmt(Node\Expr\Array_ $expr): void
+    private function handleStmt(Array_ $array): void
     {
-        foreach ($expr->items as $item) {
+        foreach ($array->items as $item) {
             if (! $item instanceof ArrayItem) {
                 continue;
             }
-            if (! $item->key instanceof Node\Scalar\Int_) {
+
+            if (! $item->key instanceof Int_) {
                 $item->key = null;
             }
         }
