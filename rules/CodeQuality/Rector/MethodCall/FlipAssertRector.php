@@ -20,6 +20,13 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class FlipAssertRector extends AbstractRector
 {
+    /**
+     * @var string[]
+     */
+    private const METHOD_NAMES = [
+        'assertSame', 'assertNotSame', 'assertNotEquals', 'assertEquals', 'assertStringContainsString'
+    ];
+
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
@@ -80,7 +87,7 @@ CODE_SAMPLE
     {
         if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames(
             $node,
-            ['assertSame', 'assertEquals', 'assertStringContainsString']
+            self::METHOD_NAMES
         )) {
             return null;
         }
