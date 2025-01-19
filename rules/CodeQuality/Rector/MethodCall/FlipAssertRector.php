@@ -24,7 +24,7 @@ final class FlipAssertRector extends AbstractRector
      * @var string[]
      */
     private const METHOD_NAMES = [
-        'assertSame', 'assertNotSame', 'assertNotEquals', 'assertEquals', 'assertStringContainsString'
+        'assertSame', 'assertNotSame', 'assertNotEquals', 'assertEquals', 'assertStringContainsString',
     ];
 
     public function __construct(
@@ -85,10 +85,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames(
-            $node,
-            self::METHOD_NAMES
-        )) {
+        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, self::METHOD_NAMES)) {
             return null;
         }
 
