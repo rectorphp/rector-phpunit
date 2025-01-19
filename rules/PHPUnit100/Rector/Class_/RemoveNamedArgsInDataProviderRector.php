@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\PHPUnit100\Rector\Class_;
 
-use PhpParser\Node\Expr\Yield_;
-use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Scalar\Int_;
-use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Expr\Yield_;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Expression;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFinder\DataProviderClassMethodFinder;
 use Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\RemoveNamedArgsInDataProviderRector\RemoveNamedArgsInDataProviderRectorTest;
