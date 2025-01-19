@@ -13,6 +13,7 @@ use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\PHPUnit\Enum\PHPUnitClassName;
 use Rector\Reflection\ReflectionResolver;
 
 final readonly class TestsNodeAnalyzer
@@ -96,10 +97,23 @@ final readonly class TestsNodeAnalyzer
 
     public function isPHPUnitTestCaseCall(Node $node): bool
     {
-        if (! $this->isInTestClass($node)) {
-            return false;
+        if ($node instanceof MethodCall) {
+            return $this->isInTestClass($node);
         }
 
-        return $node instanceof MethodCall || $node instanceof StaticCall;
+        if ($node instanceof StaticCall) {
+            $classType = $this->nodeTypeResolver->getType($node->class);
+            if ($classType instanceof ObjectType) {
+                if ($classType->isInstanceOf(PHPUnitClassName::TEST_CASE)->yes()) {
+                    return true;
+                }
+
+                if ($classType->isInstanceOf(PHPUnitClassName::ASSERT)->yes()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
