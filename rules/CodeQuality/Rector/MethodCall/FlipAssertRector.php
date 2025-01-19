@@ -7,6 +7,7 @@ namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Scalar;
@@ -116,6 +117,10 @@ CODE_SAMPLE
     private function isScalarValue(Expr $expr): bool
     {
         if ($expr instanceof Scalar) {
+            return true;
+        }
+
+        if ($expr instanceof ConstFetch) {
             return true;
         }
 
