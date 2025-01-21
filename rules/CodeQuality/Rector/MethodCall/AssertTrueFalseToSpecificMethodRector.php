@@ -182,7 +182,6 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
                 return;
             }
 
-
             $funcCallOrEmptyNodeArgs = $funcCallOrEmptyNode->getArgs();
             $oldArguments = $node->getArgs();
             unset($oldArguments[0]);
@@ -216,7 +215,7 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
             return [...$funcCallOrEmptyNodeArgs, ...$oldArguments];
         }
 
-        if (in_array($funcCallOrEmptyNodeName, ['is_a', 'str_contains'])) {
+        if (in_array($funcCallOrEmptyNodeName, ['is_a', 'str_contains'], true)) {
             // flip arguments
             $newArgs = [$funcCallOrEmptyNodeArgs[1], $funcCallOrEmptyNodeArgs[0]];
 
