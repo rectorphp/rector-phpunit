@@ -39,6 +39,7 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
         'is_writable' => ['is_writable', 'assertIsWritable', 'assertNotIsWritable'],
         'is_nan' => ['is_nan', 'assertNan', ''],
         'is_a' => ['is_a', 'assertInstanceOf', 'assertNotInstanceOf'],
+        'str_contains' => ['str_contains', 'assertStringContainsString', 'assertStringNotContainsString'],
     ];
 
     public function __construct(
@@ -214,7 +215,8 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
             return [...$funcCallOrEmptyNodeArgs, ...$oldArguments];
         }
 
-        if ($funcCallOrEmptyNodeName === 'is_a') {
+        if (in_array($funcCallOrEmptyNodeName, ['is_a', 'str_contains'], true)) {
+            // flip arguments
             $newArgs = [$funcCallOrEmptyNodeArgs[1], $funcCallOrEmptyNodeArgs[0]];
 
             return [...$newArgs, ...$oldArguments];
