@@ -57,6 +57,7 @@ return static function (RectorConfig $rectorConfig): void {
         NarrowUnusedSetUpDefinedPropertyRector::class,
 
         // specific asserts
+
         AssertCompareOnCountableWithMethodToAssertCountRector::class,
         AssertComparisonToSpecificMethodRector::class,
         AssertNotOperatorRector::class,
