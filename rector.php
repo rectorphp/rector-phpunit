@@ -23,14 +23,13 @@ return RectorConfig::configure()
 
         // object types
         StringClassNameToClassConstantRector::class => [
-            __DIR__ . '/src/Rector/Class_/TestListenerToHooksRector.php',
             __DIR__ . '/src/NodeAnalyzer/TestsNodeAnalyzer.php',
             __DIR__ . '/config',
             __DIR__ . '/src/NodeFinder/DataProviderClassMethodFinder.php',
         ],
     ])
     ->withPhpSets()
-    ->withAttributesSets(all: true)
+    ->withAttributesSets()
     ->withPreparedSets(
         deadCode: true,
         codeQuality: true,
