@@ -38,6 +38,11 @@ final class CoversAnnotationWithValueToAttributeRector extends AbstractRector im
      */
     private const COVERTS_CLASS_ATTRIBUTE = 'PHPUnit\Framework\Attributes\CoversClass';
 
+    /**
+     * @var string
+     */
+    private const COVERS_METHOD_ATTRIBUTE = 'PHPUnit\Framework\Attributes\CoversMethod';
+
     public function __construct(
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
@@ -139,13 +144,16 @@ CODE_SAMPLE
     {
         if (str_starts_with($annotationValue, '::')) {
             $attributeClass = self::COVERS_FUNCTION_ATTRIBUTE;
-            $attributeValue = trim($annotationValue, ':()');
+            $attributeValue = [trim($annotationValue, ':()')];
+        } elseif (str_contains($annotationValue, '::')) {
+            $attributeClass = self::COVERS_METHOD_ATTRIBUTE;
+            $attributeValue = [$this->getClass($annotationValue) . '::class', $this->getMethod($annotationValue)];
         } else {
             $attributeClass = self::COVERTS_CLASS_ATTRIBUTE;
-            $attributeValue = trim($annotationValue) . '::class';
+            $attributeValue = [trim($annotationValue) . '::class'];
         }
 
-        return $this->phpAttributeGroupFactory->createFromClassWithItems($attributeClass, [$attributeValue]);
+        return $this->phpAttributeGroupFactory->createFromClassWithItems($attributeClass, $attributeValue);
     }
 
     /**
@@ -235,7 +243,6 @@ CODE_SAMPLE
 
             $covers = $desiredTagValueNode->value->value;
             if (str_starts_with($covers, '\\')) {
-                $covers = $this->getClass($covers);
                 $attributeGroups[$covers] = $this->createAttributeGroup($covers);
             } elseif (! $hasCoversDefault && str_starts_with($covers, '::')) {
                 $attributeGroups[$covers] = $this->createAttributeGroup($covers);
@@ -270,5 +277,10 @@ CODE_SAMPLE
     private function getClass(string $classWithMethod): string
     {
         return Strings::replace($classWithMethod, '/::.*$/');
+    }
+
+    private function getMethod(string $classWithMethod): string
+    {
+        return Strings::replace($classWithMethod, '/^.*::/');
     }
 }
