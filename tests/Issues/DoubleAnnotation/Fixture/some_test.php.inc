@@ -29,7 +29,7 @@ namespace Rector\PHPUnit\Tests\Issues\DoubleAnnotation\Fixture;
 use PHPUnit\Framework\TestCase;
 use Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\UseSpecificWillMethodRector\Fixture\SomeClass;
 
-#[\PHPUnit\Framework\Attributes\CoversClass(\SomeClass::class)]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\SomeClass::class, 'method')]
 final class SomeTest extends TestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('generatorInput')]
@@ -42,4 +42,3 @@ final class SomeTest extends TestCase
     {
     }
 }
-
