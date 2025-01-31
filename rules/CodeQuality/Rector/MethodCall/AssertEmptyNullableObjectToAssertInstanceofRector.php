@@ -30,9 +30,11 @@ final class AssertEmptyNullableObjectToAssertInstanceofRector extends AbstractRe
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change assertNotEmpty() on an object to more clear assertInstanceof()', [
-            new CodeSample(
-                <<<'CODE_SAMPLE'
+        return new RuleDefinition(
+            'Change assertNotEmpty() and assertNotNull() on an object to more clear assertInstanceof()',
+            [
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;
 
 class SomeClass extends TestCase
@@ -46,8 +48,8 @@ class SomeClass extends TestCase
 }
 CODE_SAMPLE
 
-                ,
-                <<<'CODE_SAMPLE'
+                    ,
+                    <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;
 
 class SomeClass extends TestCase
@@ -60,8 +62,10 @@ class SomeClass extends TestCase
     }
 }
 CODE_SAMPLE
-            ),
-        ]);
+                ),
+
+            ]
+        );
     }
 
     /**
@@ -81,7 +85,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isNames($node->name, ['assertNotEmpty', 'assertEmpty'])) {
+        if (! $this->isNames($node->name, ['assertNotEmpty', 'assertEmpty', 'assertNull', 'assertNotNull'])) {
             return null;
         }
 
@@ -105,7 +109,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $methodName = $this->isName($node->name, 'assertEmpty') ? 'assertNotInstanceOf' : 'assertInstanceOf';
+        $methodName = $this->isNames(
+            $node->name,
+            ['assertEmpty', 'assertNull']
+        ) ? 'assertNotInstanceOf' : 'assertInstanceOf';
 
         $node->name = new Identifier($methodName);
 
