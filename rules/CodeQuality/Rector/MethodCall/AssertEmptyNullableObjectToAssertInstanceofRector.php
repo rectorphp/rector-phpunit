@@ -33,8 +33,8 @@ final class AssertEmptyNullableObjectToAssertInstanceofRector extends AbstractRe
         return new RuleDefinition(
             'Change assertNotEmpty() and assertNotNull() on an object to more clear assertInstanceof()',
             [
-            new CodeSample(
-                <<<'CODE_SAMPLE'
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;
 
 class SomeClass extends TestCase
@@ -48,8 +48,8 @@ class SomeClass extends TestCase
 }
 CODE_SAMPLE
 
-                ,
-                <<<'CODE_SAMPLE'
+                    ,
+                    <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;
 
 class SomeClass extends TestCase
@@ -62,9 +62,10 @@ class SomeClass extends TestCase
     }
 }
 CODE_SAMPLE
-            ),
-        
-        ]);
+                ),
+
+            ]
+        );
     }
 
     /**
