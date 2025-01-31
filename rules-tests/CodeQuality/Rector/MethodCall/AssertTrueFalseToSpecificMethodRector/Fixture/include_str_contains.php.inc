@@ -2,12 +2,15 @@
 
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector\Fixture;
 
+use PHPUnit\Framework\Assert;
+
 final class IncludeStrContains extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
-        $this->assertTrue(str_contains('haystack', 'needle'));
+        Assert::assertTrue(str_contains('also', 'static'));
 
+        $this->assertTrue(str_contains('haystack', 'needle'));
         $this->assertFalse(str_contains('haystack 2', 'needle 2'));
     }
 }
@@ -18,12 +21,15 @@ final class IncludeStrContains extends \PHPUnit\Framework\TestCase
 
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector\Fixture;
 
+use PHPUnit\Framework\Assert;
+
 final class IncludeStrContains extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
-        $this->assertStringContainsString('needle', 'haystack');
+        Assert::assertStringContainsString('static', 'also');
 
+        $this->assertStringContainsString('needle', 'haystack');
         $this->assertStringNotContainsString('needle 2', 'haystack 2');
     }
 }
