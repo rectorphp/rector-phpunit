@@ -149,6 +149,7 @@ final class AssertFuncCallToPHPUnitAssertRector extends AbstractRector
         if (str_ends_with($className, 'Test')) {
             return true;
         }
+
         return str_ends_with($className, 'TestCase');
     }
 
