@@ -19,6 +19,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ReplaceAtMethodWithDesiredMatcherRector extends AbstractRector
 {
+    private bool $hasChanged = false;
+
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
@@ -59,12 +61,18 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): null|MethodCall
     {
+        $this->hasChanged = false;
+
         if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
             return null;
         }
 
         if ($node->var instanceof MethodCall && $arg = $this->findAtMethodCall($node->var)) {
             $this->replaceWithDesiredMatcher($arg);
+        }
+
+        if ($this->hasChanged) {
+            return $node;
         }
 
         return null;
@@ -106,10 +114,13 @@ CODE_SAMPLE
 
         if ($count === 0) {
             $arg->value = new MethodCall($arg->value->var, 'never');
+            $this->hasChanged = true;
         } elseif ($count === 1) {
             $arg->value = new MethodCall($arg->value->var, 'once');
+            $this->hasChanged = true;
         } elseif ($count > 1) {
             $arg->value = new MethodCall($arg->value->var, 'exactly', [new Arg(new Int_($count))]);
+            $this->hasChanged = true;
         }
     }
 }
