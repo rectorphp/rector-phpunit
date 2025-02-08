@@ -9,7 +9,7 @@ final class SkipOnNonTestClass
     public function test()
     {
         $collection = new Collection();
-        $this->assertCount(5, $collection);
+        $this->assertCount(0, $collection);
     }
 }
 
