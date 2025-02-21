@@ -41,6 +41,11 @@ final class CoversAnnotationWithValueToAttributeRector extends AbstractRector im
     /**
      * @var string
      */
+    private const COVERTS_TRAIT_ATTRIBUTE = 'PHPUnit\Framework\Attributes\CoversTrait';
+
+    /**
+     * @var string
+     */
     private const COVERS_METHOD_ATTRIBUTE = 'PHPUnit\Framework\Attributes\CoversMethod';
 
     public function __construct(
@@ -150,6 +155,15 @@ CODE_SAMPLE
             $attributeValue = [$this->getClass($annotationValue) . '::class', $this->getMethod($annotationValue)];
         } else {
             $attributeClass = self::COVERTS_CLASS_ATTRIBUTE;
+
+            if ($this->reflectionProvider->hasClass($annotationValue)) {
+                $classReflection = $this->reflectionProvider->getClass($annotationValue);
+
+                if ($classReflection->isTrait()) {
+                    $attributeClass = self::COVERTS_TRAIT_ATTRIBUTE;
+                }
+            }
+
             $attributeValue = [trim($annotationValue) . '::class'];
         }
 
