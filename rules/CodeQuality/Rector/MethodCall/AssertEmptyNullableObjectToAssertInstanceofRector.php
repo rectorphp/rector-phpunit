@@ -116,7 +116,7 @@ CODE_SAMPLE
 
         $fullyQualified = new FullyQualified($pureType->getClassName());
 
-        $customMessageArg =  $node->getArgs()[1] ?? null;
+        $customMessageArg = $node->getArgs()[1] ?? null;
 
         $node->args[0] = new Arg(new ClassConstFetch($fullyQualified, 'class'));
         $node->args[1] = $firstArg;
