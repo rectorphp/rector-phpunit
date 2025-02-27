@@ -47,7 +47,6 @@ class SomeClass extends TestCase
     }
 }
 CODE_SAMPLE
-
                     ,
                     <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;
@@ -99,7 +98,6 @@ CODE_SAMPLE
         }
 
         $firstArgType = $this->getType($firstArg->value);
-
         if (! $firstArgType instanceof UnionType) {
             return null;
         }
@@ -118,8 +116,14 @@ CODE_SAMPLE
 
         $fullyQualified = new FullyQualified($pureType->getClassName());
 
+        $customMessageArg = $node->getArgs()[1] ?? null;
+
         $node->args[0] = new Arg(new ClassConstFetch($fullyQualified, 'class'));
         $node->args[1] = $firstArg;
+
+        if ($customMessageArg instanceof Arg) {
+            $node->args[] = $customMessageArg;
+        }
 
         return $node;
     }
