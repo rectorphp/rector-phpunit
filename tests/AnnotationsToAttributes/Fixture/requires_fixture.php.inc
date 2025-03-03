@@ -43,8 +43,8 @@ use PHPUnit\Framework\TestCase;
 #[\PHPUnit\Framework\Attributes\RequiresOperatingSystemFamily('Darwin')]
 #[\PHPUnit\Framework\Attributes\RequiresFunction('someFunction')]
 #[\PHPUnit\Framework\Attributes\RequiresMethod(\some\className::class, 'someMethod')]
-#[\PHPUnit\Framework\Attributes\RequiresExtension('mysqli')]
-#[\PHPUnit\Framework\Attributes\RequiresExtension('mysqli', '>= 8.3.0')]
+#[\PHPUnit\Framework\Attributes\RequiresPhpExtension('mysqli')]
+#[\PHPUnit\Framework\Attributes\RequiresPhpExtension('mysqli', '>= 8.3.0')]
 #[\PHPUnit\Framework\Attributes\RequiresSetting('date.timezone', 'Europe/Berlin')]
 class BarController extends TestCase
 {
@@ -54,8 +54,8 @@ class BarController extends TestCase
     #[\PHPUnit\Framework\Attributes\RequiresOperatingSystemFamily('Darwin')]
     #[\PHPUnit\Framework\Attributes\RequiresFunction('someFunction')]
     #[\PHPUnit\Framework\Attributes\RequiresMethod(\some\className::class, 'someMethod')]
-    #[\PHPUnit\Framework\Attributes\RequiresExtension('mysqli')]
-    #[\PHPUnit\Framework\Attributes\RequiresExtension('mysqli', '>= 8.3.0')]
+    #[\PHPUnit\Framework\Attributes\RequiresPhpExtension('mysqli')]
+    #[\PHPUnit\Framework\Attributes\RequiresPhpExtension('mysqli', '>= 8.3.0')]
     #[\PHPUnit\Framework\Attributes\RequiresSetting('date.timezone', 'Europe/Berlin')]
     public function testWithRequires()
     {
