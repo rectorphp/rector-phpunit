@@ -75,7 +75,7 @@ final class AssertCountWithZeroToAssertEmptyRector extends AbstractRector
             return null;
         }
 
-        $secondType  = $this->getType($node->getArgs()[1]->value);
+        $secondType = $this->getType($node->getArgs()[1]->value);
         if ($secondType instanceof UnionType) {
             return null;
         }
