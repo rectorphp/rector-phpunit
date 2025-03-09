@@ -40,7 +40,7 @@ final readonly class TestsNodeAnalyzer
         }
 
         foreach (self::TEST_CASE_OBJECT_CLASSES as $testCaseObjectClass) {
-            if ($classReflection->isSubclassOf($testCaseObjectClass)) {
+            if ($classReflection->is($testCaseObjectClass)) {
                 return true;
             }
         }
