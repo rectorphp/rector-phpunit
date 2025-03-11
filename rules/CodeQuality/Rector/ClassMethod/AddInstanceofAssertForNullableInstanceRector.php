@@ -6,7 +6,6 @@ namespace Rector\PHPUnit\CodeQuality\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
@@ -20,6 +19,7 @@ use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\PHPUnit\CodeQuality\NodeAnalyser\NullableObjectAssignCollector;
 use Rector\PHPUnit\CodeQuality\ValueObject\VariableNameToType;
+use Rector\PHPUnit\CodeQuality\ValueObject\VariableNameToTypeCollection;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -111,28 +111,18 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->stmts === [] || $node->stmts === null) {
+        if ($node->stmts === [] || $node->stmts === null || count($node->stmts) < 2) {
             return null;
         }
 
         $hasChanged = false;
-
-        /** @var VariableNameToType[] $nullableVariableNamesToTypes */
-        $nullableVariableNamesToTypes = [];
+        $variableNameToTypeCollection = $this->nullableObjectAssignCollector->collect($node);
 
         foreach ($node->stmts as $key => $stmt) {
-            if ($stmt instanceof Expression && $stmt->expr instanceof Assign) {
-                $variableNameToType = $this->nullableObjectAssignCollector->collect($stmt->expr);
-                if ($variableNameToType instanceof VariableNameToType) {
-                    $nullableVariableNamesToTypes[] = $variableNameToType;
-                    continue;
-                }
-            }
-
             // has callable on nullable variable of already collected name?
             $matchedNullableVariableNameToType = $this->matchedNullableVariableNameToType(
                 $stmt,
-                $nullableVariableNamesToTypes
+                $variableNameToTypeCollection
             );
             if (! $matchedNullableVariableNameToType instanceof VariableNameToType) {
                 continue;
@@ -146,11 +136,7 @@ CODE_SAMPLE
             $hasChanged = true;
 
             // from now on, the variable is not nullable, remove to avoid double asserts
-            foreach ($nullableVariableNamesToTypes as $key => $nullableVariableNamesToType) {
-                if ($matchedNullableVariableNameToType === $nullableVariableNamesToType) {
-                    unset($nullableVariableNamesToTypes[$key]);
-                }
-            }
+            $variableNameToTypeCollection->remove($matchedNullableVariableNameToType);
         }
 
         if (! $hasChanged) {
@@ -185,37 +171,14 @@ CODE_SAMPLE
         return new Expression($methodCall);
     }
 
-    /**
-     * @param VariableNameToType[] $nullableVariableNamesToTypes
-     */
-    private function matchNullableVariableNameToType(
-        array $nullableVariableNamesToTypes,
-        Variable $variable
-    ): ?VariableNameToType {
-        $variableName = $this->getName($variable);
-
-        foreach ($nullableVariableNamesToTypes as $nullableVariableNameToType) {
-            if ($nullableVariableNameToType->getVariableName() !== $variableName) {
-                continue;
-            }
-
-            return $nullableVariableNameToType;
-        }
-
-        return null;
-    }
-
-    /**
-     * @param VariableNameToType[] $variableNamesToTypes
-     */
     private function matchedNullableVariableNameToType(
         Stmt $stmt,
-        array $variableNamesToTypes
+        VariableNameToTypeCollection $variableNameToTypeCollection
     ): ?VariableNameToType {
         $matchedNullableVariableNameToType = null;
 
         $this->traverseNodesWithCallable($stmt, function (Node $node) use (
-            $variableNamesToTypes,
+            $variableNameToTypeCollection,
             &$matchedNullableVariableNameToType
         ): null {
             if (! $node instanceof MethodCall) {
@@ -231,12 +194,11 @@ CODE_SAMPLE
                 return null;
             }
 
-            // is the variable we're interested in?
-            $matchedNullableVariableNameToType = $this->matchNullableVariableNameToType(
-                $variableNamesToTypes,
-                $node->var
+            $matchedNullableVariableNameToType = $variableNameToTypeCollection->matchByVariableName(
+                $this->getName($node->var)
             );
 
+            // is the variable we're interested in?
             return null;
         });
 

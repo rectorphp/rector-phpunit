@@ -13,4 +13,29 @@ final class VariableNameToTypeCollection
         private array $variableNameToType
     ) {
     }
+
+    public function matchByVariableName(string $variableName): ?VariableNameToType
+    {
+        foreach ($this->variableNameToType as $variableNameToType) {
+            if ($variableNameToType->getVariableName() !== $variableName) {
+                continue;
+            }
+
+            return $variableNameToType;
+        }
+
+        return null;
+    }
+
+    public function remove(VariableNameToType $matchedNullableVariableNameToType): void
+    {
+        foreach ($this->variableNameToType as $key => $variableNamesToType) {
+            if ($matchedNullableVariableNameToType !== $variableNamesToType) {
+                continue;
+            }
+
+            unset($this->variableNameToType[$key]);
+            break;
+        }
+    }
 }
