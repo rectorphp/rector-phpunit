@@ -6,7 +6,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\SingleMockPropertyTypeRector\Source\AnyBook;
 
-class UnionTypeMock extends TestCase
+final class UnionTypeMock extends TestCase
 {
     private MockObject|AnyBook $anyBook;
 }
@@ -21,7 +21,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\SingleMockPropertyTypeRector\Source\AnyBook;
 
-class UnionTypeMock extends TestCase
+final class UnionTypeMock extends TestCase
 {
     private MockObject $anyBook;
 }
