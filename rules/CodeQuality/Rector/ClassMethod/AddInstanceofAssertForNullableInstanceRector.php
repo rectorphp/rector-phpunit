@@ -15,10 +15,10 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
-use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
+use Rector\PHPUnit\CodeQuality\NodeAnalyser\NullableObjectAssignCollector;
 use Rector\PHPUnit\CodeQuality\ValueObject\VariableNameToType;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -32,6 +32,7 @@ final class AddInstanceofAssertForNullableInstanceRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly NullableObjectAssignCollector $nullableObjectAssignCollector,
     ) {
     }
 
@@ -121,7 +122,7 @@ CODE_SAMPLE
 
         foreach ($node->stmts as $key => $stmt) {
             if ($stmt instanceof Expression && $stmt->expr instanceof Assign) {
-                $variableNameToType = $this->collectVariableFromAssign($stmt->expr);
+                $variableNameToType = $this->nullableObjectAssignCollector->collect($stmt->expr);
                 if ($variableNameToType instanceof VariableNameToType) {
                     $nullableVariableNamesToTypes[] = $variableNameToType;
                     continue;
@@ -170,32 +171,6 @@ CODE_SAMPLE
         }
 
         return count($type->getTypes()) === 2;
-    }
-
-    private function collectVariableFromAssign(Assign $assign): ?VariableNameToType
-    {
-        if (! $assign->expr instanceof MethodCall) {
-            return null;
-        }
-
-        if (! $assign->var instanceof Variable) {
-            return null;
-        }
-
-        $variableType = $this->getType($assign);
-        if (! $this->isNullableType($variableType)) {
-            return null;
-        }
-
-        // $fullType = TypeCombinator::removeNull($variableType);
-        $variableName = $this->getName($assign->var);
-
-        $bareVariableType = TypeCombinator::removeNull($variableType);
-        if (! $bareVariableType instanceof ObjectType) {
-            return null;
-        }
-
-        return new VariableNameToType($variableName, $bareVariableType->getClassName());
     }
 
     private function createAssertInstanceof(VariableNameToType $variableNameToType): Expression
