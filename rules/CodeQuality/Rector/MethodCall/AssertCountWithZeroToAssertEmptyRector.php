@@ -7,23 +7,16 @@ namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Name;
-use PHPStan\Type\UnionType;
-use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertCountWithZeroToAssertEmptyRector\AssertCountWithZeroToAssertEmptyRectorTest
+ * @deprecated This rule is deprecated and will be removed in future releases. The use of empty() is discouraged as it introduces ambiguity. PHPStan and Rector promote refactoring away from empty() to more explicit readable structures.
  */
-final class AssertCountWithZeroToAssertEmptyRector extends AbstractRector
+final class AssertCountWithZeroToAssertEmptyRector extends AbstractRector implements DeprecatedInterface
 {
-    public function __construct(
-        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -57,43 +50,7 @@ final class AssertCountWithZeroToAssertEmptyRector extends AbstractRector
      */
     public function refactor(Node $node): MethodCall|StaticCall|null
     {
-        if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames($node, ['assertCount', 'assertNotCount'])) {
-            return null;
-        }
-
-        if ($node->isFirstClassCallable()) {
-            return null;
-        }
-
-        if (count($node->getArgs()) < 2) {
-            return null;
-        }
-
-        $type = $this->getType($node->getArgs()[0]->value);
-
-        if ($type instanceof UnionType) {
-            return null;
-        }
-
-        $secondType = $this->getType($node->getArgs()[1]->value);
-        if ($secondType instanceof UnionType) {
-            return null;
-        }
-
-        $value = ($type->getConstantScalarValues()[0] ?? null);
-        if ($value === 0) {
-            $args = $node->getArgs();
-            if ($this->isName($node->name, 'assertNotCount')) {
-                $node->name = new Name('assertNotEmpty');
-            } else {
-                $node->name = new Name('assertEmpty');
-            }
-
-            array_shift($args);
-            $node->args = $args;
-            return $node;
-        }
-
+        // deprecated
         return null;
     }
 }
