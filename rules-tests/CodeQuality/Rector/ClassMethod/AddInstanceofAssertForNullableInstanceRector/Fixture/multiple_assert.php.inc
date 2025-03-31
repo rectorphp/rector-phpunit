@@ -57,13 +57,13 @@ final class MultipleAssert extends TestCase
     public function test(): void
     {
         $someObject = $this->getSomeObject();
-        $this->assertInstanceof(\Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableInstanceRector\Source\SomeClassUsedInTests::class, $someObject);
+        $this->assertInstanceOf(\Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableInstanceRector\Source\SomeClassUsedInTests::class, $someObject);
         $value = $someObject->getSomeMethod();
 
         $this->assertSame(123, $value);
 
         $someObject2 = $this->getSomeObject2();
-        $this->assertInstanceof(\Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableInstanceRector\Source\SomeClassUsedInTests::class, $someObject2);
+        $this->assertInstanceOf(\Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableInstanceRector\Source\SomeClassUsedInTests::class, $someObject2);
         $value2 = $someObject2->getSomeMethod();
 
         $this->assertSame(123, $value2);

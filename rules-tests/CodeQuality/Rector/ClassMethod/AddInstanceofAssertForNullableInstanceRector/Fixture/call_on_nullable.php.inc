@@ -43,7 +43,7 @@ final class CallOnNullable extends TestCase
     public function test(): void
     {
         $someObject = $this->getSomeObject();
-        $this->assertInstanceof(\Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableInstanceRector\Source\SomeClassUsedInTests::class, $someObject);
+        $this->assertInstanceOf(\Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableInstanceRector\Source\SomeClassUsedInTests::class, $someObject);
         $value = $someObject->getSomeMethod();
 
         $this->assertSame(123, $value);
