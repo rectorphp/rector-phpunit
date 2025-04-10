@@ -41,7 +41,10 @@ final readonly class TestsNodeAnalyzer
             $classReflection = $this->reflectionResolver->resolveClassReflectionSourceObject($node);
 
             // fluent call PHPUnit methods
-            if ($classReflection instanceof ClassReflection && str_starts_with($classReflection->getName(),'PHPUnit\\')) {
+            if ($classReflection instanceof ClassReflection && str_starts_with(
+                $classReflection->getName(),
+                'PHPUnit\\'
+            )) {
                 $classReflection = $this->reflectionResolver->resolveClassReflection($node);
             }
         } else {
