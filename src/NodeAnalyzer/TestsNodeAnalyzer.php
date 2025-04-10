@@ -36,7 +36,7 @@ final readonly class TestsNodeAnalyzer
     {
         if ($node instanceof MethodCall && (! $node->var instanceof Variable || ! $this->nodeNameResolver->isNames(
             $node->var,
-            ['this', 'self']
+            ['this', 'self', 'parent', 'static']
         ))) {
             $classReflection = $this->reflectionResolver->resolveClassReflectionSourceObject($node);
         } else {
