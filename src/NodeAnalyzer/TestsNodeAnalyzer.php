@@ -34,7 +34,10 @@ final readonly class TestsNodeAnalyzer
 
     public function isInTestClass(Node $node): bool
     {
-        if ($node instanceof MethodCall && (! $node->var instanceof Variable || ! $this->nodeNameResolver->isNames($node->var, ['this', 'self']))) {
+        if ($node instanceof MethodCall && (! $node->var instanceof Variable || ! $this->nodeNameResolver->isNames(
+            $node->var,
+            ['this', 'self']
+        ))) {
             $classReflection = $this->reflectionResolver->resolveClassReflectionSourceObject($node);
         } else {
             $classReflection = $this->reflectionResolver->resolveClassReflection($node);
