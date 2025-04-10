@@ -7,7 +7,6 @@ namespace Rector\PHPUnit\NodeAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
@@ -34,22 +33,7 @@ final readonly class TestsNodeAnalyzer
 
     public function isInTestClass(Node $node): bool
     {
-        if ($node instanceof MethodCall && (! $node->var instanceof Variable || ! $this->nodeNameResolver->isName(
-            $node->var,
-            'this'
-        ))) {
-            $classReflection = $this->reflectionResolver->resolveClassReflectionSourceObject($node);
-
-            // fluent call PHPUnit methods
-            if ($classReflection instanceof ClassReflection && str_starts_with(
-                $classReflection->getName(),
-                'PHPUnit\\'
-            )) {
-                $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-            }
-        } else {
-            $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-        }
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
 
         if (! $classReflection instanceof ClassReflection) {
             return false;
