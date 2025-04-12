@@ -128,7 +128,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($item->key === null) {
+            if (! $item->key instanceof Expr) {
                 continue;
             }
 
