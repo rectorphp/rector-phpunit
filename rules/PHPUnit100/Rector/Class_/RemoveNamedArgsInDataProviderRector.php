@@ -128,6 +128,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($item->key === null) {
+                continue;
+            }
+
             if (! $item->key instanceof Int_ && $item->key instanceof Expr) {
                 $item->key = null;
                 $hasChanged = true;
