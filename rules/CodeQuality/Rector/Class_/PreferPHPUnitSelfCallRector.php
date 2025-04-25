@@ -8,22 +8,20 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Class_;
-use PHPStan\Reflection\ClassReflection;
-use PHPStan\Type\ObjectType;
+use Rector\PHPUnit\CodeQuality\NodeAnalyser\AssertMethodAnalyzer;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\Rector\Class_\PreferPHPUnitSelfCallRector\PreferPHPUnitSelfCallRectorTest
+ * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\PreferPHPUnitSelfCallRector\PreferPHPUnitSelfCallRectorTest
  */
 final class PreferPHPUnitSelfCallRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly ReflectionResolver $reflectionResolver,
+        private readonly AssertMethodAnalyzer $assertMethodAnalyzer,
     ) {
     }
 
@@ -81,39 +79,18 @@ CODE_SAMPLE
                 return null;
             }
 
+            if ($node->isFirstClassCallable()) {
+                return null;
+            }
+
+            if (! $this->assertMethodAnalyzer->detectTestCaseCall($node)) {
+                return null;
+            }
+
             $methodName = $this->getName($node->name);
-            if (! is_string($methodName)) {
-                return null;
-            }
 
-            if (! str_starts_with($methodName, 'assert')) {
-                return null;
-            }
-
-            if (! $this->isName($node->var, 'this')) {
-                return null;
-            }
-
-            if (! $this->isObjectType($node->var, new ObjectType('PHPUnit\Framework\TestCase'))) {
-                return null;
-            }
-
-            $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-            if ($classReflection instanceof ClassReflection && $classReflection->hasNativeMethod($methodName)) {
-                $method = $classReflection->getNativeMethod($methodName);
-
-                if ($node->isFirstClassCallable()) {
-                    return null;
-                }
-
-                if ($method->isStatic()) {
-                    $hasChanged = true;
-
-                    return $this->nodeFactory->createStaticCall('self', $methodName, $node->getArgs());
-                }
-            }
-
-            return null;
+            $hasChanged = true;
+            return $this->nodeFactory->createStaticCall('self', $methodName, $node->getArgs());
         });
 
         if ($hasChanged) {
