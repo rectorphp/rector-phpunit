@@ -10,6 +10,9 @@ final class ExpectException extends TestCase
     {
         self::expectException('some class');
         self::expectExceptionMessage('some message');
+
+        self::expectExceptionCode(100);
+        self::expectExceptionMessageMatches('some regex');
     }
 }
 
@@ -27,6 +30,9 @@ final class ExpectException extends TestCase
     {
         $this->expectException('some class');
         $this->expectExceptionMessage('some message');
+
+        $this->expectExceptionCode(100);
+        $this->expectExceptionMessageMatches('some regex');
     }
 }
 
