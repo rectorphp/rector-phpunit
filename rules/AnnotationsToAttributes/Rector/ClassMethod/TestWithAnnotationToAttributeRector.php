@@ -137,7 +137,7 @@ CODE_SAMPLE
             $testWithItems = explode("\n", trim($genericTagValueNode->value));
 
             foreach ($testWithItems as $testWithItem) {
-                $jsonArray = Json::decode(trim($testWithItem), Json::FORCE_ARRAY);
+                $jsonArray = Json::decode(trim($testWithItem), forceArrays: true);
 
                 $attributeGroups[] = $this->phpAttributeGroupFactory->createFromClassWithItems(
                     self::TEST_WITH_ATTRIBUTE,

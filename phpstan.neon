@@ -9,6 +9,7 @@ parameters:
         - rules-tests
 
     reportUnmatchedIgnoredErrors: false
+    errorFormat: symplify
 
     scanDirectories:
         - stubs

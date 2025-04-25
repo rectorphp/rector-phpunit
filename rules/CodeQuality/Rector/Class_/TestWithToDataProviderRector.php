@@ -189,7 +189,7 @@ CODE_SAMPLE
         $jsonArray = [];
 
         foreach ($testWithItems as $testWithItem) {
-            $jsonArray[] = Json::decode(trim($testWithItem), Json::FORCE_ARRAY);
+            $jsonArray[] = Json::decode(trim($testWithItem), forceArrays: true);
         }
 
         return $jsonArray;
