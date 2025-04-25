@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeVisitor;
+use Rector\PHPUnit\CodeQuality\NodeAnalyser\AssertMethodAnalyzer;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -21,23 +22,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class PreferPHPUnitThisCallRector extends AbstractRector
 {
-    /**
-     * @var string[]
-     */
-    private const NON_ASSERT_STATIC_METHODS = [
-        'createMock',
-        'atLeast',
-        'atLeastOnce',
-        'once',
-        'never',
-        'expectException',
-        'expectExceptionMessage',
-        'expectExceptionCode',
-        'expectExceptionMessageMatches',
-    ];
-
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly AssertMethodAnalyzer $assertMethodAnalyzer
     ) {
     }
 
@@ -105,18 +92,11 @@ CODE_SAMPLE
                 return null;
             }
 
+            if (! $this->assertMethodAnalyzer->detectTestCaseCall($node)) {
+                return null;
+            }
+
             $methodName = $this->getName($node->name);
-            if (! is_string($methodName)) {
-                return null;
-            }
-
-            if (! $this->isNames($node->class, ['static', 'self'])) {
-                return null;
-            }
-
-            if (! str_starts_with($methodName, 'assert') && ! in_array($methodName, self::NON_ASSERT_STATIC_METHODS)) {
-                return null;
-            }
 
             $hasChanged = true;
             return $this->nodeFactory->createMethodCall('this', $methodName, $node->getArgs());
