@@ -10,7 +10,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -84,7 +84,7 @@ CODE_SAMPLE
         $this->traverseNodesWithCallable($node, function (Node $node) use (&$hasChanged): int|null|MethodCall {
             $isInsideStaticFunctionLike = ($node instanceof ClassMethod && $node->isStatic()) || ($node instanceof Closure && $node->static);
             if ($isInsideStaticFunctionLike) {
-                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if (! $node instanceof StaticCall) {
