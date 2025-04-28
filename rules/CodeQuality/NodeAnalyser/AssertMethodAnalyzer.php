@@ -7,6 +7,7 @@ namespace Rector\PHPUnit\CodeQuality\NodeAnalyser;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\ObjectType;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PHPUnit\CodeQuality\Enum\NonAssertStaticableMethods;
@@ -28,7 +29,7 @@ final readonly class AssertMethodAnalyzer
             ? $call->var
             : $call->class;
 
-        if (! $this->nodeTypeResolver->isObjectType($objectCaller, new \PHPStan\Type\ObjectType('PHPUnit\Framework\TestCase'))) {
+        if (! $this->nodeTypeResolver->isObjectType($objectCaller, new ObjectType('PHPUnit\Framework\TestCase'))) {
             return false;
         }
 
