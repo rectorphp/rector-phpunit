@@ -10,4 +10,9 @@ final class SomeClassUsedInTests
     {
          return 1000;
     }
+
+    public function getSomeNestedObject(): ?SomeNestedObject
+    {
+        return new SomeNestedObject();
+    }
 }
