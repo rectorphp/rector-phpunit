@@ -11,7 +11,7 @@ use PHPStan\Reflection\ExtendedMethodReflection;
 use PHPStan\Type\ObjectType;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Rector\PHPUnit\CodeQuality\Enum\NonAssertPrefixedAssertionMethods;
+use Rector\PHPUnit\CodeQuality\Enum\NonStaticNonAssertPrefixedAssertionMethods;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
 use Rector\Reflection\ReflectionResolver;
 
@@ -35,10 +35,11 @@ final readonly class AssertMethodAnalyzer
         }
 
         $methodName = $this->nodeNameResolver->getName($call->name);
-        if (! str_starts_with((string) $methodName, 'assert') && ! in_array(
+        if (! str_starts_with((string) $methodName, 'assert') && ! ($call instanceof StaticCall && in_array(
             $methodName,
-            NonAssertPrefixedAssertionMethods::ALL
-        )) {
+            NonStaticNonAssertPrefixedAssertionMethods::ALL,
+            true
+        ))) {
             return false;
         }
 
