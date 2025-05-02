@@ -26,9 +26,9 @@ final class IncludeExceptions extends TestCase
 {
     public function testMe()
     {
-        self::expectException(\RuntimeException::class);
-        self::expectExceptionMessage('foo');
-        self::expectExceptionCode(123);
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('foo');
+        $this->expectExceptionCode(123);
     }
 }
 

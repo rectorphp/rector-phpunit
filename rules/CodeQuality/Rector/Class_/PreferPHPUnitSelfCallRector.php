@@ -83,7 +83,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $this->assertMethodAnalyzer->detectTestCaseCall($node)) {
+            if (! $this->assertMethodAnalyzer->detectTestCaseCallForStatic($node)) {
                 return null;
             }
 

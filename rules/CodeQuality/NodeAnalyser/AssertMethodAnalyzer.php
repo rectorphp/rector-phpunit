@@ -7,10 +7,11 @@ namespace Rector\PHPUnit\CodeQuality\NodeAnalyser;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ExtendedMethodReflection;
 use PHPStan\Type\ObjectType;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Rector\PHPUnit\CodeQuality\Enum\NonAssertStaticableMethods;
+use Rector\PHPUnit\CodeQuality\Enum\NonAssertPrefixedAssertionMethods;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
 use Rector\Reflection\ReflectionResolver;
 
@@ -36,7 +37,7 @@ final readonly class AssertMethodAnalyzer
         $methodName = $this->nodeNameResolver->getName($call->name);
         if (! str_starts_with((string) $methodName, 'assert') && ! in_array(
             $methodName,
-            NonAssertStaticableMethods::ALL
+            NonAssertPrefixedAssertionMethods::ALL
         )) {
             return false;
         }
@@ -45,17 +46,38 @@ final readonly class AssertMethodAnalyzer
             return false;
         }
 
-        $classReflection = $this->reflectionResolver->resolveClassReflection($call);
-        if (! $classReflection instanceof ClassReflection) {
+        $extendedMethodReflection = $this->resolveMethodReflection($call);
+        if (! $extendedMethodReflection instanceof ExtendedMethodReflection) {
             return false;
         }
-
-        $extendedMethodReflection = $classReflection->getNativeMethod($methodName);
 
         // only handle methods in TestCase or Assert class classes
         $declaringClassName = $extendedMethodReflection->getDeclaringClass()
             ->getName();
 
         return in_array($declaringClassName, [PHPUnitClassName::TEST_CASE, PHPUnitClassName::ASSERT]);
+    }
+
+    public function detectTestCaseCallForStatic(MethodCall $methodCall): bool
+    {
+        if (! $this->detectTestCaseCall($methodCall)) {
+            return false;
+        }
+
+        $extendedMethodReflection = $this->resolveMethodReflection($methodCall);
+
+        return $extendedMethodReflection instanceof ExtendedMethodReflection && $extendedMethodReflection->isStatic();
+    }
+
+    private function resolveMethodReflection(MethodCall|StaticCall $call): ?ExtendedMethodReflection
+    {
+        $methodName = $this->nodeNameResolver->getName($call->name);
+
+        $classReflection = $this->reflectionResolver->resolveClassReflection($call);
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
+
+        return $classReflection->getNativeMethod($methodName);
     }
 }
