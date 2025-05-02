@@ -35,11 +35,11 @@ final readonly class AssertMethodAnalyzer
         }
 
         $methodName = $this->nodeNameResolver->getName($call->name);
-        if (! str_starts_with((string) $methodName, 'assert') && ! ($call instanceof StaticCall && in_array(
+        if (! str_starts_with((string) $methodName, 'assert') && ! in_array(
             $methodName,
             NonAssertNonStaticMethods::ALL,
             true
-        ))) {
+        )) {
             return false;
         }
 
