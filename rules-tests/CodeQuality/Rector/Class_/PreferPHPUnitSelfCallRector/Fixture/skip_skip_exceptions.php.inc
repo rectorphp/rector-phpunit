@@ -4,7 +4,7 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\PreferPHPUnitSelfCallRe
 
 use PHPUnit\Framework\TestCase;
 
-final class IncludeExceptions extends TestCase
+final class SkipExceptions extends TestCase
 {
     public function testMe()
     {
@@ -14,5 +14,3 @@ final class IncludeExceptions extends TestCase
         $this->expectExceptionCode(123);
     }
 }
-
-?>
