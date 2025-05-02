@@ -41,12 +41,12 @@ final readonly class AssertMethodAnalyzer
             return false;
         }
 
-        $classReflection = $this->reflectionResolver->resolveClassReflection($call);
-        if (! $classReflection instanceof ClassReflection) {
+        if ($call instanceof StaticCall && ! $this->nodeNameResolver->isNames($call->class, ['static', 'self'])) {
             return false;
         }
 
-        if ($call instanceof StaticCall && ! $this->nodeNameResolver->isNames($call->class, ['static', 'self'])) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($call);
+        if (! $classReflection instanceof ClassReflection) {
             return false;
         }
 
