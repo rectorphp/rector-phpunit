@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Enum;
 
-final class NonStaticNonAssertPrefixedAssertionMethods
+final class NonAssertNonStaticMethods
 {
     /**
      * @var string[]
