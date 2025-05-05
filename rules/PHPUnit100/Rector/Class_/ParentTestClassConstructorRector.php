@@ -20,6 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @see https://github.com/sebastianbergmann/phpunit/issues/3975
  * @see https://github.com/sebastianbergmann/phpunit/commit/705874f1b867fd99865e43cb5eaea4e6d141582f
  *
  * @see \Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\ParentTestClassConstructorRector\ParentTestClassConstructorRectorTest
@@ -114,10 +115,10 @@ CODE_SAMPLE
         $className = $this->getName($class);
 
         // loaded automatically by PHPUnit
-        if (str_ends_with($className, 'Test')) {
+        if (str_ends_with((string) $className, 'Test')) {
             return true;
         }
 
-        return str_ends_with($className, 'TestCase');
+        return str_ends_with((string) $className, 'TestCase');
     }
 }
