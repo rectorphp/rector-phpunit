@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\PHPUnit100\Rector\Class_;
 
-use PhpParser\Node\Expr\ClassConstFetch;
-use PhpParser\Node\Arg;
 use PhpParser\Modifiers;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
