@@ -76,6 +76,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->shouldSkipClass($node)) {
+            return null;
+        }
+
         // it already has a constructor, skip as it might require specific tweaking
         if ($node->getMethod(MethodName::CONSTRUCT)) {
             return null;
@@ -95,5 +99,25 @@ CODE_SAMPLE
         $staticClassConstFetch = new ClassConstFetch(new Name('static'), 'class');
 
         return new StaticCall(new Name('parent'), MethodName::CONSTRUCT, [new Arg($staticClassConstFetch)]);
+    }
+
+    private function shouldSkipClass(Class_ $class): bool
+    {
+        if ($class->isAbstract()) {
+            return true;
+        }
+
+        if ($class->isAnonymous()) {
+            return true;
+        }
+
+        $className = $this->getName($class);
+
+        // loaded automatically by PHPUnit
+        if (str_ends_with($className, 'Test')) {
+            return true;
+        }
+
+        return str_ends_with($className, 'TestCase');
     }
 }
