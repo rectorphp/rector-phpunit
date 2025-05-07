@@ -58,6 +58,16 @@ final readonly class TestsNodeAnalyzer
             return true;
         }
 
+        foreach ($classMethod->getAttrGroups() as $attrGroup) {
+            $hasTestAttribute = array_any(
+                $attrGroup->attrs,
+                static fn($attribute): bool => $attribute->name->toString() === 'PHPUnit\\Framework\\Attributes\\Test'
+            );
+            if ($hasTestAttribute) {
+                return \true;
+            }
+        }
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
         return $phpDocInfo->hasByName('test');
     }
