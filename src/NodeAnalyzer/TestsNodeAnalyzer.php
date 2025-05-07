@@ -59,12 +59,10 @@ final readonly class TestsNodeAnalyzer
         }
 
         foreach ($classMethod->getAttrGroups() as $attrGroup) {
-            $hasTestAttribute = array_any(
-                $attrGroup->attrs,
-                static fn($attribute): bool => $attribute->name->toString() === 'PHPUnit\\Framework\\Attributes\\Test'
-            );
-            if ($hasTestAttribute) {
-                return \true;
+            foreach ($attrGroup->attrs as $attribute) {
+                if($attribute->name->toString() === 'PHPUnit\\Framework\\Attributes\\Test'){
+                    return true;
+                }
             }
         }
 
