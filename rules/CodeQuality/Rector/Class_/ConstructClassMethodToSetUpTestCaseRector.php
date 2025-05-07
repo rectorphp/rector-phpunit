@@ -101,12 +101,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
-        if (! $constructClassMethod instanceof ClassMethod) {
+        if ($this->shouldSkipClass($node)) {
             return null;
         }
 
-        if ($this->classAnalyzer->isAnonymousClass($node)) {
+        $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
+        if (! $constructClassMethod instanceof ClassMethod) {
             return null;
         }
 
@@ -217,5 +217,17 @@ CODE_SAMPLE
         }
 
         return $this->nodeNameResolver->isName($node->name, $desiredMethodName);
+    }
+
+    private function shouldSkipClass(Class_ $class): bool
+    {
+        $className = $this->getName($class);
+
+        // probably helper class with access to protected methods like createMock()
+        if (! str_ends_with($className, 'Test') && ! str_ends_with($className, 'TestCase')) {
+            return true;
+        }
+
+        return $this->classAnalyzer->isAnonymousClass($class);
     }
 }
