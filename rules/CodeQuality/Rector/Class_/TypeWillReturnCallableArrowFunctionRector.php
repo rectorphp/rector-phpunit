@@ -94,6 +94,14 @@ final class SomeTest extends TestCase
             );
     }
 }
+
+final class SomeClass
+{
+    public function someMethod(string $arg): string
+    {
+        return $arg . ' !';
+    }
+}
 CODE_SAMPLE
                 ),
             ]
