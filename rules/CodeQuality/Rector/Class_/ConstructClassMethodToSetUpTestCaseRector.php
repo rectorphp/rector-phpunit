@@ -224,7 +224,7 @@ CODE_SAMPLE
         $className = $this->getName($class);
 
         // probably helper class with access to protected methods like createMock()
-        if (! str_ends_with($className, 'Test') && ! str_ends_with($className, 'TestCase')) {
+        if (! str_ends_with((string) $className, 'Test') && ! str_ends_with((string) $className, 'TestCase')) {
             return true;
         }
 
