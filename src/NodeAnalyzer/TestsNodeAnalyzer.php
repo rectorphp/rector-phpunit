@@ -60,7 +60,7 @@ final readonly class TestsNodeAnalyzer
 
         foreach ($classMethod->getAttrGroups() as $attrGroup) {
             foreach ($attrGroup->attrs as $attribute) {
-                if($attribute->name->toString() === 'PHPUnit\\Framework\\Attributes\\Test'){
+                if ($attribute->name->toString() === 'PHPUnit\\Framework\\Attributes\\Test') {
                     return true;
                 }
             }
