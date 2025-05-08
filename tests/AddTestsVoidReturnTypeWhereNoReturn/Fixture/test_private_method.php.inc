@@ -7,6 +7,9 @@ class SomeClassTest extends TestCase
     private function testShouldDoStuff()
     {
     }
+    protected function testShouldDoStuffProtected()
+    {
+    }
 }
 
 ?>
@@ -18,6 +21,9 @@ use PHPUnit\Framework\TestCase;
 class SomeClassTest extends TestCase
 {
     private function testShouldDoStuff()
+    {
+    }
+    protected function testShouldDoStuffProtected()
     {
     }
 }
