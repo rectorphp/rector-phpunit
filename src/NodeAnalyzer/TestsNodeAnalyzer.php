@@ -58,8 +58,8 @@ final readonly class TestsNodeAnalyzer
             return true;
         }
 
-        foreach ($classMethod->getAttrGroups() as $attrGroup) {
-            foreach ($attrGroup->attrs as $attribute) {
+        foreach ($classMethod->getAttrGroups() as $attributeGroup) {
+            foreach ($attributeGroup->attrs as $attribute) {
                 if ($attribute->name->toString() === 'PHPUnit\\Framework\\Attributes\\Test') {
                     return true;
                 }
