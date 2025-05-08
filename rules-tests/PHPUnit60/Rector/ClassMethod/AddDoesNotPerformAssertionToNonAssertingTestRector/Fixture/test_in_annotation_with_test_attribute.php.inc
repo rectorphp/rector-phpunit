@@ -2,7 +2,7 @@
 
 namespace Rector\PHPUnit\Tests\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector\Fixture;
 
-class TestInAnnotatoinWithTestAttribute extends \PHPUnit\Framework\TestCase
+class TestInAnnotationWithTestAttribute extends \PHPUnit\Framework\TestCase
 {
     #[\PHPUnit\Framework\Attributes\Test]
     public function thisIsTest()
@@ -17,7 +17,7 @@ class TestInAnnotatoinWithTestAttribute extends \PHPUnit\Framework\TestCase
 
 namespace Rector\PHPUnit\Tests\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector\Fixture;
 
-class TestInAnnotatoinWithTestAttribute extends \PHPUnit\Framework\TestCase
+class TestInAnnotationWithTestAttribute extends \PHPUnit\Framework\TestCase
 {
     /**
      * @doesNotPerformAssertions
