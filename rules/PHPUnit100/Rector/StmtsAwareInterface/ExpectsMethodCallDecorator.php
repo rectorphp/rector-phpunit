@@ -43,7 +43,7 @@ final readonly class ExpectsMethodCallDecorator
                 return null;
             }
 
-            if (! $this->nodeNameResolver->isName($node->name, 'expects')) {
+            if (! $this->isName($node->name, 'expects')) {
                 return null;
             }
 
