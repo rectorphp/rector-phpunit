@@ -125,7 +125,7 @@ CODE_SAMPLE
 
         return (bool) $this->betterNodeFinder->findFirst(
             $classMethod->stmts,
-            fn (Node $node): bool => $node instanceof Variable && $this->nodeNameResolver->isName($node, 'this')
+            fn (Node $node): bool => $node instanceof Variable && $this->isName($node, 'this')
         );
     }
 }
