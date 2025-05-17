@@ -14,13 +14,13 @@ final class SkipWithIfElse extends TestCase
         $someObject = $this->getSomeObject();
         $value = $someObject->getSomeMethod();
 
-        if ($value !== null) {
+        if ($someObject !== null) {
             $this->assertSame(123, $value);
 
             // we know the value here, no need to add instanceof
             $value = $someObject->getSomeMethod();
         } else {
-            $this->assertNull($value);
+            $this->assertNull($someObject);
         }
     }
 
