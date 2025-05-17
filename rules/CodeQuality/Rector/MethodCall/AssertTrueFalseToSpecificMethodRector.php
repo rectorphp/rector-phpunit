@@ -106,7 +106,7 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
         if ($firstArgumentName === 'is_a') {
             /**
              * @var FuncCall $firstArgumentValue
-             * @var array<Arg> $args
+             * @var array<Arg>
              **/
             $args = $firstArgumentValue->getArgs();
             if ($args === []) {
