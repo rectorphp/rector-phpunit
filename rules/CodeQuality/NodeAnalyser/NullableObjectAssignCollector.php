@@ -37,7 +37,7 @@ final readonly class NullableObjectAssignCollector
         // first round to collect assigns
         foreach ((array) $stmtsAware->stmts as $stmt) {
             if (! $stmt instanceof Expression) {
-                continue;
+                return new VariableNameToTypeCollection([]);
             }
 
             if (! $stmt->expr instanceof Assign) {
