@@ -134,6 +134,7 @@ CODE_SAMPLE
                 );
 
                 if ($node instanceof ClassMethod && $annotationWithValueToAttribute->getIsOnClassLevel() && $this->currentClass instanceof Class_) {
+                    Assert::isInstanceOf($this->currentClass, Class_::class);
                     $this->currentClass->attrGroups = array_merge($this->currentClass->attrGroups, [$attributeGroup]);
                 } else {
                     $node->attrGroups = array_merge($node->attrGroups, [$attributeGroup]);
