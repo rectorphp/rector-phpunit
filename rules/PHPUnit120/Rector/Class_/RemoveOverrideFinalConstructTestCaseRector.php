@@ -5,15 +5,8 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\PHPUnit120\Rector\Class_;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Expr\Yield_;
-use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\Return_;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
