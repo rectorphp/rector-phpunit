@@ -51,7 +51,7 @@ return static function (RectorConfig $rectorConfig): void {
 
         new AnnotationWithValueToAttribute('depends', 'PHPUnit\Framework\Attributes\Depends'),
         new AnnotationWithValueToAttribute('group', 'PHPUnit\Framework\Attributes\Group'),
-        new AnnotationWithValueToAttribute('uses', 'PHPUnit\Framework\Attributes\UsesClass'),
+        new AnnotationWithValueToAttribute('uses', 'PHPUnit\Framework\Attributes\UsesClass', [], true),
         new AnnotationWithValueToAttribute('testDox', 'PHPUnit\Framework\Attributes\TestDox'),
         new AnnotationWithValueToAttribute('testdox', 'PHPUnit\Framework\Attributes\TestDox'),
     ]);

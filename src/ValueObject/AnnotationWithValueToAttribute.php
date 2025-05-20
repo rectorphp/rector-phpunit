@@ -12,7 +12,8 @@ final readonly class AnnotationWithValueToAttribute
     public function __construct(
         private string $annotationName,
         private string $attributeClass,
-        private array $valueMap = []
+        private array $valueMap = [],
+        private bool $isOnClassLevel = false,
     ) {
     }
 
@@ -32,5 +33,10 @@ final readonly class AnnotationWithValueToAttribute
     public function getValueMap(): array
     {
         return $this->valueMap;
+    }
+
+    public function getIsOnClassLevel(): bool
+    {
+        return $this->isOnClassLevel;
     }
 }
