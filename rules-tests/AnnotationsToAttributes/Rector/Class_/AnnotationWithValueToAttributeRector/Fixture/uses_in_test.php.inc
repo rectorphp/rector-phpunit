@@ -22,9 +22,9 @@ namespace Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\AnnotationW
 
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\UsesClass(Foo::Bar)]
 final class UsesInTest extends TestCase
 {
-    #[\PHPUnit\Framework\Attributes\UsesClass(Foo::Bar)]
     public function run()
     {
     }
