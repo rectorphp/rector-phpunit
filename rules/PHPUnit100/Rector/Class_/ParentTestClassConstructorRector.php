@@ -119,6 +119,10 @@ CODE_SAMPLE
             return true;
         }
 
-        return str_ends_with((string) $className, 'TestCase');
+        if (str_ends_with((string) $className, 'TestCase')) {
+            return true;
+        }
+
+        return (bool) $class->getAttribute('hasRemovedFinalConstruct');
     }
 }
