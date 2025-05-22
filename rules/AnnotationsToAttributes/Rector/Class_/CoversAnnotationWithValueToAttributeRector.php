@@ -219,7 +219,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $attributeGroups[] = $this->createAttributeGroup($desiredTagValueNode->value->value);
+            $attributeGroups[] = $attributeGroup;
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
         }
 
@@ -239,10 +239,15 @@ CODE_SAMPLE
             }
 
             $covers = $desiredTagValueNode->value->value;
-            if (str_starts_with($covers, '\\')) {
-                $attributeGroups[$covers] = $this->createAttributeGroup($covers);
-            } elseif (! $hasCoversDefault && str_starts_with($covers, '::')) {
-                $attributeGroups[$covers] = $this->createAttributeGroup($covers);
+            if (str_starts_with($covers, '\\') || (! $hasCoversDefault && str_starts_with($covers, '::'))) {
+                $attributeGroup = $this->createAttributeGroup($covers);
+
+                // phpunit 10 may not fully support attribute
+                if (! $attributeGroup instanceof AttributeGroup) {
+                    continue;
+                }
+
+                $attributeGroups[$covers] = $attributeGroup;
             }
 
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
@@ -269,10 +274,15 @@ CODE_SAMPLE
             }
 
             $covers = $desiredTagValueNode->value->value;
-            if (str_starts_with($covers, '\\')) {
-                $attributeGroups[$covers] = $this->createAttributeGroup($covers);
-            } elseif (! $hasCoversDefault && str_starts_with($covers, '::')) {
-                $attributeGroups[$covers] = $this->createAttributeGroup($covers);
+            if (str_starts_with($covers, '\\') || (! $hasCoversDefault && str_starts_with($covers, '::'))) {
+                $attributeGroup = $this->createAttributeGroup($covers);
+
+                // phpunit 10 may not fully support attribute
+                if (! $attributeGroup instanceof AttributeGroup) {
+                    continue;
+                }
+
+                $attributeGroups[$covers] = $attributeGroup;
             }
         }
 
