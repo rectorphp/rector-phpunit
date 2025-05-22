@@ -248,9 +248,8 @@ CODE_SAMPLE
                 }
 
                 $attributeGroups[$covers] = $attributeGroup;
+                $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
             }
-
-            $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
         }
 
         return $attributeGroups;
