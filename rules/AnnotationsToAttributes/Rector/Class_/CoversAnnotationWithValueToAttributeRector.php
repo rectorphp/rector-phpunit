@@ -166,7 +166,7 @@ CODE_SAMPLE
                 if ($classReflection->isTrait()) {
                     $attributeClass = self::COVERTS_TRAIT_ATTRIBUTE;
                     if (! $this->reflectionProvider->hasClass($attributeClass)) {
-                       return null;
+                        return null;
                     }
                 }
             }
