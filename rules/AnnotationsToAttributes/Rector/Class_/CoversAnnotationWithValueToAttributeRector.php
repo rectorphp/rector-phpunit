@@ -145,13 +145,17 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function createAttributeGroup(string $annotationValue): AttributeGroup
+    private function createAttributeGroup(string $annotationValue): ?AttributeGroup
     {
         if (str_starts_with($annotationValue, '::')) {
             $attributeClass = self::COVERS_FUNCTION_ATTRIBUTE;
             $attributeValue = [trim($annotationValue, ':()')];
         } elseif (str_contains($annotationValue, '::')) {
             $attributeClass = self::COVERS_METHOD_ATTRIBUTE;
+            if (! $this->reflectionProvider->hasClass($attributeClass)) {
+                return null;
+            }
+
             $attributeValue = [$this->getClass($annotationValue) . '::class', $this->getMethod($annotationValue)];
         } else {
             $attributeClass = self::COVERTS_CLASS_ATTRIBUTE;
@@ -161,6 +165,9 @@ CODE_SAMPLE
 
                 if ($classReflection->isTrait()) {
                     $attributeClass = self::COVERTS_TRAIT_ATTRIBUTE;
+                    if (! $this->reflectionProvider->hasClass($attributeClass)) {
+                       return null;
+                    }
                 }
             }
 
@@ -203,6 +210,12 @@ CODE_SAMPLE
         $desiredTagValueNodes = $phpDocInfo->getTagsByName('coversDefaultClass');
         foreach ($desiredTagValueNodes as $desiredTagValueNode) {
             if (! $desiredTagValueNode->value instanceof GenericTagValueNode) {
+                continue;
+            }
+
+            $attributeGroup = $this->createAttributeGroup($desiredTagValueNode->value->value);
+            // phpunit 10 may not fully support attribute
+            if (! $attributeGroup instanceof AttributeGroup) {
                 continue;
             }
 
