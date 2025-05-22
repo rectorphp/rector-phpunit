@@ -248,9 +248,10 @@ CODE_SAMPLE
                 }
 
                 $attributeGroups[$covers] = $attributeGroup;
+                $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
+            } elseif ($hasCoversDefault && str_starts_with($covers, '::')) {
+                $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
             }
-
-            $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
         }
 
         return $attributeGroups;
@@ -301,6 +302,12 @@ CODE_SAMPLE
         $desiredTagValueNodes = $phpDocInfo->getTagsByName('covers');
         foreach ($desiredTagValueNodes as $desiredTagValueNode) {
             if (! $desiredTagValueNode->value instanceof GenericTagValueNode) {
+                continue;
+            }
+
+            if (str_contains($desiredTagValueNode->value->value, '::') && ! $this->reflectionProvider->hasClass(
+                self::COVERS_METHOD_ATTRIBUTE
+            )) {
                 continue;
             }
 
