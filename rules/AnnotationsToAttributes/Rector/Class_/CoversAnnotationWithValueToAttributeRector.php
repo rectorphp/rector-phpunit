@@ -145,13 +145,17 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function createAttributeGroup(string $annotationValue): AttributeGroup
+    private function createAttributeGroup(string $annotationValue): ?AttributeGroup
     {
         if (str_starts_with($annotationValue, '::')) {
             $attributeClass = self::COVERS_FUNCTION_ATTRIBUTE;
             $attributeValue = [trim($annotationValue, ':()')];
         } elseif (str_contains($annotationValue, '::')) {
             $attributeClass = self::COVERS_METHOD_ATTRIBUTE;
+            if (! $this->reflectionProvider->hasClass($attributeClass)) {
+                return null;
+            }
+
             $attributeValue = [$this->getClass($annotationValue) . '::class', $this->getMethod($annotationValue)];
         } else {
             $attributeClass = self::COVERTS_CLASS_ATTRIBUTE;
@@ -161,6 +165,9 @@ CODE_SAMPLE
 
                 if ($classReflection->isTrait()) {
                     $attributeClass = self::COVERTS_TRAIT_ATTRIBUTE;
+                    if (! $this->reflectionProvider->hasClass($attributeClass)) {
+                        return null;
+                    }
                 }
             }
 
@@ -206,7 +213,13 @@ CODE_SAMPLE
                 continue;
             }
 
-            $attributeGroups[] = $this->createAttributeGroup($desiredTagValueNode->value->value);
+            $attributeGroup = $this->createAttributeGroup($desiredTagValueNode->value->value);
+            // phpunit 10 may not fully support attribute
+            if (! $attributeGroup instanceof AttributeGroup) {
+                continue;
+            }
+
+            $attributeGroups[] = $attributeGroup;
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
         }
 
@@ -226,10 +239,15 @@ CODE_SAMPLE
             }
 
             $covers = $desiredTagValueNode->value->value;
-            if (str_starts_with($covers, '\\')) {
-                $attributeGroups[$covers] = $this->createAttributeGroup($covers);
-            } elseif (! $hasCoversDefault && str_starts_with($covers, '::')) {
-                $attributeGroups[$covers] = $this->createAttributeGroup($covers);
+            if (str_starts_with($covers, '\\') || (! $hasCoversDefault && str_starts_with($covers, '::'))) {
+                $attributeGroup = $this->createAttributeGroup($covers);
+
+                // phpunit 10 may not fully support attribute
+                if (! $attributeGroup instanceof AttributeGroup) {
+                    continue;
+                }
+
+                $attributeGroups[$covers] = $attributeGroup;
             }
 
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
@@ -256,10 +274,15 @@ CODE_SAMPLE
             }
 
             $covers = $desiredTagValueNode->value->value;
-            if (str_starts_with($covers, '\\')) {
-                $attributeGroups[$covers] = $this->createAttributeGroup($covers);
-            } elseif (! $hasCoversDefault && str_starts_with($covers, '::')) {
-                $attributeGroups[$covers] = $this->createAttributeGroup($covers);
+            if (str_starts_with($covers, '\\') || (! $hasCoversDefault && str_starts_with($covers, '::'))) {
+                $attributeGroup = $this->createAttributeGroup($covers);
+
+                // phpunit 10 may not fully support attribute
+                if (! $attributeGroup instanceof AttributeGroup) {
+                    continue;
+                }
+
+                $attributeGroups[$covers] = $attributeGroup;
             }
         }
 
