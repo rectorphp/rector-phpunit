@@ -6,7 +6,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Source\ExistingClass
- * @covers ::__construct
  */
 final class CoversClassDefault extends TestCase
 {
