@@ -303,6 +303,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if (str_contains($desiredTagValueNode->value->value, '::') && ! $this->reflectionProvider->hasClass(self::COVERS_METHOD_ATTRIBUTE)) {
+                continue;
+            }
+
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
             $hasChanged = true;
         }
