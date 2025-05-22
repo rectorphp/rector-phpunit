@@ -249,6 +249,8 @@ CODE_SAMPLE
 
                 $attributeGroups[$covers] = $attributeGroup;
                 $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
+            } elseif ($hasCoversDefault && str_starts_with($covers, '::')) {
+                $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
             }
         }
 
