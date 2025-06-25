@@ -35,6 +35,7 @@ use Rector\PHPUnit\CodeQuality\Rector\MethodCall\NarrowIdenticalWithConsecutiveR
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\NarrowSingleWillReturnCallbackRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\RemoveExpectAnyFromMockRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\SingleWithConsecutiveToWithRector;
+use Rector\PHPUnit\CodeQuality\Rector\MethodCall\StringCastAssertStringContainsStringRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\UseSpecificWillMethodRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\UseSpecificWithMethodRector;
 
@@ -63,6 +64,7 @@ return static function (RectorConfig $rectorConfig): void {
 
         // type declarations
         TypeWillReturnCallableArrowFunctionRector::class,
+        StringCastAssertStringContainsStringRector::class,
 
         NarrowUnusedSetUpDefinedPropertyRector::class,
 
