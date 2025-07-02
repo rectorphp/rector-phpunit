@@ -138,7 +138,7 @@ CODE_SAMPLE
 
             $originalAttributeValue = $desiredTagValueNode->value->value;
 
-            $node->attrGroups[] = $this->createAttributeGroup($originalAttributeValue);
+            $node->attrGroups[] = $this->createAttributeGroup(strtok($originalAttributeValue, " \t\n\r\0\x0B"));
 
             // cleanup
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
