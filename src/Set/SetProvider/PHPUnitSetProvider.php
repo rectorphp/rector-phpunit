@@ -69,6 +69,12 @@ final class PHPUnitSetProvider implements SetProviderInterface
                 '11.0',
                 __DIR__ . '/../../../config/sets/phpunit110.php'
             ),
+            new ComposerTriggeredSet(
+                SetGroup::PHPUNIT,
+                'phpunit/phpunit',
+                '12.0',
+                __DIR__ . '/../../../config/sets/phpunit120.php'
+            ),
 
             new Set(SetGroup::PHPUNIT, 'Code Quality', __DIR__ . '/../../../config/sets/phpunit-code-quality.php'),
 
