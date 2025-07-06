@@ -8,7 +8,7 @@ use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class AddCoversClassAttributeRectorTest extends AbstractRectorTestCase
+final class AddCoversClassAttributeRectorConfiguredTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
@@ -18,11 +18,11 @@ final class AddCoversClassAttributeRectorTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');
+        return self::yieldFilesFromDirectory(__DIR__ . '/ConfiguredFixture');
     }
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/rule.php';
+        return __DIR__ . '/config/configured_rule.php';
     }
 }
