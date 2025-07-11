@@ -34,10 +34,10 @@ return RectorConfig::configure()
         deadCode: true,
         codeQuality: true,
         codingStyle: true,
-        earlyReturn: true,
-        naming: true,
         typeDeclarations: true,
         privatization: true,
+        naming: true,
+        earlyReturn: true,
         rectorPreset: true,
         phpunitCodeQuality: true
     )
