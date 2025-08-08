@@ -88,6 +88,8 @@ CODE_SAMPLE
             return null;
         }
 
+        $hasChanged = false;
+
         foreach ($node->getArgs() as $i => $argNode) {
             if (! $argNode->value instanceof MethodCall) {
                 continue;
@@ -99,8 +101,13 @@ CODE_SAMPLE
             }
 
             $node->args[$i] = $methodCall->getArgs()[0];
+            $hasChanged = true;
         }
 
-        return $node;
+        if ($hasChanged) {
+            return $node;
+        }
+
+        return null;
     }
 }
