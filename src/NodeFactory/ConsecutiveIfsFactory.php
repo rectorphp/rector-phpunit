@@ -26,7 +26,7 @@ final readonly class ConsecutiveIfsFactory
 {
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
-        private readonly NestedClosureAssertFactory $nestedClosureAssertFactory
+        private NestedClosureAssertFactory $nestedClosureAssertFactory
     ) {
     }
 
