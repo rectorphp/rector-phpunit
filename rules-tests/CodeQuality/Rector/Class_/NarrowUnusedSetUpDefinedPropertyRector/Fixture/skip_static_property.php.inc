@@ -5,7 +5,7 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\NarrowUnusedSetUpDefine
 use PHPUnit\Framework\TestCase;
 use Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\NarrowUnusedSetUpDefinedPropertyRector\Source\SomeType;
 
-final class SkipStaticPrpoerty extends TestCase
+final class SkipStaticProperty extends TestCase
 {
     private static SomeType $someMock;
 
