@@ -4,7 +4,7 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertInstanceOfCom
 
 use Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertInstanceOfComparisonRector\Fixture\Foo;
 
-final class MyOfComparissonTest extends \PHPUnit\Framework\TestCase
+final class MyOfComparisonTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
@@ -25,7 +25,7 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertInstanceOfCom
 
 use Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertInstanceOfComparisonRector\Fixture\Foo;
 
-final class MyOfComparissonTest extends \PHPUnit\Framework\TestCase
+final class MyOfComparisonTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
