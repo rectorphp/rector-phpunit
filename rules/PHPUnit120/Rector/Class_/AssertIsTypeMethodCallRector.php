@@ -95,6 +95,10 @@ final class AssertIsTypeMethodCallRector extends AbstractRector
      */
     public function refactor(Node $node): Node|null
     {
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         if (! $this->testsNodeAnalyzer->isPHPUnitTestCaseCall($node) || ! $this->isName($node->name, 'isType')) {
             return null;
         }
