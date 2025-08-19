@@ -38,6 +38,7 @@ use Rector\PHPUnit\CodeQuality\Rector\MethodCall\SingleWithConsecutiveToWithRect
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\StringCastAssertStringContainsStringRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\UseSpecificWillMethodRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\UseSpecificWithMethodRector;
+use Rector\PHPUnit\PHPUnit60\Rector\MethodCall\GetMockBuilderGetMockToCreateMockRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
@@ -99,5 +100,8 @@ return static function (RectorConfig $rectorConfig): void {
          */
         RemoveExpectAnyFromMockRector::class,
         SingleMockPropertyTypeRector::class,
+
+        // prefer simple mocking
+        GetMockBuilderGetMockToCreateMockRector::class,
     ]);
 };
