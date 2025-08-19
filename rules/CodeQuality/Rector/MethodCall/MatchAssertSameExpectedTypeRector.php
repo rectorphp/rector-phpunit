@@ -86,6 +86,14 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
+        if (count($node->getArgs()) < 2) {
+            return null;
+        }
+
         $expectedArg = $node->getArgs()[0];
         if (! $expectedArg->value instanceof String_ && ! $expectedArg->value instanceof LNumber) {
             return null;
