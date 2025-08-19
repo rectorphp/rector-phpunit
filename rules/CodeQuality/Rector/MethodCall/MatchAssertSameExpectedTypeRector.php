@@ -103,7 +103,7 @@ CODE_SAMPLE
 
         $variableExpr = $node->getArgs()[1]
             ->value;
-        $variableType = $this->getType($variableExpr);
+        $variableType = $this->nodeTypeResolver->getNativeType($variableExpr);
 
         $directVariableType = TypeCombinator::removeNull($variableType);
 
