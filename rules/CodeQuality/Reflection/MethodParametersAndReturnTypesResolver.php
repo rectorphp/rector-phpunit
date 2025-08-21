@@ -8,6 +8,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ExtendedMethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\IntersectionType;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\Enum\ClassName;
@@ -17,7 +18,8 @@ final class MethodParametersAndReturnTypesResolver
 {
     public function resolveFromReflection(
         IntersectionType $intersectionType,
-        string $methodName
+        string $methodName,
+        ClassReflection $currentClassReflection
     ): ?ParamTypesAndReturnType {
         foreach ($intersectionType->getTypes() as $intersectionedType) {
             if (! $intersectionedType instanceof ObjectType) {
@@ -39,8 +41,8 @@ final class MethodParametersAndReturnTypesResolver
 
             $mockedMethodReflection = $classReflection->getNativeMethod($methodName);
 
-            $parameterTypes = $this->resolveParameterTypes($mockedMethodReflection);
-            $returnType = $this->resolveReturnType($mockedMethodReflection);
+            $parameterTypes = $this->resolveParameterTypes($mockedMethodReflection, $currentClassReflection);
+            $returnType = $this->resolveReturnType($mockedMethodReflection, $currentClassReflection);
 
             return new ParamTypesAndReturnType($parameterTypes, $returnType);
         }
@@ -51,7 +53,7 @@ final class MethodParametersAndReturnTypesResolver
     /**
      * @return Type[]
      */
-    private function resolveParameterTypes(ExtendedMethodReflection $extendedMethodReflection): array
+    private function resolveParameterTypes(ExtendedMethodReflection $extendedMethodReflection, ClassReflection $currentClassReflection): array
     {
         $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors(
             $extendedMethodReflection->getVariants()
@@ -59,18 +61,30 @@ final class MethodParametersAndReturnTypesResolver
 
         $parameterTypes = [];
         foreach ($extendedParametersAcceptor->getParameters() as $parameterReflection) {
-            $parameterTypes[] = $parameterReflection->getType();
+            $parameterType = $parameterReflection->getType();
+
+            if ($parameterType->isObject()->yes() && $currentClassReflection->getName() !== $parameterType->getClassReflection()->getName()) {
+                return [];
+            }
+
+            $parameterTypes[] = $parameterType;
         }
 
         return $parameterTypes;
     }
 
-    private function resolveReturnType(ExtendedMethodReflection $extendedMethodReflection): Type
+    private function resolveReturnType(ExtendedMethodReflection $extendedMethodReflection, ClassReflection $currentClassReflection): Type
     {
         $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors(
             $extendedMethodReflection->getVariants()
         );
 
-        return $extendedParametersAcceptor->getReturnType();
+        $returnType =  $extendedParametersAcceptor->getReturnType();
+
+        if ($returnType->isObject()->yes() && $currentClassReflection->getName() !== $returnType->getClassReflection()->getName()) {
+            return new MixedType();
+        }
+
+        return $returnType;
     }
 }
