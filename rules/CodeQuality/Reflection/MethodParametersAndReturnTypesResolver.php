@@ -67,7 +67,8 @@ final class MethodParametersAndReturnTypesResolver
             $parameterType = $this->resolveObjectType($parameterReflection->getNativeType());
 
             if ($parameterType instanceof ObjectType && $currentClassReflection->getName() !== $parameterType->getClassReflection()->getName()) {
-                return [];
+                $parameterTypes[] = new MixedType();
+                continue;
             }
 
             $parameterTypes[] = $parameterType;

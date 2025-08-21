@@ -239,14 +239,16 @@ CODE_SAMPLE
                 $hasChanged = true;
             }
 
-            $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
-                $parameterTypesAndReturnType->getReturnType(),
-                TypeKind::RETURN
-            );
+            if (! $innerArg->returnType instanceof Node) {
+                $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
+                    $parameterTypesAndReturnType->getReturnType(),
+                    TypeKind::RETURN
+                );
 
-            if ($returnTypeNode instanceof Node) {
-                $innerArg->returnType = $returnTypeNode;
-                $hasChanged = true;
+                if ($returnTypeNode instanceof Node) {
+                    $innerArg->returnType = $returnTypeNode;
+                    $hasChanged = true;
+                }
             }
         });
 
