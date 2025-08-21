@@ -63,7 +63,7 @@ final class MethodParametersAndReturnTypesResolver
 
         $parameterTypes = [];
         foreach ($extendedParametersAcceptor->getParameters() as $parameterReflection) {
-            $parameterType = $parameterReflection->getType();
+            $parameterType = $parameterReflection->getNativeType();
 
             if ($parameterType->isObject()->yes() && $currentClassReflection->getName() !== $parameterType->getClassReflection()->getName()) {
                 return [];
@@ -83,7 +83,7 @@ final class MethodParametersAndReturnTypesResolver
             $extendedMethodReflection->getVariants()
         );
 
-        $returnType = $extendedParametersAcceptor->getReturnType();
+        $returnType = $extendedParametersAcceptor->getNativeReturnType();
 
         if ($returnType->isObject()->yes() && $currentClassReflection->getName() !== $returnType->getClassReflection()->getName()) {
             return new MixedType();
