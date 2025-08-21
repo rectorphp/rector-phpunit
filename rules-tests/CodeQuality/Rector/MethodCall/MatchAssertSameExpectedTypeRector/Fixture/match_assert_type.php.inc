@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\MatchAssertEqualsExpectedTypeRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\MatchAssertSameExpectedTypeRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
@@ -8,7 +8,7 @@ final class MatchAssertType extends TestCase
 {
     public function test()
     {
-        $this->assertEquals('123', $this->getOrderId());
+        $this->assertSame('123', $this->getOrderId());
     }
 
     private function getOrderId(): int
@@ -21,7 +21,7 @@ final class MatchAssertType extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\MatchAssertEqualsExpectedTypeRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\MatchAssertSameExpectedTypeRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
@@ -29,7 +29,7 @@ final class MatchAssertType extends TestCase
 {
     public function test()
     {
-        $this->assertEquals(123, $this->getOrderId());
+        $this->assertSame(123, $this->getOrderId());
     }
 
     private function getOrderId(): int
