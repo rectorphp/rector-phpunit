@@ -53,8 +53,10 @@ final class MethodParametersAndReturnTypesResolver
     /**
      * @return Type[]
      */
-    private function resolveParameterTypes(ExtendedMethodReflection $extendedMethodReflection, ClassReflection $currentClassReflection): array
-    {
+    private function resolveParameterTypes(
+        ExtendedMethodReflection $extendedMethodReflection,
+        ClassReflection $currentClassReflection
+    ): array {
         $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors(
             $extendedMethodReflection->getVariants()
         );
@@ -73,13 +75,15 @@ final class MethodParametersAndReturnTypesResolver
         return $parameterTypes;
     }
 
-    private function resolveReturnType(ExtendedMethodReflection $extendedMethodReflection, ClassReflection $currentClassReflection): Type
-    {
+    private function resolveReturnType(
+        ExtendedMethodReflection $extendedMethodReflection,
+        ClassReflection $currentClassReflection
+    ): Type {
         $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors(
             $extendedMethodReflection->getVariants()
         );
 
-        $returnType =  $extendedParametersAcceptor->getReturnType();
+        $returnType = $extendedParametersAcceptor->getReturnType();
 
         if ($returnType->isObject()->yes() && $currentClassReflection->getName() !== $returnType->getClassReflection()->getName()) {
             return new MixedType();

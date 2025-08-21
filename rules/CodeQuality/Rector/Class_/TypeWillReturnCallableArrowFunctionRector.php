@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
@@ -130,7 +131,7 @@ CODE_SAMPLE
         $hasChanged = false;
 
         $currentClassReflection = $this->reflectionResolver->resolveClassReflection($node);
-        if (! $currentClassReflection instanceof \PHPStan\Reflection\ClassReflection) {
+        if (! $currentClassReflection instanceof ClassReflection) {
             return null;
         }
 
