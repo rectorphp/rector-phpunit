@@ -10,6 +10,7 @@ use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\StaticType;
 use PHPStan\Type\Type;
 use Rector\Enum\ClassName;
 use Rector\PHPUnit\CodeQuality\ValueObject\ParamTypesAndReturnType;
@@ -63,9 +64,9 @@ final class MethodParametersAndReturnTypesResolver
 
         $parameterTypes = [];
         foreach ($extendedParametersAcceptor->getParameters() as $parameterReflection) {
-            $parameterType = $parameterReflection->getNativeType();
+            $parameterType = $this->resolveObjectType($parameterReflection->getNativeType());
 
-            if ($parameterType->isObject()->yes() && $currentClassReflection->getName() !== $parameterType->getClassReflection()->getName()) {
+            if ($parameterType instanceof ObjectType && $currentClassReflection->getName() !== $parameterType->getClassReflection()->getName()) {
                 return [];
             }
 
@@ -73,6 +74,19 @@ final class MethodParametersAndReturnTypesResolver
         }
 
         return $parameterTypes;
+    }
+
+    private function resolveObjectType(Type $type): ObjectType|Type
+    {
+        if ($type instanceof ObjectType) {
+            return $type;
+        }
+
+        if ($type instanceof StaticType) {
+            return $type->getStaticObjectType();
+        }
+
+        return $type;
     }
 
     private function resolveReturnType(
@@ -83,9 +97,9 @@ final class MethodParametersAndReturnTypesResolver
             $extendedMethodReflection->getVariants()
         );
 
-        $returnType = $extendedParametersAcceptor->getNativeReturnType();
+        $returnType = $this->resolveObjectType($extendedParametersAcceptor->getNativeReturnType());
 
-        if ($returnType->isObject()->yes() && $currentClassReflection->getName() !== $returnType?->getClassReflection()?->getName()) {
+        if ($returnType instanceof ObjectType && $currentClassReflection->getName() !== $returnType->getClassReflection()->getName()) {
             return new MixedType();
         }
 

@@ -30,7 +30,7 @@ final class FillKnownParamTypeObject extends TestCase
     {
         $this->createMock(SomeMockedClass::class)
             ->method('nativeObject')
-            ->willReturnCallback(fn (object $name): object => $value);
+            ->willReturnCallback(fn (object $object): object => $value);
     }
 }
 
