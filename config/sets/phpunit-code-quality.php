@@ -31,6 +31,7 @@ use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertSameBoolNullToSpecificMet
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertSameTrueFalseToAssertTrueFalseRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\FlipAssertRector;
+use Rector\PHPUnit\CodeQuality\Rector\MethodCall\MatchAssertEqualsExpectedTypeRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\NarrowIdenticalWithConsecutiveRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\NarrowSingleWillReturnCallbackRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\RemoveExpectAnyFromMockRector;
@@ -45,6 +46,7 @@ return static function (RectorConfig $rectorConfig): void {
         ConstructClassMethodToSetUpTestCaseRector::class,
 
         AssertSameTrueFalseToAssertTrueFalseRector::class,
+        MatchAssertEqualsExpectedTypeRector::class,
 
         AssertEqualsToSameRector::class,
         PreferPHPUnitThisCallRector::class,
