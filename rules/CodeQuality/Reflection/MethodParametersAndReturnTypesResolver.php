@@ -85,7 +85,7 @@ final class MethodParametersAndReturnTypesResolver
 
         $returnType = $extendedParametersAcceptor->getNativeReturnType();
 
-        if ($returnType->isObject()->yes() && $currentClassReflection->getName() !== $returnType->getClassReflection()->getName()) {
+        if ($returnType->isObject()->yes() && $currentClassReflection->getName() !== $returnType?->getClassReflection()?->getName()) {
             return new MixedType();
         }
 
