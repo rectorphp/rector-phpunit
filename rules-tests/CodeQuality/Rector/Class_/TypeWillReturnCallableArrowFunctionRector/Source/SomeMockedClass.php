@@ -9,4 +9,9 @@ class SomeMockedClass
     {
         return 100;
     }
+
+    public function nativeObject(object $object): object
+    {
+        return $object;
+    }
 }
