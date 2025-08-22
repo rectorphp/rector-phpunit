@@ -36,7 +36,7 @@ use PHPUnit\Framework\TestCase;
 
 class SomeTest extends TestCase
 {
-    public function run()
+    public function test()
     {
         $this->assertSame('123', $this->getOrderId());
     }
@@ -53,7 +53,7 @@ use PHPUnit\Framework\TestCase;
 
 class SomeTest extends TestCase
 {
-    public function run()
+    public function test()
     {
         $this->assertSame(123, $this->getOrderId());
     }
@@ -115,6 +115,10 @@ CODE_SAMPLE
         }
 
         if ($expectedType->isInteger()->yes() && $directVariableType->isString()->yes()) {
+            if ($this->isName($node->name, 'assertEquals')) {
+                return null;
+            }
+
             // update expected type to provided type
             $expectedArg->value = new String_((string) $expectedArg->value->value);
 
