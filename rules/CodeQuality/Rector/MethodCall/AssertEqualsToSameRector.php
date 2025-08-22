@@ -147,8 +147,6 @@ final class AssertEqualsToSameRector extends AbstractRector
             return true;
         }
 
-        dump($args[0]->value instanceof String_ && is_numeric($args[0]->value->value));
-
         return $args[0]->value instanceof String_ && is_numeric($args[0]->value->value);
     }
 
