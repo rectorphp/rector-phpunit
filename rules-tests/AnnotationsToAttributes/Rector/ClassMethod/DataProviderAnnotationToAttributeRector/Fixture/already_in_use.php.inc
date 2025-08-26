@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 
 final class AlreadyInUse extends TestCase
 {
-    #[\PHPUnit\Framework\Attributes\DataProvider('@dataProvider')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('someMethod')]
     public function test(): void
     {
     }
