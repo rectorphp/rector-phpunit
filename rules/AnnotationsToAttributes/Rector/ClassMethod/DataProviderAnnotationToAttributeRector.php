@@ -132,11 +132,15 @@ CODE_SAMPLE
         }
 
         foreach ($desiredTagValueNodes as $desiredTagValueNode) {
-            if (! $desiredTagValueNode->value instanceof GenericTagValueNode) {
+            if (! $desiredTagValueNode->value instanceof GenericTagValueNode && ! $desiredTagValueNode->value instanceof \Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode) {
                 continue;
             }
 
-            $originalAttributeValue = $desiredTagValueNode->value->value;
+            if ($desiredTagValueNode->value instanceof GenericTagValueNode) {
+                $originalAttributeValue = $desiredTagValueNode->value->value;
+            } else {
+                $originalAttributeValue = $desiredTagValueNode->value->identifierTypeNode->name;
+            }
 
             $node->attrGroups[] = $this->createAttributeGroup(strtok($originalAttributeValue, " \t\n\r\0\x0B"));
 
