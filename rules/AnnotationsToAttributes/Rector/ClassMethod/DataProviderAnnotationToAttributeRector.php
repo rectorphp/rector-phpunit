@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
@@ -132,11 +133,15 @@ CODE_SAMPLE
         }
 
         foreach ($desiredTagValueNodes as $desiredTagValueNode) {
-            if (! $desiredTagValueNode->value instanceof GenericTagValueNode) {
+            if (! $desiredTagValueNode->value instanceof GenericTagValueNode && ! $desiredTagValueNode->value instanceof DoctrineAnnotationTagValueNode) {
                 continue;
             }
 
-            $originalAttributeValue = $desiredTagValueNode->value->value;
+            if ($desiredTagValueNode->value instanceof GenericTagValueNode) {
+                $originalAttributeValue = $desiredTagValueNode->value->value;
+            } else {
+                $originalAttributeValue = $desiredTagValueNode->value->identifierTypeNode->name;
+            }
 
             $node->attrGroups[] = $this->createAttributeGroup(strtok($originalAttributeValue, " \t\n\r\0\x0B"));
 
