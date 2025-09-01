@@ -13,7 +13,7 @@ use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
+use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -24,7 +24,7 @@ final class AddReturnTypeToDependedRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly SilentVoidResolver $silentVoidResolver,
+        private readonly ReturnAnalyzer $returnAnalyzer,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly BetterNodeFinder $betterNodeFinder
     ) {
@@ -106,11 +106,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->silentVoidResolver->hasSilentVoid($classMethod)) {
-                continue;
+            $returns = $this->betterNodeFinder->findReturnsScoped($classMethod);
+            if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($classMethod, $returns)) {
+                return null;
             }
 
-            $returns = $this->betterNodeFinder->findReturnsScoped($classMethod);
             if (count($returns) !== 1) {
                 continue;
             }
