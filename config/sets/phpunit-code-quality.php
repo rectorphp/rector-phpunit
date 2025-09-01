@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\PHPUnit\CodeQuality\Rector\Class_\AddParamTypeFromDependsRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\ConstructClassMethodToSetUpTestCaseRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\NarrowUnusedSetUpDefinedPropertyRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
@@ -70,6 +71,7 @@ return static function (RectorConfig $rectorConfig): void {
         // type declarations
         TypeWillReturnCallableArrowFunctionRector::class,
         StringCastAssertStringContainsStringRector::class,
+        AddParamTypeFromDependsRector::class,
 
         NarrowUnusedSetUpDefinedPropertyRector::class,
 
