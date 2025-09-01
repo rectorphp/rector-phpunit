@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Attribute;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPUnit\Framework\Attributes\Depends;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Doctrine\NodeAnalyzer\AttrinationFinder;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -23,6 +27,7 @@ final class AddParamTypeFromDependsRector extends AbstractRector
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly AttrinationFinder $attrinationFinder
     ) {
     }
 
@@ -128,6 +133,29 @@ CODE_SAMPLE
 
     private function resolveReturnTypeOfDependsMethod(ClassMethod $classMethod, Class_ $class): ?Node
     {
+        $dependsMethodName = $this->resolveDependsAnnotationOrAttributeMethod($classMethod);
+
+        $dependsClassMethod = $class->getMethod($dependsMethodName);
+
+        if (! $dependsClassMethod instanceof ClassMethod) {
+            return null;
+        }
+
+        // resolve return type here
+        return $dependsClassMethod->returnType;
+    }
+
+    private function resolveDependsAnnotationOrAttributeMethod(ClassMethod $classMethod): ?string
+    {
+        $dependsAttribute = $this->attrinationFinder->getByOne($classMethod, Depends::class);
+        if ($dependsAttribute instanceof Attribute) {
+            $firstArg = $dependsAttribute->args[0];
+            if ($firstArg->value instanceof String_) {
+                $dependsMethodName = $firstArg->value->value;
+                return trim($dependsMethodName, '()');
+            }
+        }
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($classMethod);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return null;
@@ -139,15 +167,6 @@ CODE_SAMPLE
         }
 
         $dependsMethodName = (string) $dependsTagValueNode->value;
-        $dependsMethodName = trim($dependsMethodName, '()');
-
-        $dependsClassMethod = $class->getMethod($dependsMethodName);
-
-        if (! $dependsClassMethod instanceof ClassMethod) {
-            return null;
-        }
-
-        // resolve return type here
-        return $dependsClassMethod->returnType;
+        return trim($dependsMethodName, '()');
     }
 }
