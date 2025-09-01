@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -97,10 +95,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->haveAllReturnsExpr($classMethod)) {
-                continue;
-            }
-
             // already known return type
             if ($classMethod->returnType instanceof Node) {
                 continue;
@@ -134,17 +128,5 @@ CODE_SAMPLE
         }
 
         return $node;
-    }
-
-    private function haveAllReturnsExpr(ClassMethod $classMethod): bool
-    {
-        $returns = $this->betterNodeFinder->findReturnsScoped($classMethod);
-        foreach ($returns as $return) {
-            if (! $return->expr instanceof Expr) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }
