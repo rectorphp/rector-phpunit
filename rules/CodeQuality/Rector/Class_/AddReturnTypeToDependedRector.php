@@ -112,7 +112,7 @@ CODE_SAMPLE
             $soleReturnExpr = $returns[0]->expr;
 
             // does return a type?
-            $returnedExprType = $this->getType($soleReturnExpr);
+            $returnedExprType = $this->nodeTypeResolver->getNativeType($soleReturnExpr);
             $returnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnedExprType, TypeKind::RETURN);
 
             if (! $returnType instanceof Node) {
