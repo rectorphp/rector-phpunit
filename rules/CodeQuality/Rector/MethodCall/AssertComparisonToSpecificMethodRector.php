@@ -46,17 +46,17 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
             new BinaryOpWithAssertMethod(NotIdentical::class, 'assertNotSame', 'assertSame'),
             new BinaryOpWithAssertMethod(Equal::class, 'assertEquals', 'assertNotEquals'),
             new BinaryOpWithAssertMethod(NotEqual::class, 'assertNotEquals', 'assertEquals'),
-            new BinaryOpWithAssertMethod(Greater::class, 'assertLessThan', 'assertGreaterThan'),
-            new BinaryOpWithAssertMethod(Smaller::class, 'assertGreaterThan', 'assertLessThan'),
+            new BinaryOpWithAssertMethod(Greater::class, 'assertGreaterThan', 'assertLessThan'),
+            new BinaryOpWithAssertMethod(Smaller::class, 'assertLessThan', 'assertGreaterThan'),
             new BinaryOpWithAssertMethod(
                 GreaterOrEqual::class,
-                'assertLessThanOrEqual',
-                'assertGreaterThanOrEqual'
+                'assertGreaterThanOrEqual',
+                'assertLessThanOrEqual'
             ),
             new BinaryOpWithAssertMethod(
                 SmallerOrEqual::class,
-                'assertGreaterThanOrEqual',
-                'assertLessThanOrEqual'
+                'assertLessThanOrEqual',
+                'assertGreaterThanOrEqual'
             ),
         ];
     }
@@ -122,7 +122,12 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
                 'assertFalse' => $binaryOpWithAssertMethod->getNotAssertMethodName(),
             ]);
 
-            $this->changeArgumentsOrder($node);
+            $shouldKeepOrder = $binaryOp instanceof Greater
+                || $binaryOp instanceof GreaterOrEqual
+                || $binaryOp instanceof Smaller
+                || $binaryOp instanceof SmallerOrEqual;
+
+            $this->changeArgumentsOrder($node, $shouldKeepOrder);
 
             return $node;
         }
@@ -130,14 +135,14 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
         return null;
     }
 
-    private function changeArgumentsOrder(MethodCall|StaticCall $node): void
+    private function changeArgumentsOrder(MethodCall|StaticCall $node, bool $shouldKeepOrder): void
     {
         $oldArguments = $node->getArgs();
 
         /** @var BinaryOp $expression */
         $expression = $oldArguments[0]->value;
 
-        if ($this->isConstantValue($expression->left)) {
+        if ($this->isConstantValue($expression->left) && ! $shouldKeepOrder) {
             $firstArgument = new Arg($expression->left);
             $secondArgument = new Arg($expression->right);
         } else {

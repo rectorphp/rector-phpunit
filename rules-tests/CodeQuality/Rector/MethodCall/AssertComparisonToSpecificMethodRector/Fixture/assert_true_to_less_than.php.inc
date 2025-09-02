@@ -8,8 +8,8 @@ final class AssertTrueToLessThan extends TestCase
 {
     public function some(int $param)
     {
-        self::assertTrue(0 > $param);
-        self::assertTrue(0 >= $param);
+        self::assertTrue(0 < $param);
+        self::assertTrue(0 <= $param);
     }
 }
 
@@ -25,8 +25,8 @@ final class AssertTrueToLessThan extends TestCase
 {
     public function some(int $param)
     {
-        self::assertLessThan(0, $param);
-        self::assertLessThanOrEqual(0, $param);
+        self::assertLessThan($param, 0);
+        self::assertLessThanOrEqual($param, 0);
     }
 }
 
