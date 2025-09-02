@@ -50,13 +50,13 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
             new BinaryOpWithAssertMethod(Smaller::class, 'assertGreaterThan', 'assertLessThan'),
             new BinaryOpWithAssertMethod(
                 GreaterOrEqual::class,
-                'assertGreaterThanOrEqual',
-                'assertLessThanOrEqual'
+                'assertLessThanOrEqual',
+                'assertGreaterThanOrEqual'
             ),
             new BinaryOpWithAssertMethod(
                 SmallerOrEqual::class,
-                'assertLessThanOrEqual',
-                'assertGreaterThanOrEqual'
+                'assertGreaterThanOrEqual',
+                'assertLessThanOrEqual'
             ),
         ];
     }
