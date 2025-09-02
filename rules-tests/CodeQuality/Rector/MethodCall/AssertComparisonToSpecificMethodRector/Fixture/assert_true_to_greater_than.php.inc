@@ -1,4 +1,5 @@
 <?php
+
 namespace Rector\Tests\PHPUnit\CodeQuality\Rector\MethodCall\AssertComparisonToSpecificMethodRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
@@ -9,8 +10,8 @@ final class AssertTrueToGreaterThan extends TestCase
     {
         self::assertTrue(0 < $param);
     }
-
 }
+
 ?>
 -----
 <?php

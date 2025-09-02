@@ -26,8 +26,8 @@ final class MyEqualsTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
-        $this->assertGreaterThan(2, count($something));
-        $this->assertGreaterThan($something[1]['foo'], $something[0]['foo']);
+        $this->assertLessThan(2, count($something));
+        $this->assertLessThan($something[1]['foo'], $something[0]['foo']);
         $this->assertNotEquals(__DIR__, $something, 'message');
         $this->assertSame(1.0, $something);
         $this->assertNotSame(true, in_array('foo', ['bar', 'baz'], true));
