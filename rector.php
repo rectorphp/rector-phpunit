@@ -39,7 +39,8 @@ return RectorConfig::configure()
         naming: true,
         earlyReturn: true,
         rectorPreset: true,
-        phpunitCodeQuality: true
+        phpunitCodeQuality: true,
+        symfonyCodeQuality: true,
     )
     ->withConfiguredRule(StringClassNameToClassConstantRector::class, [
         // keep unprefixed to protected from downgrade
