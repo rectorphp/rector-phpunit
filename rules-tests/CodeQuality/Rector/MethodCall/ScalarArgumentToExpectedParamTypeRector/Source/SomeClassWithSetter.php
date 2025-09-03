@@ -9,4 +9,17 @@ final class SomeClassWithSetter
     public function setPhoneNumber(string $phoneNumber)
     {
     }
+
+    /**
+     * @param string $passportId
+     */
+    public function setMagicType($passportId)
+    {
+
+    }
+
+    public function setUnionType(int|string $unionValue)
+    {
+
+    }
 }
