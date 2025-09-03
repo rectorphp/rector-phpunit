@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Reflection;
 
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ExtendedMethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
@@ -13,10 +16,17 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\StaticType;
 use PHPStan\Type\Type;
 use Rector\Enum\ClassName;
+use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPUnit\CodeQuality\ValueObject\ParamTypesAndReturnType;
 
-final class MethodParametersAndReturnTypesResolver
+final readonly class MethodParametersAndReturnTypesResolver
 {
+    public function __construct(
+        private NodeTypeResolver $nodeTypeResolver
+    ) {
+    }
+
     public function resolveFromReflection(
         IntersectionType $intersectionType,
         string $methodName,
@@ -52,9 +62,40 @@ final class MethodParametersAndReturnTypesResolver
     }
 
     /**
+     * @return null|Type[]
+     */
+    public function resolveCallParameterTypes(MethodCall|StaticCall $call): ?array
+    {
+        if (! $call->name instanceof Identifier) {
+            return null;
+        }
+
+        $methodName = $call->name->toString();
+
+        $callerType = $this->nodeTypeResolver->getType($call instanceof MethodCall ? $call->var : $call->class);
+        if (! $callerType instanceof ObjectType) {
+            return null;
+        }
+
+        $classReflection = $callerType->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
+
+        if (! $classReflection->hasNativeMethod($methodName)) {
+            return null;
+        }
+
+        $scope = ScopeFetcher::fetch($call);
+        $extendedMethodReflection = $classReflection->getMethod($methodName, $scope);
+
+        return $this->resolveParameterTypes($extendedMethodReflection, $classReflection);
+    }
+
+    /**
      * @return Type[]
      */
-    private function resolveParameterTypes(
+    public function resolveParameterTypes(
         ExtendedMethodReflection $extendedMethodReflection,
         ClassReflection $currentClassReflection
     ): array {
