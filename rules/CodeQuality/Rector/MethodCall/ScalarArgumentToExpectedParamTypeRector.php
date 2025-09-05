@@ -13,6 +13,7 @@ use PhpParser\Node\Scalar\String_;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeCombinator;
 use Rector\PHPUnit\CodeQuality\Reflection\MethodParametersAndReturnTypesResolver;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -93,24 +94,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
-            return null;
-        }
-
-        if ($node->isFirstClassCallable()) {
-            return null;
-        }
-
-        if ($node->getArgs() === []) {
+        if ($this->shouldSkipCall($node)) {
             return null;
         }
 
         $hasChanged = false;
-
-        if (! $this->hasStringOrNumberArguments($node)) {
-            return null;
-        }
-
         $callParameterTypes = $this->methodParametersAndReturnTypesResolver->resolveCallParameterTypes($node);
 
         foreach ($node->getArgs() as $key => $arg) {
@@ -122,6 +110,9 @@ CODE_SAMPLE
             if (! $knownParameterType instanceof Type) {
                 continue;
             }
+
+            // remove null
+            $knownParameterType = TypeCombinator::removeNull($knownParameterType);
 
             if ($knownParameterType instanceof StringType && $arg->value instanceof Int_) {
                 $arg->value = new String_((string) $arg->value->value);
@@ -139,6 +130,23 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function shouldSkipCall(StaticCall|MethodCall $call): bool
+    {
+        if (! $this->testsNodeAnalyzer->isInTestClass($call)) {
+            return true;
+        }
+
+        if ($call->isFirstClassCallable()) {
+            return true;
+        }
+
+        if ($call->getArgs() === []) {
+            return true;
+        }
+
+        return ! $this->hasStringOrNumberArguments($call);
     }
 
     private function hasStringOrNumberArguments(StaticCall|MethodCall $call): bool
