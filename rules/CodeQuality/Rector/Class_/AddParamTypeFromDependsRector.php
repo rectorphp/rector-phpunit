@@ -135,6 +135,10 @@ CODE_SAMPLE
     {
         $dependsMethodName = $this->resolveDependsAnnotationOrAttributeMethod($classMethod);
 
+        if ($dependsMethodName === null || $dependsMethodName === '') {
+            return null;
+        }
+
         $dependsClassMethod = $class->getMethod($dependsMethodName);
 
         if (! $dependsClassMethod instanceof ClassMethod) {
