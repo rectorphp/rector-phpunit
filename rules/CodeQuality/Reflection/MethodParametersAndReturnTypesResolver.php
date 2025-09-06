@@ -92,7 +92,7 @@ final readonly class MethodParametersAndReturnTypesResolver
     /**
      * @return string[]
      */
-    public function resolveCallParameterNames(MethodCall|StaticCall $call): ?array
+    public function resolveCallParameterNames(MethodCall|StaticCall $call): array
     {
         if (! $call->name instanceof Identifier) {
             return [];
