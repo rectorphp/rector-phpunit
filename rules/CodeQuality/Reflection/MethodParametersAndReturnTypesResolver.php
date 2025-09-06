@@ -89,7 +89,7 @@ final readonly class MethodParametersAndReturnTypesResolver
         return $this->resolveParameterTypes($extendedMethodReflection, $classReflection);
     }
 
-        /**
+    /**
      * @return null|Type[]
      */
     public function resolveCallParameterNames(MethodCall|StaticCall $call): ?array
@@ -119,23 +119,6 @@ final readonly class MethodParametersAndReturnTypesResolver
     }
 
     /**
-     * @return string[]
-     */
-    private function resolveParameterNames(ExtendedMethodReflection $extendedMethodReflection): array
-    {
-        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors(
-            $extendedMethodReflection->getVariants()
-        );
-
-        $parameterNames = [];
-        foreach ($extendedParametersAcceptor->getParameters() as $parameterReflection) {
-            $parameterNames[] = $parameterReflection->getName();
-        }
-
-        return $parameterNames;
-    }
-
-    /**
      * @return Type[]
      */
     public function resolveParameterTypes(
@@ -159,6 +142,23 @@ final readonly class MethodParametersAndReturnTypesResolver
         }
 
         return $parameterTypes;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function resolveParameterNames(ExtendedMethodReflection $extendedMethodReflection): array
+    {
+        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors(
+            $extendedMethodReflection->getVariants()
+        );
+
+        $parameterNames = [];
+        foreach ($extendedParametersAcceptor->getParameters() as $parameterReflection) {
+            $parameterNames[] = $parameterReflection->getName();
+        }
+
+        return $parameterNames;
     }
 
     private function resolveObjectType(Type $type): ObjectType|Type
