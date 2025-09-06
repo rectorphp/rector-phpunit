@@ -90,6 +90,35 @@ final readonly class MethodParametersAndReturnTypesResolver
     }
 
     /**
+     * @return string[]
+     */
+    public function resolveCallParameterNames(MethodCall|StaticCall $call): array
+    {
+        if (! $call->name instanceof Identifier) {
+            return [];
+        }
+
+        $methodName = $call->name->toString();
+
+        $callerType = $this->nodeTypeResolver->getType($call instanceof MethodCall ? $call->var : $call->class);
+        if (! $callerType instanceof ObjectType) {
+            return [];
+        }
+
+        $classReflection = $callerType->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            return [];
+        }
+
+        if (! $classReflection->hasNativeMethod($methodName)) {
+            return [];
+        }
+
+        $extendedMethodReflection = $classReflection->getNativeMethod($methodName);
+        return $this->resolveParameterNames($extendedMethodReflection);
+    }
+
+    /**
      * @return Type[]
      */
     public function resolveParameterTypes(
@@ -113,6 +142,23 @@ final readonly class MethodParametersAndReturnTypesResolver
         }
 
         return $parameterTypes;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function resolveParameterNames(ExtendedMethodReflection $extendedMethodReflection): array
+    {
+        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors(
+            $extendedMethodReflection->getVariants()
+        );
+
+        $parameterNames = [];
+        foreach ($extendedParametersAcceptor->getParameters() as $parameterReflection) {
+            $parameterNames[] = $parameterReflection->getName();
+        }
+
+        return $parameterNames;
     }
 
     private function resolveObjectType(Type $type): ObjectType|Type
