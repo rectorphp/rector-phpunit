@@ -90,28 +90,28 @@ final readonly class MethodParametersAndReturnTypesResolver
     }
 
     /**
-     * @return null|Type[]
+     * @return string[]
      */
     public function resolveCallParameterNames(MethodCall|StaticCall $call): ?array
     {
         if (! $call->name instanceof Identifier) {
-            return null;
+            return [];
         }
 
         $methodName = $call->name->toString();
 
         $callerType = $this->nodeTypeResolver->getType($call instanceof MethodCall ? $call->var : $call->class);
         if (! $callerType instanceof ObjectType) {
-            return null;
+            return [];
         }
 
         $classReflection = $callerType->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
-            return null;
+            return [];
         }
 
         if (! $classReflection->hasNativeMethod($methodName)) {
-            return null;
+            return [];
         }
 
         $extendedMethodReflection = $classReflection->getNativeMethod($methodName);
