@@ -12,13 +12,16 @@ use PhpParser\Node\Scalar;
 use PhpParser\Node\Scalar\Float_;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use Rector\PHPUnit\CodeQuality\Reflection\MethodParametersAndReturnTypesResolver;
+use Rector\PHPUnit\Enum\BehatClassName;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -30,6 +33,7 @@ final class ScalarArgumentToExpectedParamTypeRector extends AbstractRector
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly MethodParametersAndReturnTypesResolver $methodParametersAndReturnTypesResolver,
+        private readonly ReflectionResolver $reflectionResolver,
     ) {
     }
 
@@ -154,7 +158,7 @@ CODE_SAMPLE
 
     private function shouldSkipCall(StaticCall|MethodCall $call): bool
     {
-        if (! $this->testsNodeAnalyzer->isInTestClass($call)) {
+        if (! $this->isInTestClass($call)) {
             return true;
         }
 
@@ -186,5 +190,18 @@ CODE_SAMPLE
         }
 
         return false;
+    }
+
+    private function isInTestClass(StaticCall|MethodCall $call): bool
+    {
+        $callerClassReflection = $this->reflectionResolver->resolveClassReflection($call);
+        if (!$callerClassReflection instanceof ClassReflection) {
+            return $this->testsNodeAnalyzer->isInTestClass($call);
+        }
+        if ($callerClassReflection->is(BehatClassName::CONTEXT)) {
+            return true;
+        }
+
+        return $this->testsNodeAnalyzer->isInTestClass($call);
     }
 }
