@@ -22,4 +22,9 @@ final class SomeClassWithSetter
     {
 
     }
+
+    public function setItems(string $one, int $two, string $three, int $four)
+    {
+
+    }
 }
