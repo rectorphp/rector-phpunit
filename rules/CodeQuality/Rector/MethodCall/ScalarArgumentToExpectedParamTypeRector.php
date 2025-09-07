@@ -195,9 +195,10 @@ CODE_SAMPLE
     private function isInTestClass(StaticCall|MethodCall $call): bool
     {
         $callerClassReflection = $this->reflectionResolver->resolveClassReflection($call);
-        if (!$callerClassReflection instanceof ClassReflection) {
+        if (! $callerClassReflection instanceof ClassReflection) {
             return $this->testsNodeAnalyzer->isInTestClass($call);
         }
+
         if ($callerClassReflection->is(BehatClassName::CONTEXT)) {
             return true;
         }
