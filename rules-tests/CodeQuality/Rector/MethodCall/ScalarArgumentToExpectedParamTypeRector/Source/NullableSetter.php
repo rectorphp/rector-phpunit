@@ -9,4 +9,8 @@ final class NullableSetter
     public function setMaybe(?string $status)
     {
     }
+
+    public function setValue(?string $letter, ?int $number = null)
+    {
+    }
 }
