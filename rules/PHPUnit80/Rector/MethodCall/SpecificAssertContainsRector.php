@@ -94,6 +94,10 @@ CODE_SAMPLE
         }
 
         $methodName = $this->getName($node->name);
+        if ($methodName === null) {
+            return null;
+        }
+
         $newMethodName = self::OLD_TO_NEW_METHOD_NAMES[$methodName];
         $node->name = new Identifier($newMethodName);
 
