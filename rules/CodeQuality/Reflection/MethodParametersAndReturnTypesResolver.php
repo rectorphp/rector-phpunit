@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\CodeQuality\Reflection;
 
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ExtendedMethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
@@ -23,7 +26,8 @@ use Rector\PHPUnit\CodeQuality\ValueObject\ParamTypesAndReturnType;
 final readonly class MethodParametersAndReturnTypesResolver
 {
     public function __construct(
-        private NodeTypeResolver $nodeTypeResolver
+        private NodeTypeResolver $nodeTypeResolver,
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -64,15 +68,31 @@ final readonly class MethodParametersAndReturnTypesResolver
     /**
      * @return null|Type[]
      */
-    public function resolveCallParameterTypes(MethodCall|StaticCall $call): ?array
+    public function resolveCallParameterTypes(MethodCall|StaticCall|New_ $callLike): ?array
     {
-        if (! $call->name instanceof Identifier) {
+        if ($callLike instanceof New_) {
+            if (! $callLike->class instanceof Name) {
+                return null;
+            }
+
+            $className = $callLike->class->toString();
+            if (! $this->reflectionProvider->hasClass($className)) {
+                return null;
+            }
+
+            $classReflection = $this->reflectionProvider->getClass($className);
+            return $this->resolveParameterTypes($classReflection->getConstructor(), $classReflection);
+        }
+
+        if (! $callLike->name instanceof Identifier) {
             return null;
         }
 
-        $methodName = $call->name->toString();
+        $methodName = $callLike->name->toString();
 
-        $callerType = $this->nodeTypeResolver->getType($call instanceof MethodCall ? $call->var : $call->class);
+        $callerType = $this->nodeTypeResolver->getType(
+            $callLike instanceof MethodCall ? $callLike->var : $callLike->class
+        );
         if ($callerType instanceof ThisType) {
             $callerType = $callerType->getStaticObjectType();
         }
@@ -97,15 +117,31 @@ final readonly class MethodParametersAndReturnTypesResolver
     /**
      * @return string[]
      */
-    public function resolveCallParameterNames(MethodCall|StaticCall $call): array
+    public function resolveCallParameterNames(MethodCall|StaticCall|New_ $callLike): array
     {
-        if (! $call->name instanceof Identifier) {
+        if ($callLike instanceof New_) {
+            if (! $callLike->class instanceof Name) {
+                return [];
+            }
+
+            $className = $callLike->class->toString();
+            if (! $this->reflectionProvider->hasClass($className)) {
+                return [];
+            }
+
+            $classReflection = $this->reflectionProvider->getClass($className);
+            return $this->resolveParameterNames($classReflection->getConstructor());
+        }
+
+        if (! $callLike->name instanceof Identifier) {
             return [];
         }
 
-        $methodName = $call->name->toString();
+        $methodName = $callLike->name->toString();
 
-        $callerType = $this->nodeTypeResolver->getType($call instanceof MethodCall ? $call->var : $call->class);
+        $callerType = $this->nodeTypeResolver->getType(
+            $callLike instanceof MethodCall ? $callLike->var : $callLike->class
+        );
         if (! $callerType instanceof ObjectType) {
             return [];
         }
