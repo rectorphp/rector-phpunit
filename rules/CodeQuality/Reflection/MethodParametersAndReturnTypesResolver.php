@@ -142,6 +142,11 @@ final readonly class MethodParametersAndReturnTypesResolver
         $callerType = $this->nodeTypeResolver->getType(
             $callLike instanceof MethodCall ? $callLike->var : $callLike->class
         );
+
+        if ($callerType instanceof ThisType) {
+            $callerType = $callerType->getStaticObjectType();
+        }
+
         if (! $callerType instanceof ObjectType) {
             return [];
         }
