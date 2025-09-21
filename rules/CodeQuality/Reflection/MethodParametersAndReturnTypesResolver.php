@@ -81,6 +81,11 @@ final readonly class MethodParametersAndReturnTypesResolver
             }
 
             $classReflection = $this->reflectionProvider->getClass($className);
+
+            if (! $classReflection->hasConstructor()) {
+                return null;
+            }
+
             return $this->resolveParameterTypes($classReflection->getConstructor(), $classReflection);
         }
 
@@ -130,6 +135,11 @@ final readonly class MethodParametersAndReturnTypesResolver
             }
 
             $classReflection = $this->reflectionProvider->getClass($className);
+
+            if (! $classReflection->hasConstructor()) {
+                return [];
+            }
+
             return $this->resolveParameterNames($classReflection->getConstructor());
         }
 
