@@ -28,8 +28,6 @@ final readonly class ExpectsMethodCallDecorator
      * Replace $this->expects(...)
      * with
      * $expects = ...
-     *
-     * @param Expression<MethodCall> $expression
      */
     public function decorate(Expression $expression): MethodCall|StaticCall|null
     {
