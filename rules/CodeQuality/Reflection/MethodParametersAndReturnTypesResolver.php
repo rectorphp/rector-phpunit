@@ -189,7 +189,7 @@ final readonly class MethodParametersAndReturnTypesResolver
         foreach ($extendedParametersAcceptor->getParameters() as $parameterReflection) {
             $parameterType = $this->resolveObjectType($parameterReflection->getNativeType());
 
-            if ($parameterType instanceof ObjectType && $currentClassReflection->getName() !== $parameterType->getClassReflection()->getName()) {
+            if ($parameterType instanceof ObjectType && $currentClassReflection->getName() !== $parameterType->getClassReflection()?->getName()) {
                 $parameterTypes[] = new MixedType();
                 continue;
             }
@@ -240,7 +240,7 @@ final readonly class MethodParametersAndReturnTypesResolver
 
         $returnType = $this->resolveObjectType($extendedParametersAcceptor->getNativeReturnType());
 
-        if ($returnType instanceof ObjectType && $currentClassReflection->getName() !== $returnType->getClassReflection()->getName()) {
+        if ($returnType instanceof ObjectType && $currentClassReflection->getName() !== $returnType->getClassReflection()?->getName()) {
             return new MixedType();
         }
 

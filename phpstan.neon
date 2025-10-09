@@ -45,7 +45,3 @@ parameters:
 
         -
             identifier: assign.propertyType
-
-        -
-            message: '#Cannot call method getName\(\) on PHPStan\\Reflection\\ClassReflection\|null#'
-            path: rules/CodeQuality/Reflection/MethodParametersAndReturnTypesResolver.php
