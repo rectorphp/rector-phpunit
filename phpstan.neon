@@ -44,9 +44,6 @@ parameters:
             identifier: instanceof.alwaysTrue
 
         -
-            identifier: argument.type
-
-        -
             identifier: assign.propertyType
 
         -

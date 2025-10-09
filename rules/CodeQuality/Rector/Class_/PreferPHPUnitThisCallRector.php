@@ -98,6 +98,9 @@ CODE_SAMPLE
             }
 
             $methodName = $this->getName($node->name);
+            if ($methodName === null) {
+                return null;
+            }
 
             $hasChanged = true;
             return $this->nodeFactory->createMethodCall('this', $methodName, $node->getArgs());

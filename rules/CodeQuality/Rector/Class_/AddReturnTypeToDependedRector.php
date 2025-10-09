@@ -110,6 +110,9 @@ CODE_SAMPLE
             }
 
             $soleReturnExpr = $returns[0]->expr;
+            if ($soleReturnExpr === null) {
+                continue;
+            }
 
             // does return a type?
             $returnedExprType = $this->nodeTypeResolver->getNativeType($soleReturnExpr);

@@ -154,7 +154,7 @@ final class NamedArgumentForDataProviderRector extends AbstractRector
     }
 
     /**
-     * @param list<Node\Stmt> $stmts
+     * @param array<Node\Stmt> $stmts
      * @return array<string, Array_>
      */
     public function getResolvedVariables(array $stmts): array
