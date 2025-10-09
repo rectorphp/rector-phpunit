@@ -236,7 +236,7 @@ CODE_SAMPLE
 
             if (! $innerClosure->returnType instanceof Node) {
                 $returnType = $parameterTypesAndReturnType->getReturnType();
-                if (!$returnType instanceof Type) {
+                if (! $returnType instanceof Type) {
                     return null;
                 }
 
