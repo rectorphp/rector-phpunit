@@ -202,9 +202,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $matchedNullableVariableNameToType = $variableNameToTypeCollection->matchByVariableName(
-                $variableName
-            );
+            $matchedNullableVariableNameToType = $variableNameToTypeCollection->matchByVariableName($variableName);
 
             // is the variable we're interested in?
             return null;

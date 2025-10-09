@@ -201,7 +201,8 @@ CODE_SAMPLE
         }
 
         // must respect PHPStan anonymous internal naming \Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver::ANONYMOUS_CLASS_START_REGEX
-        return new Class_('AnonymousClass1234', [ // @phpstan-ignore argument.type
+        // @phpstan-ignore argument.type
+        return new Class_('AnonymousClass1234', [
             'extends' => $className,
         ], [
             'startLine' => $firstArg->getStartLine(),

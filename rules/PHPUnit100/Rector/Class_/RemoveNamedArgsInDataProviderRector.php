@@ -102,7 +102,7 @@ CODE_SAMPLE
                 $expr = $stmt->expr;
                 $arrayChanged = false;
                 if ($expr instanceof Yield_) {
-                    if (!$expr->value instanceof Array_) {
+                    if (! $expr->value instanceof Array_) {
                         return null;
                     }
                     $arrayChanged = $this->handleArray($expr->value);
