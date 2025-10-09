@@ -52,3 +52,8 @@ parameters:
         -
             message: '#Cannot call method getName\(\) on PHPStan\\Reflection\\ClassReflection\|null#'
             path: rules/CodeQuality/Reflection/MethodParametersAndReturnTypesResolver.php
+
+        # due to https://github.com/rectorphp/type-perfect/pull/69
+        -
+            message: '#Parameters should have "PhpParser\\Node\\Stmt\\Expression" types as the only types passed to this method#'
+            path: rules/PHPUnit100/Rector/StmtsAwareInterface/ExpectsMethodCallDecorator.php
