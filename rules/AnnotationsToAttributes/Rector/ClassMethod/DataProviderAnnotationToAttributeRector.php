@@ -147,6 +147,7 @@ CODE_SAMPLE
             if ($originalAttributeValueToken === false) {
                 continue;
             }
+
             $node->attrGroups[] = $this->createAttributeGroup($originalAttributeValueToken);
 
             // cleanup

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Rector\ClassMethod;
 
+use PhpParser\Node\Name;
 use PhpParser\Modifiers;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -200,7 +201,7 @@ CODE_SAMPLE
             throw new NotImplementedYetException();
         }
 
-        if (! $className instanceof Node\Name) {
+        if (! $className instanceof Name) {
             throw new NotImplementedYetException();
         }
 

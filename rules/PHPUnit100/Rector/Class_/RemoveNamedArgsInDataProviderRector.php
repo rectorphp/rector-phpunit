@@ -105,6 +105,7 @@ CODE_SAMPLE
                     if (! $expr->value instanceof Array_) {
                         return null;
                     }
+
                     $arrayChanged = $this->handleArray($expr->value);
                 } elseif ($expr instanceof Array_) {
                     $arrayChanged = $this->handleArray($expr);
