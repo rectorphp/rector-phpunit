@@ -200,7 +200,7 @@ CODE_SAMPLE
             throw new NotImplementedYetException();
         }
 
-        if (!$className instanceof Node\Name) {
+        if (! $className instanceof Node\Name) {
             throw new NotImplementedYetException();
         }
 
