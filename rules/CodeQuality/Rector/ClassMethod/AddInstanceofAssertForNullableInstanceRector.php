@@ -197,9 +197,12 @@ CODE_SAMPLE
                 return null;
             }
 
-            $matchedNullableVariableNameToType = $variableNameToTypeCollection->matchByVariableName(
-                $this->getName($node->var)
-            );
+            $variableName = $this->getName($node->var);
+            if ($variableName === null) {
+                return null;
+            }
+
+            $matchedNullableVariableNameToType = $variableNameToTypeCollection->matchByVariableName($variableName);
 
             // is the variable we're interested in?
             return null;

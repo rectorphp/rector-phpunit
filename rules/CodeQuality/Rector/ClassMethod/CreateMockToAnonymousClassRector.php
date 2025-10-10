@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Name;
 use PhpParser\Node\Scalar;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
@@ -197,6 +198,10 @@ CODE_SAMPLE
         if ($firstArg->value instanceof ClassConstFetch) {
             $className = $firstArg->value->class;
         } else {
+            throw new NotImplementedYetException();
+        }
+
+        if (! $className instanceof Name) {
             throw new NotImplementedYetException();
         }
 

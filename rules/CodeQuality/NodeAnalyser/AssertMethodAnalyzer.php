@@ -73,6 +73,9 @@ final readonly class AssertMethodAnalyzer
     private function resolveMethodReflection(MethodCall|StaticCall $call): ?ExtendedMethodReflection
     {
         $methodName = $this->nodeNameResolver->getName($call->name);
+        if ($methodName === null) {
+            return null;
+        }
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($call);
         if (! $classReflection instanceof ClassReflection) {
