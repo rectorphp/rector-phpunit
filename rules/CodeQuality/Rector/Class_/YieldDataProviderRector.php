@@ -6,9 +6,11 @@ namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\Type\Generic\GenericObjectType;
@@ -126,7 +128,11 @@ CODE_SAMPLE
         }
 
         foreach ($classMethod->stmts as $statement) {
-            if ($statement instanceof Return_) {
+            if ($statement instanceof Expression) {
+                $statement = $statement->expr;
+            }
+
+            if ($statement instanceof Return_ || $statement instanceof YieldFrom) {
                 $returnedExpr = $statement->expr;
                 if (! $returnedExpr instanceof Array_) {
                     return null;
@@ -150,7 +156,14 @@ CODE_SAMPLE
 
         $commentReturn = [];
         foreach ((array) $classMethod->stmts as $key => $classMethodStmt) {
-            if (! $classMethodStmt instanceof Return_) {
+            if ($classMethodStmt instanceof Expression) {
+                $classMethodStmt = $classMethodStmt->expr;
+            }
+
+            if (
+                ! $classMethodStmt instanceof Return_
+                && ! $classMethodStmt instanceof YieldFrom
+            ) {
                 continue;
             }
 
