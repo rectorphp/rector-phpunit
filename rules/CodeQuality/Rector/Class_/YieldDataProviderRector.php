@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\YieldFrom;
@@ -127,7 +128,7 @@ CODE_SAMPLE
         }
 
         foreach ($classMethod->stmts as $statement) {
-            if ($statement instanceof Node\Stmt\Expression) {
+            if ($statement instanceof Expression) {
                 $statement = $statement->expr;
             }
 
@@ -155,7 +156,7 @@ CODE_SAMPLE
 
         $commentReturn = [];
         foreach ((array) $classMethod->stmts as $key => $classMethodStmt) {
-            if ($classMethodStmt instanceof Node\Stmt\Expression) {
+            if ($classMethodStmt instanceof Expression) {
                 $classMethodStmt = $classMethodStmt->expr;
             }
 
