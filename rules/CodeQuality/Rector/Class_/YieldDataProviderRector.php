@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
-use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\Type\Generic\GenericObjectType;
