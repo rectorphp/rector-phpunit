@@ -22,6 +22,7 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\DeadCode\NodeAnalyzer\IsClassMethodUsedAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\NodeTransformer;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -45,7 +46,8 @@ final class YieldDataProviderRector extends AbstractRector
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly IsClassMethodUsedAnalyzer $isClassMethodUsedAnalyzer,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly DocBlockUpdater $docBlockUpdater
+        private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
@@ -130,24 +132,30 @@ CODE_SAMPLE
             return null;
         }
 
-        $yieldFromOrReturn = null;
+        $yieldedFromExpr = null;
         foreach ($classMethod->stmts as $statement) {
             if ($statement instanceof Expression) {
                 $statement = $statement->expr;
             }
 
-            if ($statement instanceof Return_ || $statement instanceof YieldFrom) {
+            if ($statement instanceof Return_) {
                 $returnedExpr = $statement->expr;
 
                 if (! $returnedExpr instanceof Array_) {
                     return null;
                 }
 
-                if ($yieldFromOrReturn instanceof Array_) {
+                return $returnedExpr;
+            } elseif ($statement instanceof YieldFrom) {
+                if (! $statement->expr instanceof Array_) {
                     return null;
                 }
 
-                $yieldFromOrReturn = $returnedExpr;
+                if ($yieldedFromExpr !== null) {
+                    return null;
+                }
+
+                $yieldedFromExpr = $statement->expr;
             } elseif (
                 ! $statement instanceof Assign
                 && ! $statement instanceof AssignRef
@@ -157,7 +165,7 @@ CODE_SAMPLE
             }
         }
 
-        return $yieldFromOrReturn;
+        return $yieldedFromExpr;
     }
 
     private function transformArrayToYieldsOnMethodNode(ClassMethod $classMethod, Array_ $array): void
