@@ -6,6 +6,9 @@ namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\AssignOp;
+use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
@@ -42,7 +45,7 @@ final class YieldDataProviderRector extends AbstractRector
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly IsClassMethodUsedAnalyzer $isClassMethodUsedAnalyzer,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly DocBlockUpdater $docBlockUpdater
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -127,13 +130,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $totalStmts = count($classMethod->stmts);
+        $yieldedFromExpr = null;
         foreach ($classMethod->stmts as $statement) {
             if ($statement instanceof Expression) {
                 $statement = $statement->expr;
             }
 
-            if ($statement instanceof Return_ || ($statement instanceof YieldFrom && $totalStmts === 1)) {
+            if ($statement instanceof Return_) {
                 $returnedExpr = $statement->expr;
                 if (! $returnedExpr instanceof Array_) {
                     return null;
@@ -141,9 +144,27 @@ CODE_SAMPLE
 
                 return $returnedExpr;
             }
+
+            if ($statement instanceof YieldFrom) {
+                if (! $statement->expr instanceof Array_) {
+                    return null;
+                }
+
+                if ($yieldedFromExpr instanceof Array_) {
+                    return null;
+                }
+
+                $yieldedFromExpr = $statement->expr;
+            } elseif (
+                ! $statement instanceof Assign
+                && ! $statement instanceof AssignRef
+                && ! $statement instanceof AssignOp
+            ) {
+                return null;
+            }
         }
 
-        return null;
+        return $yieldedFromExpr;
     }
 
     private function transformArrayToYieldsOnMethodNode(ClassMethod $classMethod, Array_ $array): void
