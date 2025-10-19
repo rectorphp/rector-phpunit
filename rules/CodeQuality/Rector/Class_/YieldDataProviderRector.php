@@ -22,7 +22,6 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\DeadCode\NodeAnalyzer\IsClassMethodUsedAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\NodeTransformer;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -47,7 +46,6 @@ final class YieldDataProviderRector extends AbstractRector
         private readonly IsClassMethodUsedAnalyzer $isClassMethodUsedAnalyzer,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
@@ -137,24 +135,21 @@ CODE_SAMPLE
             if ($statement instanceof Expression) {
                 $statement = $statement->expr;
             }
-
             if ($statement instanceof Return_) {
                 $returnedExpr = $statement->expr;
-
                 if (! $returnedExpr instanceof Array_) {
                     return null;
                 }
-
                 return $returnedExpr;
-            } elseif ($statement instanceof YieldFrom) {
+            }
+
+            if ($statement instanceof YieldFrom) {
                 if (! $statement->expr instanceof Array_) {
                     return null;
                 }
-
-                if ($yieldedFromExpr !== null) {
+                if ($yieldedFromExpr instanceof Array_) {
                     return null;
                 }
-
                 $yieldedFromExpr = $statement->expr;
             } elseif (
                 ! $statement instanceof Assign
