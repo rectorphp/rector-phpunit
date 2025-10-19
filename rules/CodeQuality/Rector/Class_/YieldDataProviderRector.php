@@ -130,7 +130,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $yieldOrReturn = null;
+        $yieldFromOrReturn = null;
         foreach ($classMethod->stmts as $statement) {
             if ($statement instanceof Expression) {
                 $statement = $statement->expr;
@@ -143,11 +143,11 @@ CODE_SAMPLE
                     return null;
                 }
 
-                if ($yieldOrReturn instanceof Array_) {
+                if ($yieldFromOrReturn instanceof Array_) {
                     return null;
                 }
 
-                $yieldOrReturn = $returnedExpr;
+                $yieldFromOrReturn = $returnedExpr;
             } elseif (
                 ! $statement instanceof Assign
                 && ! $statement instanceof AssignRef
@@ -157,7 +157,7 @@ CODE_SAMPLE
             }
         }
 
-        return $yieldOrReturn;
+        return $yieldFromOrReturn;
     }
 
     private function transformArrayToYieldsOnMethodNode(ClassMethod $classMethod, Array_ $array): void
