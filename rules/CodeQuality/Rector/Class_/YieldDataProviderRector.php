@@ -6,6 +6,9 @@ namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\AssignOp;
+use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
@@ -127,8 +130,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $totalStmts = count($classMethod->stmts);
-
         $yieldOrReturn = null;
         foreach ($classMethod->stmts as $statement) {
             if ($statement instanceof Expression) {
@@ -142,15 +143,15 @@ CODE_SAMPLE
                     return null;
                 }
 
-                if ($yieldOrReturn !== null) {
+                if ($yieldOrReturn instanceof Array_) {
                     return null;
                 }
 
                 $yieldOrReturn = $returnedExpr;
             } elseif (
-                !$statement instanceof Node\Expr\Assign
-                && !$statement instanceof Node\Expr\AssignRef
-                && !$statement instanceof Node\Expr\AssignOp
+                ! $statement instanceof Assign
+                && ! $statement instanceof AssignRef
+                && ! $statement instanceof AssignOp
             ) {
                 return null;
             }
