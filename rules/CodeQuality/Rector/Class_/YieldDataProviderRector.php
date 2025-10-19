@@ -135,11 +135,13 @@ CODE_SAMPLE
             if ($statement instanceof Expression) {
                 $statement = $statement->expr;
             }
+
             if ($statement instanceof Return_) {
                 $returnedExpr = $statement->expr;
                 if (! $returnedExpr instanceof Array_) {
                     return null;
                 }
+
                 return $returnedExpr;
             }
 
@@ -147,9 +149,11 @@ CODE_SAMPLE
                 if (! $statement->expr instanceof Array_) {
                     return null;
                 }
+
                 if ($yieldedFromExpr instanceof Array_) {
                     return null;
                 }
+
                 $yieldedFromExpr = $statement->expr;
             } elseif (
                 ! $statement instanceof Assign
