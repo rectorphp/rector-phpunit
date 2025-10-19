@@ -128,10 +128,8 @@ CODE_SAMPLE
         }
 
         $totalStmts = count($classMethod->stmts);
-        if ($totalStmts !== 1) {
-            return null;
-        }
 
+        $yieldOrReturn = null;
         foreach ($classMethod->stmts as $statement) {
             if ($statement instanceof Expression) {
                 $statement = $statement->expr;
@@ -139,15 +137,26 @@ CODE_SAMPLE
 
             if ($statement instanceof Return_ || $statement instanceof YieldFrom) {
                 $returnedExpr = $statement->expr;
+
                 if (! $returnedExpr instanceof Array_) {
                     return null;
                 }
 
-                return $returnedExpr;
+                if ($yieldOrReturn !== null) {
+                    return null;
+                }
+
+                $yieldOrReturn = $returnedExpr;
+            } elseif (
+                !$statement instanceof Node\Expr\Assign
+                && !$statement instanceof Node\Expr\AssignRef
+                && !$statement instanceof Node\Expr\AssignOp
+            ) {
+                return null;
             }
         }
 
-        return null;
+        return $yieldOrReturn;
     }
 
     private function transformArrayToYieldsOnMethodNode(ClassMethod $classMethod, Array_ $array): void
