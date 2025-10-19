@@ -128,12 +128,16 @@ CODE_SAMPLE
         }
 
         $totalStmts = count($classMethod->stmts);
+        if ($totalStmts !== 1) {
+            return null;
+        }
+
         foreach ($classMethod->stmts as $statement) {
             if ($statement instanceof Expression) {
                 $statement = $statement->expr;
             }
 
-            if ($statement instanceof Return_ || ($statement instanceof YieldFrom && $totalStmts === 1)) {
+            if ($statement instanceof Return_ || $statement instanceof YieldFrom) {
                 $returnedExpr = $statement->expr;
                 if (! $returnedExpr instanceof Array_) {
                     return null;
