@@ -29,7 +29,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\Rector\ClassMethod\CreateMockToAnonymousClassRector\CreateMockToAnonymousClassRectorTest
+ * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\CreateMockToAnonymousClassRector\CreateMockToAnonymousClassRectorTest
  */
 final class CreateMockToAnonymousClassRector extends AbstractRector
 {
