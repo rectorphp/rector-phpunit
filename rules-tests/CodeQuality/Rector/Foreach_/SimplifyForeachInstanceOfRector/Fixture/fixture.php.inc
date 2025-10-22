@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Foreach_\SimplifyForeachInstanceOfRector\Fixture;
+
 final class MyOtherTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
@@ -26,6 +28,8 @@ final class MyOtherTest extends \PHPUnit\Framework\TestCase
 ?>
 -----
 <?php
+
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Foreach_\SimplifyForeachInstanceOfRector\Fixture;
 
 final class MyOtherTest extends \PHPUnit\Framework\TestCase
 {
