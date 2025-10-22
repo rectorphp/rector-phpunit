@@ -13,7 +13,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\PHPUnit\AnnotationsToAttributes\NodeFactory\RequiresAttributeFactory;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -159,9 +158,9 @@ CODE_SAMPLE
         return $hasChanged;
     }
 
-    private function refactorClassMethod(ClassMethod $node): ?ClassMethod
+    private function refactorClassMethod(ClassMethod $classMethod): ?ClassMethod
     {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($classMethod);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return null;
         }
@@ -171,10 +170,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
-        $node->attrGroups = array_merge($node->attrGroups, $requiresAttributeGroups);
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
+        $classMethod->attrGroups = array_merge($classMethod->attrGroups, $requiresAttributeGroups);
         $this->removeMethodRequiresAnnotations($phpDocInfo);
 
-        return $node;
+        return $classMethod;
     }
 }
