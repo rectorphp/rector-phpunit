@@ -4,6 +4,9 @@ namespace Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\RequiresAnn
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @requires PHP 8.0
+ */
 class RequiresPHP extends TestCase
 {
     /**
@@ -22,6 +25,7 @@ namespace Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\RequiresAnn
 
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\RequiresPhp('>= 8.0')]
 class RequiresPHP extends TestCase
 {
     #[\PHPUnit\Framework\Attributes\RequiresPhp('> 8.4')]

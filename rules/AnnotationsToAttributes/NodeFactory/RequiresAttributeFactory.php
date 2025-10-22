@@ -24,10 +24,22 @@ final readonly class RequiresAttributeFactory
         switch ($type) {
             case 'PHP':
                 $attributeClass = 'PHPUnit\Framework\Attributes\RequiresPhp';
+
+                // only version is used, we need to prefix with >=
+                if (is_string($attributeValue) && is_numeric($attributeValue[0])) {
+                    $attributeValue = '>= ' . $attributeValue;
+                }
+
                 $attributeValue = [$attributeValue];
                 break;
             case 'PHPUnit':
                 $attributeClass = 'PHPUnit\Framework\Attributes\RequiresPhpunit';
+
+                // only version is used, we need to prefix with >=
+                if (is_string($attributeValue) && is_numeric($attributeValue[0])) {
+                    $attributeValue = '>= ' . $attributeValue;
+                }
+
                 $attributeValue = [$attributeValue];
                 break;
             case 'OS':

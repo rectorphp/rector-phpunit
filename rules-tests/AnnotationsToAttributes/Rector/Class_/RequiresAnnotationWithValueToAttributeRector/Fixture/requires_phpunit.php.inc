@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @requires PHPUnit >= 10
+ * @requires PHPUnit 5
  */
 final class RequiresPHPUnit extends TestCase
 {
@@ -20,6 +21,7 @@ namespace Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\RequiresAnn
 use PHPUnit\Framework\TestCase;
 
 #[\PHPUnit\Framework\Attributes\RequiresPhpunit('>= 10')]
+#[\PHPUnit\Framework\Attributes\RequiresPhpunit('>= 5')]
 final class RequiresPHPUnit extends TestCase
 {
 }
