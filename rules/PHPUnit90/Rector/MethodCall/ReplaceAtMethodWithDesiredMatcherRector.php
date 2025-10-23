@@ -7,7 +7,6 @@ namespace Rector\PHPUnit\PHPUnit90\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\Int_;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -21,8 +20,7 @@ final class ReplaceAtMethodWithDesiredMatcherRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer
-    )
-    {
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -60,11 +58,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): null|MethodCall
     {
-        if (!$this->testsNodeAnalyzer->isInTestClass($node)) {
+        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
             return null;
         }
 
-        if (!$node->var instanceof MethodCall) {
+        if (! $node->var instanceof MethodCall) {
             return null;
         }
 
@@ -73,7 +71,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (!$arg->value instanceof MethodCall) {
+        if (! $arg->value instanceof MethodCall) {
             return null;
         }
 
@@ -84,7 +82,7 @@ CODE_SAMPLE
             }
         }
 
-        if (!isset($count)) {
+        if (! isset($count)) {
             return null;
         }
 
@@ -92,6 +90,7 @@ CODE_SAMPLE
             $arg->value = new MethodCall($arg->value->var, 'never');
             return $node;
         }
+
         if ($count === 1) {
             $arg->value = new MethodCall($arg->value->var, 'once');
             return $node;
