@@ -15,6 +15,7 @@ use Rector\PHPUnit\CodeQuality\Rector\Class_\TypeWillReturnCallableArrowFunction
 use Rector\PHPUnit\CodeQuality\Rector\Class_\YieldDataProviderRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableInstanceRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\DataProviderArrayItemsNewLinedRector;
+use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\EntityDocumentCreateMockToDirectNewRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\RemoveEmptyTestMethodRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\ReplaceTestAnnotationWithPrefixedFunctionRector;
 use Rector\PHPUnit\CodeQuality\Rector\Expression\AssertArrayCastedObjectToAssertSameRector;
@@ -117,5 +118,6 @@ return static function (RectorConfig $rectorConfig): void {
 
         // prefer simple mocking
         GetMockBuilderGetMockToCreateMockRector::class,
+        EntityDocumentCreateMockToDirectNewRector::class,
     ]);
 };
