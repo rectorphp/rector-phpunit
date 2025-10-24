@@ -12,12 +12,14 @@ use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\Cast\Bool_;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\NodeVisitor;
 use PHPStan\Reflection\ClassReflection;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStan\ScopeFetcher;
@@ -76,14 +78,23 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [FuncCall::class];
+        return [Closure::class, FuncCall::class];
     }
 
     /**
-     * @param FuncCall $node
+     * @param Closure|FuncCall| $node
+     * @return StaticCall|MethodCall|null|int
      */
-    public function refactor(Node $node): StaticCall|MethodCall|null
+    public function refactor(Node $node): StaticCall|MethodCall|null|int
     {
+        if ($node instanceof Closure) {
+            if ($node->static) {
+                return NodeVisitor::DONT_TRAVERSE_CHILDREN;
+            }
+
+            return null;
+        }
+
         if ($node->isFirstClassCallable()) {
             return null;
         }
