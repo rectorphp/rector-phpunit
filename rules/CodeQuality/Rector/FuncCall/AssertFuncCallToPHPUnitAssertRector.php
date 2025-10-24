@@ -82,7 +82,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Closure|FuncCall| $node
+     * @param Closure|FuncCall $node
      * @return StaticCall|MethodCall|null|NodeVisitor::DONT_TRAVERSE_CHILDREN
      */
     public function refactor(Node $node): StaticCall|MethodCall|null|int
