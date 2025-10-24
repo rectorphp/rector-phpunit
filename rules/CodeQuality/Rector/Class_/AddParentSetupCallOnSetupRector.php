@@ -5,30 +5,17 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Expression;
-use Rector\PhpParser\Node\BetterNodeFinder;
-use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
-use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\AddParentSetupCallOnSetupRector\AddParentSetupCallOnSetupRectorTest
+ * @deprecated as parent setup call depends on the test. Sometimes its on purpose, sometimes not. Better handle manually
  */
 final class AddParentSetupCallOnSetupRector extends AbstractRector
 {
-    public function __construct(
-        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly BetterNodeFinder $betterNodeFinder,
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -76,43 +63,8 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
-            return null;
-        }
-
-        $setUpMethod = $node->getMethod(MethodName::SET_UP);
-        if (! $setUpMethod instanceof ClassMethod) {
-            return null;
-        }
-
-        if ($setUpMethod->isAbstract() || $setUpMethod->stmts === null) {
-            return null;
-        }
-
-        $isSetupExists = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
-            $setUpMethod,
-            function (Node $subNode): bool {
-                if (! $subNode instanceof StaticCall) {
-                    return false;
-                }
-
-                if (! $this->isName($subNode->class, 'parent')) {
-                    return false;
-                }
-
-                return $this->isName($subNode->name, 'setUp');
-            }
+        throw new ShouldNotHappenException(
+            sprintf('Rule "%s" is deprecated. Better add parent::setUp() manually where needed.', self::class)
         );
-
-        if ($isSetupExists) {
-            return null;
-        }
-
-        $setUpMethod->stmts = [
-            new Expression(new StaticCall(new Name('parent'), new Identifier('setUp'))),
-            ...$setUpMethod->stmts,
-        ];
-
-        return $node;
     }
 }
