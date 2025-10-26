@@ -48,6 +48,7 @@ use Rector\PHPUnit\CodeQuality\Rector\MethodCall\UseSpecificWillMethodRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\UseSpecificWithMethodRector;
 use Rector\PHPUnit\PHPUnit60\Rector\MethodCall\GetMockBuilderGetMockToCreateMockRector;
 use Rector\PHPUnit\PHPUnit90\Rector\MethodCall\ReplaceAtMethodWithDesiredMatcherRector;
+use Rector\Privatization\Rector\Class_\FinalizeTestCaseClassRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
@@ -119,6 +120,7 @@ return static function (RectorConfig $rectorConfig): void {
         SingleMockPropertyTypeRector::class,
 
         SetUpBeforeClassToSetUpRector::class,
+        FinalizeTestCaseClassRector::class,
 
         // prefer simple mocking
         GetMockBuilderGetMockToCreateMockRector::class,
