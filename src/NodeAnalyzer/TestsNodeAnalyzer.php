@@ -34,7 +34,6 @@ final readonly class TestsNodeAnalyzer
     public function isInTestClass(Node $node): bool
     {
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-
         if (! $classReflection instanceof ClassReflection) {
             return false;
         }
