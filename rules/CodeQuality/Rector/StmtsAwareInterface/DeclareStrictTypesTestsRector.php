@@ -78,6 +78,7 @@ CODE_SAMPLE
             return null;
         }
 
+        /** @var Node $rootStmt */
         $rootStmt = current($nodes);
 
         // when first stmt is Declare_, verify if there is strict_types definition already,
