@@ -9,7 +9,6 @@ use Rector\PHPUnit\CodeQuality\Rector\Class_\ConstructClassMethodToSetUpTestCase
 use Rector\PHPUnit\CodeQuality\Rector\Class_\NarrowUnusedSetUpDefinedPropertyRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\RemoveDataProviderParamKeysRector;
-use Rector\PHPUnit\CodeQuality\Rector\Class_\SetUpBeforeClassToSetUpRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\SingleMockPropertyTypeRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\TestWithToDataProviderRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\TypeWillReturnCallableArrowFunctionRector;
@@ -120,7 +119,6 @@ return static function (RectorConfig $rectorConfig): void {
         RemoveExpectAnyFromMockRector::class,
         SingleMockPropertyTypeRector::class,
 
-        SetUpBeforeClassToSetUpRector::class,
         FinalizeTestCaseClassRector::class,
         DeclareStrictTypesTestsRector::class,
 
