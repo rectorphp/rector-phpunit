@@ -5,14 +5,17 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 
 use PhpParser\Node;
+use PhpParser\Node\ClosureUse;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Return_;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\CodeQuality\NodeFactory\FromBinaryAndAssertExpressionsFactory;
 use Rector\PHPUnit\CodeQuality\ValueObject\ArgAndFunctionLike;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -28,6 +31,7 @@ final class WithCallbackIdenticalToStandaloneAssertsRector extends AbstractRecto
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly FromBinaryAndAssertExpressionsFactory $fromBinaryAndAssertExpressionsFactory,
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
@@ -130,12 +134,16 @@ CODE_SAMPLE
             // arrow function -> flip to closure
             $functionLikeInArg = $argAndFunctionLike->getArg();
 
+            $externalVariables = $this->resolveExternalClosureUses($innerFunctionLike);
+
             $closure = new Closure([
                 'params' => $argAndFunctionLike->getFunctionLike()
                     ->params,
                 'stmts' => $assertExpressions,
                 'returnType' => new Identifier('void'),
+                'uses' => $externalVariables,
             ]);
+
             $functionLikeInArg->value = $closure;
         }
 
@@ -209,5 +217,46 @@ CODE_SAMPLE
         }
 
         return $functionLike->expr;
+    }
+
+    /**
+     * @return ClosureUse[]
+     */
+    private function resolveExternalClosureUses(ArrowFunction $arrowFunction): array
+    {
+        // fill needed uses from arrow function to closure
+        $arrowFunctionVariables = $this->betterNodeFinder->findInstancesOfScoped(
+            $arrowFunction->getStmts(),
+            Variable::class
+        );
+        $paramNames = [];
+        foreach ($arrowFunction->getParams() as $param) {
+            $paramNames[] = $this->getName($param);
+        }
+
+        $externalVariableNames = [];
+
+        foreach ($arrowFunctionVariables as $arrowFunctionVariable) {
+            // skip those defined in params
+            if ($this->isNames($arrowFunctionVariable, $paramNames)) {
+                continue;
+            }
+
+            $variableName = $this->getName($arrowFunctionVariable);
+            if (! is_string($variableName)) {
+                continue;
+            }
+
+            $externalVariableNames[] = $variableName;
+        }
+
+        $externalVariableNames = array_unique($externalVariableNames);
+
+        $closureUses = [];
+        foreach ($externalVariableNames as $externalVariableName) {
+            $closureUses[] = new ClosureUse(new Variable($externalVariableName));
+        }
+
+        return $closureUses;
     }
 }
