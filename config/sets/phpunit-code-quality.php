@@ -45,6 +45,7 @@ use Rector\PHPUnit\CodeQuality\Rector\MethodCall\SingleWithConsecutiveToWithRect
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\StringCastAssertStringContainsStringRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\UseSpecificWillMethodRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\UseSpecificWithMethodRector;
+use Rector\PHPUnit\CodeQuality\Rector\MethodCall\WithCallbackIdenticalToStandaloneAssertsRector;
 use Rector\PHPUnit\CodeQuality\Rector\StmtsAwareInterface\DeclareStrictTypesTestsRector;
 use Rector\PHPUnit\PHPUnit60\Rector\MethodCall\GetMockBuilderGetMockToCreateMockRector;
 use Rector\PHPUnit\PHPUnit90\Rector\MethodCall\ReplaceAtMethodWithDesiredMatcherRector;
@@ -121,6 +122,7 @@ return static function (RectorConfig $rectorConfig): void {
 
         FinalizeTestCaseClassRector::class,
         DeclareStrictTypesTestsRector::class,
+        WithCallbackIdenticalToStandaloneAssertsRector::class,
 
         // prefer simple mocking
         GetMockBuilderGetMockToCreateMockRector::class,
