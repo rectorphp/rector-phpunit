@@ -35,8 +35,8 @@ final class WithCallbackAssert extends TestCase
         $someMock->expects($this->any())
             ->method('trans')
             ->with($this->callback(function ($args): void {
-                $this->assertSame('some_value', $args[0]);
                 $this->assertCount(5, $args);
+                $this->assertSame('some_value', $args[0]);
             }));
     }
 }

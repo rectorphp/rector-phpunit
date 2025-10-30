@@ -4,7 +4,7 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\WithCallbackIdentic
 
 use PHPUnit\Framework\TestCase;
 
-final class ClosureInstanceOf extends TestCase
+final class IssetArrayKeys extends TestCase
 {
     public function test()
     {
@@ -13,7 +13,7 @@ final class ClosureInstanceOf extends TestCase
         $someMock->expects($this->any())
             ->method('trans')
             ->with($this->callback(function ($args): bool {
-                return count($args) === 5 && $args[0] instanceof \stdClass;
+                return count($args) === 5 && isset($args[0]) && $args[0] === 'some_value';
             }));
     }
 }
@@ -26,7 +26,7 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\WithCallbackIdentic
 
 use PHPUnit\Framework\TestCase;
 
-final class ClosureInstanceOf extends TestCase
+final class IssetArrayKeys extends TestCase
 {
     public function test()
     {
@@ -36,7 +36,8 @@ final class ClosureInstanceOf extends TestCase
             ->method('trans')
             ->with($this->callback(function ($args): void {
                 $this->assertCount(5, $args);
-                $this->assertInstanceOf(\stdClass::class, $args[0]);
+                $this->assertArrayHasKey(0, $args);
+                $this->assertSame('some_value', $args[0]);
             }));
     }
 }
