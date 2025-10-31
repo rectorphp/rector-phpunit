@@ -38,7 +38,7 @@ final class WithArrowFunction extends TestCase
             ->method('trans')
             ->with(
                 $this->callback(
-                    function ($args): void {
+                    function ($args): bool {
                         $this->assertCount(5, $args);
                         $this->assertInstanceOf(\stdClass::class, $args[0]);
                         return true;

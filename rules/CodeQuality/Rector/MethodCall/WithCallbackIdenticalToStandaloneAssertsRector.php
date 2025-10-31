@@ -144,7 +144,7 @@ CODE_SAMPLE
                 'params' => $argAndFunctionLike->getFunctionLike()
                     ->params,
                 'stmts' => $assertExpressions,
-                'returnType' => new Identifier('void'),
+                'returnType' => new Identifier('bool'),
                 'uses' => $externalVariables,
             ]);
 

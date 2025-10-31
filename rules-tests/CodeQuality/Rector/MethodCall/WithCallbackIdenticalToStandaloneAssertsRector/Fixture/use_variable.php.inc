@@ -37,7 +37,7 @@ final class UseVariable extends TestCase
         $someMock->expects($this->any())
             ->method('trans')
             ->with(
-                $this->callback(function ($args) use ($expectedValue): void {
+                $this->callback(function ($args) use ($expectedValue): bool {
                     $this->assertCount(5, $args);
                     $this->assertSame($expectedValue, $args[0]);
                     return true;
