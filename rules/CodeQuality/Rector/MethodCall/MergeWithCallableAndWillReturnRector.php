@@ -11,8 +11,10 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Return_;
 use Rector\PhpParser\Node\Value\ValueResolver;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -24,6 +26,7 @@ final class MergeWithCallableAndWillReturnRector extends AbstractRector
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly ValueResolver $valueResolver,
+        private readonly StaticTypeMapper $staticTypeMapper,
     ) {
     }
 
@@ -131,11 +134,16 @@ CODE_SAMPLE
 
         /** @var Return_ $return */
         $return = $innerClosure->stmts[count($innerClosure->stmts) - 1];
-        $return->expr = $willReturnMethodCall->getArgs()[0]
+        $returnedExpr = $willReturnMethodCall->getArgs()[0]
             ->value;
+        $return->expr = $returnedExpr;
 
         $parentCaller->name = new Identifier('willReturnCallback');
         $parentCaller->args = [new Arg($innerClosure)];
+
+        $returnedExprType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnedExpr);
+        $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnedExprType, TypeKind::RETURN);
+        $innerClosure->returnType = $returnTypeNode instanceof Node ? $returnTypeNode : null;
 
         return $parentCaller;
     }

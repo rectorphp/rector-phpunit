@@ -4,13 +4,13 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\MergeWithCallableAn
 
 use PHPUnit\Framework\TestCase;
 
-final class WithCallbackAndWillReturn extends TestCase
+final class ReplaceReturnType extends TestCase
 {
     public function test()
     {
         $this->createMock('SomeClass')
             ->method('someMethod')
-            ->with($this->callback(function ($arg) {
+            ->with($this->callback(function ($arg): bool {
                 return true;
             }))
             ->willReturn('someValue');
@@ -25,7 +25,7 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\MergeWithCallableAn
 
 use PHPUnit\Framework\TestCase;
 
-final class WithCallbackAndWillReturn extends TestCase
+final class ReplaceReturnType extends TestCase
 {
     public function test()
     {
