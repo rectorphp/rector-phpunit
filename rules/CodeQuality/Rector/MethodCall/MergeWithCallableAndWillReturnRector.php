@@ -143,11 +143,7 @@ CODE_SAMPLE
 
         $returnedExprType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnedExpr);
         $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnedExprType, TypeKind::RETURN);
-        if ($returnTypeNode instanceof \PhpParser\Node) {
-            $innerClosure->returnType = $returnTypeNode;
-        } else {
-            $innerClosure->returnType = null;
-        }
+        $innerClosure->returnType = $returnTypeNode instanceof Node ? $returnTypeNode : null;
 
         return $parentCaller;
     }
