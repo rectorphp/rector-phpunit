@@ -37,6 +37,7 @@ use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertSameTrueFalseToAssertTrue
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertTrueFalseToSpecificMethodRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\FlipAssertRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\MatchAssertSameExpectedTypeRector;
+use Rector\PHPUnit\CodeQuality\Rector\MethodCall\MergeWithCallableAndWillReturnRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\NarrowIdenticalWithConsecutiveRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\NarrowSingleWillReturnCallbackRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\RemoveExpectAnyFromMockRector;
@@ -123,6 +124,7 @@ return static function (RectorConfig $rectorConfig): void {
         FinalizeTestCaseClassRector::class,
         DeclareStrictTypesTestsRector::class,
         WithCallbackIdenticalToStandaloneAssertsRector::class,
+        MergeWithCallableAndWillReturnRector::class,
 
         // prefer simple mocking
         GetMockBuilderGetMockToCreateMockRector::class,
