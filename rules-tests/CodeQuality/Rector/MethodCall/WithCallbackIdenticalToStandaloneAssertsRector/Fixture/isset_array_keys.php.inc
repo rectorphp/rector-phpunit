@@ -34,10 +34,11 @@ final class IssetArrayKeys extends TestCase
 
         $someMock->expects($this->any())
             ->method('trans')
-            ->with($this->callback(function ($args): void {
+            ->with($this->callback(function ($args): bool {
                 $this->assertCount(5, $args);
                 $this->assertArrayHasKey(0, $args);
                 $this->assertSame('some_value', $args[0]);
+                return true;
             }));
     }
 }

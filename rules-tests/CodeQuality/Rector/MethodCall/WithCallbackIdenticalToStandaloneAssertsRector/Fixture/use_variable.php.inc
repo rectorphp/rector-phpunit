@@ -40,6 +40,7 @@ final class UseVariable extends TestCase
                 $this->callback(function ($args) use ($expectedValue): void {
                     $this->assertCount(5, $args);
                     $this->assertSame($expectedValue, $args[0]);
+                    return true;
                 })
             );
     }
