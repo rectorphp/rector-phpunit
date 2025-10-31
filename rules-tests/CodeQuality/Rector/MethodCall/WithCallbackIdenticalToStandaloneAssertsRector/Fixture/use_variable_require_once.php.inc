@@ -41,6 +41,7 @@ final class UseVariableRequireOnce extends TestCase
                     $this->assertCount(5, $args);
                     $this->assertSame($expectedValue, $args[0]);
                     $this->assertSame($expectedValue, $args[2]);
+                    return true;
                 })
             );
     }
