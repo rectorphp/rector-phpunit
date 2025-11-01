@@ -118,7 +118,10 @@ CODE_SAMPLE
         $innerSoleExpr = $this->matchInnerSoleExpr($argAndFunctionLike->getFunctionLike());
         if ($innerSoleExpr instanceof BooleanAnd) {
             $joinedExprs = $this->extractJoinedExprs($innerSoleExpr);
-        } elseif ($innerSoleExpr instanceof Identical || $innerSoleExpr instanceof Instanceof_ || $innerSoleExpr instanceof Isset_) {
+        } elseif ($innerSoleExpr instanceof Identical || $innerSoleExpr instanceof Instanceof_ || $innerSoleExpr instanceof Isset_ || ($innerSoleExpr instanceof Expr\FuncCall && $this->isName(
+            $innerSoleExpr->name,
+            'array_key_exists'
+        ))) {
             $joinedExprs = [$innerSoleExpr];
         } else {
             return null;
