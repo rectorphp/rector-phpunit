@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\ClosureUse;
 use PhpParser\Node\Expr;
@@ -118,7 +119,7 @@ CODE_SAMPLE
         $innerSoleExpr = $this->matchInnerSoleExpr($argAndFunctionLike->getFunctionLike());
         if ($innerSoleExpr instanceof BooleanAnd) {
             $joinedExprs = $this->extractJoinedExprs($innerSoleExpr);
-        } elseif ($innerSoleExpr instanceof Identical || $innerSoleExpr instanceof Instanceof_ || $innerSoleExpr instanceof Isset_ || ($innerSoleExpr instanceof Expr\FuncCall && $this->isName(
+        } elseif ($innerSoleExpr instanceof Identical || $innerSoleExpr instanceof Instanceof_ || $innerSoleExpr instanceof Isset_ || ($innerSoleExpr instanceof FuncCall && $this->isName(
             $innerSoleExpr->name,
             'array_key_exists'
         ))) {
