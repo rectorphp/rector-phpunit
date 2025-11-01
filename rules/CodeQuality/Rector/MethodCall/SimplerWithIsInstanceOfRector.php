@@ -5,9 +5,14 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Return_;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -102,12 +107,12 @@ CODE_SAMPLE
 
         $instanceCheckedClassName = $this->matchSoleInstanceofCheckClassName($innerClosure);
 
-        if (! $instanceCheckedClassName instanceof \PhpParser\Node) {
+        if (! $instanceCheckedClassName instanceof Node) {
             return null;
         }
 
         // convert name to expr
-        if ($instanceCheckedClassName instanceof Node\Name) {
+        if ($instanceCheckedClassName instanceof Name) {
             $instanceCheckedClassName = $this->nodeFactory->createClassConstFetch(
                 $instanceCheckedClassName->toString(),
                 'class'
@@ -115,57 +120,51 @@ CODE_SAMPLE
         }
 
         $node->args = [
-            new Node\Arg($this->nodeFactory->createMethodCall('this', 'isInstanceOf', [$instanceCheckedClassName])),
+            new Arg($this->nodeFactory->createMethodCall('this', 'isInstanceOf', [$instanceCheckedClassName])),
         ];
 
         return $node;
     }
 
-    private function matchSoleInstanceofCheckClassName(Closure $innerClosure): Node|null|Node\Expr|Node\Name
+    private function matchSoleInstanceofCheckClassName(Closure $innerClosure): Node|null|Expr|Name
     {
         // return + instancecheck only
         $innerClosureStmts = $innerClosure->getStmts();
-
         if (count($innerClosureStmts) === 2) {
-            if (! $innerClosureStmts[1] instanceof Node\Stmt\Return_) {
+            if (! $innerClosureStmts[1] instanceof Return_) {
                 return null;
             }
-
             $firstStmt = $innerClosureStmts[0];
-
-            if (! $firstStmt instanceof Node\Stmt\Expression) {
+            if (! $firstStmt instanceof Expression) {
                 return null;
             }
-
             $firstStmtExpr = $firstStmt->expr;
             if (! $firstStmtExpr instanceof MethodCall) {
                 return null;
             }
-
             if (! $this->isName($firstStmtExpr->name, 'assertInstanceOf')) {
                 return null;
             }
-
             return $firstStmtExpr->getArgs()[0]
                 ->value;
-        } elseif (count($innerClosureStmts) === 1) {
+        }
+
+        if (count($innerClosureStmts) === 1) {
             $onlyStmt = $innerClosureStmts[0];
-            if (! $onlyStmt instanceof Node\Stmt\Return_) {
+            if (! $onlyStmt instanceof Return_) {
                 return null;
             }
-
             $returnExpr = $onlyStmt->expr;
             if (! $returnExpr instanceof Instanceof_) {
                 return null;
             }
-
             $instanceofExpr = $returnExpr;
-            if (! $instanceofExpr->class instanceof Node\Name) {
+            if (! $instanceofExpr->class instanceof Name) {
                 return null;
             }
-
             return $instanceofExpr->class;
         }
+
         return null;
 
     }
