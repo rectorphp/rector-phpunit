@@ -134,17 +134,21 @@ CODE_SAMPLE
             if (! $innerClosureStmts[1] instanceof Return_) {
                 return null;
             }
+
             $firstStmt = $innerClosureStmts[0];
             if (! $firstStmt instanceof Expression) {
                 return null;
             }
+
             $firstStmtExpr = $firstStmt->expr;
             if (! $firstStmtExpr instanceof MethodCall) {
                 return null;
             }
+
             if (! $this->isName($firstStmtExpr->name, 'assertInstanceOf')) {
                 return null;
             }
+
             return $firstStmtExpr->getArgs()[0]
                 ->value;
         }
@@ -154,14 +158,17 @@ CODE_SAMPLE
             if (! $onlyStmt instanceof Return_) {
                 return null;
             }
+
             $returnExpr = $onlyStmt->expr;
             if (! $returnExpr instanceof Instanceof_) {
                 return null;
             }
+
             $instanceofExpr = $returnExpr;
             if (! $instanceofExpr->class instanceof Name) {
                 return null;
             }
+
             return $instanceofExpr->class;
         }
 
