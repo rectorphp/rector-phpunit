@@ -69,15 +69,16 @@ final readonly class FromBinaryAndAssertExpressionsFactory
             }
 
             if ($expr instanceof Instanceof_) {
-                if (! $expr->class instanceof Name) {
-                    return null;
+                if ($expr->class instanceof Name) {
+                    $classNameExpr = new ClassConstFetch(new FullyQualified($expr->class->name), 'class');
+                } else {
+                    $classNameExpr = $expr->class;
                 }
 
-                $className = $expr->class->name;
                 $assertMethodCalls[] = $this->nodeFactory->createMethodCall(
                     'this',
                     'assertInstanceOf',
-                    [new ClassConstFetch(new FullyQualified($className), 'class'), $expr->expr]
+                    [$classNameExpr, $expr->expr]
                 );
 
                 continue;
