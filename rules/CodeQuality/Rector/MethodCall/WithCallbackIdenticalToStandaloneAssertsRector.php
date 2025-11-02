@@ -122,7 +122,7 @@ CODE_SAMPLE
         } elseif ($innerSoleExpr instanceof Identical || $innerSoleExpr instanceof Instanceof_ || $innerSoleExpr instanceof Isset_ || ($innerSoleExpr instanceof FuncCall && $this->isName(
             $innerSoleExpr->name,
             'array_key_exists'
-        ))) {
+        )) || $innerSoleExpr instanceof Expr\BinaryOp\Equal) {
             $joinedExprs = [$innerSoleExpr];
         } else {
             return null;

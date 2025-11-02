@@ -84,7 +84,7 @@ final readonly class FromBinaryAndAssertExpressionsFactory
                 continue;
             }
 
-            if ($expr instanceof Identical) {
+            if ($expr instanceof Identical || $expr instanceof Expr\BinaryOp\Equal) {
                 if ($expr->left instanceof FuncCall && $this->nodeNameResolver->isName($expr->left, 'count')) {
                     if ($expr->right instanceof Int_) {
                         $countedExpr = $expr->left->getArgs()[0]
@@ -107,7 +107,7 @@ final readonly class FromBinaryAndAssertExpressionsFactory
                 // create assertSame()
                 $assertMethodCalls[] = $this->nodeFactory->createMethodCall(
                     'this',
-                    'assertSame',
+                    $expr instanceof Identical ? 'assertSame' : 'assertEquals',
                     [$expr->right, $expr->left]
                 );
             } else {
