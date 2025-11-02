@@ -6,6 +6,7 @@ namespace Rector\PHPUnit\CodeQuality\NodeFactory;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -84,7 +85,7 @@ final readonly class FromBinaryAndAssertExpressionsFactory
                 continue;
             }
 
-            if ($expr instanceof Identical || $expr instanceof Expr\BinaryOp\Equal) {
+            if ($expr instanceof Identical || $expr instanceof Equal) {
                 if ($expr->left instanceof FuncCall && $this->nodeNameResolver->isName($expr->left, 'count')) {
                     if ($expr->right instanceof Int_) {
                         $countedExpr = $expr->left->getArgs()[0]
