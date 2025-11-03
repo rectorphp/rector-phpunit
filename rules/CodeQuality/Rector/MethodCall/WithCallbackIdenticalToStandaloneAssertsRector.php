@@ -268,7 +268,7 @@ CODE_SAMPLE
      * @param Stmt[] $assertExprStmts
      */
     private function createClosure(
-        Closure|ArrowFunction $innerFunctionLike,
+        ArrowFunction $innerFunctionLike,
         ArgAndFunctionLike $argAndFunctionLike,
         array $assertExprStmts
     ): Closure {

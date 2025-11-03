@@ -40,11 +40,7 @@ final readonly class FromBinaryAndAssertExpressionsFactory
         foreach ($exprs as $expr) {
             // implicit bool compare
             if ($expr instanceof MethodCall) {
-                $assertMethodCalls[] = $this->nodeFactory->createMethodCall(
-                    'this',
-                    'assertTrue',
-                    [$expr]
-                );
+                $assertMethodCalls[] = $this->nodeFactory->createMethodCall('this', 'assertTrue', [$expr]);
 
                 continue;
             }
