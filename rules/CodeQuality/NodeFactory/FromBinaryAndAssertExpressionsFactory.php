@@ -30,9 +30,9 @@ final readonly class FromBinaryAndAssertExpressionsFactory
 
     /**
      * @param Expr[] $exprs
-     * @return Stmt[]|null
+     * @return Stmt[]
      */
-    public function create(array $exprs): ?array
+    public function create(array $exprs): array
     {
         $assertMethodCalls = [];
 
@@ -62,7 +62,7 @@ final readonly class FromBinaryAndAssertExpressionsFactory
                         );
                     } else {
                         // not supported yet
-                        return null;
+                        return [];
                     }
                 }
 
@@ -102,7 +102,7 @@ final readonly class FromBinaryAndAssertExpressionsFactory
                     }
 
                     // unclear, fallback to no change
-                    return null;
+                    return [];
                 }
 
                 // create assertSame()
@@ -113,12 +113,12 @@ final readonly class FromBinaryAndAssertExpressionsFactory
                 );
             } else {
                 // not supported expr
-                return null;
+                return [];
             }
         }
 
         if ($assertMethodCalls === []) {
-            return null;
+            return [];
         }
 
         // to keep order from binary
