@@ -268,11 +268,11 @@ CODE_SAMPLE
      * @param Stmt[] $assertExprStmts
      */
     private function createClosure(
-        ArrowFunction $innerFunctionLike,
+        ArrowFunction $arrowFunction,
         ArgAndFunctionLike $argAndFunctionLike,
         array $assertExprStmts
     ): Closure {
-        $externalVariables = $this->closureUsesResolver->resolveFromArrowFunction($innerFunctionLike);
+        $externalVariables = $this->closureUsesResolver->resolveFromArrowFunction($arrowFunction);
 
         return new Closure([
             'params' => $argAndFunctionLike->getFunctionLike()
