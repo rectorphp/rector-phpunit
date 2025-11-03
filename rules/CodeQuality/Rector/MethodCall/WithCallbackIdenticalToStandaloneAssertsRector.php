@@ -10,6 +10,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
+use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
@@ -122,7 +123,7 @@ CODE_SAMPLE
         } elseif ($innerSoleExpr instanceof Identical || $innerSoleExpr instanceof Instanceof_ || $innerSoleExpr instanceof Isset_ || ($innerSoleExpr instanceof FuncCall && $this->isName(
             $innerSoleExpr->name,
             'array_key_exists'
-        )) || $innerSoleExpr instanceof Expr\BinaryOp\Equal) {
+        )) || $innerSoleExpr instanceof Equal) {
             $joinedExprs = [$innerSoleExpr];
         } else {
             return null;
@@ -137,13 +138,28 @@ CODE_SAMPLE
             return null;
         }
 
+        // all stmts but last
+        $functionLike = $argAndFunctionLike->getFunctionLike();
+
+        if ($functionLike instanceof Closure) {
+            $functionStmts = $functionLike->stmts;
+
+            if (count($functionStmts) >= 2) {
+                unset($functionStmts[array_key_last($functionStmts)]);
+            } else {
+                $functionStmts = [];
+            }
+        } else {
+            $functionStmts = [];
+        }
+
         // last si return true;
         $assertExpressions[] = new Return_($this->nodeFactory->createTrue());
 
         $innerFunctionLike = $argAndFunctionLike->getFunctionLike();
 
         if ($innerFunctionLike instanceof Closure) {
-            $innerFunctionLike->stmts = $assertExpressions;
+            $innerFunctionLike->stmts = array_merge($functionStmts, $assertExpressions);
         } else {
             // arrow function -> flip to closure
             $functionLikeInArg = $argAndFunctionLike->getArg();
@@ -218,16 +234,15 @@ CODE_SAMPLE
     private function matchInnerSoleExpr(Closure|ArrowFunction $functionLike): ?Expr
     {
         if ($functionLike instanceof Closure) {
-            if (count($functionLike->stmts) !== 1) {
-                return null;
+            foreach ($functionLike->getStmts() as $stmt) {
+                if (! $stmt instanceof Return_) {
+                    continue;
+                }
+
+                return $stmt->expr;
             }
 
-            $innerStmt = $functionLike->stmts[0];
-            if (! $innerStmt instanceof Return_) {
-                return null;
-            }
-
-            return $innerStmt->expr;
+            return null;
         }
 
         return $functionLike->expr;
