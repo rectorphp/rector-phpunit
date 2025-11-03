@@ -125,34 +125,24 @@ CODE_SAMPLE
                 continue;
             }
 
-            $assertExpressions = $this->fromBinaryAndAssertExpressionsFactory->create($joinedExprs);
-            if ($assertExpressions === []) {
+            $assertExprStmts = $this->fromBinaryAndAssertExpressionsFactory->create($joinedExprs);
+            if ($assertExprStmts === []) {
                 continue;
             }
 
             $nonReturnCallbackStmts = $this->resolveNonReturnCallbackStmts($argAndFunctionLike);
 
             // last si return true;
-            $assertExpressions[] = new Return_($this->nodeFactory->createTrue());
-
+            $assertExprStmts[] = new Return_($this->nodeFactory->createTrue());
             $innerFunctionLike = $argAndFunctionLike->getFunctionLike();
 
             if ($innerFunctionLike instanceof Closure) {
-                $innerFunctionLike->stmts = array_merge($nonReturnCallbackStmts, $assertExpressions);
+                $innerFunctionLike->stmts = array_merge($nonReturnCallbackStmts, $assertExprStmts);
             } else {
                 // arrow function -> flip to closure
                 $functionLikeInArg = $argAndFunctionLike->getArg();
 
-                $externalVariables = $this->closureUsesResolver->resolveFromArrowFunction($innerFunctionLike);
-
-                $closure = new Closure([
-                    'params' => $argAndFunctionLike->getFunctionLike()
-                        ->params,
-                    'stmts' => $assertExpressions,
-                    'returnType' => new Identifier('bool'),
-                    'uses' => $externalVariables,
-                ]);
-
+                $closure = $this->createClosure($innerFunctionLike, $argAndFunctionLike, $assertExprStmts);
                 $functionLikeInArg->value = $closure;
             }
 
@@ -272,5 +262,24 @@ CODE_SAMPLE
         }
 
         return [];
+    }
+
+    /**
+     * @param Stmt[] $assertExprStmts
+     */
+    private function createClosure(
+        ArrowFunction $arrowFunction,
+        ArgAndFunctionLike $argAndFunctionLike,
+        array $assertExprStmts
+    ): Closure {
+        $externalVariables = $this->closureUsesResolver->resolveFromArrowFunction($arrowFunction);
+
+        return new Closure([
+            'params' => $argAndFunctionLike->getFunctionLike()
+                ->params,
+            'stmts' => $assertExprStmts,
+            'returnType' => new Identifier('bool'),
+            'uses' => $externalVariables,
+        ]);
     }
 }
