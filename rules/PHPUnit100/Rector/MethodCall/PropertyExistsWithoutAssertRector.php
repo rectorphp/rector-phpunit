@@ -28,10 +28,16 @@ final class PropertyExistsWithoutAssertRector extends AbstractRector
      */
     private const RENAME_METHODS_WITH_OBJECT_MAP = [
         'assertClassHasAttribute' => 'assertTrue',
+        'assertObjectHasAttribute' => 'assertTrue',
         'assertClassHasStaticAttribute' => 'assertTrue',
-        'classHasStaticAttribute' => 'assertTrue',
+        // false
         'assertClassNotHasStaticAttribute' => 'assertFalse',
         'assertClassNotHasAttribute' => 'assertFalse',
+        'assertObjectNotHasAttribute' => 'assertFalse',
+        // no assert
+        'objectHasAttribute' => 'assertTrue',
+        'classHasAttribute' => 'assertTrue',
+        'classHasStaticAttribute' => 'assertTrue',
     ];
 
     public function __construct(
