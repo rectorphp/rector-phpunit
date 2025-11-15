@@ -27,9 +27,17 @@ final class PropertyExistsWithoutAssertRector extends AbstractRector
      * @var array<string, string>
      */
     private const RENAME_METHODS_WITH_OBJECT_MAP = [
+        'assertClassHasAttribute' => 'assertTrue',
+        'assertObjectHasAttribute' => 'assertTrue',
         'assertClassHasStaticAttribute' => 'assertTrue',
-        'classHasStaticAttribute' => 'assertTrue',
+        // false
         'assertClassNotHasStaticAttribute' => 'assertFalse',
+        'assertClassNotHasAttribute' => 'assertFalse',
+        'assertObjectNotHasAttribute' => 'assertFalse',
+        // no assert
+        'objectHasAttribute' => 'assertTrue',
+        'classHasAttribute' => 'assertTrue',
+        'classHasStaticAttribute' => 'assertTrue',
     ];
 
     public function __construct(
@@ -41,19 +49,17 @@ final class PropertyExistsWithoutAssertRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Replace deleted PHPUnit methods: assertClassHasStaticAttribute, classHasStaticAttribute and assertClassNotHasStaticAttribute by property_exists()',
+            'Replace removed assertClassHas*Attribute() with property_exists()',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
+$this->assertClassHasAttribute("Class", "property");
 $this->assertClassHasStaticAttribute("Class", "property");
-$this->classHasStaticAttribute("Class", "property");
-$this->assertClassNotHasStaticAttribute("Class", "property");
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
 $this->assertTrue(property_exists("Class", "property"));
 $this->assertTrue(property_exists("Class", "property"));
-$this->assertFalse(property_exists("Class", "property"));
 CODE_SAMPLE
                 ),
             ]
