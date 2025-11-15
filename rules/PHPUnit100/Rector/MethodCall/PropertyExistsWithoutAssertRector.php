@@ -43,19 +43,17 @@ final class PropertyExistsWithoutAssertRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Replace removed assertClassHasStaticAttribute, classHasStaticAttribute and assertClassNotHasStaticAttribute with property_exists()',
+            'Replace removed assertClassHas*Attribute() with property_exists()',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
+$this->assertClassHasAttribute("Class", "property");
 $this->assertClassHasStaticAttribute("Class", "property");
-$this->classHasStaticAttribute("Class", "property");
-$this->assertClassNotHasStaticAttribute("Class", "property");
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
 $this->assertTrue(property_exists("Class", "property"));
 $this->assertTrue(property_exists("Class", "property"));
-$this->assertFalse(property_exists("Class", "property"));
 CODE_SAMPLE
                 ),
             ]
