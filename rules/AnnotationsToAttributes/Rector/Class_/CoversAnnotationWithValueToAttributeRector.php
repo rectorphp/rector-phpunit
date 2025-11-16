@@ -186,16 +186,18 @@ CODE_SAMPLE
         $coversGroups = [];
         $methodGroups = [];
         $hasCoversDefault = false;
+        $coversDefaultClass = '';
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($class);
         if ($phpDocInfo instanceof PhpDocInfo) {
             $coversDefaultGroups = $this->handleCoversDefaultClass($phpDocInfo);
             // If there is a ::coversDefaultClass, @covers ::function will refer to class methods, otherwise it will refer to global functions.
             $hasCoversDefault = $coversDefaultGroups !== [];
+            $coversDefaultClass = $hasCoversDefault ? $coversDefaultGroups[0]->attrs[0]->args[0]->value->class->name : null;
             $coversGroups = $this->handleCovers($phpDocInfo, $hasCoversDefault);
         }
 
         foreach ($class->getMethods() as $classMethod) {
-            $methodGroups = [...$methodGroups, ...$this->resolveMethodAttributes($classMethod, $hasCoversDefault)];
+            $methodGroups = [...$methodGroups, ...$this->resolveMethodAttributes($classMethod, $coversDefaultClass)];
         }
 
         return [...$coversDefaultGroups, ...$coversGroups, ...$methodGroups];
@@ -260,8 +262,9 @@ CODE_SAMPLE
     /**
      * @return array<string, AttributeGroup>
      */
-    private function resolveMethodAttributes(ClassMethod $classMethod, bool $hasCoversDefault): array
+    private function resolveMethodAttributes(ClassMethod $classMethod, ?string $coversDefaultClass): array
     {
+        $hasCoversDefault = $coversDefaultClass !== null;
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($classMethod);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return [];
@@ -277,6 +280,15 @@ CODE_SAMPLE
             $covers = $desiredTagValueNode->value->value;
             if (str_starts_with($covers, '\\') || (! $hasCoversDefault && str_starts_with($covers, '::'))) {
                 $attributeGroup = $this->createAttributeGroup($covers);
+
+                // phpunit 10 may not fully support attribute
+                if (! $attributeGroup instanceof AttributeGroup) {
+                    continue;
+                }
+
+                $attributeGroups[$covers] = $attributeGroup;
+            } elseif ($hasCoversDefault && str_starts_with($covers, '::')) {
+                $attributeGroup = $this->createAttributeGroup($coversDefaultClass . $covers);
 
                 // phpunit 10 may not fully support attribute
                 if (! $attributeGroup instanceof AttributeGroup) {
