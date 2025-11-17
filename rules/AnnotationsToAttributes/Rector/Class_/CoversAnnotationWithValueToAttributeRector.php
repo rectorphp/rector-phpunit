@@ -192,7 +192,9 @@ CODE_SAMPLE
             $coversDefaultGroups = $this->handleCoversDefaultClass($phpDocInfo);
             // If there is a ::coversDefaultClass, @covers ::function will refer to class methods, otherwise it will refer to global functions.
             $hasCoversDefault = $coversDefaultGroups !== [];
-            $coversDefaultClass = $hasCoversDefault ? $this->getName($coversDefaultGroups[0]->attrs[0]->args[0]->value) : null;
+            $coversDefaultClass = $hasCoversDefault ? $this->getName(
+                $coversDefaultGroups[0]->attrs[0]->args[0]->value
+            ) : null;
             $coversGroups = $this->handleCovers($phpDocInfo, $hasCoversDefault);
         }
 
