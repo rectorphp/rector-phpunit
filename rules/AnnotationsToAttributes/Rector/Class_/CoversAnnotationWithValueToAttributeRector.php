@@ -280,25 +280,20 @@ CODE_SAMPLE
             }
 
             $covers = $desiredTagValueNode->value->value;
-            if (str_starts_with($covers, '\\') || (! $hasCoversDefault && str_starts_with($covers, '::'))) {
-                $attributeGroup = $this->createAttributeGroup($covers);
-
-                // phpunit 10 may not fully support attribute
-                if (! $attributeGroup instanceof AttributeGroup) {
-                    continue;
-                }
-
-                $attributeGroups[$covers] = $attributeGroup;
-            } elseif ($hasCoversDefault && str_starts_with($covers, '::')) {
-                $attributeGroup = $this->createAttributeGroup($coversDefaultClass . $covers);
-
-                // phpunit 10 may not fully support attribute
-                if (! $attributeGroup instanceof AttributeGroup) {
-                    continue;
-                }
-
-                $attributeGroups[$covers] = $attributeGroup;
+            if (! str_starts_with($covers, '\\') && ! str_starts_with($covers, '::')) {
+                continue;
             }
+
+            if ($hasCoversDefault && str_starts_with($covers, '::')) {
+                $covers = $coversDefaultClass . $covers;
+            }
+
+            $attributeGroup = $this->createAttributeGroup($covers);
+            if (! $attributeGroup instanceof AttributeGroup) {
+                continue;
+            }
+
+            $attributeGroups[$covers] = $attributeGroup;
         }
 
         return $attributeGroups;
