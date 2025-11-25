@@ -84,6 +84,11 @@ final class AssertCompareOnCountableWithMethodToAssertCountRector extends Abstra
             && $this->isNames($comparedExpr->name, ['count', 'sizeof', 'iterator_count'])
         ) {
             $countArg = $comparedExpr->getArgs()[0];
+
+            if ($this->isObjectType($countArg->value, new ObjectType('Generator'))) {
+                return null;
+            }
+
             $assertArgs[1] = new Arg($countArg->value);
 
             $node->args = $assertArgs;
