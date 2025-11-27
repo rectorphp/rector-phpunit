@@ -1,0 +1,9 @@
+[default.extend-words]
+Symplify = "Symplify"
+
+# doctrine behavior
+Deleteable = "Deleteable"
+
+# fixing typo in code
+"Fullfilled" = "Fullfilled"
+
