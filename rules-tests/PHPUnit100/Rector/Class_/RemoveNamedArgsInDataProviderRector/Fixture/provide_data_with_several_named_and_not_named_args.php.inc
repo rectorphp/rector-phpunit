@@ -18,7 +18,7 @@ final class ProvideDataWithSeveralNamedAndNotNamedArgs extends TestCase
         yield [
             'namedArg' => 100,
             null,
-            fn() => 'G-EAZY',
+            fn() => 'G-EASY',
             'Key' => fn() => 'Post Malone',
             'another' => 'arg1',
             new \Exception(),
@@ -50,7 +50,7 @@ final class ProvideDataWithSeveralNamedAndNotNamedArgs extends TestCase
         yield [
             100,
             null,
-            fn() => 'G-EAZY',
+            fn() => 'G-EASY',
             fn() => 'Post Malone',
             'arg1',
             new \Exception(),

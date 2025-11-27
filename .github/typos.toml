@@ -1,0 +1,8 @@
+[default.extend-words]
+Symplify = "Symplify"
+
+# collection of Boolean nodes
+Ands = "Ands"
+
+# regex purpose
+Som = "Som"

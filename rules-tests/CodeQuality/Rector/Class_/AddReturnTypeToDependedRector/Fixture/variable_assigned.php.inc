@@ -4,7 +4,7 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\AddReturnTypeToDepended
 
 use PHPUnit\Framework\TestCase;
 
-final class VaribleAssigned extends TestCase
+final class VariableAssigned extends TestCase
 {
     public function test()
     {
@@ -22,7 +22,7 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\AddReturnTypeToDepended
 
 use PHPUnit\Framework\TestCase;
 
-final class VaribleAssigned extends TestCase
+final class VariableAssigned extends TestCase
 {
     public function test(): int
     {
