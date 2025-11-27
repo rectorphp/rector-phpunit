@@ -2,7 +2,7 @@
 Symplify = "Symplify"
 
 # collection of Boolean nodes
-BooleanAnds = "BooleanAnds"
+Ands = "Ands"
 
 # regex purpose
-SomREGEPX = "SomREGEPX"
+Som = "Som"
