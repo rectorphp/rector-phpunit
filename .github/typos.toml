@@ -1,9 +1,8 @@
 [default.extend-words]
 Symplify = "Symplify"
 
-# doctrine behavior
-Deleteable = "Deleteable"
+# collection of Boolean nodes
+BooleanAnds = "BooleanAnds"
 
-# fixing typo in code
-"Fullfilled" = "Fullfilled"
-
+# regex purpose
+SomREGEPX = "SomREGEPX"

@@ -15,7 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @deprecated as very specific and assumes test + class colocation. Better use custom rule isntead.
+ * @deprecated as very specific and assumes test + class colocation. Better use custom rule instead.
  */
 final class AddCoversClassAttributeRector extends AbstractRector implements ConfigurableRectorInterface, DeprecatedInterface
 {
