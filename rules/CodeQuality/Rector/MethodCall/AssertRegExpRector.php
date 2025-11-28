@@ -14,7 +14,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt\Expression;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeManipulator\StmtsManipulator;
 use Rector\PhpParser\Enum\NodeGroup;

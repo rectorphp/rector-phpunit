@@ -10,7 +10,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeVisitor;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\BetterNodeFinder;

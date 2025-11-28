@@ -9,7 +9,6 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Expression;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFactory\AssertCallFactory;
