@@ -35,20 +35,9 @@ parameters:
         # phpstan false positive
         - '#Parameter \#1 \$className of method Rector\\PhpParser\\AstResolver\:\:resolveClassMethod\(\) expects class\-string, string given#'
 
-        # false positive
-        - '#Access to an undefined property Rector\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
-
         # more advanced usage, but not always working
         # see https://github.com/rectorphp/rector-src/actions/runs/11798721617/job/32865546672?pr=6422#step:5:110
         - '#Doing instanceof PHPStan\\Type\\.+ is error\-prone and deprecated#'
 
         - identifier: instanceof.alwaysTrue
         - identifier: assign.propertyType
-
-        # not relevant
-        - '#Method (.*?)provideMinPhpVersion\(\) never returns \d+ so it can be removed from the return type#'
-
-        # chicken-egg false positive
-        -
-            message: '#Parameter \#1 \$value of static method Webmozart\\Assert\\Assert\:\:isAOf\(\) expects object\|string, PhpParser\\Node\\Stmt\\Class_\|null given#'
-            path: rules/AnnotationsToAttributes/Rector/Class_/AnnotationWithValueToAttributeRector.php
