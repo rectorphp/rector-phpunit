@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\PHPUnit\PHPUnit60\Rector\MethodCall\GetMockBuilderGetMockToCreateMockRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit60\Rector\MethodCall\GetMockBuilderGetMockToCreateMockRector\Fixture;
 
 class MockFactory
 {
