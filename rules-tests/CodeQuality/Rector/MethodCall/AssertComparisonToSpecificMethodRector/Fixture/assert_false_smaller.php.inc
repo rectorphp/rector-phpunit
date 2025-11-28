@@ -4,13 +4,13 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertComparisonToS
 
 use PHPUnit\Framework\TestCase;
 
-final class AssertFalseGreater extends TestCase
+final class AssertFalseSmaller extends TestCase
 {
     public function some(int $param)
     {
-        self::assertFalse($param > 0);
+        self::assertFalse(0 < $param);
 
-        self::assertFalse($param >= 10);
+        self::assertFalse(10 <= $param);
     }
 }
 
@@ -22,13 +22,13 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertComparisonToS
 
 use PHPUnit\Framework\TestCase;
 
-final class AssertFalseGreater extends TestCase
+final class AssertFalseSmaller extends TestCase
 {
     public function some(int $param)
     {
-        self::assertLessThanOrEqual(0, $param);
+        self::assertGreaterThanOrEqual($param, 0);
 
-        self::assertLessThan(10, $param);
+        self::assertGreaterThan($param, 10);
     }
 }
 
