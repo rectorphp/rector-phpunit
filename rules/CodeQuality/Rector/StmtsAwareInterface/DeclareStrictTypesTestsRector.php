@@ -12,6 +12,7 @@ use PhpParser\NodeVisitor;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Contract\Rector\HTMLAverseRectorInterface;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -121,11 +122,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return NodeGroup::STMTS_AWARE;
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param StmtsAware $node
      */
     public function refactor(Node $node): int
     {

@@ -11,6 +11,10 @@ parameters:
     reportUnmatchedIgnoredErrors: false
     errorFormat: symplify
 
+    # see https://phpstan.org/writing-php-code/phpdoc-types#global-type-aliases
+    typeAliases:
+        StmtsAware: \PhpParser\Node\Expr\Closure | \PhpParser\Node\Stmt\Case_ | \PhpParser\Node\Stmt\Catch_ | \PhpParser\Node\Stmt\ClassMethod | \PhpParser\Node\Stmt\Do_ | \PhpParser\Node\Stmt\Else_ | \PhpParser\Node\Stmt\ElseIf_ | \PhpParser\Node\Stmt\Finally_ | \PhpParser\Node\Stmt\For_ | \PhpParser\Node\Stmt\Foreach_ | \PhpParser\Node\Stmt\Function_ | \PhpParser\Node\Stmt\If_ | \PhpParser\Node\Stmt\Namespace_ | \PhpParser\Node\Stmt\TryCatch | \PhpParser\Node\Stmt\While_
+
     scanDirectories:
         - stubs
 
@@ -48,4 +52,3 @@ parameters:
         -
             message: '#Parameter \#1 \$value of static method Webmozart\\Assert\\Assert\:\:isAOf\(\) expects object\|string, PhpParser\\Node\\Stmt\\Class_\|null given#'
             path: rules/AnnotationsToAttributes/Rector/Class_/AnnotationWithValueToAttributeRector.php
-

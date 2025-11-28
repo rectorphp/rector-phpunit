@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFactory\AssertCallFactory;
 use Rector\Rector\AbstractRector;
@@ -76,11 +77,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return NodeGroup::STMTS_AWARE;
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param StmtsAware $node
      */
     public function refactor(Node $node): ?Node
     {
