@@ -90,6 +90,6 @@ CODE_SAMPLE
 
         $secondArg->value = new String_($secondArg->value);
 
-        return null;
+        return $node;
     }
 }
