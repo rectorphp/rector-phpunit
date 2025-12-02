@@ -107,9 +107,9 @@ CODE_SAMPLE
         $this->hasChanged = false;
 
         // handle class level
-        //        $classPhpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
         $this->refactorClassMethodOrClass($node, $node);
 
+        // handle method level
         foreach ($node->getMethods() as $classMethod) {
             $this->refactorClassMethodOrClass($classMethod, $node);
         }
