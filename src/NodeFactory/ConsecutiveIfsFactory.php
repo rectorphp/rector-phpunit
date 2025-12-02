@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\NodeFactory;
 
 use PhpParser\Node\Arg;
-use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -44,10 +43,6 @@ final readonly class ConsecutiveIfsFactory
             if ($withConsecutiveArg->value instanceof Array_) {
                 $array = $withConsecutiveArg->value;
                 foreach ($array->items as $assertKey => $assertArrayItem) {
-                    if (! $assertArrayItem instanceof ArrayItem) {
-                        continue;
-                    }
-
                     if (! $assertArrayItem->value instanceof MethodCall) {
                         $parametersDimFetch = new ArrayDimFetch(new Variable('parameters'), new Int_($assertKey));
                         $args = [new Arg($assertArrayItem->value), new Arg($parametersDimFetch)];
