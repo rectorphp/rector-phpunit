@@ -26,6 +26,7 @@ use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPUnit\Enum\AssertMethod;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
+use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -36,7 +37,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class AssertFuncCallToPHPUnitAssertRector extends AbstractRector
 {
     public function __construct(
-        private readonly ValueResolver $valueResolver
+        private readonly ValueResolver $valueResolver,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 
@@ -88,21 +90,26 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): StaticCall|MethodCall|null|int
     {
-        if ($node instanceof ClassMethod) {
-            if ($node->isStatic()) {
-                return NodeVisitor::DONT_TRAVERSE_CHILDREN;
-            }
+        // @todo handle only in test classes!
 
-            return null;
-        }
+        // most liekly hook to ClassMethod :) + traverse then
+        $this->testsNodeAnalyzer->isInTestClass($node);
 
-        if ($node instanceof Closure) {
-            if ($node->static) {
-                return NodeVisitor::DONT_TRAVERSE_CHILDREN;
-            }
+//        if ($node instanceof ClassMethod) {
+//            if ($node->isStatic()) {
+//                return NodeVisitor::DONT_TRAVERSE_CHILDREN;
+//            }
+//
+//            return null;
+//        }
 
-            return null;
-        }
+//        if ($node instanceof Closure) {
+//            if ($node->static) {
+//                return NodeVisitor::DONT_TRAVERSE_CHILDREN;
+//            }
+//
+//            return null;
+//        }
 
         if ($node->isFirstClassCallable()) {
             return null;
