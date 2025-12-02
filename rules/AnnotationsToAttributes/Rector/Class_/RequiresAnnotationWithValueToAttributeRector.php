@@ -104,20 +104,22 @@ CODE_SAMPLE
 
         $hasChanged = false;
 
-        if ($node instanceof Class_) {
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
-            if ($phpDocInfo instanceof PhpDocInfo) {
-                $requiresAttributeGroups = $this->handleRequires($phpDocInfo);
-                if ($requiresAttributeGroups !== []) {
-                    $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
-                    $node->attrGroups = array_merge($node->attrGroups, $requiresAttributeGroups);
-                    $this->removeMethodRequiresAnnotations($phpDocInfo);
-                    $hasChanged = true;
-                }
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+        if ($phpDocInfo instanceof PhpDocInfo) {
+            $requiresAttributeGroups = $this->handleRequires($phpDocInfo);
+            if ($requiresAttributeGroups !== []) {
+                $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
+                $node->attrGroups = array_merge($node->attrGroups, $requiresAttributeGroups);
+                $this->removeMethodRequiresAnnotations($phpDocInfo);
+                $hasChanged = true;
             }
         }
 
-        return $hasChanged ? $node : null;
+        if ($hasChanged) {
+            return $node;
+        }
+
+        return null;
     }
 
     /**

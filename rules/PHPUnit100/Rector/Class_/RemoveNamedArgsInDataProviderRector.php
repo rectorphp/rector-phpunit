@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\PHPUnit100\Rector\Class_;
 
 use PhpParser\Node;
-use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Yield_;
-use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Expression;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -127,18 +125,12 @@ CODE_SAMPLE
     {
         $hasChanged = false;
         foreach ($array->items as $item) {
-            if (! $item instanceof ArrayItem) {
-                continue;
-            }
-
             if (! $item->key instanceof Expr) {
                 continue;
             }
 
-            if (! $item->key instanceof Int_ && $item->key instanceof Expr) {
-                $item->key = null;
-                $hasChanged = true;
-            }
+            $item->key = null;
+            $hasChanged = true;
         }
 
         return $hasChanged;
