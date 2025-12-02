@@ -131,8 +131,10 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function resolveReturnTypeOfDependsMethod(ClassMethod $classMethod, Class_ $class): ?Node
-    {
+    private function resolveReturnTypeOfDependsMethod(
+        ClassMethod $classMethod,
+        Class_ $class
+    ): Node\ComplexType|Node\Identifier|Node\Name|null {
         $dependsMethodName = $this->resolveDependsAnnotationOrAttributeMethod($classMethod);
 
         if ($dependsMethodName === null || $dependsMethodName === '') {
@@ -140,7 +142,6 @@ CODE_SAMPLE
         }
 
         $dependsClassMethod = $class->getMethod($dependsMethodName);
-
         if (! $dependsClassMethod instanceof ClassMethod) {
             return null;
         }

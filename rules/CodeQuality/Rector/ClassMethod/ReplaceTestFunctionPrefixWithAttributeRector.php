@@ -9,6 +9,7 @@ use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
+use Rector\PHPUnit\Enum\PHPUnitAttribute;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -75,7 +76,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->phpAttributeAnalyzer->hasPhpAttributes($node, ['PHPUnit\\Framework\\Attributes\\Test'])) {
+        if ($this->phpAttributeAnalyzer->hasPhpAttributes($node, [PHPUnitAttribute::TEST])) {
             return null;
         }
 

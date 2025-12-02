@@ -121,7 +121,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return array<string, AttributeGroup|null>
+     * @return array<string, AttributeGroup>
      */
     private function handleRequires(PhpDocInfo $phpDocInfo): array
     {
@@ -133,7 +133,13 @@ CODE_SAMPLE
             }
 
             $requires = $desiredTagValueNode->value->value;
-            $attributeGroups[$requires] = $this->requiresAttributeFactory->create($requires);
+
+            $requiresAttributeGroup = $this->requiresAttributeFactory->create($requires);
+            if (! $requiresAttributeGroup instanceof AttributeGroup) {
+                continue;
+            }
+
+            $attributeGroups[$requires] = $requiresAttributeGroup;
 
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
         }
@@ -172,6 +178,7 @@ CODE_SAMPLE
 
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
         $classMethod->attrGroups = array_merge($classMethod->attrGroups, $requiresAttributeGroups);
+
         $this->removeMethodRequiresAnnotations($phpDocInfo);
 
         return $classMethod;

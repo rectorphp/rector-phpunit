@@ -21,4 +21,6 @@ final class PHPUnitAttribute
     public const REQUIRES_PHP_EXTENSION = 'PHPUnit\Framework\Attributes\RequiresPhpExtension';
 
     public const REQUIRES_SETTING = 'PHPUnit\Framework\Attributes\RequiresSetting';
+
+    public const TEST = 'PHPUnit\Framework\Attributes\Test';
 }
