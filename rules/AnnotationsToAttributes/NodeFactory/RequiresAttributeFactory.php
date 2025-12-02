@@ -6,6 +6,7 @@ namespace Rector\PHPUnit\AnnotationsToAttributes\NodeFactory;
 
 use PhpParser\Node\AttributeGroup;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
+use Rector\PHPUnit\Enum\PHPUnitAttribute;
 
 final readonly class RequiresAttributeFactory
 {
@@ -23,7 +24,7 @@ final readonly class RequiresAttributeFactory
 
         switch ($type) {
             case 'PHP':
-                $attributeClass = 'PHPUnit\Framework\Attributes\RequiresPhp';
+                $attributeClass = PHPUnitAttribute::REQUIRES_PHP;
 
                 // only version is used, we need to prefix with >=
                 if (is_string($attributeValue) && is_numeric($attributeValue[0])) {
@@ -33,7 +34,7 @@ final readonly class RequiresAttributeFactory
                 $attributeValue = [$attributeValue];
                 break;
             case 'PHPUnit':
-                $attributeClass = 'PHPUnit\Framework\Attributes\RequiresPhpunit';
+                $attributeClass = PHPUnitAttribute::REQUIRES_PHPUNIT;
 
                 // only version is used, we need to prefix with >=
                 if (is_string($attributeValue) && is_numeric($attributeValue[0])) {
@@ -43,30 +44,30 @@ final readonly class RequiresAttributeFactory
                 $attributeValue = [$attributeValue];
                 break;
             case 'OS':
-                $attributeClass = 'PHPUnit\Framework\Attributes\RequiresOperatingSystem';
+                $attributeClass = PHPUnitAttribute::REQUIRES_OS;
                 $attributeValue = [$attributeValue];
                 break;
             case 'OSFAMILY':
-                $attributeClass = 'PHPUnit\Framework\Attributes\RequiresOperatingSystemFamily';
+                $attributeClass = PHPUnitAttribute::REQUIRES_OS_FAMILY;
                 $attributeValue = [$attributeValue];
                 break;
             case 'function':
                 if (str_contains((string) $attributeValue, '::')) {
-                    $attributeClass = 'PHPUnit\Framework\Attributes\RequiresMethod';
+                    $attributeClass = PHPUnitAttribute::REQUIRES_METHOD;
                     $attributeValue = explode('::', (string) $attributeValue);
                     $attributeValue[0] .= '::class';
                 } else {
-                    $attributeClass = 'PHPUnit\Framework\Attributes\RequiresFunction';
+                    $attributeClass = PHPUnitAttribute::REQUIRES_FUNCTION;
                     $attributeValue = [$attributeValue];
                 }
 
                 break;
             case 'extension':
-                $attributeClass = 'PHPUnit\Framework\Attributes\RequiresPhpExtension';
+                $attributeClass = PHPUnitAttribute::REQUIRES_PHP_EXTENSION;
                 $attributeValue = explode(' ', (string) $attributeValue, 2);
                 break;
             case 'setting':
-                $attributeClass = 'PHPUnit\Framework\Attributes\RequiresSetting';
+                $attributeClass = PHPUnitAttribute::REQUIRES_SETTING;
                 $attributeValue = explode(' ', (string) $attributeValue, 2);
                 break;
             default:

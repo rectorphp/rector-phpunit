@@ -21,11 +21,10 @@ return RectorConfig::configure()
         '*/Fixture/*',
         '*/Expected/*',
 
-        // object types
+        // object types must be string as class might be missing + to keep downgrade safe
         StringClassNameToClassConstantRector::class => [
-            __DIR__ . '/src/NodeAnalyzer/TestsNodeAnalyzer.php',
             __DIR__ . '/config',
-            __DIR__ . '/src/NodeFinder/DataProviderClassMethodFinder.php',
+            __DIR__ . '/src/Enum',
         ],
     ])
     ->withPhpSets()

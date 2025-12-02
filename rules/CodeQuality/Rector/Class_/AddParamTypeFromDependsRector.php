@@ -6,6 +6,9 @@ namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Attribute;
+use PhpParser\Node\ComplexType;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -131,8 +134,10 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function resolveReturnTypeOfDependsMethod(ClassMethod $classMethod, Class_ $class): ?Node
-    {
+    private function resolveReturnTypeOfDependsMethod(
+        ClassMethod $classMethod,
+        Class_ $class
+    ): ComplexType|Identifier|Name|null {
         $dependsMethodName = $this->resolveDependsAnnotationOrAttributeMethod($classMethod);
 
         if ($dependsMethodName === null || $dependsMethodName === '') {
@@ -140,7 +145,6 @@ CODE_SAMPLE
         }
 
         $dependsClassMethod = $class->getMethod($dependsMethodName);
-
         if (! $dependsClassMethod instanceof ClassMethod) {
             return null;
         }
