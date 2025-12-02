@@ -51,3 +51,7 @@ parameters:
             message: '#Property PhpParser\\Node\\Identifier\:\:\$name \(non\-empty\-string\) does not accept string#'
             path: rules/CodeQuality/Rector/ClassMethod/ReplaceTestFunctionPrefixWithAttributeRector.php
 
+        # handle next
+        -
+            identifier: symplify.forbiddenNode
+            message: '#switch#'
