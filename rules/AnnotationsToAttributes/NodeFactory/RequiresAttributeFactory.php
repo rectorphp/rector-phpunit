@@ -6,6 +6,7 @@ namespace Rector\PHPUnit\AnnotationsToAttributes\NodeFactory;
 
 use PhpParser\Node\AttributeGroup;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
+use Rector\PHPUnit\AnnotationsToAttributes\ValueObject\RequiresAttributeAndValue;
 use Rector\PHPUnit\Enum\PHPUnitAttribute;
 
 final readonly class RequiresAttributeFactory
@@ -22,58 +23,74 @@ final readonly class RequiresAttributeFactory
         $type = array_shift($annotationValues);
         $attributeValue = array_shift($annotationValues);
 
-        switch ($type) {
-            case 'PHP':
-                $attributeClass = PHPUnitAttribute::REQUIRES_PHP;
-
-                // only version is used, we need to prefix with >=
-                if (is_string($attributeValue) && is_numeric($attributeValue[0])) {
-                    $attributeValue = '>= ' . $attributeValue;
-                }
-
-                $attributeValue = [$attributeValue];
-                break;
-            case 'PHPUnit':
-                $attributeClass = PHPUnitAttribute::REQUIRES_PHPUNIT;
-
-                // only version is used, we need to prefix with >=
-                if (is_string($attributeValue) && is_numeric($attributeValue[0])) {
-                    $attributeValue = '>= ' . $attributeValue;
-                }
-
-                $attributeValue = [$attributeValue];
-                break;
-            case 'OS':
-                $attributeClass = PHPUnitAttribute::REQUIRES_OS;
-                $attributeValue = [$attributeValue];
-                break;
-            case 'OSFAMILY':
-                $attributeClass = PHPUnitAttribute::REQUIRES_OS_FAMILY;
-                $attributeValue = [$attributeValue];
-                break;
-            case 'function':
-                if (str_contains((string) $attributeValue, '::')) {
-                    $attributeClass = PHPUnitAttribute::REQUIRES_METHOD;
-                    $attributeValue = explode('::', (string) $attributeValue);
-                    $attributeValue[0] .= '::class';
-                } else {
-                    $attributeClass = PHPUnitAttribute::REQUIRES_FUNCTION;
-                    $attributeValue = [$attributeValue];
-                }
-
-                break;
-            case 'extension':
-                $attributeClass = PHPUnitAttribute::REQUIRES_PHP_EXTENSION;
-                $attributeValue = explode(' ', (string) $attributeValue, 2);
-                break;
-            case 'setting':
-                $attributeClass = PHPUnitAttribute::REQUIRES_SETTING;
-                $attributeValue = explode(' ', (string) $attributeValue, 2);
-                break;
-            default:
-                return null;
+        $requiresAttributeAndValue = $this->matchRequiresAttributeAndValue($type, $attributeValue);
+        if (! $requiresAttributeAndValue instanceof RequiresAttributeAndValue) {
+            return null;
         }
 
-        return $this->phpAttributeGroupFactory->createFromClassWithItems($attributeClass, [...$attributeValue]);
+        return $this->phpAttributeGroupFactory->createFromClassWithItems(
+            $requiresAttributeAndValue->getAttributeClass(),
+            $requiresAttributeAndValue->getValue()
+        );
+    }
+
+    private function matchRequiresAttributeAndValue(string $type, mixed $attributeValue): ?RequiresAttributeAndValue
+    {
+        if ($type === 'PHP') {
+            // only version is used, we need to prefix with >=
+            if (is_string($attributeValue) && is_numeric($attributeValue[0])) {
+                $attributeValue = '>= ' . $attributeValue;
+            }
+
+            return new RequiresAttributeAndValue(PHPUnitAttribute::REQUIRES_PHP, [$attributeValue]);
+        }
+
+        if ($type === 'PHPUnit') {
+            // only version is used, we need to prefix with >=
+            if (is_string($attributeValue) && is_numeric($attributeValue[0])) {
+                $attributeValue = '>= ' . $attributeValue;
+            }
+
+            return new RequiresAttributeAndValue(PHPUnitAttribute::REQUIRES_PHPUNIT, [$attributeValue]);
+        }
+
+        if ($type === 'OS') {
+            return new RequiresAttributeAndValue(PHPUnitAttribute::REQUIRES_OS, [$attributeValue]);
+        }
+
+        if ($type === 'OSFAMILY') {
+            return new RequiresAttributeAndValue(PHPUnitAttribute::REQUIRES_OS_FAMILY, [$attributeValue]);
+        }
+
+        if ($type === 'function') {
+            if (str_contains((string) $attributeValue, '::')) {
+                $attributeClass = PHPUnitAttribute::REQUIRES_METHOD;
+                $attributeValue = explode('::', (string) $attributeValue);
+                $attributeValue[0] .= '::class';
+            } else {
+                $attributeClass = PHPUnitAttribute::REQUIRES_FUNCTION;
+                $attributeValue = [$attributeValue];
+            }
+
+            return new RequiresAttributeAndValue($attributeClass, $attributeValue);
+        }
+
+        if ($type === 'extension') {
+            return new RequiresAttributeAndValue(PHPUnitAttribute::REQUIRES_PHP_EXTENSION, explode(
+                ' ',
+                (string) $attributeValue,
+                2
+            ));
+        }
+
+        if ($type === 'setting') {
+            return new RequiresAttributeAndValue(PHPUnitAttribute::REQUIRES_SETTING, explode(
+                ' ',
+                (string) $attributeValue,
+                2
+            ));
+        }
+
+        return null;
     }
 }
