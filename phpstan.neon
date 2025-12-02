@@ -48,3 +48,10 @@ parameters:
             identifier: assign.propertyType
             message: '#Property PhpParser\\Node\\Identifier\:\:\$name \(non\-empty\-string\) does not accept string#'
             path: rules/CodeQuality/Rector/ClassMethod/ReplaceTestFunctionPrefixWithAttributeRector.php
+
+
+        # special case for namespace file
+        -
+            identifier: rector.noOnlyNullReturnInRefactor
+            path: rules/CodeQuality/Rector/StmtsAwareInterface/DeclareStrictTypesTestsRector.php
+
