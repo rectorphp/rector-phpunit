@@ -55,3 +55,7 @@ parameters:
             identifier: rector.noOnlyNullReturnInRefactor
             path: rules/CodeQuality/Rector/StmtsAwareInterface/DeclareStrictTypesTestsRector.php
 
+        -
+            identifier: method.parentMethodFinalByPhpDoc
+            path: rules/CodeQuality/Rector/StmtsAwareInterface/DeclareStrictTypesTestsRector.php
+
