@@ -74,6 +74,10 @@ CODE_SAMPLE
     {
         parent::beforeTraverse($nodes);
 
+        if ($this->file->containsHTML()) {
+            return null;
+        }
+
         if ($this->shouldSkipNodes($nodes, $this->file)) {
             return null;
         }
