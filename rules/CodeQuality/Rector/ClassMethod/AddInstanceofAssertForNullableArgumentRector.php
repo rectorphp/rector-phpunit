@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Rector\ClassMethod;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Foreach_;
-use PhpParser\NodeVisitor;
+use PHPStan\Type\ObjectType;
 use Rector\PHPUnit\CodeQuality\NodeAnalyser\NullableObjectAssignCollector;
 use Rector\PHPUnit\CodeQuality\NodeFactory\AssertMethodCallFactory;
+use Rector\PHPUnit\CodeQuality\TypeAnalyzer\MethodCallParameterTypeResolver;
 use Rector\PHPUnit\CodeQuality\TypeAnalyzer\SimpleTypeAnalyzer;
 use Rector\PHPUnit\CodeQuality\ValueObject\VariableNameToType;
 use Rector\PHPUnit\CodeQuality\ValueObject\VariableNameToTypeCollection;
@@ -22,21 +24,22 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableInstanceRector\AddInstanceofAssertForNullableInstanceRectorTest
+ * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableArgumentRector\AddInstanceofAssertForNullableArgumentRectorTest
  */
-final class AddInstanceofAssertForNullableInstanceRector extends AbstractRector
+final class AddInstanceofAssertForNullableArgumentRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly NullableObjectAssignCollector $nullableObjectAssignCollector,
         private readonly AssertMethodCallFactory $assertMethodCallFactory,
+        private readonly MethodCallParameterTypeResolver $methodCallParameterTypeResolver,
     ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Add explicit instance assert between nullable object assign and method call on nullable object (spotted by PHPStan)',
+            'Add explicit instance assert between above nullable object pass',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -48,7 +51,7 @@ final class SomeTest extends TestCase
     {
         $someObject = $this->getSomeObject();
 
-        $value = $someObject->getSomeMethod();
+        $this->process($someObject);
     }
 
     private function getSomeObject(): ?SomeClass
@@ -58,6 +61,11 @@ final class SomeTest extends TestCase
         }
 
         return null;
+    }
+
+    private function process(SomeClass $someObject): void
+    {
+        // non-nullable use here
     }
 }
 CODE_SAMPLE
@@ -73,7 +81,7 @@ final class SomeTest extends TestCase
         $someObject = $this->getSomeObject();
         $this->assertInstanceOf(SomeClass::class, $someObject);
 
-        $value = $someObject->getSomeMethod();
+        $this->process($someObject);
     }
 
     private function getSomeObject(): ?SomeClass
@@ -83,6 +91,11 @@ final class SomeTest extends TestCase
         }
 
         return null;
+    }
+
+    private function process(SomeClass $someObject): void
+    {
+        // non-nullable use here
     }
 }
 CODE_SAMPLE
@@ -108,7 +121,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->stmts === [] || $node->stmts === null || count($node->stmts) < 2) {
+        if ($node->stmts === null || count($node->stmts) < 2) {
             return null;
         }
 
@@ -118,10 +131,11 @@ CODE_SAMPLE
         $next = 0;
         foreach ($node->stmts as $key => $stmt) {
             // has callable on nullable variable of already collected name?
-            $matchedNullableVariableNameToType = $this->matchedNullableVariableNameToType(
+            $matchedNullableVariableNameToType = $this->matchedNullableArgumentNameToType(
                 $stmt,
                 $variableNameToTypeCollection
             );
+
             if (! $matchedNullableVariableNameToType instanceof VariableNameToType) {
                 continue;
             }
@@ -148,7 +162,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function matchedNullableVariableNameToType(
+    private function matchedNullableArgumentNameToType(
         Stmt $stmt,
         VariableNameToTypeCollection $variableNameToTypeCollection
     ): ?VariableNameToType {
@@ -162,24 +176,43 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $node->var instanceof Variable) {
+            if ($node->isFirstClassCallable()) {
                 return null;
             }
 
-            $variableType = $this->getType($node->var);
-            if (! SimpleTypeAnalyzer::isNullableType($variableType)) {
-                return null;
+            $classMethodParameterTypes = $this->methodCallParameterTypeResolver->resolve($node);
+
+            foreach ($node->getArgs() as $position => $arg) {
+                if (! $arg->value instanceof Variable) {
+                    continue;
+                }
+
+                $variableType = $this->getType($arg->value);
+                if (! SimpleTypeAnalyzer::isNullableType($variableType)) {
+                    return null;
+                }
+
+                // should not happen
+                if (! isset($classMethodParameterTypes[$position])) {
+                    return null;
+                }
+
+                $variableName = $this->getName($arg->value);
+                if (! is_string($variableName)) {
+                    return null;
+                }
+
+                $matchedNullableVariableNameToType = $variableNameToTypeCollection->matchByVariableName($variableName);
+
+                // is object type required?
+                if (! $classMethodParameterTypes[$position] instanceof ObjectType) {
+                    return null;
+                }
+
+                return NodeVisitor::STOP_TRAVERSAL;
             }
 
-            $variableName = $this->getName($node->var);
-            if ($variableName === null) {
-                return null;
-            }
-
-            $matchedNullableVariableNameToType = $variableNameToTypeCollection->matchByVariableName($variableName);
-
-            // is the variable we're interested in?
-            return NodeVisitor::STOP_TRAVERSAL;
+            return null;
         });
 
         return $matchedNullableVariableNameToType;
