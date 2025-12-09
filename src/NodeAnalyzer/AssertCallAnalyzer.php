@@ -89,6 +89,26 @@ final class AssertCallAnalyzer
         return $hasNestedAssertOrMockCall;
     }
 
+    public function isAssertMethodCall(MethodCall|StaticCall $call): bool
+    {
+        if (! $call->name instanceof Identifier) {
+            return false;
+        }
+
+        $callName = $this->nodeNameResolver->getName($call->name);
+        if (! is_string($callName)) {
+            return false;
+        }
+
+        foreach (self::ASSERT_METHOD_NAME_PREFIXES as $assertMethodNamePrefix) {
+            if (str_starts_with($callName, $assertMethodNamePrefix)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function hasDirectAssertOrMockCall(ClassMethod $classMethod): bool
     {
         return (bool) $this->betterNodeFinder->findFirst((array) $classMethod->stmts, function (Node $node): bool {
@@ -108,11 +128,11 @@ final class AssertCallAnalyzer
                     return true;
                 }
 
-                return $this->isAssertMethodName($node);
+                return $this->isAssertMethodCall($node);
             }
 
             if ($node instanceof StaticCall) {
-                return $this->isAssertMethodName($node);
+                return $this->isAssertMethodCall($node);
             }
 
             return false;
@@ -170,25 +190,5 @@ final class AssertCallAnalyzer
         }
 
         return $this->astResolver->resolveClassMethod($objectType->getClassName(), $methodName);
-    }
-
-    private function isAssertMethodName(MethodCall|StaticCall $call): bool
-    {
-        if (! $call->name instanceof Identifier) {
-            return false;
-        }
-
-        $callName = $this->nodeNameResolver->getName($call->name);
-        if (! is_string($callName)) {
-            return false;
-        }
-
-        foreach (self::ASSERT_METHOD_NAME_PREFIXES as $assertMethodNamePrefix) {
-            if (str_starts_with($callName, $assertMethodNamePrefix)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

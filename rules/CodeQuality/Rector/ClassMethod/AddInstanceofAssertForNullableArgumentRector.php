@@ -18,6 +18,7 @@ use Rector\PHPUnit\CodeQuality\TypeAnalyzer\MethodCallParameterTypeResolver;
 use Rector\PHPUnit\CodeQuality\TypeAnalyzer\SimpleTypeAnalyzer;
 use Rector\PHPUnit\CodeQuality\ValueObject\VariableNameToType;
 use Rector\PHPUnit\CodeQuality\ValueObject\VariableNameToTypeCollection;
+use Rector\PHPUnit\NodeAnalyzer\AssertCallAnalyzer;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -33,6 +34,7 @@ final class AddInstanceofAssertForNullableArgumentRector extends AbstractRector
         private readonly NullableObjectAssignCollector $nullableObjectAssignCollector,
         private readonly AssertMethodCallFactory $assertMethodCallFactory,
         private readonly MethodCallParameterTypeResolver $methodCallParameterTypeResolver,
+        private readonly AssertCallAnalyzer $assertCallAnalyzer,
     ) {
     }
 
@@ -177,6 +179,11 @@ CODE_SAMPLE
             }
 
             if ($node->isFirstClassCallable()) {
+                return null;
+            }
+
+            // avoid double null on assert
+            if ($this->assertCallAnalyzer->isAssertMethodCall($node)) {
                 return null;
             }
 
