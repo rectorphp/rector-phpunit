@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Rector\ClassMethod;
 
-use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Foreach_;
+use PhpParser\NodeVisitor;
 use PHPStan\Type\ObjectType;
 use Rector\PHPUnit\CodeQuality\NodeAnalyser\NullableObjectAssignCollector;
 use Rector\PHPUnit\CodeQuality\NodeFactory\AssertMethodCallFactory;

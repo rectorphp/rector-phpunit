@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\TypeAnalyzer;
 
-use PHPStan\Type\Type;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Type\Type;
 use Rector\Reflection\ReflectionResolver;
 
 final readonly class MethodCallParameterTypeResolver
