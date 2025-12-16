@@ -148,7 +148,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            $node->attrGroups[] = $this->createAttributeGroup($originalAttributeValueToken);
+            $attributeGroup = $this->createAttributeGroup($node, $originalAttributeValueToken);
+
+            if ($attributeGroup instanceof AttributeGroup) {
+                $node->attrGroups[] = $attributeGroup;
+            }
 
             // cleanup
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
@@ -159,7 +163,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function createAttributeGroup(string $originalAttributeValue): AttributeGroup
+    private function createAttributeGroup(ClassMethod $classMethod, string $originalAttributeValue): ?AttributeGroup
     {
         $methodName = trim($originalAttributeValue, '()');
 
@@ -173,12 +177,23 @@ CODE_SAMPLE
                 $className = '\\' . $className;
             }
 
-            return $this->phpAttributeGroupFactory->createFromClassWithItems(
+            $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
                 'PHPUnit\Framework\Attributes\DataProviderExternal',
                 [$className . '::class', $methodName]
             );
+        } else {
+            $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
+                self::DATA_PROVIDER_CLASS,
+                [$methodName]
+            );
         }
 
-        return $this->phpAttributeGroupFactory->createFromClassWithItems(self::DATA_PROVIDER_CLASS, [$methodName]);
+        foreach ($classMethod->attrGroups as $existingAttributeGroup) {
+            if ($this->nodeComparator->areNodesEqual($existingAttributeGroup, $attributeGroup)) {
+                return null;
+            }
+        }
+
+        return $attributeGroup;
     }
 }
