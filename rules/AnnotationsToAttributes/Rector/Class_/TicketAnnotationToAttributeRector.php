@@ -33,10 +33,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class TicketAnnotationToAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const TICKET_CLASS = 'PHPUnit\Framework\Attributes\Ticket';
+    private const string TICKET_CLASS = 'PHPUnit\Framework\Attributes\Ticket';
 
     public function __construct(
         private readonly PhpDocTagRemover $phpDocTagRemover,

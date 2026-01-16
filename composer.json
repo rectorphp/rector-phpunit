@@ -4,16 +4,16 @@
     "license": "MIT",
     "description": "Rector upgrades rules for PHPUnit",
     "require": {
-        "php": ">=8.2"
+        "php": ">=8.3"
     },
     "require-dev": {
-        "phpecs/phpecs": "^2.2",
+        "symplify/easy-coding-standard": "^13.0",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.1.31",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpstan/phpstan-webmozart-assert": "^2.0",
         "phpunit/phpunit": "^11.5",
-        "rector/jack": "^0.4.0",
+        "rector/jack": "^0.5",
         "rector/rector-src": "dev-main",
         "rector/swiss-knife": "^1.0",
         "rector/type-perfect": "^2.1",

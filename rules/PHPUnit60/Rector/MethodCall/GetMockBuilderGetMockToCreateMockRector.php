@@ -22,7 +22,7 @@ final class GetMockBuilderGetMockToCreateMockRector extends AbstractRector
     /**
      * @var string[]
      */
-    private const USELESS_METHOD_NAMES = [
+    private const array USELESS_METHOD_NAMES = [
         'disableOriginalConstructor',
         'disableOriginalClone',
         'disableArgumentCloning',

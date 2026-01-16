@@ -27,10 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DependsAnnotationWithValueToAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const DEPENDS_ATTRIBUTE = 'PHPUnit\Framework\Attributes\Depends';
+    private const string DEPENDS_ATTRIBUTE = 'PHPUnit\Framework\Attributes\Depends';
 
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,

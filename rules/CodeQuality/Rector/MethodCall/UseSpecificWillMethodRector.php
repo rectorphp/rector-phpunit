@@ -23,7 +23,7 @@ final class UseSpecificWillMethodRector extends AbstractRector
     /**
      * @var array<string, string>
      */
-    private const NESTED_METHOD_TO_RENAME_MAP = [
+    private const array NESTED_METHOD_TO_RENAME_MAP = [
         'returnArgument' => 'willReturnArgument',
         'returnCallback' => 'willReturnCallback',
         'returnSelf' => 'willReturnSelf',

@@ -24,6 +24,14 @@ jobs:
                         name: 'Finalise classes'
                         run: vendor/bin/swiss-knife finalize-classes src rules tests
 
+                    -
+                        name: 'Composer Validate'
+                        run: composer validate
+
+                    -
+                        name: 'PHPStan'
+                        run: vendor/bin/phpstan
+
         name: ${{ matrix.actions.name }}
         runs-on: ubuntu-latest
         timeout-minutes: 10
@@ -34,7 +42,7 @@ jobs:
             -
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: 8.2
+                    php-version: 8.3
                     coverage: none
 
             -   uses: "ramsey/composer-install@v2"

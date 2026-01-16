@@ -28,25 +28,13 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class CoversAnnotationWithValueToAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const COVERS_FUNCTION_ATTRIBUTE = 'PHPUnit\Framework\Attributes\CoversFunction';
+    private const string COVERS_FUNCTION_ATTRIBUTE = 'PHPUnit\Framework\Attributes\CoversFunction';
 
-    /**
-     * @var string
-     */
-    private const COVERTS_CLASS_ATTRIBUTE = 'PHPUnit\Framework\Attributes\CoversClass';
+    private const string COVERTS_CLASS_ATTRIBUTE = 'PHPUnit\Framework\Attributes\CoversClass';
 
-    /**
-     * @var string
-     */
-    private const COVERTS_TRAIT_ATTRIBUTE = 'PHPUnit\Framework\Attributes\CoversTrait';
+    private const string COVERTS_TRAIT_ATTRIBUTE = 'PHPUnit\Framework\Attributes\CoversTrait';
 
-    /**
-     * @var string
-     */
-    private const COVERS_METHOD_ATTRIBUTE = 'PHPUnit\Framework\Attributes\CoversMethod';
+    private const string COVERS_METHOD_ATTRIBUTE = 'PHPUnit\Framework\Attributes\CoversMethod';
 
     public function __construct(
         private readonly PhpDocTagRemover $phpDocTagRemover,

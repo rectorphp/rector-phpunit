@@ -27,7 +27,7 @@ final class TestListenerToHooksRector extends AbstractRector
     /**
      * @var array<string, array<class-string|string>>
      */
-    private const LISTENER_METHOD_TO_HOOK_INTERFACES = [
+    private const array LISTENER_METHOD_TO_HOOK_INTERFACES = [
         'addIncompleteTest' => ['PHPUnit\Runner\AfterIncompleteTestHook', 'executeAfterIncompleteTest'],
         'addRiskyTest' => ['PHPUnit\Runner\AfterRiskyTestHook', 'executeAfterRiskyTest'],
         'addSkippedTest' => ['PHPUnit\Runner\AfterSkippedTestHook', 'executeAfterSkippedTest'],

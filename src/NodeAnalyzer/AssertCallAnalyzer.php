@@ -19,15 +19,12 @@ use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class AssertCallAnalyzer
 {
-    /**
-     * @var int
-     */
-    private const MAX_NESTED_METHOD_CALL_LEVEL = 5;
+    private const int MAX_NESTED_METHOD_CALL_LEVEL = 5;
 
     /**
      * @var string[]
      */
-    private const ASSERT_METHOD_NAME_PREFIXES = [
+    private const array ASSERT_METHOD_NAME_PREFIXES = [
         'expectNotToPerformAssertions',
         'assert',
         'expectException',

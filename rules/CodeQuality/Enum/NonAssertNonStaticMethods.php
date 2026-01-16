@@ -9,7 +9,7 @@ final class NonAssertNonStaticMethods
     /**
      * @var string[]
      */
-    public const ALL = [
+    public const array ALL = [
         'createMock',
         'atLeast',
         'atLeastOnce',

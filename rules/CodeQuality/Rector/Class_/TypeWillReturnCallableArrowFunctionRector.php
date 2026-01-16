@@ -37,10 +37,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class TypeWillReturnCallableArrowFunctionRector extends AbstractRector
 {
-    /**
-     * @var string
-     */
-    private const WILL_RETURN_CALLBACK = 'willReturnCallback';
+    private const string WILL_RETURN_CALLBACK = 'willReturnCallback';
 
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,

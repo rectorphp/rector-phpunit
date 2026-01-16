@@ -6,23 +6,11 @@ namespace Rector\PHPUnit\Enum;
 
 final class AssertMethod
 {
-    /**
-     * @var string
-     */
-    public const ASSERT_FALSE = 'assertFalse';
+    public const string ASSERT_FALSE = 'assertFalse';
 
-    /**
-     * @var string
-     */
-    public const ASSERT_TRUE = 'assertTrue';
+    public const string ASSERT_TRUE = 'assertTrue';
 
-    /**
-     * @var string
-     */
-    public const ASSERT_EQUALS = 'assertEquals';
+    public const string ASSERT_EQUALS = 'assertEquals';
 
-    /**
-     * @var string
-     */
-    public const ASSERT_SAME = 'assertSame';
+    public const string ASSERT_SAME = 'assertSame';
 }
