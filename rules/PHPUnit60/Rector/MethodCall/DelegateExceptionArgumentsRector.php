@@ -24,7 +24,7 @@ final class DelegateExceptionArgumentsRector extends AbstractRector
     /**
      * @var array<string, string>
      */
-    private const OLD_TO_NEW_METHOD = [
+    private const array OLD_TO_NEW_METHOD = [
         'setExpectedException' => 'expectExceptionMessage',
         'setExpectedExceptionRegExp' => 'expectExceptionMessageRegExp',
     ];

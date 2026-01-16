@@ -6,8 +6,5 @@ namespace Rector\PHPUnit\Enum;
 
 final class BehatClassName
 {
-    /**
-     * @var string
-     */
-    public const CONTEXT = 'Behat\Behat\Context\Context';
+    public const string CONTEXT = 'Behat\Behat\Context\Context';
 }

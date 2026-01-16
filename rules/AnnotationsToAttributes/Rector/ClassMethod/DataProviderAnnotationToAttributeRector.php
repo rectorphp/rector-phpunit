@@ -30,10 +30,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DataProviderAnnotationToAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const DATA_PROVIDER_CLASS = 'PHPUnit\Framework\Attributes\DataProvider';
+    private const string DATA_PROVIDER_CLASS = 'PHPUnit\Framework\Attributes\DataProvider';
 
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,

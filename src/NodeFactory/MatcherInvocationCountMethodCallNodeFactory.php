@@ -17,15 +17,9 @@ use Rector\PHPUnit\Enum\PHPUnitClassName;
  */
 final readonly class MatcherInvocationCountMethodCallNodeFactory
 {
-    /**
-     * @var string
-     */
-    private const GET_INVOCATION_COUNT = 'getInvocationCount';
+    private const string GET_INVOCATION_COUNT = 'getInvocationCount';
 
-    /**
-     * @var string
-     */
-    private const NUMBER_OF_INVOCATIONS = 'numberOfInvocations';
+    private const string NUMBER_OF_INVOCATIONS = 'numberOfInvocations';
 
     public function __construct(
         private ReflectionProvider $reflectionProvider,

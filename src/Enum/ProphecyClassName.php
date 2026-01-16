@@ -6,8 +6,5 @@ namespace Rector\PHPUnit\Enum;
 
 final class ProphecyClassName
 {
-    /**
-     * @var string
-     */
-    public const PROPHECY_TRAIT = 'Prophecy\PhpUnit\ProphecyTrait';
+    public const string PROPHECY_TRAIT = 'Prophecy\PhpUnit\ProphecyTrait';
 }

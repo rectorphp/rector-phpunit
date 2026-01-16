@@ -28,25 +28,13 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AssertRegExpRector extends AbstractRector
 {
-    /**
-     * @var string
-     */
-    private const ASSERT_SAME = 'assertSame';
+    private const string ASSERT_SAME = 'assertSame';
 
-    /**
-     * @var string
-     */
-    private const ASSERT_EQUALS = 'assertEquals';
+    private const string ASSERT_EQUALS = 'assertEquals';
 
-    /**
-     * @var string
-     */
-    private const ASSERT_NOT_SAME = 'assertNotSame';
+    private const string ASSERT_NOT_SAME = 'assertNotSame';
 
-    /**
-     * @var string
-     */
-    private const ASSERT_NOT_EQUALS = 'assertNotEquals';
+    private const string ASSERT_NOT_EQUALS = 'assertNotEquals';
 
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,

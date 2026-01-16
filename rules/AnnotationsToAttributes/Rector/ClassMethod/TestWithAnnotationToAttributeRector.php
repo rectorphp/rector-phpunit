@@ -30,10 +30,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class TestWithAnnotationToAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const TEST_WITH_ATTRIBUTE = 'PHPUnit\Framework\Attributes\TestWith';
+    private const string TEST_WITH_ATTRIBUTE = 'PHPUnit\Framework\Attributes\TestWith';
 
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,

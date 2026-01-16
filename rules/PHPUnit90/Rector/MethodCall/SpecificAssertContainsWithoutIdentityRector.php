@@ -24,7 +24,7 @@ final class SpecificAssertContainsWithoutIdentityRector extends AbstractRector
     /**
      * @var array<string, array<string, string>>
      */
-    private const OLD_METHODS_NAMES_TO_NEW_NAMES = [
+    private const array OLD_METHODS_NAMES_TO_NEW_NAMES = [
         'string' => [
             'assertContains' => 'assertContainsEquals',
             'assertNotContains' => 'assertNotContainsEquals',

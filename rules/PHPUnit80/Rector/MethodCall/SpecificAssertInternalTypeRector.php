@@ -25,7 +25,7 @@ final class SpecificAssertInternalTypeRector extends AbstractRector
     /**
      * @var array<string, string[]>
      */
-    private const TYPE_TO_METHOD = [
+    private const array TYPE_TO_METHOD = [
         'array' => ['assertIsArray', 'assertIsNotArray'],
         'bool' => ['assertIsBool', 'assertIsNotBool'],
         'boolean' => ['assertIsBool', 'assertIsNotBool'],

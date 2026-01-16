@@ -26,7 +26,7 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
     /**
      * @var array<string,array<array-key,string>>
      */
-    private const FUNCTION_NAME_WITH_ASSERT_METHOD_NAMES = [
+    private const array FUNCTION_NAME_WITH_ASSERT_METHOD_NAMES = [
         'is_readable' => ['is_readable', 'assertIsReadable', 'assertNotIsReadable'],
         'array_key_exists' => ['array_key_exists', 'assertArrayHasKey', 'assertArrayNotHasKey'],
         'array_search' => ['array_search', 'assertContains', 'assertNotContains'],

@@ -6,13 +6,7 @@ namespace Rector\PHPUnit\Enum;
 
 final class ConsecutiveVariable
 {
-    /**
-     * @var string
-     */
-    public const MATCHER = 'matcher';
+    public const string MATCHER = 'matcher';
 
-    /**
-     * @var string
-     */
-    public const PARAMETERS = 'parameters';
+    public const string PARAMETERS = 'parameters';
 }

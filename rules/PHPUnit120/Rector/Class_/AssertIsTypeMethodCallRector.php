@@ -21,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AssertIsTypeMethodCallRector extends AbstractRector
 {
-    private const IS_TYPE_VALUE_TO_METHOD = [
+    private const array IS_TYPE_VALUE_TO_METHOD = [
         'array' => 'isArray',
         'bool' => 'isBool',
         'boolean' => 'isBool',

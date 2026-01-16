@@ -24,7 +24,7 @@ final class FlipAssertRector extends AbstractRector
     /**
      * @var string[]
      */
-    private const METHOD_NAMES = [
+    private const array METHOD_NAMES = [
         'assertSame', 'assertNotSame', 'assertNotEquals', 'assertEquals', 'assertStringContainsString',
     ];
 

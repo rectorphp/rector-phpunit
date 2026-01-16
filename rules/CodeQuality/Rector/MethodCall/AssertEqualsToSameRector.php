@@ -37,7 +37,7 @@ final class AssertEqualsToSameRector extends AbstractRector
     /**
      * @var array<string, string>
      */
-    private const RENAME_METHODS_MAP = [
+    private const array RENAME_METHODS_MAP = [
         'assertEquals' => 'assertSame',
         'assertNotEquals' => 'assertNotSame',
     ];
@@ -49,7 +49,12 @@ final class AssertEqualsToSameRector extends AbstractRector
      *
      * @var array<class-string<Type>>
      */
-    private const SCALAR_TYPES = [FloatType::class, IntegerType::class, StringType::class, ConstantArrayType::class];
+    private const array SCALAR_TYPES = [
+        FloatType::class,
+        IntegerType::class,
+        StringType::class,
+        ConstantArrayType::class,
+    ];
 
     public function __construct(
         private readonly IdentifierManipulator $identifierManipulator,

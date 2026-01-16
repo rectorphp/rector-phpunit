@@ -6,33 +6,18 @@ namespace Rector\PHPUnit\Enum;
 
 final class PHPUnitClassName
 {
-    /**
-     * @var string
-     */
-    public const TEST_CASE = 'PHPUnit\Framework\TestCase';
+    public const string TEST_CASE = 'PHPUnit\Framework\TestCase';
 
-    /**
-     * @var string
-     */
-    public const TEST_CASE_LEGACY = 'PHPUnit_Framework_TestCase';
+    public const string TEST_CASE_LEGACY = 'PHPUnit_Framework_TestCase';
 
-    /**
-     * @var string
-     */
-    public const ASSERT = 'PHPUnit\Framework\Assert';
+    public const string ASSERT = 'PHPUnit\Framework\Assert';
 
-    /**
-     * @var string
-     */
-    public const INVOCATION_ORDER = 'PHPUnit\Framework\MockObject\Rule\InvocationOrder';
+    public const string INVOCATION_ORDER = 'PHPUnit\Framework\MockObject\Rule\InvocationOrder';
 
-    /**
-     * @var string
-     */
-    public const TEST_LISTENER = 'PHPUnit\Framework\TestListener';
+    public const string TEST_LISTENER = 'PHPUnit\Framework\TestListener';
 
     /**
      * @var string[]
      */
-    public const TEST_CLASSES = [self::TEST_CASE, self::TEST_CASE_LEGACY];
+    public const array TEST_CLASSES = [self::TEST_CASE, self::TEST_CASE_LEGACY];
 }

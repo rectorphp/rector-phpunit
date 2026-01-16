@@ -23,10 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AddSeeTestAnnotationRector extends AbstractRector
 {
-    /**
-     * @var string
-     */
-    private const SEE = 'see';
+    private const string SEE = 'see';
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,

@@ -26,7 +26,7 @@ final class PropertyExistsWithoutAssertRector extends AbstractRector
     /**
      * @var array<string, string>
      */
-    private const RENAME_METHODS_WITH_OBJECT_MAP = [
+    private const array RENAME_METHODS_WITH_OBJECT_MAP = [
         'assertClassHasAttribute' => 'assertTrue',
         'assertObjectHasAttribute' => 'assertTrue',
         'assertClassHasStaticAttribute' => 'assertTrue',

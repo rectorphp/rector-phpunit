@@ -29,7 +29,7 @@ final class ExceptionAnnotationRector extends AbstractRector
      *
      * @var array<string, string>
      */
-    private const ANNOTATION_TO_METHOD = [
+    private const array ANNOTATION_TO_METHOD = [
         'expectedExceptionMessageRegExp' => 'expectExceptionMessageRegExp',
         'expectedExceptionMessage' => 'expectExceptionMessage',
         'expectedExceptionCode' => 'expectExceptionCode',
