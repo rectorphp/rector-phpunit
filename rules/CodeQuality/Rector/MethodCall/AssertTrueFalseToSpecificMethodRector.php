@@ -120,10 +120,7 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
 
         [$functionName, $assetMethodName, $notAssertMethodName] = self::FUNCTION_NAME_WITH_ASSERT_METHOD_NAMES[$firstArgumentName];
 
-        $functionNameWithAssertMethods = new FunctionNameWithAssertMethods(
-            $assetMethodName,
-            $notAssertMethodName
-        );
+        $functionNameWithAssertMethods = new FunctionNameWithAssertMethods($assetMethodName, $notAssertMethodName);
 
         $this->renameMethod($node, $functionNameWithAssertMethods);
 
