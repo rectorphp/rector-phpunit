@@ -17,6 +17,10 @@ final class PHPUnitClassName
 
     public const string INVOCATION_ORDER = 'PHPUnit\Framework\MockObject\Rule\InvocationOrder';
 
+    public const string INVOCATION_MOCKER = 'PHPUnit\Framework\MockObject\Builder\InvocationMocker';
+
+    public const string INVOCATION_STUBBER = 'PHPUnit\Framework\MockObject\InvocationStubber';
+
     public const string TEST_LISTENER = 'PHPUnit\Framework\TestListener';
 
     /**
