@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\PHPUnit120\Rector\CallLike;
 
 use PhpParser\Node;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
@@ -25,7 +26,7 @@ final class CreateStubOverCreateMockArgRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Use createStub() over createMock() when used as argument and does not add any mock requirements',
+            'Use createStub() over createMock() when used as argument or array value and does not add any mock requirements',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -69,13 +70,13 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StaticCall::class, MethodCall::class, New_::class];
+        return [StaticCall::class, MethodCall::class, New_::class, ArrayItem::class];
     }
 
     /**
-     * @param MethodCall|StaticCall|New_ $node
+     * @param MethodCall|StaticCall|New_|ArrayItem $node
      */
-    public function refactor(Node $node): MethodCall|StaticCall|New_|null
+    public function refactor(Node $node): MethodCall|StaticCall|New_|ArrayItem|null
     {
         $scope = ScopeFetcher::fetch($node);
         if (! $scope->isInClass()) {
@@ -85,6 +86,21 @@ CODE_SAMPLE
         $classReflection = $scope->getClassReflection();
         if (! $classReflection->is(PHPUnitClassName::TEST_CASE)) {
             return null;
+        }
+
+        if ($node instanceof ArrayItem) {
+            if (! $node->value instanceof MethodCall) {
+                return null;
+            }
+
+            $methodCall = $node->value;
+            if (! $this->isName($methodCall->name, 'createMock')) {
+                return null;
+            }
+
+            $methodCall->name = new Identifier('createStub');
+
+            return $node;
         }
 
         $hasChanges = false;
