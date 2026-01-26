@@ -6,6 +6,7 @@ namespace Rector\PHPUnit\CodeQuality\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\ClosureUse;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\MethodCall;
@@ -120,6 +121,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($this->isUsedInClosure($node, $variableName)) {
+                continue;
+            }
+
             // 1. remove initial assign
             $variablesToMethodCalls = [];
 
@@ -231,5 +236,19 @@ CODE_SAMPLE
         );
 
         return array_filter($callLikes, fn (CallLike $callLike): bool => ! $callLike->isFirstClassCallable());
+    }
+
+    private function isUsedInClosure(ClassMethod|Foreach_ $stmtsAware, string $variableName): bool
+    {
+        /** @var Node\ClosureUse[] $uses */
+        $uses = $this->betterNodeFinder->findInstancesOf([$stmtsAware], [ClosureUse::class]);
+
+        foreach ($uses as $use) {
+            if ($this->isName($use->var, $variableName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
