@@ -101,8 +101,11 @@ CODE_SAMPLE
         $hasChanged = false;
 
         if ($node instanceof ArrayItem) {
-
             return $this->refactorArrayItem($node);
+        }
+
+        if ($node->isFirstClassCallable()) {
+            return null;
         }
 
         foreach ($node->getArgs() as $arg) {
