@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\CodeQuality\NodeAnalyser;
 
 use PHPStan\PhpDoc\ResolvedPhpDocBlock;
-use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ReflectionProvider;
 
 final readonly class DoctrineEntityDocumentAnalyser
 {
@@ -14,8 +14,19 @@ final readonly class DoctrineEntityDocumentAnalyser
      */
     private const array ENTITY_DOCBLOCK_MARKERS = ['@Document', '@ORM\\Document', '@Entity', '@ORM\\Entity'];
 
-    public function isEntityClass(ClassReflection $classReflection): bool
+    public function __construct(
+        private ReflectionProvider $reflectionProvider,
+    ) {
+    }
+
+    public function isEntityClass(string $className): bool
     {
+        if (! $this->reflectionProvider->hasClass($className)) {
+            return false;
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($className);
+
         $resolvedPhpDocBlock = $classReflection->getResolvedPhpDoc();
         if (! $resolvedPhpDocBlock instanceof ResolvedPhpDocBlock) {
             return false;
