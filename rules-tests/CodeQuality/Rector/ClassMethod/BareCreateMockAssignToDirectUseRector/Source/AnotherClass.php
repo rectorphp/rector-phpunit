@@ -6,8 +6,13 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\BareCreateMockAssi
 
 final class AnotherClass
 {
-    public function __construct(...$various)
+    public function __construct($one, $two, $three, private $someMock)
     {
 
+    }
+
+    public function getSomeMock()
+    {
+        return $this->someMock;
     }
 }

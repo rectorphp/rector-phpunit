@@ -18,6 +18,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\PHPUnit\CodeQuality\NodeAnalyser\AssertMethodAnalyzer;
 use Rector\PHPUnit\CodeQuality\NodeAnalyser\AssignedMocksCollector;
 use Rector\PHPUnit\CodeQuality\NodeFinder\VariableFinder;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -35,6 +36,7 @@ final class BareCreateMockAssignToDirectUseRector extends AbstractRector
         private readonly AssignedMocksCollector $assignedMocksCollector,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly VariableFinder $variableFinder,
+        private readonly AssertMethodAnalyzer $assertMethodAnalyzer,
     ) {
     }
 
@@ -122,6 +124,10 @@ CODE_SAMPLE
             }
 
             if ($this->isUsedInClosure($node, $variableName)) {
+                continue;
+            }
+
+            if ($this->isUsedInAssertCall($node, $variableName)) {
                 continue;
             }
 
@@ -246,6 +252,36 @@ CODE_SAMPLE
         foreach ($uses as $use) {
             if ($this->isName($use->var, $variableName)) {
                 return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function isUsedInAssertCall(ClassMethod|Foreach_ $stmtsAware, string $variableName): bool
+    {
+        /** @var StaticCall[]|MethodCall[] $calls */
+        $calls = $this->betterNodeFinder->findInstancesOfScoped([$stmtsAware], [MethodCall::class, StaticCall::class]);
+
+        $assertCalls = [];
+        foreach ($calls as $call) {
+            if (! $this->assertMethodAnalyzer->detectTestCaseCall($call)) {
+                continue;
+            }
+
+            $assertCalls[] = $call;
+        }
+
+        foreach ($assertCalls as $assertCall) {
+            foreach ($assertCall->getArgs() as $assertCallArg) {
+                if (! $assertCallArg->value instanceof Variable) {
+                    continue;
+                }
+
+                if ($this->isName($assertCallArg->value, $variableName)) {
+                    return true;
+                }
+
             }
         }
 
