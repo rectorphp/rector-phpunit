@@ -43,9 +43,9 @@ final readonly class TestsNodeAnalyzer
         return false;
     }
 
-    public function isDirectlyExtendsTestCase(ClassMethod $node): bool
+    public function isDirectlyExtendsTestCase(ClassMethod $classMethod): bool
     {
-        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
         if (! $classReflection instanceof ClassReflection) {
             return false;
         }
