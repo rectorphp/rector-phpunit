@@ -23,4 +23,9 @@ final class PHPUnitAttribute
     public const string REQUIRES_SETTING = 'PHPUnit\Framework\Attributes\RequiresSetting';
 
     public const string TEST = 'PHPUnit\Framework\Attributes\Test';
+
+    /**
+     * @see https://github.com/sebastianbergmann/phpunit/commit/24c208d6a340c3071f28a9b5cce02b9377adfd43
+     */
+    public const string ALLOW_MOCK_OBJECTS_WITHOUT_EXPECTATIONS = 'PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations';
 }
