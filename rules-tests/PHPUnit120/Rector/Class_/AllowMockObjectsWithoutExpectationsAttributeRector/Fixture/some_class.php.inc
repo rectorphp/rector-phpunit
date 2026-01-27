@@ -15,11 +15,11 @@ final class SomeClass extends TestCase
 
     public function testOne()
     {
+        $this->someMock->method('doSomething')->willReturn('value');
     }
 
     public function testTwo()
     {
-
     }
 }
 
@@ -43,11 +43,11 @@ final class SomeClass extends TestCase
 
     public function testOne()
     {
+        $this->someMock->method('doSomething')->willReturn('value');
     }
 
     public function testTwo()
     {
-
     }
 }
 

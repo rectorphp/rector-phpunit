@@ -17,6 +17,7 @@ use Rector\PHPUnit\Enum\PHPUnitAttribute;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -44,30 +45,14 @@ final class AllowMockObjectsWithoutExpectationsAttributeRector extends AbstractR
      */
     public function refactor(Node $node): ?Class_
     {
-        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
+        if ($this->shouldSkipClass($node)) {
             return null;
         }
 
-        // attribute must exist for the rule to work
-        if (! $this->reflectionProvider->hasClass(PHPUnitAttribute::ALLOW_MOCK_OBJECTS_WITHOUT_EXPECTATIONS)) {
-            return null;
-        }
+        $mockObjectPropertyNames = $this->matchMockObjectPropertyNames($node);
 
-        // already filled
-        if ($this->attributeFinder->hasAttributeByClasses(
-            $node,
-            [PHPUnitAttribute::ALLOW_MOCK_OBJECTS_WITHOUT_EXPECTATIONS]
-        )) {
-            return null;
-        }
-
-        // has mock objects properties and setUp() method?
-
-        if (! $node->getMethod('setUp') instanceof ClassMethod) {
-            return null;
-        }
-
-        if (! $this->hasMockObjectProperty($node)) {
+        // there are no mock object properties
+        if ($mockObjectPropertyNames === []) {
             return null;
         }
 
@@ -76,6 +61,9 @@ final class AllowMockObjectsWithoutExpectationsAttributeRector extends AbstractR
 
         foreach ($node->getMethods() as $classMethod) {
             if ($this->testsNodeAnalyzer->isTestClassMethod($classMethod)) {
+                // is a mock property used in the method?
+                // skip if so
+
                 ++$testMethodCount;
             }
         }
@@ -153,18 +141,50 @@ CODE_SAMPLE
 
     }
 
-    private function hasMockObjectProperty(Class_ $class): bool
+    /**
+     * @return string[]
+     */
+    private function matchMockObjectPropertyNames(Class_ $class): array
     {
+        $propertyNames = [];
+
         foreach ($class->getProperties() as $property) {
             if (! $property->type instanceof Name) {
                 continue;
             }
 
-            if ($this->isName($property->type, PHPUnitClassName::MOCK_OBJECT)) {
-                return true;
+            if (! $this->isName($property->type, PHPUnitClassName::MOCK_OBJECT)) {
+                continue;
             }
+
+            $propertyNames[] = $this->getName($property->props[0]);
         }
 
-        return false;
+        return $propertyNames;
+    }
+
+    private function shouldSkipClass(Class_ $class): bool
+    {
+        if (! $this->testsNodeAnalyzer->isInTestClass($class)) {
+            return true;
+        }
+
+        // attribute must exist for the rule to work
+        if (! $this->reflectionProvider->hasClass(PHPUnitAttribute::ALLOW_MOCK_OBJECTS_WITHOUT_EXPECTATIONS)) {
+            return true;
+        }
+
+        // already filled
+        if ($this->attributeFinder->hasAttributeByClasses(
+            $class,
+            [PHPUnitAttribute::ALLOW_MOCK_OBJECTS_WITHOUT_EXPECTATIONS]
+        )) {
+            return true;
+        }
+
+        // has mock objects properties and setUp() method?
+
+        $setupClassMethod = $class->getMethod(MethodName::SET_UP);
+        return ! $setupClassMethod instanceof ClassMethod;
     }
 }
