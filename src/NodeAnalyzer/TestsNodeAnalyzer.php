@@ -54,14 +54,7 @@ final readonly class TestsNodeAnalyzer
         if ($parents === []) {
             return false;
         }
-
-        foreach (PHPUnitClassName::TEST_CLASSES as $testCaseObjectClass) {
-            if ($parents[0]->getName() === $testCaseObjectClass) {
-                return true;
-            }
-        }
-
-        return false;
+        return in_array($parents[0]->getName(), PHPUnitClassName::TEST_CLASSES, true);
     }
 
     public function isTestClassMethod(ClassMethod $classMethod): bool
