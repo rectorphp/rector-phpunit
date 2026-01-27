@@ -43,6 +43,27 @@ final readonly class TestsNodeAnalyzer
         return false;
     }
 
+    public function isDirectlyExtendsTestCase(Node $node): bool
+    {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        $parents = $classReflection->getParents();
+        if ($parents === []) {
+            return false;
+        }
+
+        foreach (PHPUnitClassName::TEST_CLASSES as $testCaseObjectClass) {
+            if ($parents[0]->getName() === $testCaseObjectClass) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function isTestClassMethod(ClassMethod $classMethod): bool
     {
         if (! $classMethod->isPublic()) {
