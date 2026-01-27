@@ -54,6 +54,7 @@ final readonly class TestsNodeAnalyzer
         if ($parents === []) {
             return false;
         }
+
         return in_array($parents[0]->getName(), PHPUnitClassName::TEST_CLASSES, true);
     }
 
