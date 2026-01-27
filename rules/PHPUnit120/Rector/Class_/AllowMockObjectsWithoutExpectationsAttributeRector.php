@@ -7,12 +7,15 @@ namespace Rector\PHPUnit\PHPUnit120\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Doctrine\NodeAnalyzer\AttributeFinder;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\Enum\PHPUnitAttribute;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -31,7 +34,8 @@ final class AllowMockObjectsWithoutExpectationsAttributeRector extends AbstractR
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly AttributeFinder $attributeFinder,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
@@ -56,19 +60,42 @@ final class AllowMockObjectsWithoutExpectationsAttributeRector extends AbstractR
             return null;
         }
 
-        // @todo add the attribute if has more than 1 public test* method
+        $missedTestMethodsByMockPropertyName = [];
+        $usingTestMethodsByMockPropertyName = [];
         $testMethodCount = 0;
 
-        foreach ($node->getMethods() as $classMethod) {
-            if ($this->testsNodeAnalyzer->isTestClassMethod($classMethod)) {
-                // is a mock property used in the method?
-                // skip if so
+        foreach ($mockObjectPropertyNames as $mockObjectPropertyName) {
+            $missedTestMethodsByMockPropertyName[$mockObjectPropertyName] = [];
+            $usingTestMethodsByMockPropertyName[$mockObjectPropertyName] = [];
+
+            foreach ($node->getMethods() as $classMethod) {
+                if (! $this->testsNodeAnalyzer->isTestClassMethod($classMethod)) {
+                    continue;
+                }
 
                 ++$testMethodCount;
+
+                // is a mock property used in the class method, as part of some method call? guessing mock expectation is set
+                // skip if so
+                if ($this->isClassMethodUsingMethodCallOnPropertyNamed($classMethod, $mockObjectPropertyName)) {
+                    $usingTestMethodsByMockPropertyName[$mockObjectPropertyName][] = $this->getName($classMethod);
+                    continue;
+                }
+
+                $missedTestMethodsByMockPropertyName[$mockObjectPropertyName][] = $this->getName($classMethod);
             }
         }
 
+        if (! $this->shouldAddAttribute($missedTestMethodsByMockPropertyName)) {
+            return null;
+        }
+
+        // skip sole test method, as those are expected to use all mocks
         if ($testMethodCount < 2) {
+            return null;
+        }
+
+        if (! $this->isAtLeastOneMockPropertyMockedOnce($usingTestMethodsByMockPropertyName)) {
             return null;
         }
 
@@ -83,7 +110,7 @@ final class AllowMockObjectsWithoutExpectationsAttributeRector extends AbstractR
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Add #[AllowMockObjectsWithoutExpectations] attribute to PHPUnit test classes with mock properties used in multiple methods',
+            'Add #[AllowMockObjectsWithoutExpectations] attribute to PHPUnit test classes with mock properties used in multiple methods but one, to avoid irrelevant notices in tests run',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -125,20 +152,22 @@ final class SomeTest extends TestCase
 
     public function testOne(): void
     {
-        // use $this->someServiceMock
+        $this->someServiceMock->expects($this->once())
+            ->method('someMethod')
+            ->willReturn('someValue');
     }
 
     public function testTwo(): void
     {
-        // use $this->someServiceMock
+        $this->someServiceMock->expects($this->once())
+            ->method('someMethod')
+            ->willReturn('anotherValue');
     }
 }
 CODE_SAMPLE
                 ),
-
             ]
         );
-
     }
 
     /**
@@ -186,5 +215,58 @@ CODE_SAMPLE
 
         $setupClassMethod = $class->getMethod(MethodName::SET_UP);
         return ! $setupClassMethod instanceof ClassMethod;
+    }
+
+    private function isClassMethodUsingMethodCallOnPropertyNamed(
+        ClassMethod $classMethod,
+        string $mockObjectPropertyName
+    ): bool {
+        /** @var MethodCall[] $methodCalls */
+        $methodCalls = $this->betterNodeFinder->findInstancesOfScoped([$classMethod], [MethodCall::class]);
+        foreach ($methodCalls as $methodCall) {
+            if (! $methodCall->var instanceof PropertyFetch) {
+                continue;
+            }
+
+            $propertyFetch = $methodCall->var;
+
+            // we found a method call on a property fetch named
+            if ($this->isName($propertyFetch, $mockObjectPropertyName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array<string, string[]> $missedTestMethodsByMockPropertyName
+     */
+    private function shouldAddAttribute(array $missedTestMethodsByMockPropertyName): bool
+    {
+        foreach ($missedTestMethodsByMockPropertyName as $missedTestMethods) {
+            // all test methods are using method calls on the mock property, so skip
+            if (count($missedTestMethods) === 0) {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array<string, string[]> $usingTestMethodsByMockPropertyName
+     */
+    private function isAtLeastOneMockPropertyMockedOnce(array $usingTestMethodsByMockPropertyName): bool
+    {
+        foreach ($usingTestMethodsByMockPropertyName as $usingTestMethods) {
+            if (count($usingTestMethods) !== 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

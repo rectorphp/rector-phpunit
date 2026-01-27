@@ -19,6 +19,5 @@ final class SkipIfMockNotUsedIn2TestMethods extends TestCase
 
     public function testTwo()
     {
-
     }
 }
