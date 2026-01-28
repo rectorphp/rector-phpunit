@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Tests\PHPUnit120\Rector\MethodCall\AssertIsTypeMethodCallRector;
+namespace Rector\PHPUnit\Tests\PHPUnit120\Rector\Class_\AssertIsTypeMethodCallRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

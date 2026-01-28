@@ -42,3 +42,4 @@ final class SomeTest extends TestCase
     {
     }
 }
+

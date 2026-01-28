@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\PHPUnit120\Rector\MethodCall\AssertIsTypeMethodCallRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit120\Rector\Class_\AssertIsTypeMethodCallRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +31,7 @@ final class StaticFixture extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\PHPUnit120\Rector\MethodCall\AssertIsTypeMethodCallRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit120\Rector\Class_\AssertIsTypeMethodCallRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
