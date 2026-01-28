@@ -38,7 +38,7 @@ final class NestedCallback extends TestCase
         $this->someMock->expects($matcher)
             ->method('prepare')
             ->willReturnCallback(
-                function (...$parameters) use ($matcher) {
+                function (...$parameters) use ($matcher, $item) {
                     if ($matcher->numberOfInvocations() === 1) {
                         $this->assertEquals(50, $parameters[0]);
                         $this->assertSame(5, $parameters[1]);
