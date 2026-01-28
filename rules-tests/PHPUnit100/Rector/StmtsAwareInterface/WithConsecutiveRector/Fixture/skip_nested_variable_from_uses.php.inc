@@ -32,7 +32,7 @@ final class SkipNestedVariableFromUses extends TestCase
         $this->someMock->expects($matcher)
             ->method('prepare')
             ->willReturnCallback(
-                function (...$parameters) use ($matcher) {
+                function (...$parameters) use ($matcher, $item) {
                     $this->assertSame(5, $parameters[0]);
                 },
             );
