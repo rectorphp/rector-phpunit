@@ -23,6 +23,8 @@ final class PHPUnitClassName
 
     public const string TEST_LISTENER = 'PHPUnit\Framework\TestListener';
 
+    public const string MOCK_OBJECT = 'PHPUnit\Framework\MockObject\MockObject';
+
     /**
      * @var string[]
      */
