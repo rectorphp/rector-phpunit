@@ -7,7 +7,6 @@ namespace Rector\PHPUnit\PHPUnit120\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PHPStan\Type\ObjectType;
 use Rector\PHPStan\ScopeFetcher;
@@ -87,7 +86,7 @@ final class ExplicitMockExpectsCallRector extends AbstractRector
             return null;
         }
 
-        if (! $node->var instanceof Variable && ! $node->var instanceof PropertyFetch) {
+        if (! $node->var instanceof Variable) {
             return null;
         }
 
