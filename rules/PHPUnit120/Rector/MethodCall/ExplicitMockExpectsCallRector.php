@@ -10,9 +10,11 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PHPStan\Type\ObjectType;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -77,6 +79,11 @@ final class ExplicitMockExpectsCallRector extends AbstractRector
     public function refactor(Node $node): Node|null
     {
         if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
+            return null;
+        }
+
+        $scope = ScopeFetcher::fetch($node);
+        if ($scope->getFunctionName() === MethodName::SET_UP) {
             return null;
         }
 
