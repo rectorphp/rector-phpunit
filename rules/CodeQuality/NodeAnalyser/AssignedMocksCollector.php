@@ -68,10 +68,6 @@ final readonly class AssignedMocksCollector
                 continue;
             }
 
-            if ($mockClassReflection->isInterface()) {
-                continue;
-            }
-
             $mockedVariableName = $this->nodeNameResolver->getName($assign->var);
             $mockedVariablesToTypes[$mockedVariableName] = $mockedClass;
         }
