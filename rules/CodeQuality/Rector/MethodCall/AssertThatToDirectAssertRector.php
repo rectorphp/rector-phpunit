@@ -7,6 +7,7 @@ namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -17,8 +18,25 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AssertThatToDirectAssertRector extends AbstractRector
 {
+    /**
+     * @var array<string, string>
+     */
+    private const array IS_TO_ASSERT_METHOD_MAP = [
+        'isTrue' => 'assertTrue',
+        'isFalse' => 'assertFalse',
+        'isNull' => 'assertNull',
+        'isEmpty' => 'assertEmpty',
+        'isCountable' => 'assertIsCountable',
+        'isArray' => 'assertIsArray',
+        'isString' => 'assertIsString',
+        'isInt' => 'assertIsInt',
+        'isFloat' => 'assertIsFloat',
+        'isBool' => 'assertIsBool',
+    ];
+
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly ValueResolver $valueResolver,
     ) {
     }
 
@@ -95,8 +113,25 @@ CODE_SAMPLE
             return $node;
         }
 
-        if ($exactAssertName === 'isTrue') {
-            $node->name = new Identifier('assertTrue');
+        foreach (self::IS_TO_ASSERT_METHOD_MAP as $isName => $assertName) {
+            if (! $this->isName($exactAssertMethodCall->name, $isName)) {
+                continue;
+            }
+
+            $node->name = new Identifier($assertName);
+            unset($node->args[1]);
+
+            return $node;
+        }
+
+        if ($this->isName($exactAssertMethodCall->name, 'isType')) {
+            $exactFirstArg = $exactAssertMethodCall->getArgs()[0];
+            $expectedType = $this->valueResolver->getValue($exactFirstArg->value);
+            if (! is_string($expectedType)) {
+                return null;
+            }
+
+            $node->name = new Identifier('assertIs' . ucfirst($expectedType));
             unset($node->args[1]);
 
             return $node;
