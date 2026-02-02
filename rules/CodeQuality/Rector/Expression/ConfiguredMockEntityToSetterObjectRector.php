@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Rector\Expression;
 
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -13,6 +12,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Doctrine\NodeAnalyzer\DoctrineEntityDetector;
@@ -172,6 +172,11 @@ CODE_SAMPLE
         }
 
         if (! $this->reflectionProvider->hasClass($mockedClassValue)) {
+            return null;
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($mockedClassValue);
+        if ($classReflection->isInterface() || $classReflection->isAbstract()) {
             return null;
         }
 
