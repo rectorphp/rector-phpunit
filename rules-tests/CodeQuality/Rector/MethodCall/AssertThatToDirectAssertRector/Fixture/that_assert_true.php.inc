@@ -9,6 +9,9 @@ final class ThatAssertTrue extends \PHPUnit\Framework\TestCase
     public function test()
     {
         $this->assertThat('value', $this->isTrue());
+
+        $this->assertThat('name', $this->isType('string'));
+        $this->assertThat('age', $this->isString());
     }
 }
 
@@ -25,6 +28,9 @@ final class ThatAssertTrue extends \PHPUnit\Framework\TestCase
     public function test()
     {
         $this->assertTrue('value');
+
+        $this->assertIsString('name');
+        $this->assertIsString('age');
     }
 }
 
