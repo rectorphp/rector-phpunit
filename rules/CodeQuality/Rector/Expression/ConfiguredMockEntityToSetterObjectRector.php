@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Rector\Expression;
 
+use Webmozart\Assert\Assert;
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -11,9 +13,12 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Return_;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Doctrine\NodeAnalyzer\DoctrineEntityDetector;
 use Rector\PhpParser\AstResolver;
@@ -81,12 +86,12 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Expression::class];
+        return [Expression::class, Return_::class];
     }
 
     /**
-     * @param Expression $node
-     * @return Expression[]|null
+     * @param Expression|Return_ $node
+     * @return Stmt[]|null
      */
     public function refactor(Node $node): ?array
     {
@@ -94,18 +99,24 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $node->expr instanceof Assign) {
+        $assign = null;
+        if ($node instanceof Return_) {
+            if ($node->expr instanceof MethodCall) {
+                $methodCall = $node->expr;
+            } else {
+                return null;
+            }
+        } elseif ($node->expr instanceof Assign) {
+            $assign = $node->expr;
+            if (! $assign->expr instanceof MethodCall) {
+                return null;
+            }
+
+            $methodCall = $assign->expr;
+        } else {
             return null;
         }
 
-        $assign = $node->expr;
-        if (! $assign->expr instanceof MethodCall) {
-            return null;
-        }
-
-        $objectVariable = $assign->var;
-
-        $methodCall = $assign->expr;
         if (! $this->isName($methodCall->name, 'createConfiguredMock')) {
             return null;
         }
@@ -126,11 +137,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $assign->expr = new New_(new FullyQualified($doctrineClass));
+        if ($node instanceof Expression) {
+            Assert::isInstanceOf($assign, Assign::class);
+            return $this->createForAssign($doctrineClass, $assign, $definedGettersArg->value, $node);
+        }
 
-        $setterExpressions = $this->createEntitySetterExpressions($definedGettersArg->value, $objectVariable);
+        return $this->createForReturn($doctrineClass, $definedGettersArg->value, $node);
 
-        return array_merge([$node], $setterExpressions);
     }
 
     /**
@@ -190,5 +203,40 @@ CODE_SAMPLE
         }
 
         return $mockedClassValue;
+    }
+
+    /**
+     * @return Stmt[]
+     */
+    private function createForReturn(string $doctrineClass, Array_ $array, Return_ $return): array
+    {
+        $shortClassName = Strings::after($doctrineClass, '\\', -1);
+        $objectVariable = new Variable(lcfirst((string) $shortClassName));
+
+        $new = new New_(new FullyQualified($doctrineClass));
+        $assign = new Assign($objectVariable, $new);
+
+        $setterExpressions = $this->createEntitySetterExpressions($array, $objectVariable);
+
+        $return->expr = $objectVariable;
+
+        return array_merge([new Expression($assign)], $setterExpressions, [$return]);
+    }
+
+    /**
+     * @return Stmt[]
+     */
+    private function createForAssign(
+        string $doctrineClass,
+        Assign $assign,
+        Array_ $definedGettersArray,
+        Expression $expression
+    ): array {
+        $assign->expr = new New_(new FullyQualified($doctrineClass));
+        $objectVariable = $assign->var;
+
+        $setterExpressions = $this->createEntitySetterExpressions($definedGettersArray, $objectVariable);
+
+        return array_merge([$expression], $setterExpressions);
     }
 }
