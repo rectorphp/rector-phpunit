@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Rector\Expression;
 
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -175,7 +176,7 @@ CODE_SAMPLE
         }
 
         $mockedClass = $this->astResolver->resolveClassFromName($mockedClassValue);
-        if (! $mockedClass instanceof Node\Stmt\Class_) {
+        if (! $mockedClass instanceof Class_) {
             return null;
         }
 
