@@ -6,12 +6,18 @@ namespace Rector\PHPUnit\PHPUnit120\Rector\CallLike;
 
 use PhpParser\Node;
 use PhpParser\Node\ArrayItem;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
 use Rector\PHPStan\ScopeFetcher;
+use Rector\PHPUnit\CodeQuality\NodeAnalyser\MockObjectExprDetector;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
+use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -23,6 +29,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class CreateStubOverCreateMockArgRector extends AbstractRector
 {
+    public function __construct(
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly MockObjectExprDetector $mockObjectExprDetector,
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -70,13 +82,13 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StaticCall::class, MethodCall::class, New_::class, ArrayItem::class];
+        return [StaticCall::class, MethodCall::class, New_::class, ArrayItem::class, ClassMethod::class];
     }
 
     /**
-     * @param MethodCall|StaticCall|New_|ArrayItem $node
+     * @param MethodCall|StaticCall|New_|ArrayItem|ClassMethod $node
      */
-    public function refactor(Node $node): MethodCall|StaticCall|New_|ArrayItem|null
+    public function refactor(Node $node): MethodCall|StaticCall|New_|ArrayItem|ClassMethod|null
     {
         $scope = ScopeFetcher::fetch($node);
         if (! $scope->isInClass()) {
@@ -88,19 +100,12 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node instanceof ClassMethod) {
+            return $this->refactorClassMethod($node);
+        }
+
         if ($node instanceof ArrayItem) {
-            if (! $node->value instanceof MethodCall) {
-                return null;
-            }
-
-            $methodCall = $node->value;
-            if (! $this->isName($methodCall->name, 'createMock')) {
-                return null;
-            }
-
-            $methodCall->name = new Identifier('createStub');
-
-            return $node;
+            return $this->refactorArrayItem($node);
         }
 
         $hasChanges = false;
@@ -128,5 +133,73 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function matchCreateMockMethodCall(Expr $expr): null|MethodCall
+    {
+        if (! $expr instanceof MethodCall) {
+            return null;
+        }
+
+        if (! $this->isName($expr->name, 'createMock')) {
+            return null;
+        }
+
+        return $expr;
+    }
+
+    private function refactorClassMethod(ClassMethod $classMethod): ?ClassMethod
+    {
+        if (! $this->testsNodeAnalyzer->isTestClassMethod($classMethod)) {
+            return null;
+        }
+
+        $hasChanged = false;
+        foreach ((array) $classMethod->stmts as $stmt) {
+            if (! $stmt instanceof Expression) {
+                continue;
+            }
+
+            if (! $stmt->expr instanceof Assign) {
+                continue;
+            }
+
+            $assign = $stmt->expr;
+            $createMockMethodCall = $this->matchCreateMockMethodCall($assign->expr);
+
+            if (! $createMockMethodCall instanceof MethodCall) {
+                continue;
+            }
+
+            // no change, as we use the variable for mocking later
+            if ($this->mockObjectExprDetector->isUsedForMocking($assign->var, $classMethod)) {
+                continue;
+            }
+
+            $createMockMethodCall->name = new Identifier('createStub');
+            $hasChanged = true;
+        }
+
+        if ($hasChanged) {
+            return $classMethod;
+        }
+
+        return null;
+    }
+
+    private function refactorArrayItem(ArrayItem $arrayItem): ?ArrayItem
+    {
+        if (! $arrayItem->value instanceof MethodCall) {
+            return null;
+        }
+
+        $methodCall = $arrayItem->value;
+        if (! $this->isName($methodCall->name, 'createMock')) {
+            return null;
+        }
+
+        $methodCall->name = new Identifier('createStub');
+
+        return $arrayItem;
     }
 }
