@@ -14,7 +14,6 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ReflectionProvider;
-use PHPStan\Type\ObjectType;
 use Rector\Doctrine\NodeAnalyzer\AttributeFinder;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\Enum\PHPUnitAttribute;
@@ -298,11 +297,9 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->isObjectType($methodCall->var, new ObjectType(PHPUnitClassName::MOCK_OBJECT))) {
-                continue;
+            if ($methodCall->var instanceof Node\Expr\Variable || $methodCall->var instanceof PropertyFetch) {
+                return true;
             }
-
-            return true;
         }
 
         return false;
