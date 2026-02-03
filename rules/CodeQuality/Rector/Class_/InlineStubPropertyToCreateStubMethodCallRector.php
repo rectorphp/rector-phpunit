@@ -128,7 +128,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $currentPropertyFetchesInNewArgs = $this->propertyFetchUsageFinder->findInNew($node, $propertyName);
+            $currentPropertyFetchesInNewArgs = $this->propertyFetchUsageFinder->findInCallLikes($node, $propertyName);
 
             // are there more uses than simple passing to a new instance?
             $totalPropertyFetches = $this->propertyFetchFinder->findLocalPropertyFetchesByName($node, $propertyName);
