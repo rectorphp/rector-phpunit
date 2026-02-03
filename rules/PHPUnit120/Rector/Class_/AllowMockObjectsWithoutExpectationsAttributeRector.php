@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\PHPUnit120\Rector\Class_;
 
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
@@ -297,7 +298,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($methodCall->var instanceof Node\Expr\Variable || $methodCall->var instanceof PropertyFetch) {
+            if ($methodCall->var instanceof Variable || $methodCall->var instanceof PropertyFetch) {
                 return true;
             }
         }
