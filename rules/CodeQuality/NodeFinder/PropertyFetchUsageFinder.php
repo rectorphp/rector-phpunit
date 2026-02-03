@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\NodeFinder;
 
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Stmt\Class_;
@@ -47,5 +48,33 @@ final readonly class PropertyFetchUsageFinder
         }
 
         return $propertyFetchesInNewArgs;
+    }
+
+    /**
+     * @return PropertyFetch[]
+     */
+    public function findInArrays(Class_ $class, string $propertyName): array
+    {
+        /** @var Array_[] $arrays */
+        $arrays = $this->betterNodeFinder->findInstancesOfScoped($class->getMethods(), Array_::class);
+
+        $propertyFetchesInArrays = [];
+
+        foreach ($arrays as $array) {
+            foreach ($array->items as $arrayItem) {
+                if (! $arrayItem->value instanceof PropertyFetch) {
+                    continue;
+                }
+
+                $propertyFetch = $arrayItem->value;
+                if (! $this->nodeNameResolver->isName($propertyFetch->name, $propertyName)) {
+                    continue;
+                }
+
+                $propertyFetchesInArrays[] = $propertyFetch;
+            }
+        }
+
+        return $propertyFetchesInArrays;
     }
 }
