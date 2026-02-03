@@ -25,6 +25,8 @@ final class PHPUnitClassName
 
     public const string MOCK_OBJECT = 'PHPUnit\Framework\MockObject\MockObject';
 
+    public const string STUB = 'PHPUnit\Framework\MockObject\Stub';
+
     /**
      * @var string[]
      */
