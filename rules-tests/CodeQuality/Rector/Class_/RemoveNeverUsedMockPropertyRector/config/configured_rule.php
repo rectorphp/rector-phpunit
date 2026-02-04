@@ -5,6 +5,5 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\RemoveNeverUsedMockPropertyRector;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rule(RemoveNeverUsedMockPropertyRector::class);
-};
+return RectorConfig::configure()
+    ->withRules([RemoveNeverUsedMockPropertyRector::class]);
