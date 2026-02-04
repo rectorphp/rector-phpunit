@@ -54,12 +54,8 @@ final class AllowMockObjectsWithoutExpectationsAttributeRector extends AbstractR
             return null;
         }
 
+        // even for 0 mocked properties, the variable in setUp() can be mocked
         $mockObjectPropertyNames = $this->matchMockObjectPropertyNames($node);
-
-        // there are no mock object properties
-        if ($mockObjectPropertyNames === []) {
-            return null;
-        }
 
         $missedTestMethodsByMockPropertyName = [];
         $usingTestMethodsByMockPropertyName = [];
@@ -89,7 +85,7 @@ final class AllowMockObjectsWithoutExpectationsAttributeRector extends AbstractR
 
         // or find a ->method() calls on a setUp() mocked property
         $hasAnyMethodInSetup = $this->isMissingExpectsOnMockObjectMethodCallInSetUp($node);
-        if ($hasAnyMethodInSetup && $testMethodCount > 1) {
+        if ($hasAnyMethodInSetup) {
             $node->attrGroups[] = new AttributeGroup([
                 new Attribute(new FullyQualified(PHPUnitAttribute::ALLOW_MOCK_OBJECTS_WITHOUT_EXPECTATIONS)),
             ]);
@@ -284,6 +280,7 @@ CODE_SAMPLE
     private function isMissingExpectsOnMockObjectMethodCallInSetUp(Class_ $class): bool
     {
         $setupClassMethod = $class->getMethod(MethodName::SET_UP);
+
         if (! $setupClassMethod instanceof ClassMethod) {
             return false;
         }
@@ -293,6 +290,7 @@ CODE_SAMPLE
             (array) $setupClassMethod->stmts,
             MethodCall::class
         );
+
         foreach ($methodCalls as $methodCall) {
             if (! $this->isName($methodCall->name, 'method')) {
                 continue;
