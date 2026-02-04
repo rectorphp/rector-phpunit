@@ -84,8 +84,8 @@ CODE_SAMPLE
                 continue;
             }
 
-            $methodCall = $stmt->expr;
-            if (! $this->isName($methodCall->name, 'createMock')) {
+            $topmostCall = $this->resolveTopmostCall($stmt->expr);
+            if (! $this->isName($topmostCall->name, 'createMock')) {
                 continue;
             }
 
@@ -98,5 +98,15 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function resolveTopmostCall(MethodCall $methodCall): MethodCall
+    {
+        $currentMethodCall = $methodCall;
+        while ($currentMethodCall->var instanceof MethodCall) {
+            $currentMethodCall = $currentMethodCall->var;
+        }
+
+        return $currentMethodCall;
     }
 }
