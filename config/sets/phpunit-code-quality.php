@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Rector\PHPUnit\CodeQuality\Rector\Expression\DecorateWillReturnMapWithExpectsMockRector;
 use Rector\Config\RectorConfig;
 use Rector\PHPUnit\CodeQuality\Rector\CallLike\DirectInstanceOverMockArgRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\AddParamTypeFromDependsRector;
@@ -151,6 +152,7 @@ return static function (RectorConfig $rectorConfig): void {
         EntityDocumentCreateMockToDirectNewRector::class,
         ReplaceAtMethodWithDesiredMatcherRector::class,
         BareCreateMockAssignToDirectUseRector::class,
+        DecorateWillReturnMapWithExpectsMockRector::class,
 
         // dead code
         RemoveNeverUsedMockPropertyRector::class,
