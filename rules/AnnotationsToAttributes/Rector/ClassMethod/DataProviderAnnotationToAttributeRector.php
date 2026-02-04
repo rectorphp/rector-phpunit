@@ -17,6 +17,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
+use Rector\PHPUnit\Enum\PHPUnitAttribute;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -30,8 +31,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DataProviderAnnotationToAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
-    private const string DATA_PROVIDER_CLASS = 'PHPUnit\Framework\Attributes\DataProvider';
-
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
@@ -105,7 +104,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->reflectionProvider->hasClass(self::DATA_PROVIDER_CLASS)) {
+        if (! $this->reflectionProvider->hasClass(PHPUnitAttribute::DATA_PROVIDER)) {
             return null;
         }
 
@@ -180,7 +179,7 @@ CODE_SAMPLE
             );
         } else {
             $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
-                self::DATA_PROVIDER_CLASS,
+                PHPUnitAttribute::DATA_PROVIDER,
                 [$methodName]
             );
         }
