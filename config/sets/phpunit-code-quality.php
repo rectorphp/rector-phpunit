@@ -15,6 +15,7 @@ use Rector\PHPUnit\CodeQuality\Rector\Class_\SingleMockPropertyTypeRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\TestWithToDataProviderRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\TypeWillReturnCallableArrowFunctionRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\YieldDataProviderRector;
+use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableArgumentRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableInstanceRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\BareCreateMockAssignToDirectUseRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\DataProviderArrayItemsNewLinedRector;
@@ -112,7 +113,7 @@ return static function (RectorConfig $rectorConfig): void {
         AddInstanceofAssertForNullableInstanceRector::class,
 
         // enable next after testing
-        // \Rector\PHPUnit\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableArgumentRector::class,
+        AddInstanceofAssertForNullableArgumentRector::class,
 
         AssertArrayCastedObjectToAssertSameRector::class,
 
