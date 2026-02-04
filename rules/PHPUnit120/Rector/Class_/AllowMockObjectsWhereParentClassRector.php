@@ -30,7 +30,10 @@ final class AllowMockObjectsWhereParentClassRector extends AbstractRector
     /**
      * @var string[]
      */
-    private const array PARENT_CLASSES = [PHPUnitClassName::SYMFONY_CONSTRAINT_VALIDATOR_TEST_CASE];
+    private const array PARENT_CLASSES = [
+        PHPUnitClassName::SYMFONY_CONSTRAINT_VALIDATOR_TEST_CASE,
+        PHPUnitClassName::SYMFONY_TYPE_TEST_CASE,
+    ];
 
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
