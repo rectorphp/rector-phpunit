@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\PHPUnit\PHPUnit120\Rector\CallLike\CreateStubInCoalesceArgRector;
 use Rector\PHPUnit\PHPUnit120\Rector\CallLike\CreateStubOverCreateMockArgRector;
 use Rector\PHPUnit\PHPUnit120\Rector\Class_\AllowMockObjectsForDataProviderRector;
 use Rector\PHPUnit\PHPUnit120\Rector\Class_\AllowMockObjectsWhereParentClassRector;
@@ -19,6 +20,7 @@ return static function (RectorConfig $rectorConfig): void {
 
         // stubs over mocks
         CreateStubOverCreateMockArgRector::class,
+        CreateStubInCoalesceArgRector::class,
         ExpressionCreateMockToCreateStubRector::class,
         PropertyCreateMockToCreateStubRector::class,
         AllowMockObjectsWhereParentClassRector::class,
