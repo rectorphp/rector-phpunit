@@ -10,6 +10,7 @@ use Rector\Doctrine\NodeAnalyzer\AttributeFinder;
 use Rector\PHPUnit\CodeQuality\NodeAnalyser\ParentCallDetector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -28,7 +29,7 @@ final class NoSetupWithParentCallOverrideRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Remove override, if setUp() references parent::setUp() call to improve readability',
+            'Remove override attribute, if setUp()/tearDown() references parent call to improve readability',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -82,7 +83,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isName($node, 'setUp')) {
+        if (! $this->isNames($node, ['setUp', 'tearDown'])) {
             return null;
         }
 
