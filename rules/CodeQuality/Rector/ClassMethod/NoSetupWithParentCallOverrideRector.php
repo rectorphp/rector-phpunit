@@ -10,7 +10,6 @@ use Rector\Doctrine\NodeAnalyzer\AttributeFinder;
 use Rector\PHPUnit\CodeQuality\NodeAnalyser\ParentCallDetector;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
-use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
