@@ -5,9 +5,6 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\PHPUnit\PHPUnit120\Rector\CallLike\CreateStubInCoalesceArgRector;
 use Rector\PHPUnit\PHPUnit120\Rector\CallLike\CreateStubOverCreateMockArgRector;
-use Rector\PHPUnit\PHPUnit120\Rector\Class_\AllowMockObjectsForDataProviderRector;
-use Rector\PHPUnit\PHPUnit120\Rector\Class_\AllowMockObjectsWhereParentClassRector;
-use Rector\PHPUnit\PHPUnit120\Rector\Class_\AllowMockObjectsWithoutExpectationsAttributeRector;
 use Rector\PHPUnit\PHPUnit120\Rector\Class_\AssertIsTypeMethodCallRector;
 use Rector\PHPUnit\PHPUnit120\Rector\Class_\PropertyCreateMockToCreateStubRector;
 use Rector\PHPUnit\PHPUnit120\Rector\Class_\RemoveOverrideFinalConstructTestCaseRector;
@@ -23,11 +20,5 @@ return static function (RectorConfig $rectorConfig): void {
         CreateStubInCoalesceArgRector::class,
         ExpressionCreateMockToCreateStubRector::class,
         PropertyCreateMockToCreateStubRector::class,
-        AllowMockObjectsWhereParentClassRector::class,
-        AllowMockObjectsForDataProviderRector::class,
-
-        // experimental, from PHPUnit 12.5.2
-        // @see https://github.com/sebastianbergmann/phpunit/commit/24c208d6a340c3071f28a9b5cce02b9377adfd43
-        AllowMockObjectsWithoutExpectationsAttributeRector::class,
     ]);
 };
