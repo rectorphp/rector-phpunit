@@ -108,8 +108,12 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($methodCall->isFirstClassCallable()) {
+            return null;
+        }
+
         // count values in will map arg
-        $willReturnMapArg = $methodCall->getArgs()[0];
+        $willReturnMapArg = $methodCall->getArgs()[0] ?? null;
         if (! $willReturnMapArg->value instanceof Array_) {
             return null;
         }
