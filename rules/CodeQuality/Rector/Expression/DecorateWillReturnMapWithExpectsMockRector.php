@@ -12,7 +12,9 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt\Expression;
+use PHPStan\Type\ObjectType;
 use Rector\PHPStan\ScopeFetcher;
+use Rector\PHPUnit\Enum\PHPUnitClassName;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -105,6 +107,10 @@ CODE_SAMPLE
 
         // already covered
         if ($this->isName($topmostCall->name, 'expects')) {
+            return null;
+        }
+
+        if (! $this->isObjectType($topmostCall->var, new ObjectType(PHPUnitClassName::MOCK_OBJECT))) {
             return null;
         }
 
