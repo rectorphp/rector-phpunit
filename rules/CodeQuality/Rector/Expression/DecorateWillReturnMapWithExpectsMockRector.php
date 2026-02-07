@@ -114,6 +114,10 @@ CODE_SAMPLE
 
         // count values in will map arg
         $willReturnMapArg = $methodCall->getArgs()[0] ?? null;
+        if (! $willReturnMapArg instanceof Arg) {
+            return null;
+        }
+
         if (! $willReturnMapArg->value instanceof Array_) {
             return null;
         }
