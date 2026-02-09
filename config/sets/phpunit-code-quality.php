@@ -112,9 +112,10 @@ return static function (RectorConfig $rectorConfig): void {
 
         // avoid call on nullable object
         AddInstanceofAssertForNullableInstanceRector::class,
-
-        // enable next after testing
         AddInstanceofAssertForNullableArgumentRector::class,
+
+        // @todo test first
+        // \Rector\PHPUnit\CodeQuality\Rector\ClassMethod\AddKeysExistsAssertForKeyUseRector::class,
 
         AssertArrayCastedObjectToAssertSameRector::class,
 
