@@ -85,6 +85,9 @@ final class BehatPHPUnitAssertToWebmozartRector extends AbstractRector
         'assertFileExists' => 'fileExists',
         'assertFileIsReadable' => 'readable',
         'assertDirectoryExists' => 'directory',
+
+        // Instance of
+        'assertNotInstanceOf' => 'notInstanceOf',
     ];
 
     /**
