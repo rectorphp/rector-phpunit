@@ -25,7 +25,7 @@ final class BehatPHPUnitAssertToWebmozartRector extends AbstractRector
     /**
      * @var array<string, string>
      */
-    private const array PHPUNIT_TO_WEBMOZZART_METHODS = [
+    private const array PHPUNIT_TO_WEBMOZART_METHODS = [
         // Boolean
         'assertTrue' => 'true',
         'assertFalse' => 'false',
@@ -173,7 +173,7 @@ CODE_SAMPLE
             }
 
             // changed method name
-            $webmozartMethodName = self::PHPUNIT_TO_WEBMOZZART_METHODS[$phpunitMethodName] ?? null;
+            $webmozartMethodName = self::PHPUNIT_TO_WEBMOZART_METHODS[$phpunitMethodName] ?? null;
             if ($webmozartMethodName === null) {
                 return null;
             }
