@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPUnit\Enum\BehatClassName;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
@@ -97,6 +98,11 @@ final class BehatPHPUnitAssertToWebmozartRector extends AbstractRector
         'assertNotInstanceOf',
     ];
 
+    public function __construct(
+        private readonly ReflectionProvider $reflectionProvider
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
 
@@ -155,6 +161,10 @@ CODE_SAMPLE
 
         $classReflection = $scope->getClassReflection();
         if (! $classReflection->is(BehatClassName::CONTEXT)) {
+            return null;
+        }
+
+        if (! $this->reflectionProvider->hasClass(WebmozartClassName::ASSERT)) {
             return null;
         }
 
