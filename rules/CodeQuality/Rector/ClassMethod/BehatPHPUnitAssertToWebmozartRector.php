@@ -94,6 +94,7 @@ final class BehatPHPUnitAssertToWebmozartRector extends AbstractRector
         'assertContains',
         'assertNotContains',
         'assertInstanceOf',
+        'assertNotInstanceOf',
     ];
 
     public function getRuleDefinition(): RuleDefinition
