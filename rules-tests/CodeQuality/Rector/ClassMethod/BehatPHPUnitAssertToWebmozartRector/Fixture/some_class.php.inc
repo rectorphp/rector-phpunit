@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\BehatPHPUnitAssertToWebmozzartRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\BehatPHPUnitAssertToWebmozartRector\Fixture;
 
 use Behat\Behat\Context\Context;
 use PHPUnit\Framework\Assert;
@@ -19,7 +19,7 @@ final class SomeClass implements Context
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\BehatPHPUnitAssertToWebmozzartRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\BehatPHPUnitAssertToWebmozartRector\Fixture;
 
 use Behat\Behat\Context\Context;
 use PHPUnit\Framework\Assert;

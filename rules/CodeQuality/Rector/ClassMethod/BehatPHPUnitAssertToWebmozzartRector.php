@@ -18,9 +18,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\BehatPHPUnitAssertToWebmozzartRector\BehatPHPUnitAssertToWebmozzartRectorTest
+ * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\BehatPHPUnitAssertToWebmozartRector\BehatPHPUnitAssertToWebmozartRectorTest
  */
-final class BehatPHPUnitAssertToWebmozzartRector extends AbstractRector
+final class BehatPHPUnitAssertToWebmozartRector extends AbstractRector
 {
     /**
      * @var array<string, string>
