@@ -50,8 +50,8 @@ final class BehatPHPUnitAssertToWebmozartRector extends AbstractRector
         'assertInstanceOf' => 'isInstanceOf',
 
         // array
-        'assertContains' => 'inArray',
-        'assertNotContains' => 'notInArray',
+        'assertContains' => 'oneOf',
+        'assertNotContains' => 'notOneOf',
 
         // Comparison / equality
         'assertSame' => 'same',
