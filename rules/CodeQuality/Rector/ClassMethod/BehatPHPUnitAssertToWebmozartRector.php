@@ -96,6 +96,8 @@ final class BehatPHPUnitAssertToWebmozartRector extends AbstractRector
         'assertNotContains',
         'assertInstanceOf',
         'assertNotInstanceOf',
+        'assertArrayHasKey',
+        'assertArrayNotHasKey'
     ];
 
     public function __construct(
