@@ -100,8 +100,6 @@ final class BehatPHPUnitAssertToWebmozartRector extends AbstractRector
         'assertLessThan',
         'assertLessThanOrEqual',
         'assertCount',
-        'assertContains',
-        'assertNotContains',
         'assertInstanceOf',
         'assertNotInstanceOf',
         'assertArrayHasKey',
