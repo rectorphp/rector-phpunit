@@ -71,6 +71,7 @@ final class BehatPHPUnitAssertToWebmozartRector extends AbstractRector
         'assertStringEndsWith' => 'endsWith',
         'assertStringEndsNotWith' => 'notEndsWith',
         'assertMatchesRegularExpression' => 'regex',
+        'assertDoesNotMatchRegularExpression' => 'notRegex',
 
         // Bool
         'assertNotTrue' => 'false',
@@ -110,6 +111,7 @@ final class BehatPHPUnitAssertToWebmozartRector extends AbstractRector
         'assertStringContainsString',
         'assertStringStartsWith',
         'assertMatchesRegularExpression',
+        'assertDoesNotMatchRegularExpression',
     ];
 
     public function __construct(
