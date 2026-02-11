@@ -30,7 +30,7 @@ final class SomeClass implements Context
     {
         \Webmozart\Assert\Assert::same('given', 'expected');
 
-        \Webmozart\Assert\Assert::contains('needle', 'haystack');
+        \Webmozart\Assert\Assert::contains('haystack', 'needle');
     }
 }
 
