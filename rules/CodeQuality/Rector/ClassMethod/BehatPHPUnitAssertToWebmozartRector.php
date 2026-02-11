@@ -109,6 +109,7 @@ final class BehatPHPUnitAssertToWebmozartRector extends AbstractRector
         'assertArrayNotHasKey',
         'assertStringContainsString',
         'assertStringStartsWith',
+        'assertMatchesRegularExpression',
     ];
 
     public function __construct(
