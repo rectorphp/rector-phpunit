@@ -107,15 +107,9 @@ CODE_SAMPLE
     private function isPossiblyStringType(Expr $expr): bool
     {
         $exprType = $this->getType($expr);
+        $exprType = \PHPStan\Type\TypeCombinator::removeNull($exprType);
+        $exprType = \PHPStan\Type\TypeCombinator::removeFalsey($exprType);
 
-        if ($exprType instanceof UnionType) {
-            foreach ($exprType->getTypes() as $unionedType) {
-                if ($unionedType instanceof StringType) {
-                    return true;
-                }
-            }
-        }
-
-        return $exprType instanceof StringType;
+        return $exprType->isString()->yes();
     }
 }
