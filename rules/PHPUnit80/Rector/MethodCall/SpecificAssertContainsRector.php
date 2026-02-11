@@ -9,8 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
-use PHPStan\Type\StringType;
-use PHPStan\Type\UnionType;
+use PHPStan\Type\TypeCombinator;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -107,9 +106,10 @@ CODE_SAMPLE
     private function isPossiblyStringType(Expr $expr): bool
     {
         $exprType = $this->getType($expr);
-        $exprType = \PHPStan\Type\TypeCombinator::removeNull($exprType);
-        $exprType = \PHPStan\Type\TypeCombinator::removeFalsey($exprType);
+        $exprType = TypeCombinator::removeNull($exprType);
+        $exprType = TypeCombinator::removeFalsey($exprType);
 
-        return $exprType->isString()->yes();
+        return $exprType->isString()
+            ->yes();
     }
 }
