@@ -6,6 +6,7 @@ namespace Rector\PHPUnit\PHPUnit120\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -71,7 +72,7 @@ final class PropertyCreateMockToCreateStubRector extends AbstractRector
             // update property type
             $property = $node->getProperty($propertyName);
             /** @var Property $property */
-            $property->type = new FullyQualified(PHPUnitClassName::STUB);
+            $property->type = $this->updatePropertyType($property->type);
         }
 
         if (! $hasChanged) {
@@ -149,5 +150,23 @@ CODE_SAMPLE
 
         // the setup class method must be here, so we have a place where the createMock() is used
         return ! $setUpClassMethod instanceof ClassMethod;
+    }
+
+    private function updatePropertyType(?Node $type): IntersectionType|FullyQualified
+    {
+        if ($type instanceof IntersectionType) {
+            $newTypes = [];
+            foreach ($type->types as $innerType) {
+                if ($innerType instanceof FullyQualified && $innerType->toString() === PHPUnitClassName::MOCK_OBJECT) {
+                    $newTypes[] = new FullyQualified(PHPUnitClassName::STUB);
+                } else {
+                    $newTypes[] = $innerType;
+                }
+            }
+
+            return new IntersectionType($newTypes);
+        }
+
+        return new FullyQualified(PHPUnitClassName::STUB);
     }
 }
