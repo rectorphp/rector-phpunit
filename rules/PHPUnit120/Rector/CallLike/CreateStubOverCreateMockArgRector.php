@@ -168,7 +168,7 @@ CODE_SAMPLE
         }
 
         foreach ($parameters as $parameter) {
-            if ($parameter->getName() !== $arg->name->name) {
+            if ($parameter->getName() !== $arg->name->toString()) {
                 continue;
             }
 
