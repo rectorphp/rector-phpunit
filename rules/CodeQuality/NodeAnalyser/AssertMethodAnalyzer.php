@@ -56,7 +56,7 @@ final readonly class AssertMethodAnalyzer
         $declaringClassName = $extendedMethodReflection->getDeclaringClass()
             ->getName();
 
-        return in_array($declaringClassName, [PHPUnitClassName::TEST_CASE, PHPUnitClassName::ASSERT]);
+        return in_array($declaringClassName, [PHPUnitClassName::TEST_CASE, PHPUnitClassName::ASSERT], true);
     }
 
     public function detectTestCaseCallForStatic(MethodCall $methodCall): bool
