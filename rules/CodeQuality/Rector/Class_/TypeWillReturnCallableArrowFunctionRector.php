@@ -13,6 +13,8 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Return_;
+use PhpParser\NodeFinder;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
@@ -241,6 +243,10 @@ CODE_SAMPLE
                     return null;
                 }
 
+                if ($this->shouldSkipReturnForConflictWithReturnedNodeType($innerClosure, $returnType)) {
+                    return null;
+                }
+
                 $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
                     $returnType,
                     TypeKind::RETURN
@@ -325,5 +331,29 @@ CODE_SAMPLE
         }
 
         return $callerType;
+    }
+
+    private function shouldSkipReturnForConflictWithReturnedNodeType(
+        Closure|ArrowFunction $functionLike,
+        Type $returnType
+    ): bool {
+        // find return functionLike, to check current type
+        $nodeFinder = new NodeFinder();
+        $returns = $nodeFinder->findInstanceOf($functionLike, Return_::class);
+        $returnTypes = [];
+        foreach ($returns as $return) {
+            if ($return->expr instanceof Node) {
+                $returnTypes[] = $this->getType($return->expr);
+            }
+        }
+
+        if (count($returnTypes) === 1) {
+            $closureReturnedNodeType = $returnTypes[0];
+            if (! $closureReturnedNodeType->isSuperTypeOf($returnType)->yes()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
