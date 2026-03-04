@@ -3,7 +3,7 @@
 namespace Rector\PHPUnit\Tests\PHPUnit120\Rector\CallLike\CreateStubOverCreateMockArgRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
-use Utils\PHPStan\Tests\Rule\PHPUnit\StubOverMockArgRule\Source\AnyClass;
+use Rector\PHPUnit\Tests\PHPUnit120\Rector\CallLike\CreateStubOverCreateMockArgRector\Source\AnyClass;
 
 class SomeFileWithMocks extends TestCase
 {
@@ -24,7 +24,7 @@ class SomeFileWithMocks extends TestCase
 namespace Rector\PHPUnit\Tests\PHPUnit120\Rector\CallLike\CreateStubOverCreateMockArgRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
-use Utils\PHPStan\Tests\Rule\PHPUnit\StubOverMockArgRule\Source\AnyClass;
+use Rector\PHPUnit\Tests\PHPUnit120\Rector\CallLike\CreateStubOverCreateMockArgRector\Source\AnyClass;
 
 class SomeFileWithMocks extends TestCase
 {
