@@ -9,7 +9,9 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\PHPUnit\Enum\PHPUnitAttribute;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -22,7 +24,8 @@ final class DataProviderArrayItemsNewLinedRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer
     ) {
     }
 
@@ -96,7 +99,8 @@ CODE_SAMPLE
         }
 
         // skip test methods
-        if (str_starts_with($node->name->toString(), 'test')) {
+        if (str_starts_with($node->name->toString(), 'test')
+            || $this->phpAttributeAnalyzer->hasPhpAttribute($node, PHPUnitAttribute::TEST)) {
             return null;
         }
 
