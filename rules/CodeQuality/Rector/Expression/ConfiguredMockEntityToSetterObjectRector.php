@@ -138,7 +138,6 @@ CODE_SAMPLE
         }
 
         if ($node instanceof Expression) {
-            Assert::isInstanceOf($assign, Assign::class);
             return $this->createForAssign($doctrineClass, $assign, $definedGettersArg->value, $node);
         }
 
