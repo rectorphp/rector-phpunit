@@ -25,5 +25,20 @@ return static function (RectorConfig $rectorConfig): void {
             'expectExceptionMessageRegExp',
             'expectExceptionMessageMatches'
         ),
+
+
+        // @see https://github.com/sebastianbergmann/phpunit/issues/4086
+        new MethodCallRename(
+            'PHPUnit\Framework\TestCase',
+            'assertRegExp',
+            'assertMatchesRegularExpression'
+        ),
+
+        // @see https://github.com/sebastianbergmann/phpunit/issues/4089
+        new MethodCallRename(
+            'PHPUnit\Framework\TestCase',
+            'assertNotRegExp',
+            'assertDoesNotMatchRegularExpression'
+        ),
     ]);
 };
