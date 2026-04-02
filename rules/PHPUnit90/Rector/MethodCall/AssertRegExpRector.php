@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
+namespace Rector\PHPUnit\PHPUnit90\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -24,7 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertRegExpRector\AssertRegExpRectorTest
+ * @see \Rector\PHPUnit\Tests\PHPUnit90\Rector\MethodCall\AssertRegExpRector\AssertRegExpRectorTest
  */
 final class AssertRegExpRector extends AbstractRector
 {
