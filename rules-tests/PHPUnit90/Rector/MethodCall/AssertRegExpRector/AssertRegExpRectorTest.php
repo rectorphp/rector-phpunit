@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertRegExpRector;
+namespace Rector\PHPUnit\Tests\PHPUnit90\Rector\MethodCall\AssertRegExpRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

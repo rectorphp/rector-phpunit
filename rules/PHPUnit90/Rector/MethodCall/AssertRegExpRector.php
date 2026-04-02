@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
+namespace Rector\PHPUnit\PHPUnit90\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -24,7 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertRegExpRector\AssertRegExpRectorTest
+ * @see \Rector\PHPUnit\Tests\PHPUnit90\Rector\MethodCall\AssertRegExpRector\AssertRegExpRectorTest
  */
 final class AssertRegExpRector extends AbstractRector
 {
@@ -50,11 +50,11 @@ final class AssertRegExpRector extends AbstractRector
             [
                 new CodeSample(
                     '$this->assertSame(1, preg_match("/^Message for ".*"\.$/", $string), $message);',
-                    '$this->assertRegExp("/^Message for ".*"\.$/", $string, $message);'
+                    '$this->assertMatchesRegularExpression("/^Message for ".*"\.$/", $string, $message);'
                 ),
                 new CodeSample(
                     '$this->assertEquals(false, preg_match("/^Message for ".*"\.$/", $string), $message);',
-                    '$this->assertNotRegExp("/^Message for ".*"\.$/", $string, $message);'
+                    '$this->assertDoesNotMatchRegularExpression("/^Message for ".*"\.$/", $string, $message);'
                 ),
             ]
         );
@@ -163,13 +163,13 @@ final class AssertRegExpRector extends AbstractRector
         if (in_array($oldMethodName, [self::ASSERT_SAME, self::ASSERT_EQUALS], true) && $oldCondition === 1
             || in_array($oldMethodName, [self::ASSERT_NOT_SAME, self::ASSERT_NOT_EQUALS], true) && $oldCondition === 0
         ) {
-            $node->name = new Identifier('assertRegExp');
+            $node->name = new Identifier('assertMatchesRegularExpression');
         }
 
         if (in_array($oldMethodName, [self::ASSERT_SAME, self::ASSERT_EQUALS], true) && $oldCondition === 0
             || in_array($oldMethodName, [self::ASSERT_NOT_SAME, self::ASSERT_NOT_EQUALS], true) && $oldCondition === 1
         ) {
-            $node->name = new Identifier('assertNotRegExp');
+            $node->name = new Identifier('assertDoesNotMatchRegularExpression');
         }
     }
 

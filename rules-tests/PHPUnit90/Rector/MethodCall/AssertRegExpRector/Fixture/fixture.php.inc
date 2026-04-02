@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertRegExpRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit90\Rector\MethodCall\AssertRegExpRector\Fixture;
 
 final class MyTest extends \PHPUnit\Framework\TestCase
 {
@@ -17,16 +17,16 @@ final class MyTest extends \PHPUnit\Framework\TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertRegExpRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit90\Rector\MethodCall\AssertRegExpRector\Fixture;
 
 final class MyTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
-        $this->assertRegExp('/^Message for ".*"\.$/', $string, $message);
-        $this->assertNotRegExp('/^Message for ".*"\.$/', $string, $message);
-        $this->assertNotRegExp('/^Message for ".*"\.$/', $string, $message);
-        $this->assertRegExp('/^Message for ".*"\.$/', $string, $message);
+        $this->assertMatchesRegularExpression('/^Message for ".*"\.$/', $string, $message);
+        $this->assertDoesNotMatchRegularExpression('/^Message for ".*"\.$/', $string, $message);
+        $this->assertDoesNotMatchRegularExpression('/^Message for ".*"\.$/', $string, $message);
+        $this->assertMatchesRegularExpression('/^Message for ".*"\.$/', $string, $message);
     }
 }
 

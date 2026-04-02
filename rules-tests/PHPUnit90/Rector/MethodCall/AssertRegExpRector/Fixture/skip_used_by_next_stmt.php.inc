@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertRegExpRector\Fixture;
+namespace Rector\PHPUnit\Tests\PHPUnit90\Rector\MethodCall\AssertRegExpRector\Fixture;
 
 final class SkipUsedByNextStmt extends \PHPUnit\Framework\TestCase
 {
