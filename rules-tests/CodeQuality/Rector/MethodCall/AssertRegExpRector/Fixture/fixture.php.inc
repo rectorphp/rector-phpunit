@@ -23,10 +23,10 @@ final class MyTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {
-        $this->assertRegExp('/^Message for ".*"\.$/', $string, $message);
-        $this->assertNotRegExp('/^Message for ".*"\.$/', $string, $message);
-        $this->assertNotRegExp('/^Message for ".*"\.$/', $string, $message);
-        $this->assertRegExp('/^Message for ".*"\.$/', $string, $message);
+        $this->assertMatchesRegularExpression('/^Message for ".*"\.$/', $string, $message);
+        $this->assertDoesNotMatchRegularExpression('/^Message for ".*"\.$/', $string, $message);
+        $this->assertDoesNotMatchRegularExpression('/^Message for ".*"\.$/', $string, $message);
+        $this->assertMatchesRegularExpression('/^Message for ".*"\.$/', $string, $message);
     }
 }
 
