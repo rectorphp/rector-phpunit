@@ -227,7 +227,7 @@ CODE_SAMPLE
             }
         }
 
-        return (count($foundVariables) - 1) > 1;
+        return $callLikeVariableUseCount > 1 || (count($foundVariables) - 1) > $callLikeVariableUseCount;
     }
 
     /**
