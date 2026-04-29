@@ -132,7 +132,6 @@ final readonly class MockObjectExprDetector
                     if ($mockObjectType->isSuperTypeOf($paramType)->yes()) {
                         return true;
                     }
-
                 }
             }
         }
