@@ -91,7 +91,7 @@ final readonly class MockObjectExprDetector
             }
 
             // check if variable is passed as arg to a method that declares MockObject type parameter
-            foreach ($methodCall->getArgs() as $arg) {
+            foreach ($methodCall->getArgs() as $argIndex => $arg) {
                 if (! $arg instanceof Arg) {
                     continue;
                 }
@@ -117,7 +117,7 @@ final readonly class MockObjectExprDetector
                 $parameters = $variants[0]->getParameters();
 
                 foreach ($parameters as $index => $parameterReflection) {
-                    $paramType = $parameters[$index]->getType();
+                    $paramType = $parameterReflection->getType();
                     if ($arg->name instanceof Identifier
                         && $this->nodeNameResolver->isName($arg->name, $parameterReflection->getName())
                         && $mockObjectType->isSuperTypeOf($paramType)
@@ -128,7 +128,10 @@ final readonly class MockObjectExprDetector
                     if (! isset($parameters[$index])) {
                         continue;
                     }
+                }
 
+                if (isset($parameters[$argIndex])) {
+                    $paramType = $parameters[$argIndex]->getType();
                     if ($mockObjectType->isSuperTypeOf($paramType)->yes()) {
                         return true;
                     }
