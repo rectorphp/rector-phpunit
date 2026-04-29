@@ -4,7 +4,7 @@ namespace Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\BareCreateMockAssi
 
 use PHPUnit\Framework\TestCase;
 
-final class MultipleUsesAsNoConnection extends TestCase
+final class SkipMultipleUsesAsArg extends TestCase
 {
     public function test()
     {
