@@ -116,10 +116,10 @@ final readonly class MockObjectExprDetector
 
                 $parameters = $variants[0]->getParameters();
 
-                foreach ($parameters as $parameterReflection) {
-                    $paramType = $parameterReflection->getType();
+                foreach ($parameters as $parameter) {
+                    $paramType = $parameter->getType();
                     if ($arg->name instanceof Identifier
-                        && $this->nodeNameResolver->isName($arg->name, $parameterReflection->getName())
+                        && $this->nodeNameResolver->isName($arg->name, $parameter->getName())
                         && $mockObjectType->isSuperTypeOf($paramType)
                             ->yes()) {
                         return true;
