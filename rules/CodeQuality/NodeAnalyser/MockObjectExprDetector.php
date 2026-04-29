@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\MethodReflection;
@@ -90,7 +91,7 @@ final readonly class MockObjectExprDetector
             }
 
             // check if variable is passed as arg to a method that declares MockObject type parameter
-            foreach ($methodCall->getArgs() as $position => $arg) {
+            foreach ($methodCall->getArgs() as $arg) {
                 if (! $arg instanceof Arg) {
                     continue;
                 }
@@ -108,15 +109,30 @@ final readonly class MockObjectExprDetector
                     continue;
                 }
 
-                $parameters = $methodReflection->getVariants()[0]
-                    ->getParameters();
-                if (! isset($parameters[$position])) {
+                $variants = $methodReflection->getVariants();
+                if (! isset($variants[0])) {
                     continue;
                 }
 
-                $paramType = $parameters[$position]->getType();
-                if ($mockObjectType->isSuperTypeOf($paramType)->yes()) {
-                    return true;
+                $parameters = $variants[0]->getParameters();
+
+                foreach ($parameters as $index => $parameterReflection) {
+                    $paramType = $parameters[$index]->getType();
+                    if ($arg->name instanceof Identifier
+                        && $this->nodeNameResolver->isName($arg->name, $parameterReflection->getName())
+                        && $mockObjectType->isSuperTypeOf($paramType)
+                            ->yes()) {
+                        return true;
+                    }
+
+                    if (! isset($parameters[$index])) {
+                        continue;
+                    }
+
+                    if ($mockObjectType->isSuperTypeOf($paramType)->yes()) {
+                        return true;
+                    }
+
                 }
             }
         }
