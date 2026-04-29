@@ -116,7 +116,7 @@ final readonly class MockObjectExprDetector
 
                 $parameters = $variants[0]->getParameters();
 
-                foreach ($parameters as $index => $parameterReflection) {
+                foreach ($parameters as $parameterReflection) {
                     $paramType = $parameterReflection->getType();
                     if ($arg->name instanceof Identifier
                         && $this->nodeNameResolver->isName($arg->name, $parameterReflection->getName())
