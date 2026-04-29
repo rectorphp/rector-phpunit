@@ -134,7 +134,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            /** @var GenericTagValueNode $genericTagValueNode */
             $genericTagValueNode = $seePhpDocTagNode->value;
 
             $seeTagClass = ltrim($genericTagValueNode->value, '\\');

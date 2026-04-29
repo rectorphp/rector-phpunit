@@ -129,7 +129,6 @@ CODE_SAMPLE
             // test from doc blocks
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $testWithPhpDocTagNode);
 
-            /** @var GenericTagValueNode $genericTagValueNode */
             $genericTagValueNode = $testWithPhpDocTagNode->value;
             $testWithItems = explode("\n", trim($genericTagValueNode->value));
 

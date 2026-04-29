@@ -106,7 +106,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            /** @var Assign $assign */
             $assign = $stmt->expr;
 
             if (! $assign->var instanceof Variable) {
