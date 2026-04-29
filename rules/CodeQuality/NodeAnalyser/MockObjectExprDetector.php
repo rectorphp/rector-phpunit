@@ -92,10 +92,6 @@ final readonly class MockObjectExprDetector
 
             // check if variable is passed as arg to a method that declares MockObject type parameter
             foreach ($methodCall->getArgs() as $argIndex => $arg) {
-                if (! $arg instanceof Arg) {
-                    continue;
-                }
-
                 if (! $arg->value instanceof Variable) {
                     continue;
                 }
