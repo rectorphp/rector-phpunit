@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\NodeAnalyser;
 
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
