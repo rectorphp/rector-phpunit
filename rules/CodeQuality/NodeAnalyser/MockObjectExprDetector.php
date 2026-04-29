@@ -124,10 +124,6 @@ final readonly class MockObjectExprDetector
                             ->yes()) {
                         return true;
                     }
-
-                    if (! isset($parameters[$index])) {
-                        continue;
-                    }
                 }
 
                 if (isset($parameters[$argIndex])) {
