@@ -227,8 +227,7 @@ CODE_SAMPLE
             }
         }
 
-        // not suitable for direct replacing
-        return (count($foundVariables) - 1) > ($callLikeVariableUseCount);
+        return (count($foundVariables) - 1) > 1;
     }
 
     /**
