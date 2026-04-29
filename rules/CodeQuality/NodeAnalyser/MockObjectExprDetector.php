@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\NodeAnalyser;
 
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Reflection\MethodReflection;
+use PHPStan\Type\ObjectType;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\CodeQuality\NodeFinder\VariableFinder;
+use Rector\PHPUnit\Enum\PHPUnitClassName;
+use Rector\Reflection\ReflectionResolver;
 
 final readonly class MockObjectExprDetector
 {
@@ -20,6 +25,7 @@ final readonly class MockObjectExprDetector
         private BetterNodeFinder $betterNodeFinder,
         private NodeNameResolver $nodeNameResolver,
         private VariableFinder $variableFinder,
+        private ReflectionResolver $reflectionResolver,
     ) {
     }
 
@@ -67,6 +73,8 @@ final readonly class MockObjectExprDetector
         /** @var array<Expr\MethodCall> $methodCalls */
         $methodCalls = $this->betterNodeFinder->findInstancesOfScoped((array) $classMethod->stmts, [MethodCall::class]);
 
+        $mockObjectType = new ObjectType(PHPUnitClassName::MOCK_OBJECT);
+
         foreach ($methodCalls as $methodCall) {
             if (! $methodCall->var instanceof Variable) {
                 continue;
@@ -75,6 +83,41 @@ final readonly class MockObjectExprDetector
             if ($this->nodeNameResolver->isName($methodCall->var, $variableName)) {
                 // variable is being called on, most like mocking, lets skip
                 return true;
+            }
+
+            if ($methodCall->isFirstClassCallable()) {
+                continue;
+            }
+
+            // check if variable is passed as arg to a method that declares MockObject type parameter
+            foreach ($methodCall->getArgs() as $position => $arg) {
+                if (! $arg instanceof Arg) {
+                    continue;
+                }
+
+                if (! $arg->value instanceof Variable) {
+                    continue;
+                }
+
+                if (! $this->nodeNameResolver->isName($arg->value, $variableName)) {
+                    continue;
+                }
+
+                $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromMethodCall($methodCall);
+                if (! $methodReflection instanceof MethodReflection) {
+                    continue;
+                }
+
+                $parameters = $methodReflection->getVariants()[0]
+                    ->getParameters();
+                if (! isset($parameters[$position])) {
+                    continue;
+                }
+
+                $paramType = $parameters[$position]->getType();
+                if ($mockObjectType->isSuperTypeOf($paramType)->yes()) {
+                    return true;
+                }
             }
         }
 
