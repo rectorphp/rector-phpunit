@@ -14,6 +14,8 @@ use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use function explode;
+use function in_array;
 
 /**
  * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\ReplaceTestAnnotationWithPrefixedFunctionRector\ReplaceTestAnnotationWithPrefixedFunctionRectorTest
@@ -84,7 +86,14 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! str_contains($docComment->getText(), '@test')) {
+        $hasAnnotation = false;
+        foreach(explode(PHP_EOL, $docComment->getText()) as $row) {
+            if (in_array(trim($row), ['*@test', '* @test'])) {
+                $hasAnnotation = true;
+            }
+        }
+
+        if (! $hasAnnotation) {
             return null;
         }
 
