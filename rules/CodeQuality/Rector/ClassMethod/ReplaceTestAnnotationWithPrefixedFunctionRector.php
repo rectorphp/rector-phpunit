@@ -12,9 +12,9 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\Util\NewLineSplitter;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use function explode;
 use function in_array;
 
 /**
@@ -87,7 +87,7 @@ CODE_SAMPLE
         }
 
         $hasAnnotation = false;
-        foreach(explode(PHP_EOL, $docComment->getText()) as $row) {
+        foreach(NewLineSplitter::split($docComment->getText()) as $row) {
             if (in_array(trim($row), ['*@test', '* @test'])) {
                 $hasAnnotation = true;
             }
