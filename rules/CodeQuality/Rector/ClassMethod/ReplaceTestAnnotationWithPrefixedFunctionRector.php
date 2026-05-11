@@ -90,6 +90,7 @@ CODE_SAMPLE
         foreach(NewLineSplitter::split($docComment->getText()) as $row) {
             if (in_array(trim($row), ['*@test', '* @test'])) {
                 $hasAnnotation = true;
+                break;
             }
         }
 
