@@ -63,7 +63,7 @@ final readonly class FromBinaryAndAssertExpressionsFactory
 
             if ($expr instanceof Isset_) {
                 foreach ($expr->vars as $issetVariable) {
-                    if ($issetVariable instanceof ArrayDimFetch) {
+                    if ($issetVariable instanceof ArrayDimFetch && $issetVariable->dim instanceof Expr) {
                         $assertMethodCalls[] = $this->createAssertMethodCall(
                             $isStaticClosure,
                             'assertArrayHasKey',
