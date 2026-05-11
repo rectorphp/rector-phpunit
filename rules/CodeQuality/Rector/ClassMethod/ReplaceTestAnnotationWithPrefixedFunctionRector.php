@@ -12,8 +12,10 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\Util\NewLineSplitter;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use function in_array;
 
 /**
  * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\ReplaceTestAnnotationWithPrefixedFunctionRector\ReplaceTestAnnotationWithPrefixedFunctionRectorTest
@@ -84,7 +86,15 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! str_contains($docComment->getText(), '@test')) {
+        $hasAnnotation = false;
+        foreach(NewLineSplitter::split($docComment->getText()) as $row) {
+            if (in_array(trim($row), ['*@test', '* @test'])) {
+                $hasAnnotation = true;
+                break;
+            }
+        }
+
+        if (! $hasAnnotation) {
             return null;
         }
 
