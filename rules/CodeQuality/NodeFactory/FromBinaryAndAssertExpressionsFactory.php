@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\Int_;
@@ -33,14 +34,14 @@ final readonly class FromBinaryAndAssertExpressionsFactory
      * @param Expr[] $exprs
      * @return Stmt[]
      */
-    public function create(array $exprs): array
+    public function create(array $exprs, bool $isStaticClosure = false): array
     {
         $assertMethodCalls = [];
 
         foreach ($exprs as $expr) {
             // implicit bool compare
             if ($expr instanceof MethodCall) {
-                $assertMethodCalls[] = $this->nodeFactory->createMethodCall('this', 'assertTrue', [$expr]);
+                $assertMethodCalls[] = $this->createAssertMethodCall($isStaticClosure, 'assertTrue', [$expr]);
 
                 continue;
             }
@@ -51,8 +52,8 @@ final readonly class FromBinaryAndAssertExpressionsFactory
                 $dimExpr = $expr->getArgs()[0]
                     ->value;
 
-                $assertMethodCalls[] = $this->nodeFactory->createMethodCall(
-                    'this',
+                $assertMethodCalls[] = $this->createAssertMethodCall(
+                    $isStaticClosure,
                     'assertArrayHasKey',
                     [$dimExpr, $variableExpr]
                 );
@@ -62,9 +63,9 @@ final readonly class FromBinaryAndAssertExpressionsFactory
 
             if ($expr instanceof Isset_) {
                 foreach ($expr->vars as $issetVariable) {
-                    if ($issetVariable instanceof ArrayDimFetch) {
-                        $assertMethodCalls[] = $this->nodeFactory->createMethodCall(
-                            'this',
+                    if ($issetVariable instanceof ArrayDimFetch && $issetVariable->dim instanceof Expr) {
+                        $assertMethodCalls[] = $this->createAssertMethodCall(
+                            $isStaticClosure,
                             'assertArrayHasKey',
                             [$issetVariable->dim, $issetVariable->var]
                         );
@@ -86,8 +87,8 @@ final readonly class FromBinaryAndAssertExpressionsFactory
                     $classNameExpr = $expr->class;
                 }
 
-                $assertMethodCalls[] = $this->nodeFactory->createMethodCall(
-                    'this',
+                $assertMethodCalls[] = $this->createAssertMethodCall(
+                    $isStaticClosure,
                     'assertInstanceOf',
                     [$classNameExpr, $expr->expr]
                 );
@@ -102,8 +103,8 @@ final readonly class FromBinaryAndAssertExpressionsFactory
                             ->value;
 
                         // create assertCount()
-                        $assertMethodCalls[] = $this->nodeFactory->createMethodCall(
-                            'this',
+                        $assertMethodCalls[] = $this->createAssertMethodCall(
+                            $isStaticClosure,
                             'assertCount',
                             [$expr->right, $countedExpr]
                         );
@@ -116,8 +117,8 @@ final readonly class FromBinaryAndAssertExpressionsFactory
                 }
 
                 // create assertSame()
-                $assertMethodCalls[] = $this->nodeFactory->createMethodCall(
-                    'this',
+                $assertMethodCalls[] = $this->createAssertMethodCall(
+                    $isStaticClosure,
                     $expr instanceof Identical ? 'assertSame' : 'assertEquals',
                     [$expr->right, $expr->left]
                 );
@@ -140,5 +141,17 @@ final readonly class FromBinaryAndAssertExpressionsFactory
         }
 
         return $stmts;
+    }
+
+    /**
+     * @param Expr[] $args
+     */
+    private function createAssertMethodCall(bool $isStaticClosure, string $method, array $args): MethodCall|StaticCall
+    {
+        if ($isStaticClosure) {
+            return new StaticCall(new Name('self'), $method, $this->nodeFactory->createArgs($args));
+        }
+
+        return $this->nodeFactory->createMethodCall('this', $method, $args);
     }
 }

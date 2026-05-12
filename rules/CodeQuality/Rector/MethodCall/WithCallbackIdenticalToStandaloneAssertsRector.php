@@ -125,7 +125,10 @@ CODE_SAMPLE
                 continue;
             }
 
-            $assertExprStmts = $this->fromBinaryAndAssertExpressionsFactory->create($joinedExprs);
+            $innerFunctionLike = $argAndFunctionLike->getFunctionLike();
+            $isStaticClosure = $innerFunctionLike instanceof Closure && $innerFunctionLike->static;
+
+            $assertExprStmts = $this->fromBinaryAndAssertExpressionsFactory->create($joinedExprs, $isStaticClosure);
             if ($assertExprStmts === []) {
                 continue;
             }
@@ -134,7 +137,6 @@ CODE_SAMPLE
 
             // last si return true;
             $assertExprStmts[] = new Return_($this->nodeFactory->createTrue());
-            $innerFunctionLike = $argAndFunctionLike->getFunctionLike();
 
             if ($innerFunctionLike instanceof Closure) {
                 $innerFunctionLike->stmts = array_merge($nonReturnCallbackStmts, $assertExprStmts);
