@@ -1,7 +1,5 @@
 <?php
 
-// skip: non-string argument (enum case) should not crash
-
 namespace Rector\PHPUnit\Tests\PHPUnit120\Rector\Class_\AssertIsTypeMethodCallRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
