@@ -22,6 +22,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AssertIsTypeMethodCallRector extends AbstractRector
 {
+    /**
+     * @var array<string, string>
+     */
     private const array IS_TYPE_VALUE_TO_METHOD = [
         'array' => 'isArray',
         'bool' => 'isBool',

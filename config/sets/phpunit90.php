@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-use Rector\PHPUnit\PHPUnit90\Rector\MethodCall\AssertRegExpRector;
 use Rector\PHPUnit\PHPUnit100\Rector\StmtsAwareInterface\WithConsecutiveRector;
 use Rector\PHPUnit\PHPUnit90\Rector\Class_\TestListenerToHooksRector;
+use Rector\PHPUnit\PHPUnit90\Rector\MethodCall\AssertRegExpRector;
 use Rector\PHPUnit\PHPUnit90\Rector\MethodCall\ExplicitPhpErrorApiRector;
 use Rector\PHPUnit\PHPUnit90\Rector\MethodCall\SpecificAssertContainsWithoutIdentityRector;
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
@@ -28,13 +28,8 @@ return static function (RectorConfig $rectorConfig): void {
             'expectExceptionMessageMatches'
         ),
 
-
         // @see https://github.com/sebastianbergmann/phpunit/issues/4086
-        new MethodCallRename(
-            'PHPUnit\Framework\TestCase',
-            'assertRegExp',
-            'assertMatchesRegularExpression'
-        ),
+        new MethodCallRename('PHPUnit\Framework\TestCase', 'assertRegExp', 'assertMatchesRegularExpression'),
 
         // @see https://github.com/sebastianbergmann/phpunit/issues/4089
         new MethodCallRename(
