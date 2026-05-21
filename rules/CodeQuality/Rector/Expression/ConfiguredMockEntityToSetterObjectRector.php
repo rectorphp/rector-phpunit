@@ -137,6 +137,10 @@ CODE_SAMPLE
         }
 
         if ($node instanceof Expression) {
+            if (! $assign instanceof Assign) {
+                return null;
+            }
+
             return $this->createForAssign($doctrineClass, $assign, $definedGettersArg->value, $node);
         }
 
