@@ -2,7 +2,7 @@
 
 namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\PublicDataProviderClassMethodRector\Fixture;
 
-use Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\StaticDataProviderClassMethodRector\Source\AnotherAbstractClass;
+use Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\PublicDataProviderClassMethodRector\Source\AnotherAbstractClass;
 
 final class RespectParentAbstractClass extends AnotherAbstractClass
 {
@@ -20,7 +20,7 @@ final class RespectParentAbstractClass extends AnotherAbstractClass
 
 namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\PublicDataProviderClassMethodRector\Fixture;
 
-use Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\StaticDataProviderClassMethodRector\Source\AnotherAbstractClass;
+use Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\PublicDataProviderClassMethodRector\Source\AnotherAbstractClass;
 
 final class RespectParentAbstractClass extends AnotherAbstractClass
 {

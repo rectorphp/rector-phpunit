@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\StaticDataProviderClassMethodRector\Source;
+namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\PublicDataProviderClassMethodRector\Source;
 
 use PHPUnit\Framework\TestCase;
 

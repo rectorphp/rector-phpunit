@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Tests\Issues\WrongAnnotation;
+namespace Rector\PHPUnit\Tests\Issues\AnnotationParsing;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
