@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CodeQuality\Rector\ClassMethod\ReplaceTestFunctionPrefixWithAttributeRector;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\ReplaceTestFunctionPrefixWithAttributeRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

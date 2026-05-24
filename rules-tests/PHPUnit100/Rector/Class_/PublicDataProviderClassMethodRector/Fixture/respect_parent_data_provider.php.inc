@@ -2,7 +2,7 @@
 
 namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\PublicDataProviderClassMethodRector\Fixture;
 
-use Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\StaticDataProviderClassMethodRector\Source\AbstractClassWithDataProvider;
+use Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\PublicDataProviderClassMethodRector\Source\AbstractClassWithDataProvider;
 
 final class RespectParentDataProvider extends AbstractClassWithDataProvider
 {
@@ -18,7 +18,7 @@ final class RespectParentDataProvider extends AbstractClassWithDataProvider
 
 namespace Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\PublicDataProviderClassMethodRector\Fixture;
 
-use Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\StaticDataProviderClassMethodRector\Source\AbstractClassWithDataProvider;
+use Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\PublicDataProviderClassMethodRector\Source\AbstractClassWithDataProvider;
 
 final class RespectParentDataProvider extends AbstractClassWithDataProvider
 {

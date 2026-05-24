@@ -2,7 +2,7 @@
 
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertEmptyNullableObjectToAssertInstanceofRector\Fixture;
 
-use CodeQuality\Rector\MethodCall\AssertEmptyNullableObjectToAssertInstanceofRector\Source\SomeTypeObject;
+use Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertEmptyNullableObjectToAssertInstanceofRector\Source\SomeTypeObject;
 use PHPUnit\Framework\TestCase;
 
 final class AssertMakeEmpty extends TestCase
@@ -25,7 +25,7 @@ final class AssertMakeEmpty extends TestCase
 
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertEmptyNullableObjectToAssertInstanceofRector\Fixture;
 
-use CodeQuality\Rector\MethodCall\AssertEmptyNullableObjectToAssertInstanceofRector\Source\SomeTypeObject;
+use Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertEmptyNullableObjectToAssertInstanceofRector\Source\SomeTypeObject;
 use PHPUnit\Framework\TestCase;
 
 final class AssertMakeEmpty extends TestCase
@@ -38,7 +38,7 @@ final class AssertMakeEmpty extends TestCase
             $someObject = new SomeTypeObject();
         }
 
-        $this->assertNotInstanceOf(\CodeQuality\Rector\MethodCall\AssertEmptyNullableObjectToAssertInstanceofRector\Source\SomeTypeObject::class, $someObject);
+        $this->assertNotInstanceOf(\Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\AssertEmptyNullableObjectToAssertInstanceofRector\Source\SomeTypeObject::class, $someObject);
     }
 }
 
