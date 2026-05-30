@@ -115,18 +115,18 @@ CODE_SAMPLE
             $currentMethodName = $this->getName($classMethod);
 
             foreach ($desiredTagValueNodes as $desiredTagValueNode) {
-                $attributeNameAndValue = $this->resolveAttributeNameAndValue(
+                $attributeNameAndItems = $this->resolveAttributeNameAndItems(
                     $desiredTagValueNode,
                     $node,
                     $currentMethodName
                 );
-                if ($attributeNameAndValue === []) {
+                if ($attributeNameAndItems === []) {
                     continue;
                 }
 
                 $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
-                    $attributeNameAndValue[0],
-                    [$attributeNameAndValue[1]]
+                    $attributeNameAndItems[0],
+                    $attributeNameAndItems[1]
                 );
                 $classMethod->attrGroups[] = $attributeGroup;
 
@@ -146,9 +146,9 @@ CODE_SAMPLE
     }
 
     /**
-     * @return string[]
+     * @return array{string, string[]}|array{}
      */
-    private function resolveAttributeNameAndValue(
+    private function resolveAttributeNameAndItems(
         PhpDocTagNode $phpDocTagNode,
         Class_ $class,
         string $currentMethodName
@@ -158,23 +158,23 @@ CODE_SAMPLE
         }
 
         $originalAttributeValue = $phpDocTagNode->value->value;
-        $attributeNameAndValue = $this->resolveAttributeValueAndAttributeName(
+        $attributeNameAndItems = $this->resolveAttributeNameAndItemsFromValue(
             $class,
             $currentMethodName,
             $originalAttributeValue
         );
 
-        if ($attributeNameAndValue === null) {
+        if ($attributeNameAndItems === null) {
             return [];
         }
 
-        return $attributeNameAndValue;
+        return $attributeNameAndItems;
     }
 
     /**
-     * @return string[]|null
+     * @return array{string, string[]}|null
      */
-    private function resolveAttributeValueAndAttributeName(
+    private function resolveAttributeNameAndItemsFromValue(
         Class_ $currentClass,
         string $currentMethodName,
         string $originalAttributeValue
@@ -185,29 +185,57 @@ CODE_SAMPLE
             $currentMethodName,
             $originalAttributeValue
         );
-
-        $attributeName = self::DEPENDS_ATTRIBUTE;
-        if (! is_string($attributeValue)) {
-            // other: depends other Class_
-            $attributeValue = $this->resolveDependsClass($originalAttributeValue);
-            $attributeName = 'PHPUnit\Framework\Attributes\DependsOnClass';
+        if (is_string($attributeValue)) {
+            return [self::DEPENDS_ATTRIBUTE, [$attributeValue]];
         }
 
-        if (! is_string($attributeValue)) {
-            // other: depends clone ClassMethod
-            $attributeValue = $this->resolveDependsCloneClassMethod(
-                $currentClass,
-                $currentMethodName,
-                $originalAttributeValue
-            );
-            $attributeName = 'PHPUnit\Framework\Attributes\DependsUsingDeepClone';
+        // other: depends other Class_
+        $attributeValue = $this->resolveDependsClass($originalAttributeValue);
+        if (is_string($attributeValue)) {
+            return ['PHPUnit\Framework\Attributes\DependsOnClass', [$attributeValue]];
         }
 
-        if (! is_string($attributeValue)) {
+        // other: depends clone ClassMethod
+        $attributeValue = $this->resolveDependsCloneClassMethod(
+            $currentClass,
+            $currentMethodName,
+            $originalAttributeValue
+        );
+        if (is_string($attributeValue)) {
+            return ['PHPUnit\Framework\Attributes\DependsUsingDeepClone', [$attributeValue]];
+        }
+
+        // other: depends external ClassMethod, e.g. "OtherTest::testMethod"
+        $externalItems = $this->resolveDependsExternalClassMethod($originalAttributeValue);
+        if ($externalItems !== null) {
+            return ['PHPUnit\Framework\Attributes\DependsExternal', $externalItems];
+        }
+
+        return null;
+    }
+
+    /**
+     * @return string[]|null
+     */
+    private function resolveDependsExternalClassMethod(string $attributeValue): ?array
+    {
+        // deep clone variant is handled separately
+        if (str_starts_with($attributeValue, 'clone ')) {
             return null;
         }
 
-        return [$attributeName, $attributeValue];
+        if (! str_contains($attributeValue, '::')) {
+            return null;
+        }
+
+        [$className, $methodName] = explode('::', $attributeValue, 2);
+
+        // "::class" is handled as DependsOnClass
+        if ($className === '' || $methodName === '' || $methodName === 'class') {
+            return null;
+        }
+
+        return [$className . '::class', $methodName];
     }
 
     private function resolveDependsClass(string $attributeValue): ?string
