@@ -7,11 +7,13 @@ namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\ClosureUse;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Return_;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -29,6 +31,7 @@ final class MergeWithCallableAndWillReturnRector extends AbstractRector
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly ValueResolver $valueResolver,
         private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
@@ -143,8 +146,8 @@ CODE_SAMPLE
         $parentCaller->name = new Identifier('willReturnCallback');
         $parentCaller->args = [new Arg($innerClosure)];
 
-        if ($returnedExpr instanceof Variable) {
-            $innerClosure->uses[] = new ClosureUse($returnedExpr);
+        foreach ($this->resolveExternalUses($innerClosure, $returnedExpr) as $closureUse) {
+            $innerClosure->uses[] = $closureUse;
         }
 
         $returnedExprType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnedExpr);
@@ -169,6 +172,55 @@ CODE_SAMPLE
         }
 
         return $firstArgValue;
+    }
+
+    /**
+     * @return ClosureUse[]
+     */
+    private function resolveExternalUses(Closure $innerClosure, Expr $returnedExpr): array
+    {
+        $paramNames = [];
+        foreach ($innerClosure->getParams() as $param) {
+            $paramNames[] = $this->getName($param);
+        }
+
+        $existingUseNames = [];
+        foreach ($innerClosure->uses as $existingUse) {
+            $existingUseNames[] = $this->getName($existingUse->var);
+        }
+
+        $closureUses = [];
+        $seenNames = [];
+
+        /** @var Variable[] $variables */
+        $variables = $this->betterNodeFinder->findInstancesOf($returnedExpr, [Variable::class]);
+        foreach ($variables as $variable) {
+            $variableName = $this->getName($variable);
+            if (! is_string($variableName)) {
+                continue;
+            }
+
+            if ($variableName === 'this') {
+                continue;
+            }
+
+            if (in_array($variableName, $paramNames, true)) {
+                continue;
+            }
+
+            if (in_array($variableName, $existingUseNames, true)) {
+                continue;
+            }
+
+            if (in_array($variableName, $seenNames, true)) {
+                continue;
+            }
+
+            $seenNames[] = $variableName;
+            $closureUses[] = new ClosureUse(new Variable($variableName));
+        }
+
+        return $closureUses;
     }
 
     private function isLastStmtReturnTrue(Closure $closure): bool
