@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\CodeQuality\Rector\ClassMethod;
+namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Class_;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\PreferTestsWithCamelCaseRector\PreferTestsWithCamelCaseRectorTest
+ * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\PreferTestsWithCamelCaseRector\PreferTestsWithCamelCaseRectorTest
  */
 final class PreferTestsWithCamelCaseRector extends AbstractRector
 {
@@ -23,7 +23,7 @@ final class PreferTestsWithCamelCaseRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Changes PHPUnit tests methods to camel case', [
+        return new RuleDefinition('Changes PHPUnit test methods to camel case', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;
@@ -55,11 +55,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [Class_::class];
     }
 
     /**
-     * @param ClassMethod $node
+     * @param Class_ $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -67,26 +67,40 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->testsNodeAnalyzer->isTestClassMethod($node)) {
-            return null;
+        $hasChanged = false;
+
+        foreach ($node->getMethods() as $classMethod) {
+            if (! $this->testsNodeAnalyzer->isTestClassMethod($classMethod)) {
+                continue;
+            }
+
+            $currentName = $classMethod->name->toString();
+            $newName = $this->toCamelCase($currentName);
+
+            if ($currentName === $newName) {
+                continue;
+            }
+
+            // avoid name collision with an existing method
+            if ($node->getMethod($newName) instanceof Node) {
+                continue;
+            }
+
+            $classMethod->name = new Node\Identifier($newName);
+            $hasChanged = true;
         }
 
-        $currentName = $node->name->toString();
-        $newName = $this->toCamelCase($currentName);
-
-        if ($currentName === $newName) {
+        if ($hasChanged === false) {
             return null;
         }
-
-        $node->name = new Node\Identifier($newName);
 
         return $node;
     }
 
-    public function toCamelCase(string $value): string
+    private function toCamelCase(string $value): string
     {
         $words = explode(' ', str_replace(['-', '_'], ' ', $value));
-        $words = array_map(fn (string $word) => ucfirst($word), $words);
+        $words = array_map(fn (string $word): string => ucfirst($word), $words);
 
         return lcfirst(implode($words));
     }

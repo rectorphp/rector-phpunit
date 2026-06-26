@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\PreferTestsWithSnakeCaseRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\PreferTestsWithSnakeCaseRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
@@ -19,7 +19,7 @@ final class RenameTest extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\PreferTestsWithSnakeCaseRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\PreferTestsWithSnakeCaseRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 

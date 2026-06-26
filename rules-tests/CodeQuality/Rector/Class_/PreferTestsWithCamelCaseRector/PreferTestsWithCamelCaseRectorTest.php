@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\PreferTestsWithSnakeCaseRector;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\PreferTestsWithCamelCaseRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class PreferTestsWithSnakeCaseRectorTest extends AbstractRectorTestCase
+final class PreferTestsWithCamelCaseRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

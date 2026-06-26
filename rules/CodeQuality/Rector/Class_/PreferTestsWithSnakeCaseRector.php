@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\CodeQuality\Rector\ClassMethod;
+namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Class_;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\PreferTestsWithSnakeCaseRector\PreferTestsWithSnakeCaseRectorTest
+ * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\PreferTestsWithSnakeCaseRector\PreferTestsWithSnakeCaseRectorTest
  */
 final class PreferTestsWithSnakeCaseRector extends AbstractRector
 {
@@ -23,7 +23,7 @@ final class PreferTestsWithSnakeCaseRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Changes PHPUnit tests methods to snake case', [
+        return new RuleDefinition('Changes PHPUnit test methods to snake case', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;
@@ -55,11 +55,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [Class_::class];
     }
 
     /**
-     * @param ClassMethod $node
+     * @param Class_ $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -67,23 +67,37 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->testsNodeAnalyzer->isTestClassMethod($node)) {
-            return null;
+        $hasChanged = false;
+
+        foreach ($node->getMethods() as $classMethod) {
+            if (! $this->testsNodeAnalyzer->isTestClassMethod($classMethod)) {
+                continue;
+            }
+
+            $currentName = $classMethod->name->toString();
+            $newName = $this->toSnakeCase($currentName);
+
+            if ($currentName === $newName) {
+                continue;
+            }
+
+            // avoid name collision with an existing method
+            if ($node->getMethod($newName) instanceof Node) {
+                continue;
+            }
+
+            $classMethod->name = new Node\Identifier($newName);
+            $hasChanged = true;
         }
 
-        $currentName = $node->name->toString();
-        $newName = $this->toSnakeCase($currentName);
-
-        if ($currentName === $newName) {
+        if ($hasChanged === false) {
             return null;
         }
-
-        $node->name = new Node\Identifier($newName);
 
         return $node;
     }
 
-    public function toSnakeCase(string $value): string
+    private function toSnakeCase(string $value): string
     {
         if (ctype_lower($value)) {
             return $value;
