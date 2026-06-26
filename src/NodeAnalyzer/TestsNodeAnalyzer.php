@@ -34,6 +34,7 @@ final readonly class TestsNodeAnalyzer
         if (! $classReflection instanceof ClassReflection) {
             return false;
         }
+
         return array_any(PHPUnitClassName::TEST_CLASSES, fn(string $testCaseObjectClass): bool => $classReflection->is($testCaseObjectClass));
     }
 

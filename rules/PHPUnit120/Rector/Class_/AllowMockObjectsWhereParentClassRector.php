@@ -118,6 +118,7 @@ CODE_SAMPLE
         if (! $classReflection instanceof ClassReflection) {
             return false;
         }
+
         return array_any(self::PARENT_CLASSES, fn(string $parentClass): bool => $classReflection->is($parentClass));
     }
 }

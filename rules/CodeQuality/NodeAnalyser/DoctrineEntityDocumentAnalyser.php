@@ -31,6 +31,7 @@ final readonly class DoctrineEntityDocumentAnalyser
         if (! $resolvedPhpDocBlock instanceof ResolvedPhpDocBlock) {
             return false;
         }
+
         return array_any(self::ENTITY_DOCBLOCK_MARKERS, fn(string $entityDocBlockMarkers): bool => str_contains($resolvedPhpDocBlock->getPhpDocString(), $entityDocBlockMarkers));
     }
 }

@@ -85,6 +85,7 @@ CODE_SAMPLE
         if (! $docComment instanceof Doc) {
             return null;
         }
+
         $hasAnnotation = array_any(NewLineSplitter::split($docComment->getText()), fn(string $row): bool => in_array(trim($row), ['*@test', '* @test'], true));
 
         if (! $hasAnnotation) {
