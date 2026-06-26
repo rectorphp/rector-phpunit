@@ -97,7 +97,10 @@ final class AssertCallAnalyzer
             return false;
         }
 
-        return array_any(self::ASSERT_METHOD_NAME_PREFIXES, fn(string $assertMethodNamePrefix): bool => str_starts_with($callName, $assertMethodNamePrefix));
+        return array_any(
+            self::ASSERT_METHOD_NAME_PREFIXES,
+            fn (string $assertMethodNamePrefix): bool => str_starts_with($callName, $assertMethodNamePrefix)
+        );
     }
 
     private function hasDirectAssertOrMockCall(ClassMethod $classMethod): bool
