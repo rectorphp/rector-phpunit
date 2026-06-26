@@ -161,13 +161,6 @@ CODE_SAMPLE
      */
     private function hasAllKeysString(array $assertedArrayValues): bool
     {
-        // all keys must be string
-        foreach (array_keys($assertedArrayValues) as $key) {
-            if (! is_string($key)) {
-                return false;
-            }
-        }
-
-        return true;
+        return array_all(array_keys($assertedArrayValues), fn(int|string $key): bool => is_string($key));
     }
 }
