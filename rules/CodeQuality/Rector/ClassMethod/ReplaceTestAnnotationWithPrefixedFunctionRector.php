@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Rector\ClassMethod;
 
-use function in_array;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -16,6 +15,7 @@ use Rector\Rector\AbstractRector;
 use Rector\Util\NewLineSplitter;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use function in_array;
 
 /**
  * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\ReplaceTestAnnotationWithPrefixedFunctionRector\ReplaceTestAnnotationWithPrefixedFunctionRectorTest
@@ -86,7 +86,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $hasAnnotation = array_any(NewLineSplitter::split($docComment->getText()), fn(string $row): bool => in_array(trim($row), ['*@test', '* @test'], true));
+        $hasAnnotation = array_any(
+            NewLineSplitter::split($docComment->getText()),
+            fn (string $row): bool => in_array(trim($row), ['*@test', '* @test'], true)
+        );
 
         if (! $hasAnnotation) {
             return null;

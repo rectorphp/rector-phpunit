@@ -35,7 +35,10 @@ final readonly class TestsNodeAnalyzer
             return false;
         }
 
-        return array_any(PHPUnitClassName::TEST_CLASSES, fn(string $testCaseObjectClass): bool => $classReflection->is($testCaseObjectClass));
+        return array_any(
+            PHPUnitClassName::TEST_CLASSES,
+            fn (string $testCaseObjectClass): bool => $classReflection->is($testCaseObjectClass)
+        );
     }
 
     public function isTestClassMethod(ClassMethod $classMethod): bool
