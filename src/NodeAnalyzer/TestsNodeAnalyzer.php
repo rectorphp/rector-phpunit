@@ -35,13 +35,7 @@ final readonly class TestsNodeAnalyzer
             return false;
         }
 
-        foreach (PHPUnitClassName::TEST_CLASSES as $testCaseObjectClass) {
-            if ($classReflection->is($testCaseObjectClass)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(PHPUnitClassName::TEST_CLASSES, fn(string $testCaseObjectClass): bool => $classReflection->is($testCaseObjectClass));
     }
 
     public function isTestClassMethod(ClassMethod $classMethod): bool

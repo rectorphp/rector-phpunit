@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
+use PhpParser\Node\Identifier;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -86,7 +87,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $classMethod->name = new Node\Identifier($newName);
+            $classMethod->name = new Identifier($newName);
             $hasChanged = true;
         }
 

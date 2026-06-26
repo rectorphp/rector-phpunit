@@ -32,14 +32,6 @@ final readonly class DoctrineEntityDocumentAnalyser
             return false;
         }
 
-        foreach (self::ENTITY_DOCBLOCK_MARKERS as $entityDocBlockMarkers) {
-            if (str_contains($resolvedPhpDocBlock->getPhpDocString(), $entityDocBlockMarkers)) {
-                return true;
-            }
-        }
-
-        // @todo apply attributes as well
-
-        return false;
+        return array_any(self::ENTITY_DOCBLOCK_MARKERS, fn(string $entityDocBlockMarkers): bool => str_contains($resolvedPhpDocBlock->getPhpDocString(), $entityDocBlockMarkers));
     }
 }

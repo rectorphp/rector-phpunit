@@ -104,7 +104,7 @@ final class AssertCompareOnCountableWithMethodToAssertCountRector extends Abstra
         ) {
             $type = $this->getType($comparedExpr->var);
 
-            if ((new ObjectType('Countable'))->isSuperTypeOf($type)->yes()) {
+            if (new ObjectType('Countable')->isSuperTypeOf($type)->yes()) {
                 $args = $assertArgs;
                 $args[1] = new Arg($comparedExpr->var);
 

@@ -86,13 +86,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $hasAnnotation = false;
-        foreach (NewLineSplitter::split($docComment->getText()) as $row) {
-            if (in_array(trim($row), ['*@test', '* @test'], true)) {
-                $hasAnnotation = true;
-                break;
-            }
-        }
+        $hasAnnotation = array_any(NewLineSplitter::split($docComment->getText()), fn(string $row): bool => in_array(trim($row), ['*@test', '* @test'], true));
 
         if (! $hasAnnotation) {
             return null;

@@ -270,13 +270,7 @@ CODE_SAMPLE
      */
     private function isAtLeastOneMockPropertyMockedOnce(array $usingTestMethodsByMockPropertyName): bool
     {
-        foreach ($usingTestMethodsByMockPropertyName as $usingTestMethods) {
-            if (count($usingTestMethods) !== 0) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($usingTestMethodsByMockPropertyName, fn(array $usingTestMethods): bool => $usingTestMethods !== []);
     }
 
     private function isMissingExpectsOnMockObjectMethodCallInSetUp(Class_ $class): bool

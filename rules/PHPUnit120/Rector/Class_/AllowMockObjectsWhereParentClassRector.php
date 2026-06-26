@@ -119,12 +119,6 @@ CODE_SAMPLE
             return false;
         }
 
-        foreach (self::PARENT_CLASSES as $parentClass) {
-            if ($classReflection->is($parentClass)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(self::PARENT_CLASSES, fn(string $parentClass): bool => $classReflection->is($parentClass));
     }
 }
