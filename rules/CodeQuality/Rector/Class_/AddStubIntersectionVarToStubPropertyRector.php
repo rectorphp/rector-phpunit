@@ -53,46 +53,32 @@ final class AddStubIntersectionVarToStubPropertyRector extends AbstractRector
         }
 
         $setUpClassMethod = $node->getMethod(MethodName::SET_UP);
-        if (! $setUpClassMethod instanceof ClassMethod) {
-            return null;
-        }
-
-        $propertyNamesToCreateStubMethodCalls = $this->mockObjectPropertyDetector->collectFromClassMethod(
-            $setUpClassMethod,
-            'createStub'
-        );
-        if ($propertyNamesToCreateStubMethodCalls === []) {
-            return null;
-        }
+        $propertyNamesToCreateStubCalls = $setUpClassMethod instanceof ClassMethod
+            ? $this->mockObjectPropertyDetector->collectFromClassMethod($setUpClassMethod, 'createStub')
+            : [];
 
         $hasChanged = false;
 
-        foreach ($propertyNamesToCreateStubMethodCalls as $propertyName => $createStubMethodCall) {
-            $property = $node->getProperty($propertyName);
-            if (! $property instanceof Property) {
-                continue;
-            }
-
-            // only properties typed as a bare native Stub
+        foreach ($node->getProperties() as $property) {
+            // only properties typed as a native Stub
             if (! $this->mockObjectPropertyDetector->detect($property, PHPUnitClassName::STUB)) {
                 continue;
             }
 
-            $stubbedClass = $this->resolveStubbedClass($createStubMethodCall);
-            if ($stubbedClass === null) {
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
+            $varTagValueNode = $phpDocInfo->getVarTagValueNode();
+
+            // already has an intersection @var, skip
+            if ($varTagValueNode instanceof VarTagValueNode && $varTagValueNode->type instanceof IntersectionTypeNode) {
                 continue;
             }
 
-            $intersectionTypeNode = new BracketsAwareIntersectionTypeNode([
-                new IdentifierTypeNode('\\' . PHPUnitClassName::STUB),
-                new IdentifierTypeNode('\\' . $stubbedClass),
-            ]);
-
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
-
-            // already has an intersection @var, skip
-            $varTagValueNode = $phpDocInfo->getVarTagValueNode();
-            if ($varTagValueNode instanceof VarTagValueNode && $varTagValueNode->type instanceof IntersectionTypeNode) {
+            $intersectionTypeNode = $this->resolveStubIntersection(
+                $property,
+                $propertyNamesToCreateStubCalls,
+                $varTagValueNode
+            );
+            if (! $intersectionTypeNode instanceof BracketsAwareIntersectionTypeNode) {
                 continue;
             }
 
@@ -145,8 +131,78 @@ final class SomeTest extends TestCase
 }
 CODE_SAMPLE
                 ),
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
+use PHPUnit\Framework\TestCase;
+
+final class SomeTest extends TestCase
+{
+    /**
+     * @var SomeService
+     */
+    private \PHPUnit\Framework\MockObject\Stub $someServiceStub;
+}
+CODE_SAMPLE
+                    ,
+                    <<<'CODE_SAMPLE'
+use PHPUnit\Framework\TestCase;
+
+final class SomeTest extends TestCase
+{
+    /**
+     * @var \PHPUnit\Framework\MockObject\Stub&SomeService
+     */
+    private \PHPUnit\Framework\MockObject\Stub $someServiceStub;
+}
+CODE_SAMPLE
+                ),
             ]
         );
+    }
+
+    /**
+     * @param array<string, MethodCall|StaticCall> $propertyNamesToCreateStubCalls
+     */
+    private function resolveStubIntersection(
+        Property $property,
+        array $propertyNamesToCreateStubCalls,
+        ?VarTagValueNode $varTagValueNode
+    ): ?BracketsAwareIntersectionTypeNode {
+        $propertyName = $property->props[0]->name->toString();
+
+        // 1. prefer the stubbed class from a setUp() createStub() call
+        $createStubCall = $propertyNamesToCreateStubCalls[$propertyName] ?? null;
+        if ($createStubCall !== null) {
+            $stubbedClass = $this->resolveStubbedClass($createStubCall);
+            if ($stubbedClass !== null) {
+                return new BracketsAwareIntersectionTypeNode([
+                    new IdentifierTypeNode('\\' . PHPUnitClassName::STUB),
+                    new IdentifierTypeNode('\\' . $stubbedClass),
+                ]);
+            }
+        }
+
+        // 2. fall back to a bare single-class @var docblock
+        if ($varTagValueNode instanceof VarTagValueNode && $varTagValueNode->type instanceof IdentifierTypeNode) {
+            // skip Stub/MockObject themselves, only real stubbed class types
+            if (in_array($this->resolveShortName($varTagValueNode->type->name), ['Stub', 'MockObject'], true)) {
+                return null;
+            }
+
+            return new BracketsAwareIntersectionTypeNode([
+                new IdentifierTypeNode('\\' . PHPUnitClassName::STUB),
+                $varTagValueNode->type,
+            ]);
+        }
+
+        return null;
+    }
+
+    private function resolveShortName(string $name): string
+    {
+        $lastBackslashPosition = strrpos($name, '\\');
+
+        return $lastBackslashPosition === false ? $name : substr($name, $lastBackslashPosition + 1);
     }
 
     private function resolveStubbedClass(MethodCall|StaticCall $createStubCall): ?string

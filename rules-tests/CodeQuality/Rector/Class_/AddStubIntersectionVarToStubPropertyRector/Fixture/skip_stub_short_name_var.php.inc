@@ -1,11 +1,11 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\PHPUnit120\Rector\Property\BareVarToStubIntersectionRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\AddStubIntersectionVarToStubPropertyRector\Fixture;
 
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 
-final class SkipStubShortNameTest extends TestCase
+final class SkipStubShortNameVarTest extends TestCase
 {
     /**
      * @var Stub

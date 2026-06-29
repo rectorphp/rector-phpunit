@@ -6,6 +6,7 @@ use Rector\Config\RectorConfig;
 use Rector\PHPUnit\CodeQuality\Rector\CallLike\DirectInstanceOverMockArgRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\AddParamTypeFromDependsRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\AddReturnTypeToDependedRector;
+use Rector\PHPUnit\CodeQuality\Rector\Class_\AddStubIntersectionVarToStubPropertyRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\ConstructClassMethodToSetUpTestCaseRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\InlineStubPropertyToCreateStubMethodCallRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\NarrowUnusedSetUpDefinedPropertyRector;
@@ -57,7 +58,6 @@ use Rector\PHPUnit\CodeQuality\Rector\StmtsAwareInterface\DeclareStrictTypesTest
 use Rector\PHPUnit\PHPUnit120\Rector\CallLike\CreateStubOverCreateMockArgRector;
 use Rector\PHPUnit\PHPUnit120\Rector\Class_\PropertyCreateMockToCreateStubRector;
 use Rector\PHPUnit\PHPUnit120\Rector\ClassMethod\ExpressionCreateMockToCreateStubRector;
-use Rector\PHPUnit\PHPUnit120\Rector\Property\BareVarToStubIntersectionRector;
 use Rector\PHPUnit\PHPUnit120\Rector\Property\MockObjectVarToStubRector;
 use Rector\PHPUnit\PHPUnit60\Rector\MethodCall\GetMockBuilderGetMockToCreateMockRector;
 use Rector\PHPUnit\PHPUnit90\Rector\MethodCall\ReplaceAtMethodWithDesiredMatcherRector;
@@ -139,7 +139,7 @@ return static function (RectorConfig $rectorConfig): void {
         ExpressionCreateMockToCreateStubRector::class,
         PropertyCreateMockToCreateStubRector::class,
         MockObjectVarToStubRector::class,
-        BareVarToStubIntersectionRector::class,
+        AddStubIntersectionVarToStubPropertyRector::class,
         InlineStubPropertyToCreateStubMethodCallRector::class,
 
         // @test first, enable later
