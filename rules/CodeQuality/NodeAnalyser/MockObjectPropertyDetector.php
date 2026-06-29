@@ -7,6 +7,7 @@ namespace Rector\PHPUnit\CodeQuality\NodeAnalyser;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
@@ -31,7 +32,7 @@ final readonly class MockObjectPropertyDetector
     }
 
     /**
-     * @return array<string, MethodCall>
+     * @return array<string, MethodCall|StaticCall>
      */
     public function collectFromClassMethod(ClassMethod $classMethod, string $methodName = 'createMock'): array
     {
@@ -52,12 +53,13 @@ final readonly class MockObjectPropertyDetector
                 continue;
             }
 
-            if (! $assign->expr instanceof MethodCall) {
+            // both $this->createMock() and self::createMock()
+            if (! $assign->expr instanceof MethodCall && ! $assign->expr instanceof StaticCall) {
                 continue;
             }
 
-            $methodCall = $assign->expr;
-            if (! $this->nodeNameResolver->isName($methodCall->name, $methodName)) {
+            $createCall = $assign->expr;
+            if (! $this->nodeNameResolver->isName($createCall->name, $methodName)) {
                 continue;
             }
 
@@ -68,7 +70,7 @@ final readonly class MockObjectPropertyDetector
                 continue;
             }
 
-            $propertyNamesToCreateMockMethodCalls[$propertyName] = $methodCall;
+            $propertyNamesToCreateMockMethodCalls[$propertyName] = $createCall;
         }
 
         return $propertyNamesToCreateMockMethodCalls;

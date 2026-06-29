@@ -7,6 +7,7 @@ namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
@@ -147,9 +148,9 @@ CODE_SAMPLE
         );
     }
 
-    private function resolveMockedClass(MethodCall $methodCall): ?string
+    private function resolveMockedClass(MethodCall|StaticCall $createMockCall): ?string
     {
-        $firstArg = $methodCall->getArgs()[0] ?? null;
+        $firstArg = $createMockCall->getArgs()[0] ?? null;
         if ($firstArg === null) {
             return null;
         }
