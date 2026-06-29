@@ -6,6 +6,7 @@ namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
@@ -121,6 +122,12 @@ CODE_SAMPLE
                 continue;
             }
 
+            // referenced inside a nested closure that may run after setUp() - turning it into a local
+            // variable would leave it out of the closure scope, as there is no "use" binding to add it
+            if ($this->isPropertyUsedInNestedClosure($setUpClassMethod, $propertyName)) {
+                continue;
+            }
+
             $hasChanged = true;
 
             unset($node->stmts[$key]);
@@ -187,6 +194,35 @@ CODE_SAMPLE
         }
 
         return $isPropertyUsed;
+    }
+
+    private function isPropertyUsedInNestedClosure(ClassMethod $setUpClassMethod, string $propertyName): bool
+    {
+        // only regular closures are unsafe: they do not capture outer variables without an
+        // explicit "use" binding. Arrow functions auto-capture by value, so narrowing is safe there.
+        $closures = $this->nodeFinder->findInstanceOf($setUpClassMethod, Closure::class);
+
+        foreach ($closures as $closure) {
+            $usedPropertyFetch = $this->nodeFinder->findFirst($closure, function (Node $node) use (
+                $propertyName
+            ): bool {
+                if (! $node instanceof PropertyFetch) {
+                    return false;
+                }
+
+                if (! $this->isName($node->var, 'this')) {
+                    return false;
+                }
+
+                return $this->isName($node->name, $propertyName);
+            });
+
+            if ($usedPropertyFetch instanceof PropertyFetch) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function shouldSkipProperty(
