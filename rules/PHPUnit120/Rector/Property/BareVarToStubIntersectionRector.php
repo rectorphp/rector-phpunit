@@ -87,7 +87,7 @@ CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
 /**
- * @var FormBuilderInterface&Stub
+ * @var FormBuilderInterface&\PHPUnit\Framework\MockObject\Stub
  */
 private \PHPUnit\Framework\MockObject\Stub $formBuilder;
 CODE_SAMPLE
@@ -128,7 +128,10 @@ CODE_SAMPLE
             return false;
         }
 
-        $varTagValueNode->type = new BracketsAwareIntersectionTypeNode([$typeNode, new IdentifierTypeNode('Stub')]);
+        $varTagValueNode->type = new BracketsAwareIntersectionTypeNode([
+            $typeNode,
+            new IdentifierTypeNode('\\' . PHPUnitClassName::STUB),
+        ]);
 
         return true;
     }

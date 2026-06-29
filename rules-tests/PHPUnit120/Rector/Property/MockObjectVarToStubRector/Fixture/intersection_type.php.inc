@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 final class IntersectionTypeTest extends TestCase
 {
     /**
-     * @var FieldModel&Stub
+     * @var FieldModel&\PHPUnit\Framework\MockObject\Stub
      */
     private \PHPUnit\Framework\MockObject\Stub $leadFieldModel;
 }
