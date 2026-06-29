@@ -2,7 +2,9 @@
 
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\FuncCall\AssertFuncCallToPHPUnitAssertRector\Fixture;
 
-final class AssertCompareContext
+use Behat\Behat\Context\Context;
+
+final class AssertCompareContext implements Context
 {
     public function some($response)
     {
@@ -17,7 +19,9 @@ final class AssertCompareContext
 
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\FuncCall\AssertFuncCallToPHPUnitAssertRector\Fixture;
 
-final class AssertCompareContext
+use Behat\Behat\Context\Context;
+
+final class AssertCompareContext implements Context
 {
     public function some($response)
     {

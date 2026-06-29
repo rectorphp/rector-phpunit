@@ -2,7 +2,9 @@
 
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\FuncCall\AssertFuncCallToPHPUnitAssertRector\Fixture;
 
-final class MethodExistsContext
+use Behat\Behat\Context\Context;
+
+final class MethodExistsContext implements Context
 {
     public function some($response)
     {
@@ -16,7 +18,9 @@ final class MethodExistsContext
 
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\FuncCall\AssertFuncCallToPHPUnitAssertRector\Fixture;
 
-final class MethodExistsContext
+use Behat\Behat\Context\Context;
+
+final class MethodExistsContext implements Context
 {
     public function some($response)
     {
