@@ -21,19 +21,19 @@ final readonly class MockObjectPropertyDetector
     ) {
     }
 
-    public function detect(Property $property): bool
+    public function detect(Property $property, string $className = PHPUnitClassName::MOCK_OBJECT): bool
     {
         if (! $property->type instanceof FullyQualified) {
             return false;
         }
 
-        return $property->type->toString() === PHPUnitClassName::MOCK_OBJECT;
+        return $property->type->toString() === $className;
     }
 
     /**
      * @return array<string, MethodCall>
      */
-    public function collectFromClassMethod(ClassMethod $classMethod): array
+    public function collectFromClassMethod(ClassMethod $classMethod, string $methodName = 'createMock'): array
     {
         $propertyNamesToCreateMockMethodCalls = [];
 
@@ -57,7 +57,7 @@ final readonly class MockObjectPropertyDetector
             }
 
             $methodCall = $assign->expr;
-            if (! $this->nodeNameResolver->isName($methodCall->name, 'createMock')) {
+            if (! $this->nodeNameResolver->isName($methodCall->name, $methodName)) {
                 continue;
             }
 
