@@ -98,6 +98,10 @@ CODE_SAMPLE
 
     private function isStubNativeType(?Node $typeNode): bool
     {
+        if (! $typeNode instanceof Node) {
+            return false;
+        }
+
         if ($typeNode instanceof IntersectionType) {
             return array_any($typeNode->types, fn (Identifier|Name $innerType): bool => $this->isStubName($innerType));
         }
