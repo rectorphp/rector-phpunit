@@ -146,6 +146,18 @@ CODE_SAMPLE
             return true;
         }
 
+        // skip abstract/base test classes, as property can be mocked in child classes
+        if ($class->isAbstract()) {
+            return true;
+        }
+
+        if ($class->name instanceof Identifier) {
+            $shortClassName = $class->name->toString();
+            if (str_ends_with($shortClassName, 'TestCase') || str_starts_with($shortClassName, 'Abstract')) {
+                return true;
+            }
+        }
+
         $setUpClassMethod = $class->getMethod(MethodName::SET_UP);
 
         // the setup class method must be here, so we have a place where the createMock() is used
