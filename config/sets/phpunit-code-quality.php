@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\PHPUnit\CodeQuality\Rector\CallLike\DirectInstanceOverMockArgRector;
+use Rector\PHPUnit\CodeQuality\Rector\Class_\AddIntersectionVarToMockObjectPropertyRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\AddParamTypeFromDependsRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\AddReturnTypeToDependedRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\ConstructClassMethodToSetUpTestCaseRector;
@@ -92,6 +93,7 @@ return static function (RectorConfig $rectorConfig): void {
         AddParamTypeFromDependsRector::class,
         AddReturnTypeToDependedRector::class,
         ScalarArgumentToExpectedParamTypeRector::class,
+        AddIntersectionVarToMockObjectPropertyRector::class,
 
         NarrowUnusedSetUpDefinedPropertyRector::class,
 
