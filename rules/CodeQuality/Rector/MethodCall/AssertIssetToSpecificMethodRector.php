@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PHPStan\Type\ObjectType;
 use Rector\PHPUnit\Enum\AssertMethod;
 use Rector\PHPUnit\NodeAnalyzer\IdentifierManipulator;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -74,6 +75,13 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
 
         $issetExpr = $firstArgumentValue->vars[0];
         if (! $issetExpr instanceof ArrayDimFetch) {
+            return null;
+        }
+
+        // isset() on an ArrayAccess object is not equivalent to assertArrayHasKey():
+        // the key may be any type (assertArrayHasKey() requires int|string) and offsetExists()
+        // semantics can differ from array_key_exists()
+        if ($this->isObjectType($issetExpr->var, new ObjectType('ArrayAccess'))) {
             return null;
         }
 
