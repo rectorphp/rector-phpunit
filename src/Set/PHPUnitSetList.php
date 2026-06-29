@@ -27,6 +27,8 @@ final class PHPUnitSetList
 
     public const string PHPUNIT_120 = __DIR__ . '/../../config/sets/phpunit120.php';
 
+    public const string PHPUNIT_MOCK_TO_STUB = __DIR__ . '/../../config/sets/phpunit-mock-to-stub.php';
+
     public const string PHPUNIT_CODE_QUALITY = __DIR__ . '/../../config/sets/phpunit-code-quality.php';
 
     public const string ANNOTATIONS_TO_ATTRIBUTES = __DIR__ . '/../../config/sets/annotations-to-attributes.php';
