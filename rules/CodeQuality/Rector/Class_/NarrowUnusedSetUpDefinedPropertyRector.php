@@ -6,6 +6,8 @@ namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
@@ -124,7 +126,7 @@ CODE_SAMPLE
 
             // referenced inside a nested closure that may run after setUp() - turning it into a local
             // variable would leave it out of the closure scope, as there is no "use" binding to add it
-            if ($this->isPropertyUsedInNestedClosure($setUpClassMethod, $propertyName)) {
+            if ($this->isPropertyUsedInUnsafeNestedFunction($setUpClassMethod, $propertyName)) {
                 continue;
             }
 
@@ -196,33 +198,82 @@ CODE_SAMPLE
         return $isPropertyUsed;
     }
 
-    private function isPropertyUsedInNestedClosure(ClassMethod $setUpClassMethod, string $propertyName): bool
+    private function isPropertyUsedInUnsafeNestedFunction(ClassMethod $setUpClassMethod, string $propertyName): bool
     {
-        // only regular closures are unsafe: they do not capture outer variables without an
-        // explicit "use" binding. Arrow functions auto-capture by value, so narrowing is safe there.
-        $closures = $this->nodeFinder->findInstanceOf($setUpClassMethod, Closure::class);
+        // a regular closure does not capture outer variables without an explicit "use" binding,
+        // so turning the property into a local variable always leaves it undefined inside the closure
+        foreach ($this->nodeFinder->findInstanceOf($setUpClassMethod, Closure::class) as $closure) {
+            if ($this->refersToThisProperty($closure, $propertyName)) {
+                return true;
+            }
+        }
 
-        foreach ($closures as $closure) {
-            $usedPropertyFetch = $this->nodeFinder->findFirst($closure, function (Node $node) use (
-                $propertyName
-            ): bool {
-                if (! $node instanceof PropertyFetch) {
-                    return false;
-                }
+        // an arrow function auto-captures by value at definition time; that only matches the original
+        // lazy "$this->property" read when the property assignment is already complete before the arrow
+        // function is defined. A later or wrapping assignment (e.g. a self-referencing type definition)
+        // would capture a not-yet-assigned variable
+        foreach ($this->nodeFinder->findInstanceOf($setUpClassMethod, ArrowFunction::class) as $arrowFunction) {
+            if (! $this->refersToThisProperty($arrowFunction, $propertyName)) {
+                continue;
+            }
 
-                if (! $this->isName($node->var, 'this')) {
-                    return false;
-                }
-
-                return $this->isName($node->name, $propertyName);
-            });
-
-            if ($usedPropertyFetch instanceof PropertyFetch) {
+            if (! $this->isPropertyAssignedBefore($setUpClassMethod, $propertyName, $arrowFunction)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    private function refersToThisProperty(Node $node, string $propertyName): bool
+    {
+        $propertyFetch = $this->nodeFinder->findFirst($node, function (Node $subNode) use ($propertyName): bool {
+            if (! $subNode instanceof PropertyFetch) {
+                return false;
+            }
+
+            if (! $this->isName($subNode->var, 'this')) {
+                return false;
+            }
+
+            return $this->isName($subNode->name, $propertyName);
+        });
+
+        return $propertyFetch instanceof PropertyFetch;
+    }
+
+    private function isPropertyAssignedBefore(
+        ClassMethod $setUpClassMethod,
+        string $propertyName,
+        ArrowFunction $arrowFunction
+    ): bool {
+        $arrowFunctionStartTokenPos = $arrowFunction->getStartTokenPos();
+
+        $assignBefore = $this->nodeFinder->findFirst($setUpClassMethod, function (Node $node) use (
+            $propertyName,
+            $arrowFunctionStartTokenPos
+        ): bool {
+            if (! $node instanceof Assign) {
+                return false;
+            }
+
+            if (! $node->var instanceof PropertyFetch) {
+                return false;
+            }
+
+            if (! $this->isName($node->var->var, 'this')) {
+                return false;
+            }
+
+            if (! $this->isName($node->var->name, $propertyName)) {
+                return false;
+            }
+
+            // assignment fully completes before the arrow function starts
+            return $node->getEndTokenPos() < $arrowFunctionStartTokenPos;
+        });
+
+        return $assignBefore instanceof Assign;
     }
 
     private function shouldSkipProperty(
