@@ -88,7 +88,7 @@ CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
 /**
- * @var FieldModel|Stub
+ * @var FieldModel|\PHPUnit\Framework\MockObject\Stub
  */
 private \PHPUnit\Framework\MockObject\Stub $leadFieldModel;
 CODE_SAMPLE
@@ -120,7 +120,7 @@ CODE_SAMPLE
             $hasChanged = false;
             foreach ($typeNode->types as $key => $innerType) {
                 if ($innerType instanceof IdentifierTypeNode && $this->isMockObjectIdentifier($innerType)) {
-                    $typeNode->types[$key] = new IdentifierTypeNode($this->resolveStubName($innerType->name));
+                    $typeNode->types[$key] = new IdentifierTypeNode('\\' . PHPUnitClassName::STUB);
                     $hasChanged = true;
                 }
             }
@@ -129,7 +129,7 @@ CODE_SAMPLE
         }
 
         if ($typeNode instanceof IdentifierTypeNode && $this->isMockObjectIdentifier($typeNode)) {
-            $varTagValueNode->type = new IdentifierTypeNode($this->resolveStubName($typeNode->name));
+            $varTagValueNode->type = new IdentifierTypeNode('\\' . PHPUnitClassName::STUB);
             return true;
         }
 
@@ -144,14 +144,5 @@ CODE_SAMPLE
             : substr($identifierTypeNode->name, $lastBackslashPosition + 1);
 
         return $shortName === 'MockObject';
-    }
-
-    private function resolveStubName(string $name): string
-    {
-        $lastBackslashPosition = strrpos($name, '\\');
-
-        return $lastBackslashPosition === false
-            ? 'Stub'
-            : substr($name, 0, $lastBackslashPosition + 1) . 'Stub';
     }
 }

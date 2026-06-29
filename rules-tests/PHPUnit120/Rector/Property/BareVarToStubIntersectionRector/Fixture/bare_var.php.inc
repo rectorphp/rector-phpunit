@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
 final class BareVarTest extends TestCase
 {
     /**
-     * @var FormBuilderInterface&Stub
+     * @var FormBuilderInterface&\PHPUnit\Framework\MockObject\Stub
      */
     private \PHPUnit\Framework\MockObject\Stub $formBuilder;
 }
