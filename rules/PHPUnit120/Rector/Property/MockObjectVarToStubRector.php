@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\PHPUnit\PHPUnit120\Rector\Property;
 
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\IntersectionType;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
@@ -17,6 +17,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
+use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -29,6 +30,7 @@ final class MockObjectVarToStubRector extends AbstractRector
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
     ) {
     }
 
@@ -42,6 +44,11 @@ final class MockObjectVarToStubRector extends AbstractRector
      */
     public function refactor(Node $node): ?Property
     {
+        // only inside PHPUnit TestCase scope
+        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
+            return null;
+        }
+
         // only properties already converted to a Stub native type
         if (! $this->isStubNativeType($node->type)) {
             return null;
@@ -53,7 +60,7 @@ final class MockObjectVarToStubRector extends AbstractRector
         }
 
         $varTagValueNode = $phpDocInfo->getVarTagValueNode();
-        if (!$varTagValueNode instanceof VarTagValueNode) {
+        if (! $varTagValueNode instanceof VarTagValueNode) {
             return null;
         }
 
@@ -93,7 +100,7 @@ CODE_SAMPLE
     private function isStubNativeType(?Node $typeNode): bool
     {
         if ($typeNode instanceof IntersectionType) {
-            return array_any($typeNode->types, fn(Identifier|Name $innerType): bool => $this->isStubName($innerType));
+            return array_any($typeNode->types, fn (Identifier|Name $innerType): bool => $this->isStubName($innerType));
         }
 
         return $this->isStubName($typeNode);
