@@ -7,6 +7,7 @@ namespace Rector\PHPUnit\CodeQuality\NodeAnalyser;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
@@ -21,19 +22,19 @@ final readonly class MockObjectPropertyDetector
     ) {
     }
 
-    public function detect(Property $property): bool
+    public function detect(Property $property, string $className = PHPUnitClassName::MOCK_OBJECT): bool
     {
         if (! $property->type instanceof FullyQualified) {
             return false;
         }
 
-        return $property->type->toString() === PHPUnitClassName::MOCK_OBJECT;
+        return $property->type->toString() === $className;
     }
 
     /**
-     * @return array<string, MethodCall>
+     * @return array<string, MethodCall|StaticCall>
      */
-    public function collectFromClassMethod(ClassMethod $classMethod): array
+    public function collectFromClassMethod(ClassMethod $classMethod, string $methodName = 'createMock'): array
     {
         $propertyNamesToCreateMockMethodCalls = [];
 
@@ -52,12 +53,13 @@ final readonly class MockObjectPropertyDetector
                 continue;
             }
 
-            if (! $assign->expr instanceof MethodCall) {
+            // both $this->createMock() and self::createMock()
+            if (! $assign->expr instanceof MethodCall && ! $assign->expr instanceof StaticCall) {
                 continue;
             }
 
-            $methodCall = $assign->expr;
-            if (! $this->nodeNameResolver->isName($methodCall->name, 'createMock')) {
+            $createCall = $assign->expr;
+            if (! $this->nodeNameResolver->isName($createCall->name, $methodName)) {
                 continue;
             }
 
@@ -68,7 +70,7 @@ final readonly class MockObjectPropertyDetector
                 continue;
             }
 
-            $propertyNamesToCreateMockMethodCalls[$propertyName] = $methodCall;
+            $propertyNamesToCreateMockMethodCalls[$propertyName] = $createCall;
         }
 
         return $propertyNamesToCreateMockMethodCalls;
