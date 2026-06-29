@@ -2,7 +2,9 @@
 
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\FuncCall\AssertFuncCallToPHPUnitAssertRector\Fixture;
 
-final class SimpleContext
+use Behat\Behat\Context\Context;
+
+final class SimpleContext implements Context
 {
     public function some($response)
     {
@@ -18,7 +20,9 @@ final class SimpleContext
 
 namespace Rector\PHPUnit\Tests\CodeQuality\Rector\FuncCall\AssertFuncCallToPHPUnitAssertRector\Fixture;
 
-final class SimpleContext
+use Behat\Behat\Context\Context;
+
+final class SimpleContext implements Context
 {
     public function some($response)
     {
