@@ -6,7 +6,6 @@ namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
@@ -199,10 +198,9 @@ CODE_SAMPLE
 
     private function isPropertyUsedInNestedClosure(ClassMethod $setUpClassMethod, string $propertyName): bool
     {
-        $closures = $this->nodeFinder->find(
-            $setUpClassMethod,
-            static fn (Node $node): bool => $node instanceof Closure || $node instanceof ArrowFunction
-        );
+        // only regular closures are unsafe: they do not capture outer variables without an
+        // explicit "use" binding. Arrow functions auto-capture by value, so narrowing is safe there.
+        $closures = $this->nodeFinder->findInstanceOf($setUpClassMethod, Closure::class);
 
         foreach ($closures as $closure) {
             $usedPropertyFetch = $this->nodeFinder->findFirst($closure, function (Node $node) use (
