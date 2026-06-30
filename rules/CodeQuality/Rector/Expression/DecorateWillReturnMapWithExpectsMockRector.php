@@ -11,10 +11,12 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\Int_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\Type\ObjectType;
-use Rector\PHPStan\ScopeFetcher;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
+use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -25,6 +27,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DecorateWillReturnMapWithExpectsMockRector extends AbstractRector
 {
+    public function __construct(
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly BetterNodeFinder $betterNodeFinder,
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Decorate willReturnMap() calls with expects on the mock object if missing', [
@@ -78,54 +86,76 @@ CODE_SAMPLE
 
     public function getNodeTypes(): array
     {
-        return [Expression::class];
+        return [ClassMethod::class];
     }
 
     /**
-     * @param Expression $node
-     * @return Expression|null
+     * @param ClassMethod $node
+     * @return ClassMethod|null
      */
     public function refactor(Node $node)
     {
-        if (! $node->expr instanceof MethodCall) {
-            return null;
-        }
-
-        $methodCall = $node->expr;
-        if (! $this->isName($methodCall->name, 'willReturnMap')) {
-            return null;
-        }
-
-        $scope = ScopeFetcher::fetch($node);
-
         // allowed as can be flexible
-        if ($scope->getFunctionName() === MethodName::SET_UP) {
+        if ($this->isName($node, MethodName::SET_UP)) {
             return null;
+        }
+
+        // only decorate inside test methods, skip helpers and other non-test methods
+        if (! $this->testsNodeAnalyzer->isTestClassMethod($node)) {
+            return null;
+        }
+
+        $hasChanged = false;
+
+        /** @var Expression[] $expressions */
+        $expressions = $this->betterNodeFinder->findInstancesOf($node, [Expression::class]);
+        foreach ($expressions as $expression) {
+            if ($this->refactorExpression($expression)) {
+                $hasChanged = true;
+            }
+        }
+
+        if (! $hasChanged) {
+            return null;
+        }
+
+        return $node;
+    }
+
+    private function refactorExpression(Expression $expression): bool
+    {
+        if (! $expression->expr instanceof MethodCall) {
+            return false;
+        }
+
+        $methodCall = $expression->expr;
+        if (! $this->isName($methodCall->name, 'willReturnMap')) {
+            return false;
         }
 
         $topmostCall = $this->resolveTopmostCall($methodCall);
 
         // already covered
         if ($this->isName($topmostCall->name, 'expects')) {
-            return null;
+            return false;
         }
 
         if (! $this->isObjectType($topmostCall->var, new ObjectType(PHPUnitClassName::MOCK_OBJECT))) {
-            return null;
+            return false;
         }
 
         if ($methodCall->isFirstClassCallable()) {
-            return null;
+            return false;
         }
 
         // count values in will map arg
         $willReturnMapArg = $methodCall->getArgs()[0] ?? null;
         if (! $willReturnMapArg instanceof Arg) {
-            return null;
+            return false;
         }
 
         if (! $willReturnMapArg->value instanceof Array_) {
-            return null;
+            return false;
         }
 
         $array = $willReturnMapArg->value;
@@ -141,7 +171,7 @@ CODE_SAMPLE
             ))]
         );
 
-        return $node;
+        return true;
     }
 
     private function resolveTopmostCall(MethodCall $methodCall): MethodCall
