@@ -6,24 +6,20 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\Stub;
 use Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\InlineStubPropertyToCreateStubMethodCallRector\Source\NotRelevantClass;
 
-final class InlineUsedInCalls extends TestCase
+final class ReuseVariableOnMultipleUses extends TestCase
 {
-    private Stub $someStub;
+    private Stub $formatter;
 
     protected function setUp(): void
     {
-        $this->someStub = $this->createStub(NotRelevantClass::class);
+        $this->formatter = $this->createStub(NotRelevantClass::class);
     }
 
     public function testAnother()
     {
-        $anotherObject = new NotRelevantClass($this->someStub);
+        $handler = new NotRelevantClass($this->formatter);
 
-        $this->runThis($this->someStub);
-    }
-
-    private function runThis($object)
-    {
+        $this->assertSame(spl_object_id($this->formatter), spl_object_id($handler));
     }
 }
 
@@ -37,7 +33,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\Stub;
 use Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\InlineStubPropertyToCreateStubMethodCallRector\Source\NotRelevantClass;
 
-final class InlineUsedInCalls extends TestCase
+final class ReuseVariableOnMultipleUses extends TestCase
 {
     protected function setUp(): void
     {
@@ -45,14 +41,10 @@ final class InlineUsedInCalls extends TestCase
 
     public function testAnother()
     {
-        $someStub = $this->createStub(\Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\InlineStubPropertyToCreateStubMethodCallRector\Source\NotRelevantClass::class);
-        $anotherObject = new NotRelevantClass($someStub);
+        $formatterStub = $this->createStub(\Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\InlineStubPropertyToCreateStubMethodCallRector\Source\NotRelevantClass::class);
+        $handler = new NotRelevantClass($formatterStub);
 
-        $this->runThis($someStub);
-    }
-
-    private function runThis($object)
-    {
+        $this->assertSame(spl_object_id($formatterStub), spl_object_id($handler));
     }
 }
 
