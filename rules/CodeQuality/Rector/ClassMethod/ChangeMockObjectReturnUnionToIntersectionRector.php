@@ -61,8 +61,8 @@ final class ChangeMockObjectReturnUnionToIntersectionRector extends AbstractRect
             return null;
         }
 
-        // must contain a MockObject member to be a mock union
-        if (! $this->hasMockObjectType($returnTypeNode)) {
+        // must contain a MockObject or Stub member to be a mock union
+        if (! $this->hasMockObjectOrStubType($returnTypeNode)) {
             return null;
         }
 
@@ -112,12 +112,14 @@ CODE_SAMPLE
         );
     }
 
-    private function hasMockObjectType(UnionTypeNode $unionTypeNode): bool
+    private function hasMockObjectOrStubType(UnionTypeNode $unionTypeNode): bool
     {
-        return array_any($unionTypeNode->types, fn(TypeNode $typeNode): bool => $this->isMockObjectType($typeNode));
+        return array_any($unionTypeNode->types, fn (TypeNode $typeNode): bool => $this->isMockObjectOrStubType(
+            $typeNode
+        ));
     }
 
-    private function isMockObjectType(TypeNode $typeNode): bool
+    private function isMockObjectOrStubType(TypeNode $typeNode): bool
     {
         if (! $typeNode instanceof IdentifierTypeNode) {
             return false;
@@ -125,6 +127,10 @@ CODE_SAMPLE
 
         $typeName = ltrim($typeNode->name, '\\');
 
-        return $typeName === PHPUnitClassName::MOCK_OBJECT || $typeName === 'MockObject';
+        return in_array(
+            $typeName,
+            [PHPUnitClassName::MOCK_OBJECT, 'MockObject', PHPUnitClassName::STUB, 'Stub'],
+            true
+        );
     }
 }
