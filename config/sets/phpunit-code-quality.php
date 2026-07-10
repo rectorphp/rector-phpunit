@@ -7,7 +7,6 @@ use Rector\PHPUnit\CodeQuality\Rector\CallLike\DirectInstanceOverMockArgRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\AddParamTypeFromDependsRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\AddReturnTypeToDependedRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\AddStubIntersectionVarToStubPropertyRector;
-use Rector\PHPUnit\CodeQuality\Rector\Class_\AssertClassToThisAssertRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\ConstructClassMethodToSetUpTestCaseRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\InlineStubPropertyToCreateStubMethodCallRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\NarrowUnusedSetUpDefinedPropertyRector;
@@ -74,7 +73,6 @@ return static function (RectorConfig $rectorConfig): void {
 
         AssertEqualsToSameRector::class,
         PreferPHPUnitThisCallRector::class,
-        AssertClassToThisAssertRector::class,
         YieldDataProviderRector::class,
         RemoveEmptyTestMethodRector::class,
         ReplaceTestAnnotationWithPrefixedFunctionRector::class,
