@@ -75,7 +75,7 @@ final class ChangeMockObjectReturnUnionToIntersectionRector extends AbstractRect
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change a MockObject @return union docblock to an intersection type',
+            'Change a MockObject `@return` union docblock to an intersection type',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

@@ -24,7 +24,7 @@ final class PreferTestsWithCamelCaseRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Changes PHPUnit test methods to camel case', [
+        return new RuleDefinition('Change PHPUnit test methods to camel case', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;

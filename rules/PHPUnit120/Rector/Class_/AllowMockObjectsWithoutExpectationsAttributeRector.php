@@ -119,7 +119,7 @@ final class AllowMockObjectsWithoutExpectationsAttributeRector extends AbstractR
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Add #[AllowMockObjectsWithoutExpectations] attribute to PHPUnit test classes with mock properties used in multiple methods but one, to avoid irrelevant notices in tests run',
+            'Add `#[AllowMockObjectsWithoutExpectations]` attribute to PHPUnit test classes with mock properties used in multiple methods but one, to avoid irrelevant notices',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

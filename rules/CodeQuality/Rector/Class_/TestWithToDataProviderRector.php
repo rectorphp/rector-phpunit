@@ -48,7 +48,7 @@ final class TestWithToDataProviderRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Replace testWith annotation to data provider.',
+            'Replace `@testWith` annotation to data provider',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

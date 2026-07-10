@@ -45,7 +45,7 @@ final class TestWithAnnotationToAttributeRector extends AbstractRector implement
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change @testWith() annotation to #[TestWith] attribute',
+            'Change `@testWith()` annotation to `#[TestWith]` attribute',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

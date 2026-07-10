@@ -29,7 +29,7 @@ final class AssertSameTrueFalseToAssertTrueFalseRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change $this->assertSame(true, ...) to assertTrue()',
+            'Change `$this->assertSame(true, ...)` to `assertTrue()`',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

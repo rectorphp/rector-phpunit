@@ -38,7 +38,7 @@ final class SpecificAssertContainsRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change assertContains()/assertNotContains() method to new string and iterable alternatives',
+            'Change `assertContains()`/`assertNotContains()` method to new string and iterable alternatives',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

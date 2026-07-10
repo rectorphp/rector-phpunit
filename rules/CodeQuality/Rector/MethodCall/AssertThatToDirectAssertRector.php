@@ -43,7 +43,7 @@ final class AssertThatToDirectAssertRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change $this->assertThat($value, $this->*()) to direct $this->assert*() method',
+            'Change `$this->assertThat($value, $this->*())` to direct `$this->assert*()` method',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

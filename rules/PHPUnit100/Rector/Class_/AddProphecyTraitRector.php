@@ -36,7 +36,7 @@ final class AddProphecyTraitRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Add Prophecy trait for method using $this->prophesize()',
+            'Add Prophecy trait for method using `$this->prophesize()`',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

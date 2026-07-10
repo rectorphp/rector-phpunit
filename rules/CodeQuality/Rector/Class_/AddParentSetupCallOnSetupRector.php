@@ -20,7 +20,7 @@ final class AddParentSetupCallOnSetupRector extends AbstractRector implements De
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Add missing parent::setUp() call on setUp() method on test class',
+            'Add missing `parent::setUp()` call on `setUp()` method on test class',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

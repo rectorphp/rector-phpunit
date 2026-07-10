@@ -29,7 +29,7 @@ final class ExplicitMockExpectsCallRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Add explicit expects() to method() mock calls, to make expectations count explicit',
+            'Add explicit `expects()` to `method()` mock calls, to make expectations count explicit',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

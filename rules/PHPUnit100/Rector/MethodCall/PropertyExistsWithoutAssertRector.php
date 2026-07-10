@@ -49,7 +49,7 @@ final class PropertyExistsWithoutAssertRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Replace removed assertClassHas*Attribute() with property_exists()',
+            'Replace removed `assertClassHas*Attribute()` with `property_exists()`',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

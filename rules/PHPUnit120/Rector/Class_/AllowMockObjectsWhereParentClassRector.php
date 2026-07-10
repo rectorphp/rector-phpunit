@@ -68,7 +68,7 @@ final class AllowMockObjectsWhereParentClassRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Add #[AllowMockObjectsWithoutExpectations] attribute to PHPUnit test classes with a 3rd party test case, that provides any mocks',
+            'Add `#[AllowMockObjectsWithoutExpectations]` attribute to PHPUnit test classes with a 3rd party test case, that provides any mocks',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

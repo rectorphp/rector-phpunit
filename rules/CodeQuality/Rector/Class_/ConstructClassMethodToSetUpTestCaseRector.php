@@ -45,7 +45,7 @@ final class ConstructClassMethodToSetUpTestCaseRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change __construct() method in tests of `PHPUnit\Framework\TestCase` to setUp(), to prevent dangerous override',
+            'Change `__construct()` method in tests of `PHPUnit\Framework\TestCase` to `setUp()`, to prevent dangerous override',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

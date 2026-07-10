@@ -48,7 +48,7 @@ final class CoversAnnotationWithValueToAttributeRector extends AbstractRector im
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change covers annotations with value to attribute', [
+        return new RuleDefinition('Change `@covers` annotations with value to attribute', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;

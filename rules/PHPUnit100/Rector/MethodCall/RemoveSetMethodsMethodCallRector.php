@@ -34,7 +34,7 @@ final class RemoveSetMethodsMethodCallRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Remove "setMethods()" method as never used, move methods to "addMethods()" if non-existent or @method magic',
+            'Remove `setMethods()` method as never used, move methods to `addMethods()` if non-existent or `@method` magic',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

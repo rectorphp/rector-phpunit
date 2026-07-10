@@ -27,7 +27,7 @@ final class UseSpecificWithMethodRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes ->with() to more specific method',
+            'Changes `->with()` to more specific method',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

@@ -49,7 +49,7 @@ final class CreateStubOverCreateMockArgRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Use createStub() over createMock() when used as argument or array value and does not add any mock requirements',
+            'Use `createStub()` over `createMock()` when used as argument or array value and does not add any mock requirements',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

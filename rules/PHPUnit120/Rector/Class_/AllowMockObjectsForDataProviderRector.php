@@ -60,7 +60,7 @@ final class AllowMockObjectsForDataProviderRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Add #[AllowMockObjectsWithoutExpectations] attribute to PHPUnit test classes that have methods with data providers and mock objects without expectations',
+            'Add `#[AllowMockObjectsWithoutExpectations]` attribute to PHPUnit test classes that have methods with data providers and mock objects without expectations',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

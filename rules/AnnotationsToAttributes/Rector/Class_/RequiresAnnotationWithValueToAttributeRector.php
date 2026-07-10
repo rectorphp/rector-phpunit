@@ -37,7 +37,7 @@ final class RequiresAnnotationWithValueToAttributeRector extends AbstractRector 
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change Requires annotations with values to attributes', [
+        return new RuleDefinition('Change `@requires` annotations with values to attributes', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;

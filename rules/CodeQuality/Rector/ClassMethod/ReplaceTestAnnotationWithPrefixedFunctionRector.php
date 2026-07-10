@@ -32,7 +32,7 @@ final class ReplaceTestAnnotationWithPrefixedFunctionRector extends AbstractRect
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Replace @test with prefixed function', [
+        return new RuleDefinition('Replace `@test` with prefixed function', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeTest extends \PHPUnit\Framework\TestCase

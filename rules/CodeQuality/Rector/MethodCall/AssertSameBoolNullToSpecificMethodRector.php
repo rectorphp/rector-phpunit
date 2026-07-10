@@ -41,7 +41,7 @@ final class AssertSameBoolNullToSpecificMethodRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Turns same bool and null comparisons to their method name alternatives in PHPUnit TestCase',
+            'Turn same bool and null comparisons to their method name alternatives in PHPUnit TestCase',
             [
                 new CodeSample('$this->assertSame(null, $anything);', '$this->assertNull($anything);'),
                 new CodeSample('$this->assertNotSame(false, $anything);', '$this->assertNotFalse($anything);'),

@@ -29,7 +29,7 @@ final class AssertCompareOnCountableWithMethodToAssertCountRector extends Abstra
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Replaces use of assertSame and assertEquals on Countable objects with count method',
+            'Replace use of `assertSame()` and `assertEquals()` on countable objects with count method',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

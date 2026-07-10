@@ -58,7 +58,7 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Turns comparison operations to their method name alternatives in PHPUnit TestCase',
+            'Turn comparison operations to their method name alternatives in PHPUnit TestCase',
             [
                 new CodeSample(
                     '$this->assertTrue($foo === $bar, "message");',

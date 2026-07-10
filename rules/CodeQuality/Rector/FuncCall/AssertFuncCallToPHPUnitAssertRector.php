@@ -44,7 +44,7 @@ final class AssertFuncCallToPHPUnitAssertRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Turns assert() calls in tests to PHPUnit assert method alternative', [
+        return new RuleDefinition('Turn `assert()` calls in tests to PHPUnit assert method alternative', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;

@@ -44,7 +44,7 @@ final class ConfiguredMockEntityToSetterObjectRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change createConfigureMock() on Entity/Document object to direct new instance with setters',
+            'Change `createConfigureMock()` on Entity/Document object to direct new instance with setters',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

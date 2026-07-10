@@ -46,7 +46,7 @@ final class AssertRegExpRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Turns `preg_match` comparisons to their method name alternatives in PHPUnit TestCase',
+            'Turn `preg_match()` comparisons to their method name alternatives in PHPUnit TestCase',
             [
                 new CodeSample(
                     '$this->assertSame(1, preg_match("/^Message for ".*"\.$/", $string), $message);',

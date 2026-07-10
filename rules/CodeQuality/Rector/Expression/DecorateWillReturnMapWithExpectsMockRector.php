@@ -35,7 +35,7 @@ final class DecorateWillReturnMapWithExpectsMockRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Decorate willReturnMap() calls with expects on the mock object if missing', [
+        return new RuleDefinition('Decorate `willReturnMap()` calls with expects on the mock object if missing', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;

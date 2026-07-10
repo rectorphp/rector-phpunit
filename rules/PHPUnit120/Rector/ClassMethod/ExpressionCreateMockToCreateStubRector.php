@@ -34,7 +34,7 @@ final class ExpressionCreateMockToCreateStubRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Replace createMock() assigned to variable that is only used as arg with no expectations, to createStub()',
+            'Replace `createMock()` assigned to variable that is only used as arg with no expectations, to `createStub()`',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -67,7 +67,6 @@ final class SomeTest extends TestCase
 }
 CODE_SAMPLE
                 ),
-
             ]
         );
     }

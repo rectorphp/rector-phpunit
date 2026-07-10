@@ -26,7 +26,7 @@ final class StringCastAssertStringContainsStringRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Cast 2nd argument in assertStringContainsString() to a string if not yet',
+            'Cast 2nd argument in `assertStringContainsString()` to a string if not yet',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

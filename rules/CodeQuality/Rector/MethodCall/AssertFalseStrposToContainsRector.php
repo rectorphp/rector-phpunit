@@ -36,7 +36,7 @@ final class AssertFalseStrposToContainsRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Turns `strpos`/`stripos` comparisons to their method name alternatives in PHPUnit TestCase',
+            'Turn `strpos`/`stripos` comparisons to their method name alternatives in PHPUnit TestCase',
             [
                 new CodeSample(
                     '$this->assertFalse(strpos($anything, "foo"), "message");',

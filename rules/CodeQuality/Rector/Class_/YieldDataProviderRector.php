@@ -51,7 +51,7 @@ final class YieldDataProviderRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Turns array return to yield in data providers', [
+        return new RuleDefinition('Turn array return to yield in data providers', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;

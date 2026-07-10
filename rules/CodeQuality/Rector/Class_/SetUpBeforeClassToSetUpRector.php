@@ -19,7 +19,7 @@ final class SetUpBeforeClassToSetUpRector extends AbstractRector implements Depr
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change setUpBeforeClass() to setUp() if not needed', [
+        return new RuleDefinition('Change `setUpBeforeClass()` to `setUp()` if not needed', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;

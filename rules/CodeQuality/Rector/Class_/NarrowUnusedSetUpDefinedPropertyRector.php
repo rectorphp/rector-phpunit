@@ -41,7 +41,7 @@ final class NarrowUnusedSetUpDefinedPropertyRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Turn property used only in setUp() to variable', [
+        return new RuleDefinition('Turn property used only in `setUp()` to variable', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;

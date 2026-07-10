@@ -31,7 +31,7 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Turns assertTrue() + isset() comparisons to more precise assertArrayHasKey() method',
+            'Turn `assertTrue()` + `isset()` comparisons to more precise `assertArrayHasKey()` method',
             [
                 new CodeSample(
                     '$this->assertTrue(isset($anything["foo"]), "message");',

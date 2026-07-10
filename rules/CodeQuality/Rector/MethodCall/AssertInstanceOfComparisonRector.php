@@ -41,7 +41,7 @@ final class AssertInstanceOfComparisonRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Turns instanceof comparisons to their method name alternatives in PHPUnit TestCase',
+            'Turn instanceof comparisons to their method name alternatives in PHPUnit TestCase',
             [
                 new CodeSample(
                     '$this->assertTrue($foo instanceof Foo, "message");',

@@ -85,7 +85,7 @@ final class PropertyCreateMockToCreateStubRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change mock object property that is never mocked to createStub()',
+            'Change mock object property that is never mocked to `createStub()`',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

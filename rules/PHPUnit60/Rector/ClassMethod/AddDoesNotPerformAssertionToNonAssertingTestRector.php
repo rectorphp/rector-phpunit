@@ -39,7 +39,7 @@ final class AddDoesNotPerformAssertionToNonAssertingTestRector extends AbstractR
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Tests without assertion will have @doesNotPerformAssertion',
+            'Tests without assertion will have `@doesNotPerformAssertion`',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

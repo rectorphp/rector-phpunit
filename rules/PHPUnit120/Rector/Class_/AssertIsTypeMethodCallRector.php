@@ -54,7 +54,7 @@ final class AssertIsTypeMethodCallRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Replaces `Assert::isType()` calls with type-specific `Assert::is*()` calls',
+            'Replace `Assert::isType()` calls with type-specific `Assert::is*()` calls',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

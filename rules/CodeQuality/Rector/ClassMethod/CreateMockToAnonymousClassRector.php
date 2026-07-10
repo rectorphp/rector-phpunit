@@ -19,7 +19,7 @@ final class CreateMockToAnonymousClassRector extends AbstractRector implements D
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change $this->createMock() with methods to direct anonymous class', [
+        return new RuleDefinition('Change `$this->createMock()` with methods to direct anonymous class', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;

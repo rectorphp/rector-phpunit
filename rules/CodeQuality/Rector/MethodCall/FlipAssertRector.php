@@ -36,7 +36,7 @@ final class FlipAssertRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Turns accidentally flipped assert order to right one, with expected expr to left',
+            'Turn accidentally flipped assert order to right one, with expected expr to left',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

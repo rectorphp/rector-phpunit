@@ -37,7 +37,7 @@ final class AddParamTypeFromDependsRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Add param type declaration based on @depends test method return type',
+            'Add param type declaration based on `@depends` test method return type',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

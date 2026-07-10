@@ -32,7 +32,7 @@ final class RemoveDataProviderTestPrefixRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Data provider methods cannot start with "test" prefix',
+            'Remove "test" prefix in data provider methods',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

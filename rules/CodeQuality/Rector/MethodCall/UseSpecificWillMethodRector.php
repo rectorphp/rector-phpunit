@@ -41,7 +41,7 @@ final class UseSpecificWillMethodRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes $mock->will() call to more specific method',
+            'Change `$mock->will()` call to more specific method',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

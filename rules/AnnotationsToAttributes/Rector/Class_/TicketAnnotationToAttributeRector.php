@@ -46,7 +46,7 @@ final class TicketAnnotationToAttributeRector extends AbstractRector implements 
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change annotations with value to attribute', [
+        return new RuleDefinition('Change `@ticket` annotations with value to attribute', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;

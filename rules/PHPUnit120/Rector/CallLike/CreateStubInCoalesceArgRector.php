@@ -31,7 +31,7 @@ final class CreateStubInCoalesceArgRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Use createStub() over createMock() when used as argument/array item coalesce ?? fallback',
+            'Use `createStub()` over `createMock()` when used as argument/array item coalesce ?? fallback',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

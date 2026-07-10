@@ -40,7 +40,7 @@ final class SpecificAssertContainsWithoutIdentityRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change assertContains()/assertNotContains() with non-strict comparison to new specific alternatives',
+            'Change `assertContains()`/`assertNotContains()` with non-strict comparison to new specific alternatives',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

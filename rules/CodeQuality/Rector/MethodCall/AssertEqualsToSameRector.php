@@ -65,7 +65,7 @@ final class AssertEqualsToSameRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Turns `assertEquals()` into stricter `assertSame()` for scalar values in PHPUnit TestCase',
+            'Turn `assertEquals()` into stricter `assertSame()` for scalar values in PHPUnit TestCase',
             [new CodeSample('$this->assertEquals(2, $result);', '$this->assertSame(2, $result);')]
         );
     }

@@ -37,7 +37,7 @@ final class AssertNotOperatorRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Turns not-operator comparisons to their method name alternatives in PHPUnit TestCase',
+            'Turn not-operator comparisons to their method name alternatives in PHPUnit TestCase',
             [
                 new CodeSample('$this->assertTrue(!$foo, "message");', '$this->assertFalse($foo, "message");'),
                 new CodeSample('$this->assertFalse(!$foo, "message");', '$this->assertTrue($foo, "message");'),

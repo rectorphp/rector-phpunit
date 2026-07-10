@@ -97,7 +97,7 @@ final class AddStubIntersectionVarToStubPropertyRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Add a Stub intersection @var docblock with the stubbed class to a native Stub property',
+            'Add a Stub intersection `@var` docblock with the stubbed class to a native Stub property',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

@@ -49,7 +49,7 @@ final class WithConsecutiveRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Refactor deprecated withConsecutive() to willReturnCallback() structure', [
+        return new RuleDefinition('Refactor deprecated `withConsecutive()` to `willReturnCallback()` structure', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;

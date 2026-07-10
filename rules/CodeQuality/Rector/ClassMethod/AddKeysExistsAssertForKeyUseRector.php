@@ -38,7 +38,7 @@ final class AddKeysExistsAssertForKeyUseRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Add assertArrayHasKey() call for array access with string key, that was not validated before',
+            'Add `assertArrayHasKey()` call for array access with string key, that was not validated before',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

@@ -31,7 +31,7 @@ final class GetMockBuilderGetMockToCreateMockRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Remove getMockBuilder() to createMock()', [
+        return new RuleDefinition('Migrate `getMockBuilder()` to `createMock()`', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;

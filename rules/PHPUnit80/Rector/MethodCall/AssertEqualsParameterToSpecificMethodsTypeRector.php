@@ -33,7 +33,7 @@ final class AssertEqualsParameterToSpecificMethodsTypeRector extends AbstractRec
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change assertEquals()/assertNotEquals() method parameters to new specific alternatives',
+            'Change `assertEquals()`/`assertNotEquals()` method parameters to new specific alternatives',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

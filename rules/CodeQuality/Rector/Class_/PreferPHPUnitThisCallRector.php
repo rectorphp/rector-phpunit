@@ -31,7 +31,7 @@ final class PreferPHPUnitThisCallRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Changes PHPUnit calls from self::assert*() to $this->assert*()', [
+        return new RuleDefinition('Change PHPUnit calls from `self::assert*()` to `$this->assert*()`', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;

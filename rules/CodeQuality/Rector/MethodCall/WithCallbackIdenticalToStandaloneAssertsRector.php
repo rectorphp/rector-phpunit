@@ -43,7 +43,7 @@ final class WithCallbackIdenticalToStandaloneAssertsRector extends AbstractRecto
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Replaces identical compare in $this->callable() sole return to standalone PHPUnit asserts that show more detailed failure messages',
+            'Replace identical compare in `$this->callable()` sole return to standalone PHPUnit asserts that show more detailed failure messages',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

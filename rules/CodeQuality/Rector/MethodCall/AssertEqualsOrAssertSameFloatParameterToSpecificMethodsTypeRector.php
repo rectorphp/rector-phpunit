@@ -32,7 +32,7 @@ final class AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector ex
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change assertEquals()/assertSame() method using float on expected argument to new specific alternatives.',
+            'Change `assertEquals()`/`assertSame()` method using float on expected argument to new specific alternatives',
             [
                 new CodeSample(
                     // code before

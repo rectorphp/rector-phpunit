@@ -26,7 +26,7 @@ final class ReplaceAtMethodWithDesiredMatcherRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Replace at() method call with desired matcher',
+            'Replace `at()` method call with desired matcher',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

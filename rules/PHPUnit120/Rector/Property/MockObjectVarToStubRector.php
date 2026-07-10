@@ -76,7 +76,7 @@ final class MockObjectVarToStubRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Update the @var docblock of a property changed to a Stub native type, from MockObject to Stub',
+            'Update the `@var` docblock of a property changed to a Stub native type, from MockObject to Stub',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

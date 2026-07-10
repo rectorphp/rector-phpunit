@@ -29,7 +29,7 @@ final class SingleWithConsecutiveToWithRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change single-value withConsecutive() to with() call, willReturnOnConsecutiveCalls() to willReturn() call',
+            'Change single-value `withConsecutive()` to `with()` call, `willReturnOnConsecutiveCalls()` to `willReturn()` call',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

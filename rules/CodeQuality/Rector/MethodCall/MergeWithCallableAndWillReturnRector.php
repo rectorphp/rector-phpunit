@@ -38,7 +38,7 @@ final class MergeWithCallableAndWillReturnRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Merge split mocking method ->with($this->callback(...)) and ->willReturn(expr) to single ->willReturnCallback() call',
+            'Merge split mocking method `->with($this->callback(...))` and `->willReturn(expr)` to single `->willReturnCallback()` call',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

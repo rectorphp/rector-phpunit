@@ -36,7 +36,7 @@ final class AddSeeTestAnnotationRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Add @see annotation test of the class for faster jump to test. Make it FQN, so it stays in the annotation, not in the PHP source code.',
+            'Add `@see` annotation test of the class for faster jump to test. Make it FQN, so it stays in the annotation, not in the PHP source code.',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

@@ -29,7 +29,7 @@ final class ReplaceTestFunctionPrefixWithAttributeRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Replace @test with prefixed function', [
+        return new RuleDefinition('Replace test function prefix with `#[Test]` attribute', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeTest extends \PHPUnit\Framework\TestCase

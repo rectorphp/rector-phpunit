@@ -31,7 +31,7 @@ final class AssertEmptyNullableObjectToAssertInstanceofRector extends AbstractRe
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change assertNotEmpty() and assertNotNull() on an object to more clear assertInstanceof()',
+            'Change `assertNotEmpty()` and `assertNotNull()` on an object to more clear `assertInstanceof()`',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

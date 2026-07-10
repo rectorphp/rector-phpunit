@@ -20,7 +20,7 @@ final class AssertPropertyExistsRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Turns `property_exists` comparisons to their method name alternatives in PHPUnit TestCase',
+            'Turn `property_exists()` comparisons to their method name alternatives in PHPUnit TestCase',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

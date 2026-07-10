@@ -28,7 +28,7 @@ final class MatchAssertSameExpectedTypeRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Correct expected type in assertSame() method to match strict type of passed variable',
+            'Correct expected type in `assertSame()` method to match strict type of passed variable',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

@@ -27,7 +27,7 @@ final class NarrowIdenticalWithConsecutiveRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Narrow identical withConsecutive() and willReturnOnConsecutiveCalls() to single call',
+            'Narrow identical `withConsecutive()` and `willReturnOnConsecutiveCalls()` to single call',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

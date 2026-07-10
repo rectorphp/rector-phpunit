@@ -48,7 +48,7 @@ final class ExceptionAnnotationRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes `@expectedException annotations to `expectException*()` methods',
+            'Change `@expectedException` annotations to `expectException*()` methods',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

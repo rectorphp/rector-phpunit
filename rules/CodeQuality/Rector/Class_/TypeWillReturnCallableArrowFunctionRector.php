@@ -53,7 +53,7 @@ final class TypeWillReturnCallableArrowFunctionRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Decorate callbacks and arrow functions in willReturnCallback() with known param/return types based on reflection method',
+            'Decorate callbacks and arrow functions in `willReturnCallback()` with known param/return types based on reflection method',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

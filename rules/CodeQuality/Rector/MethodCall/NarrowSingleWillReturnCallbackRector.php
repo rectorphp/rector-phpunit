@@ -34,7 +34,7 @@ final class NarrowSingleWillReturnCallbackRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Narrow single-value match willReturnCallback() to with() and willReturn() call',
+            'Narrow single-value match `willReturnCallback()` to `with()` and `willReturn()` call',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

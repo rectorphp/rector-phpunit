@@ -50,7 +50,7 @@ final class SpecificAssertInternalTypeRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change assertInternalType()/assertNotInternalType() method to new specific alternatives',
+            'Change `assertInternalType()`/`assertNotInternalType()` method to new specific alternatives',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

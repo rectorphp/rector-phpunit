@@ -31,7 +31,7 @@ final class SimplerWithIsInstanceOfRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Replaces use of with, callable and instance assert to simple isInstanceOf() method',
+            'Replace use of `with()`, `callable()` and `instanceof` assert to simple `isInstanceOf()` method',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
