@@ -92,6 +92,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // skip abstract test case classes, as most likely extended and mock used in child classes
+        if (str_ends_with((string) $this->getName($node), 'TestCase')) {
+            return null;
+        }
+
         $setUpClassMethod = $node->getMethod(MethodName::SET_UP);
         if (! $setUpClassMethod instanceof ClassMethod) {
             return null;
