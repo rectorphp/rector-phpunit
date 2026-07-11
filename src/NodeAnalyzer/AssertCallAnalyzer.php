@@ -170,7 +170,7 @@ final class AssertCallAnalyzer
         });
     }
 
-    private function resolveClassMethodFromCall(StaticCall | MethodCall $call): ?ClassMethod
+    private function resolveClassMethodFromCall(StaticCall|MethodCall $call): ?ClassMethod
     {
         if ($call instanceof MethodCall) {
             $objectType = $this->nodeTypeResolver->getType($call->var);

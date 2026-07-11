@@ -152,7 +152,7 @@ CODE_SAMPLE
                 $arrayItemsSingleLine[] = new ArrayItem($this->createArrayItem($values[0]));
             }
 
-            //cleanup
+            // cleanup
             if ($this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $testWithPhpDocTagNode)) {
                 $this->hasChanged = true;
             }
