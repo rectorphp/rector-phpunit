@@ -29,7 +29,7 @@ final readonly class IdentifierManipulator
      * @param array<string, string> $renameMethodMap
      */
     public function renameNodeWithMap(
-        ClassConstFetch | MethodCall | PropertyFetch | StaticCall | ClassMethod $node,
+        ClassConstFetch|MethodCall|PropertyFetch|StaticCall|ClassMethod $node,
         array $renameMethodMap
     ): bool {
         $oldNodeMethodName = $this->resolveOldMethodName($node);
@@ -42,7 +42,7 @@ final readonly class IdentifierManipulator
     }
 
     private function resolveOldMethodName(
-        ClassConstFetch | MethodCall | PropertyFetch | StaticCall | ClassMethod $node
+        ClassConstFetch|MethodCall|PropertyFetch|StaticCall|ClassMethod $node
     ): ?string {
         if ($node instanceof StaticCall || $node instanceof MethodCall) {
             return $this->nodeNameResolver->getName($node->name);
