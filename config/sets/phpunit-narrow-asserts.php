@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\PHPUnit\CodeQuality\Rector\Expression\AssertArrayCastedObjectToAssertSameRector;
-use Rector\PHPUnit\CodeQuality\Rector\Foreach_\SimplifyForeachInstanceOfRector;
 use Rector\PHPUnit\CodeQuality\Rector\FuncCall\AssertFuncCallToPHPUnitAssertRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertCompareOnCountableWithMethodToAssertCountRector;
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertComparisonToSpecificMethodRector;
@@ -35,7 +34,6 @@ return static function (RectorConfig $rectorConfig): void {
         AssertIssetToSpecificMethodRector::class,
         AssertInstanceOfComparisonRector::class,
         AssertFuncCallToPHPUnitAssertRector::class,
-        SimplifyForeachInstanceOfRector::class,
         UseSpecificWithMethodRector::class,
         AssertEmptyNullableObjectToAssertInstanceofRector::class,
 
