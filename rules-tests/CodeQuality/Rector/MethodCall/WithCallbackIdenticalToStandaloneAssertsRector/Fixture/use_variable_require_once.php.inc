@@ -37,11 +37,11 @@ final class UseVariableRequireOnce extends TestCase
         $someMock->expects($this->any())
             ->method('trans')
             ->with(
-                $this->callback(function ($args) use ($expectedValue): bool {
+                $this->callback(function ($args) use ($expectedValue): void {
                     $this->assertCount(5, $args);
                     $this->assertSame($expectedValue, $args[0]);
                     $this->assertSame($expectedValue, $args[2]);
-                    return true;
+                    return;
                 })
             );
     }

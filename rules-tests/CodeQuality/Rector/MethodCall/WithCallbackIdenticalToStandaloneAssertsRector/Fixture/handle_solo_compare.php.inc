@@ -36,9 +36,9 @@ final class HandleSoloCompare extends TestCase
             ->method('trans')
             ->with(
                 $this->callback(
-                    function ($args): bool {
+                    function ($args): void {
                         $this->assertCount(5, $args);
-                        return true;
+                        return;
                     }
                 )
             );

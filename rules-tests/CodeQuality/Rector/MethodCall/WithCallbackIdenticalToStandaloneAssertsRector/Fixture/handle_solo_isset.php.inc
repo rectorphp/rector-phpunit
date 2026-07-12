@@ -36,9 +36,9 @@ final class HandleSoloIsset extends TestCase
             ->method('trans')
             ->with(
                 $this->callback(
-                    function ($args): bool {
+                    function ($args): void {
                         $this->assertArrayHasKey('key', $args);
-                        return true;
+                        return;
                     }
                 )
             );

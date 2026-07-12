@@ -36,10 +36,10 @@ final class OnStaticClosure extends TestCase
         $this->createMock('SomeClass')
             ->expects($this->once())
             ->method('someMethod')
-            ->with($this->callback(static function (array $args): bool {
+            ->with($this->callback(static function (array $args): void {
                 self::assertCount(2, $args);
                 self::assertSame('correct', $args[0]);
-                return true;
+                return;
             }));
     }
 }

@@ -39,11 +39,11 @@ final class IncludeNoArgs extends TestCase
 
         $someMock->expects($this->any())
             ->method('trans')
-            ->with($this->callback(function (): bool {
+            ->with($this->callback(function (): void {
                 $args= [1, 2, 3];
                 $this->assertCount(5, $args);
                 $this->assertSame('some_value', $args[0]);
-                return true;
+                return;
             }));
     }
 }

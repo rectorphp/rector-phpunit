@@ -41,10 +41,10 @@ final class SkipThis extends TestCase
         $someMock->expects($this->any())
             ->method('trans')
             ->with(
-                $this->callback(function ($args): bool {
+                $this->callback(function ($args): void {
                     $this->assertCount(5, $args);
                     $this->assertSame($this->expectedValue, $args[0]);
-                    return true;
+                    return;
                 })
             );
     }

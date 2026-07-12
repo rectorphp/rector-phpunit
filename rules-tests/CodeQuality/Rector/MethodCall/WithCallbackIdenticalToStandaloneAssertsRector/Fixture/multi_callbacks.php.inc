@@ -36,13 +36,13 @@ final class MultiCallbacks extends TestCase
         $someMock->expects($this->any())
             ->method('trans')
             ->with(
-                    $this->callback(function (array $args): bool {
+                    $this->callback(function (array $args): void {
                         $this->assertArrayHasKey(5, $args);
-                        return true;
+                        return;
                     }),
-                    $this->callback(function (array $args): bool {
+                    $this->callback(function (array $args): void {
                         $this->assertArrayHasKey(50, $args);
-                        return true;
+                        return;
                     }),
             );
     }

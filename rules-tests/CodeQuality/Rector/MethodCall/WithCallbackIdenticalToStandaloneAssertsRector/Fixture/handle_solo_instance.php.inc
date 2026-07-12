@@ -36,9 +36,9 @@ final class HandleSoloInstance extends TestCase
             ->method('trans')
             ->with(
                 $this->callback(
-                    function ($arg): bool {
+                    function ($arg): void {
                         $this->assertInstanceOf(\stdClass::class, $arg);
-                        return true;
+                        return;
                     }
                 )
             );

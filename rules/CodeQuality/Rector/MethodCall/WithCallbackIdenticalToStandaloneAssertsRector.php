@@ -73,11 +73,11 @@ final class SomeTest extends TestCase
         $this->createMock('SomeClass')
             ->expects($this->once())
             ->method('someMethod')
-            ->with($this->callback(function (array $args): bool {
+            ->with($this->callback(function (array $args): void {
                 $this->assertCount(2, $args);
                 $this->assertSame('correct', $args[0]);
 
-                return true;
+                return;
             }));
     }
 }
@@ -135,11 +135,12 @@ CODE_SAMPLE
 
             $nonReturnCallbackStmts = $this->resolveNonReturnCallbackStmts($argAndFunctionLike);
 
-            // last si return true;
-            $assertExprStmts[] = new Return_($this->nodeFactory->createTrue());
+            // last is a bare "return;"
+            $assertExprStmts[] = new Return_();
 
             if ($innerFunctionLike instanceof Closure) {
                 $innerFunctionLike->stmts = array_merge($nonReturnCallbackStmts, $assertExprStmts);
+                $innerFunctionLike->returnType = new Identifier('void');
             } else {
                 // arrow function -> flip to closure
                 $functionLikeInArg = $argAndFunctionLike->getArg();
@@ -280,7 +281,7 @@ CODE_SAMPLE
             'params' => $argAndFunctionLike->getFunctionLike()
                 ->params,
             'stmts' => $assertExprStmts,
-            'returnType' => new Identifier('bool'),
+            'returnType' => new Identifier('void'),
             'uses' => $externalVariables,
         ]);
     }
