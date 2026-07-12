@@ -35,12 +35,12 @@ final class ExtraStmt extends TestCase
 
         $someMock->expects($this->any())
             ->method('trans')
-            ->with($this->callback(function ($args): bool {
+            ->with($this->callback(function ($args): void {
                 $item = 100;
                 $this->assertCount(5, $args);
                 $this->assertArrayHasKey(0, $args);
                 $this->assertSame('some_value', $args[0]);
-                return true;
+                return;
             }));
     }
 }

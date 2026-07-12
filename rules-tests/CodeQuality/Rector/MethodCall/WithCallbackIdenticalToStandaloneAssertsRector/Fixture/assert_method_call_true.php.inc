@@ -38,10 +38,10 @@ final class AssertMethodCallTrue extends TestCase
 
         $someMock->expects($this->any())
             ->method('trans')
-            ->with($this->callback(function ($arg): bool {
+            ->with($this->callback(function ($arg): void {
                 $this->assertInstanceOf(\Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\WithCallbackIdenticalToStandaloneAssertsRector\Source\SomeClassWithMethodCall::class, $arg);
                 $this->assertTrue($arg->isReady());
-                return true;
+                return;
             }));
     }
 }

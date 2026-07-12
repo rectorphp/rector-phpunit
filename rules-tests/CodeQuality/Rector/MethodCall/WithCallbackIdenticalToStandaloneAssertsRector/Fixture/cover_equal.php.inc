@@ -32,10 +32,10 @@ final class CoverEqual extends TestCase
         $this->createMock('SomeType')
             ->method('someMethod')
             ->with($this->callback(
-                function ($item) use ($type): bool {
+                function ($item) use ($type): void {
                     $this->assertInstanceOf($type, $item);
                     $this->assertEquals('name', $item->getName());
-                    return true;
+                    return;
                 }
                 ));
     }
