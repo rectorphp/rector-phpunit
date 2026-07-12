@@ -17,9 +17,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\SimplerWithEqualToRector\SimplerWithEqualToRectorTest
+ * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\CallbackSingleAssertToSimplerRector\CallbackSingleAssertToSimplerRectorTest
  */
-final class SimplerWithEqualToRector extends AbstractRector
+final class CallbackSingleAssertToSimplerRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer

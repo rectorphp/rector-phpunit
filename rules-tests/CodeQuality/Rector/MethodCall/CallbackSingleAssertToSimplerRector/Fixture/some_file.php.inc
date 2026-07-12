@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\SimplerWithEqualToRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\CallbackSingleAssertToSimplerRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
@@ -24,7 +24,7 @@ final class SomeFile extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\SimplerWithEqualToRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\MethodCall\CallbackSingleAssertToSimplerRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
