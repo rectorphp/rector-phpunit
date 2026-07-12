@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Instanceof_;
@@ -90,40 +89,50 @@ CODE_SAMPLE
             return null;
         }
 
-        $withFirstArgValue = $node->getArgs()[0]
-            ->value;
-        if (! $withFirstArgValue instanceof MethodCall || ! $this->isName($withFirstArgValue->name, 'callback')) {
+        $hasChanged = false;
+
+        foreach ($node->getArgs() as $arg) {
+            $instanceCheckedClassName = $this->matchCallbackSoleInstanceofCheckClassName($arg->value);
+            if (! $instanceCheckedClassName instanceof Node) {
+                continue;
+            }
+
+            // convert name to expr
+            if ($instanceCheckedClassName instanceof Name) {
+                $instanceCheckedClassName = $this->nodeFactory->createClassConstFetch(
+                    $instanceCheckedClassName->toString(),
+                    'class'
+                );
+            }
+
+            $arg->value = $this->nodeFactory->createMethodCall('this', 'isInstanceOf', [$instanceCheckedClassName]);
+            $hasChanged = true;
+        }
+
+        if (! $hasChanged) {
             return null;
         }
 
-        $callableMethodCall = $withFirstArgValue;
-        $callableFirstArgValue = $callableMethodCall->getArgs()[0]
-            ->value;
+        return $node;
+    }
 
-        $innerClosure = $callableFirstArgValue;
+    private function matchCallbackSoleInstanceofCheckClassName(Expr $expr): Node|null|Name
+    {
+        if (! $expr instanceof MethodCall || ! $this->isName($expr->name, 'callback')) {
+            return null;
+        }
+
+        $callbackArgs = $expr->getArgs();
+        if ($callbackArgs === []) {
+            return null;
+        }
+
+        $innerClosure = $callbackArgs[0]->value;
         if (! $innerClosure instanceof Closure) {
             return null;
         }
 
-        $instanceCheckedClassName = $this->matchSoleInstanceofCheckClassName($innerClosure);
-
-        if (! $instanceCheckedClassName instanceof Node) {
-            return null;
-        }
-
-        // convert name to expr
-        if ($instanceCheckedClassName instanceof Name) {
-            $instanceCheckedClassName = $this->nodeFactory->createClassConstFetch(
-                $instanceCheckedClassName->toString(),
-                'class'
-            );
-        }
-
-        $node->args = [
-            new Arg($this->nodeFactory->createMethodCall('this', 'isInstanceOf', [$instanceCheckedClassName])),
-        ];
-
-        return $node;
+        return $this->matchSoleInstanceofCheckClassName($innerClosure);
     }
 
     private function matchSoleInstanceofCheckClassName(Closure $innerClosure): Node|null|Expr|Name
