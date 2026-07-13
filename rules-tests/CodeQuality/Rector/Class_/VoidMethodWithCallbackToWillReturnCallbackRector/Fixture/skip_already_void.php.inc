@@ -1,9 +1,9 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\RemoveReturnFromVoidMethodMockCallbackRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\VoidMethodWithCallbackToWillReturnCallbackRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
-use Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\RemoveReturnFromVoidMethodMockCallbackRector\Source\SomeEntityManager;
+use Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\VoidMethodWithCallbackToWillReturnCallbackRector\Source\SomeEntityManager;
 
 final class SkipAlreadyVoid extends TestCase
 {

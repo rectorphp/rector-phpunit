@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
@@ -39,9 +40,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\RemoveReturnFromVoidMethodMockCallbackRector\RemoveReturnFromVoidMethodMockCallbackRectorTest
+ * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\VoidMethodWithCallbackToWillReturnCallbackRector\VoidMethodWithCallbackToWillReturnCallbackRectorTest
  */
-final class RemoveReturnFromVoidMethodMockCallbackRector extends AbstractRector
+final class VoidMethodWithCallbackToWillReturnCallbackRector extends AbstractRector
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
@@ -54,7 +55,7 @@ final class RemoveReturnFromVoidMethodMockCallbackRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Drop the value return and type the closure as void, when a mocked callback stubs a void method',
+            'Flip a ->with($this->callback(...)) matcher on a void mocked method to a ->willReturnCallback() call, dropping the value return',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -66,11 +67,11 @@ final class SomeTest extends TestCase
     {
         $this->createMock(SomeClass::class)
             ->method('run')
-            ->willReturnCallback(function ($arg) {
+            ->with($this->callback(function ($arg) {
                 echo $arg;
 
                 return true;
-            });
+            }));
     }
 }
 
@@ -91,7 +92,7 @@ final class SomeTest extends TestCase
     {
         $this->createMock(SomeClass::class)
             ->method('run')
-            ->willReturnCallback(function ($arg): void {
+            ->willReturnCallback(function ($arg) {
                 echo $arg;
             });
     }
@@ -144,7 +145,11 @@ CODE_SAMPLE
                 return null;
             }
 
-            $closure = $this->matchInnerClosure($subNode);
+            if (! $this->isName($subNode->name, 'with')) {
+                return null;
+            }
+
+            $closure = $this->matchCallbackClosure($subNode);
             if (! $closure instanceof Closure) {
                 return null;
             }
@@ -153,9 +158,15 @@ CODE_SAMPLE
                 return null;
             }
 
-            if ($this->refactorClosureToVoid($closure)) {
-                $hasChanged = true;
+            if (! $this->removeValueReturns($closure)) {
+                return null;
             }
+
+            // flip ->with($this->callback($closure)) to ->willReturnCallback($closure)
+            $subNode->name = new Identifier('willReturnCallback');
+            $subNode->args = [new Arg($closure)];
+
+            $hasChanged = true;
 
             return null;
         });
@@ -167,32 +178,25 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function matchInnerClosure(MethodCall $methodCall): ?Closure
+    private function matchCallbackClosure(MethodCall $withMethodCall): ?Closure
     {
-        if ($this->isName($methodCall->name, 'willReturnCallback')) {
-            $innerArg = $methodCall->getArgs()[0];
-            if ($innerArg->value instanceof Closure) {
-                return $innerArg->value;
-            }
-
+        $withFirstArg = $withMethodCall->getArgs()[0] ?? null;
+        if (! $withFirstArg instanceof Arg) {
             return null;
         }
 
-        if ($this->isName($methodCall->name, 'with')) {
-            $withFirstArg = $methodCall->getArgs()[0];
-            if (! $withFirstArg->value instanceof MethodCall) {
-                return null;
-            }
+        if (! $withFirstArg->value instanceof MethodCall) {
+            return null;
+        }
 
-            $nestedMethodCall = $withFirstArg->value;
-            if (! $this->isName($nestedMethodCall->name, 'callback')) {
-                return null;
-            }
+        $nestedMethodCall = $withFirstArg->value;
+        if (! $this->isName($nestedMethodCall->name, 'callback')) {
+            return null;
+        }
 
-            $nestedArg = $nestedMethodCall->getArgs()[0];
-            if ($nestedArg->value instanceof Closure) {
-                return $nestedArg->value;
-            }
+        $nestedArg = $nestedMethodCall->getArgs()[0] ?? null;
+        if ($nestedArg instanceof Arg && $nestedArg->value instanceof Closure) {
+            return $nestedArg->value;
         }
 
         return null;
@@ -254,7 +258,7 @@ CODE_SAMPLE
         return $paramTypesAndReturnType->getReturnType() instanceof VoidType;
     }
 
-    private function refactorClosureToVoid(Closure $closure): bool
+    private function removeValueReturns(Closure $closure): bool
     {
         $nodeFinder = new NodeFinder();
 
@@ -272,7 +276,7 @@ CODE_SAMPLE
 
         $valueReturns = array_filter($returns, static fn (Return_ $return): bool => $return->expr instanceof Expr);
 
-        // nothing to drop, typing void is left to TypeWillReturnCallableArrowFunctionRector
+        // nothing to drop, keep the callback matcher as is
         if ($valueReturns === []) {
             return false;
         }
@@ -299,7 +303,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            // "return throw new X;" is itself invalid in a void function, unwrap to "throw new X;"
+            // "return throw new X;" carries no value, unwrap to a bare "throw new X;"
             if ($subNode->expr instanceof Throw_) {
                 return new Expression($subNode->expr);
             }
@@ -316,8 +320,6 @@ CODE_SAMPLE
         if ($lastStmt instanceof Return_ && ! $lastStmt->expr instanceof Expr) {
             array_pop($closure->stmts);
         }
-
-        $closure->returnType = new Identifier('void');
 
         return true;
     }
