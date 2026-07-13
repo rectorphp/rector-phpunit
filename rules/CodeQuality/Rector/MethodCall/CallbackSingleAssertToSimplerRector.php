@@ -133,13 +133,19 @@ CODE_SAMPLE
             }
         }
 
-        // exactly assertSame() expression + "return true;"
+        // sole assertSame() expression, optionally followed by "return true;"
         $closureStmts = $innerClosure->getStmts();
-        if (count($closureStmts) !== 2) {
+        if (count($closureStmts) === 2) {
+            [$firstStmt, $secondStmt] = $closureStmts;
+
+            if (! $secondStmt instanceof Return_ || ! $this->isTrueReturn($secondStmt)) {
+                return null;
+            }
+        } elseif (count($closureStmts) === 1) {
+            $firstStmt = $closureStmts[0];
+        } else {
             return null;
         }
-
-        [$firstStmt, $secondStmt] = $closureStmts;
 
         if (! $firstStmt instanceof Expression) {
             return null;
@@ -147,10 +153,6 @@ CODE_SAMPLE
 
         $firstStmtExpr = $firstStmt->expr;
         if (! $firstStmtExpr instanceof MethodCall || ! $this->isName($firstStmtExpr->name, 'assertSame')) {
-            return null;
-        }
-
-        if (! $secondStmt instanceof Return_ || ! $this->isTrueReturn($secondStmt)) {
             return null;
         }
 
