@@ -11,7 +11,9 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\StringType;
+use Rector\PHPUnit\Enum\PHPUnitClassName;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\ValueObject\FunctionNameWithAssertMethods;
 use Rector\Rector\AbstractRector;
@@ -42,8 +44,18 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
         'str_contains' => ['str_contains', 'assertStringContainsString', 'assertStringNotContainsString'],
     ];
 
+    /**
+     * Some assert methods were renamed in newer PHPUnit versions
+     * @var array<string, string>
+     */
+    private const array RENAMED_ASSERT_METHOD_NAMES = [
+        'assertFileNotExists' => 'assertFileDoesNotExist',
+        'assertDirectoryNotExists' => 'assertDirectoryDoesNotExist',
+    ];
+
     public function __construct(
-        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -145,7 +157,9 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
         $oldMethodName = $identifierNode->toString();
 
         if (in_array($oldMethodName, ['assertTrue', 'assertNotFalse'], true)) {
-            $node->name = new Identifier($functionNameWithAssertMethods->getAssetMethodName());
+            $node->name = new Identifier(
+                $this->resolveExistingAssertMethodName($functionNameWithAssertMethods->getAssetMethodName())
+            );
         }
 
         if ($functionNameWithAssertMethods->getNotAssertMethodName() === '') {
@@ -156,7 +170,27 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
             return;
         }
 
-        $node->name = new Identifier($functionNameWithAssertMethods->getNotAssertMethodName());
+        $node->name = new Identifier(
+            $this->resolveExistingAssertMethodName($functionNameWithAssertMethods->getNotAssertMethodName())
+        );
+    }
+
+    /**
+     * Verify the assert method exists on the PHPUnit Assert class,
+     * as some methods were renamed in newer PHPUnit versions
+     */
+    private function resolveExistingAssertMethodName(string $methodName): string
+    {
+        if (! $this->reflectionProvider->hasClass(PHPUnitClassName::ASSERT)) {
+            return $methodName;
+        }
+
+        $assertClassReflection = $this->reflectionProvider->getClass(PHPUnitClassName::ASSERT);
+        if ($assertClassReflection->hasNativeMethod($methodName)) {
+            return $methodName;
+        }
+
+        return self::RENAMED_ASSERT_METHOD_NAMES[$methodName] ?? $methodName;
     }
 
     /**
