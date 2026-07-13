@@ -26,7 +26,7 @@ final class SomeTest extends \PHPUnit\Framework\TestCase
     public function test()
     {
         $someMock = $this->createMock(\stdClass::class);
-        $someMock->expects($this->exactly(2))->method('some')->willReturnMap([1, 2]);
+        $someMock->expects($this->atLeast(2))->method('some')->willReturnMap([1, 2]);
     }
 }
 
