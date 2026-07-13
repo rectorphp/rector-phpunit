@@ -12,10 +12,10 @@ use Rector\PHPUnit\CodeQuality\Rector\Class_\InlineStubPropertyToCreateStubMetho
 use Rector\PHPUnit\CodeQuality\Rector\Class_\NarrowUnusedSetUpDefinedPropertyRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\RemoveNeverUsedMockPropertyRector;
-use Rector\PHPUnit\CodeQuality\Rector\Class_\RemoveReturnFromVoidMethodMockCallbackRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\SingleMockPropertyTypeRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\TestWithToDataProviderRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\TypeWillReturnCallableArrowFunctionRector;
+use Rector\PHPUnit\CodeQuality\Rector\Class_\VoidMethodWithCallbackToWillReturnCallbackRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\YieldDataProviderRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableArgumentRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableInstanceRector;
@@ -94,7 +94,7 @@ return static function (RectorConfig $rectorConfig): void {
 
         // type declarations
         TypeWillReturnCallableArrowFunctionRector::class,
-        RemoveReturnFromVoidMethodMockCallbackRector::class,
+        VoidMethodWithCallbackToWillReturnCallbackRector::class,
         StringCastAssertStringContainsStringRector::class,
         AddParamTypeFromDependsRector::class,
         AddReturnTypeToDependedRector::class,

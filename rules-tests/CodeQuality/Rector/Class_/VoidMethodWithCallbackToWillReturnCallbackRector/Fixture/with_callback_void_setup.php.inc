@@ -1,10 +1,10 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\RemoveReturnFromVoidMethodMockCallbackRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\VoidMethodWithCallbackToWillReturnCallbackRector\Fixture;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\RemoveReturnFromVoidMethodMockCallbackRector\Source\SomeEntityManager;
+use Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\VoidMethodWithCallbackToWillReturnCallbackRector\Source\SomeEntityManager;
 
 final class WithCallbackVoidSetup extends TestCase
 {
@@ -19,7 +19,7 @@ final class WithCallbackVoidSetup extends TestCase
     {
         $this->entityManager
             ->method('persist')
-            ->with($this->callback(function ($entity): bool {
+            ->with($this->callback(function ($entity) {
                 $this->assertInstanceOf(\stdClass::class, $entity);
 
                 return true;
@@ -31,11 +31,11 @@ final class WithCallbackVoidSetup extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\RemoveReturnFromVoidMethodMockCallbackRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\VoidMethodWithCallbackToWillReturnCallbackRector\Fixture;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\RemoveReturnFromVoidMethodMockCallbackRector\Source\SomeEntityManager;
+use Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\VoidMethodWithCallbackToWillReturnCallbackRector\Source\SomeEntityManager;
 
 final class WithCallbackVoidSetup extends TestCase
 {
@@ -50,9 +50,9 @@ final class WithCallbackVoidSetup extends TestCase
     {
         $this->entityManager
             ->method('persist')
-            ->with($this->callback(function ($entity): void {
+            ->willReturnCallback(function ($entity): void {
                 $this->assertInstanceOf(\stdClass::class, $entity);
-            }));
+            });
     }
 }
 
