@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -153,8 +154,35 @@ CODE_SAMPLE
             return null;
         }
 
-        return $firstStmtExpr->getArgs()[0]
-            ->value;
+        $assertSameArgs = $firstStmtExpr->getArgs();
+        if (count($assertSameArgs) !== 2) {
+            return null;
+        }
+
+        // the actual value must be the whole closure parameter, not a nested access (e.g. $args['label'])
+        if (! $this->isClosureSoleParam($innerClosure, $assertSameArgs[1]->value)) {
+            return null;
+        }
+
+        return $assertSameArgs[0]->value;
+    }
+
+    private function isClosureSoleParam(Closure $closure, Expr $expr): bool
+    {
+        if (count($closure->params) !== 1) {
+            return false;
+        }
+
+        if (! $expr instanceof Variable) {
+            return false;
+        }
+
+        $soleParam = $closure->params[0];
+        if (! $soleParam->var instanceof Variable) {
+            return false;
+        }
+
+        return $this->nodeComparator->areNodesEqual($soleParam->var, $expr);
     }
 
     private function isTrueReturn(Return_ $return): bool
