@@ -46,7 +46,7 @@ final class MyTest extends Testing
 
         $this->assertNotIsReadable('...');
         $this->assertEmpty('...');
-        $this->assertFileNotExists('...');
+        $this->assertFileDoesNotExist('...');
         $this->assertDirectoryExists('...');
         $this->assertFinite('...');
         $this->assertNan('...');
