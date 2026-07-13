@@ -50,7 +50,7 @@ final class WithCallbackVoidSetup extends TestCase
     {
         $this->entityManager
             ->method('persist')
-            ->willReturnCallback(function ($entity) {
+            ->willReturnCallback(function ($entity): void {
                 $this->assertInstanceOf(\stdClass::class, $entity);
             });
     }

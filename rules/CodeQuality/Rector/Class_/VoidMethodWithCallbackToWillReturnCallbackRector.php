@@ -92,7 +92,7 @@ final class SomeTest extends TestCase
     {
         $this->createMock(SomeClass::class)
             ->method('run')
-            ->willReturnCallback(function ($arg) {
+            ->willReturnCallback(function ($arg): void {
                 echo $arg;
             });
     }
@@ -320,6 +320,9 @@ CODE_SAMPLE
         if ($lastStmt instanceof Return_ && ! $lastStmt->expr instanceof Expr) {
             array_pop($closure->stmts);
         }
+
+        // the mocked method returns void, so type the callback the same way
+        $closure->returnType = new Identifier('void');
 
         return true;
     }
