@@ -7,8 +7,10 @@ namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Identifier;
 use PhpParser\PrettyPrinter\Standard;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -20,7 +22,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NarrowIdenticalWithConsecutiveRector extends AbstractRector
 {
     public function __construct(
-        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -101,6 +104,11 @@ CODE_SAMPLE
 
         // skip as most likely nested array of unique values
         if ($firstArg->unpack) {
+            return null;
+        }
+
+        // skip new object instances, as each creates a fresh instance with possible property dependency
+        if ($this->betterNodeFinder->hasInstancesOf($node->getArgs(), [New_::class])) {
             return null;
         }
 
