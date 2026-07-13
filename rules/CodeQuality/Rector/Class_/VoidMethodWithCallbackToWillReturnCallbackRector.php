@@ -55,7 +55,7 @@ final class VoidMethodWithCallbackToWillReturnCallbackRector extends AbstractRec
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'On a void mocked method, drop the value return from a callback and type it as void; a ->with($this->callback(...)) matcher is also flipped to a ->willReturnCallback() call',
+            'Flip a ->with($this->callback(...)) matcher on a void mocked method to a ->willReturnCallback() call, dropping the value return and typing the closure as void',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -145,15 +145,11 @@ CODE_SAMPLE
                 return null;
             }
 
-            $isWithCallback = $this->isName($subNode->name, 'with');
-            $isWillReturnCallback = $this->isName($subNode->name, 'willReturnCallback');
-            if (! $isWithCallback && ! $isWillReturnCallback) {
+            if (! $this->isName($subNode->name, 'with')) {
                 return null;
             }
 
-            $closure = $isWithCallback ? $this->matchCallbackClosure($subNode) : $this->matchDirectClosure(
-                $subNode
-            );
+            $closure = $this->matchCallbackClosure($subNode);
             if (! $closure instanceof Closure) {
                 return null;
             }
@@ -167,10 +163,8 @@ CODE_SAMPLE
             }
 
             // flip ->with($this->callback($closure)) to ->willReturnCallback($closure)
-            if ($isWithCallback) {
-                $subNode->name = new Identifier('willReturnCallback');
-                $subNode->args = [new Arg($closure)];
-            }
+            $subNode->name = new Identifier('willReturnCallback');
+            $subNode->args = [new Arg($closure)];
 
             $hasChanged = true;
 
@@ -182,16 +176,6 @@ CODE_SAMPLE
         }
 
         return $node;
-    }
-
-    private function matchDirectClosure(MethodCall $willReturnCallbackMethodCall): ?Closure
-    {
-        $firstArg = $willReturnCallbackMethodCall->getArgs()[0] ?? null;
-        if ($firstArg instanceof Arg && $firstArg->value instanceof Closure) {
-            return $firstArg->value;
-        }
-
-        return null;
     }
 
     private function matchCallbackClosure(MethodCall $withMethodCall): ?Closure
