@@ -159,12 +159,20 @@ CODE_SAMPLE
             return null;
         }
 
-        // the actual value must be the whole closure parameter, not a nested access (e.g. $args['label'])
-        if (! $this->isClosureSoleParam($innerClosure, $assertSameArgs[1]->value)) {
-            return null;
+        $firstValue = $assertSameArgs[0]->value;
+        $secondValue = $assertSameArgs[1]->value;
+
+        // one side must be the whole closure parameter; the other side is the expected value
+        // nested access (e.g. $args['label']) is skipped, as equalTo() matches the whole argument
+        if ($this->isClosureSoleParam($innerClosure, $secondValue)) {
+            return $firstValue;
         }
 
-        return $assertSameArgs[0]->value;
+        if ($this->isClosureSoleParam($innerClosure, $firstValue)) {
+            return $secondValue;
+        }
+
+        return null;
     }
 
     private function isClosureSoleParam(Closure $closure, Expr $expr): bool
