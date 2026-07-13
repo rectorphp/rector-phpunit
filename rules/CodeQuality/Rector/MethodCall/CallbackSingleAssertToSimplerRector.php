@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -153,8 +154,43 @@ CODE_SAMPLE
             return null;
         }
 
-        return $firstStmtExpr->getArgs()[0]
-            ->value;
+        $assertSameArgs = $firstStmtExpr->getArgs();
+        if (count($assertSameArgs) !== 2) {
+            return null;
+        }
+
+        $firstValue = $assertSameArgs[0]->value;
+        $secondValue = $assertSameArgs[1]->value;
+
+        // one side must be the whole closure parameter; the other side is the expected value
+        // nested access (e.g. $args['label']) is skipped, as equalTo() matches the whole argument
+        if ($this->isClosureSoleParam($innerClosure, $secondValue)) {
+            return $firstValue;
+        }
+
+        if ($this->isClosureSoleParam($innerClosure, $firstValue)) {
+            return $secondValue;
+        }
+
+        return null;
+    }
+
+    private function isClosureSoleParam(Closure $closure, Expr $expr): bool
+    {
+        if (count($closure->params) !== 1) {
+            return false;
+        }
+
+        if (! $expr instanceof Variable) {
+            return false;
+        }
+
+        $soleParam = $closure->params[0];
+        if (! $soleParam->var instanceof Variable) {
+            return false;
+        }
+
+        return $this->nodeComparator->areNodesEqual($soleParam->var, $expr);
     }
 
     private function isTrueReturn(Return_ $return): bool
