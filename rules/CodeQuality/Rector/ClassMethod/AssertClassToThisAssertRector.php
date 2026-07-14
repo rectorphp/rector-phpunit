@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
+namespace Rector\PHPUnit\CodeQuality\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeVisitor;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
@@ -19,7 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\AssertClassToThisAssertRector\AssertClassToThisAssertRectorTest
+ * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\AssertClassToThisAssertRector\AssertClassToThisAssertRectorTest
  */
 final class AssertClassToThisAssertRector extends AbstractRector
 {
@@ -66,14 +65,18 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Class_::class];
+        return [ClassMethod::class];
     }
 
     /**
-     * @param Class_ $node
+     * @param ClassMethod $node
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->isStatic()) {
+            return null;
+        }
+
         if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
             return null;
         }
@@ -81,8 +84,7 @@ CODE_SAMPLE
         $hasChanged = false;
 
         $this->traverseNodesWithCallable($node, function (Node $node) use (&$hasChanged): int|null|MethodCall {
-            $isInsideStaticFunctionLike = ($node instanceof ClassMethod && $node->isStatic()) || (($node instanceof Closure || $node instanceof ArrowFunction) && $node->static);
-            if ($isInsideStaticFunctionLike) {
+            if (($node instanceof Closure || $node instanceof ArrowFunction) && $node->static) {
                 return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 

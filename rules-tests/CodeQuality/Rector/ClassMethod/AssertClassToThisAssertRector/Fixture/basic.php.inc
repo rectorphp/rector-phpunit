@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\AssertClassToThisAssertRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\AssertClassToThisAssertRector\Fixture;
 
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +17,7 @@ final class BasicTest extends TestCase
 -----
 <?php
 
-namespace Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\AssertClassToThisAssertRector\Fixture;
+namespace Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\AssertClassToThisAssertRector\Fixture;
 
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
