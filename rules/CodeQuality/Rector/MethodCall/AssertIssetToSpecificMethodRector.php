@@ -22,6 +22,21 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AssertIssetToSpecificMethodRector extends AbstractRector
 {
+    /**
+     * @var string[]
+     */
+    private const array SUPER_GLOBAL_VARIABLE_NAMES = [
+        'GLOBALS',
+        '_SERVER',
+        '_GET',
+        '_POST',
+        '_FILES',
+        '_COOKIE',
+        '_SESSION',
+        '_REQUEST',
+        '_ENV',
+    ];
+
     public function __construct(
         private readonly IdentifierManipulator $identifierManipulator,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
@@ -75,6 +90,12 @@ final class AssertIssetToSpecificMethodRector extends AbstractRector
 
         $issetExpr = $firstArgumentValue->vars[0];
         if (! $issetExpr instanceof ArrayDimFetch) {
+            return null;
+        }
+
+        // Keep the non-evaluating behavior of isset() for global state. A superglobal
+        // may be unavailable or unset, while passing it directly evaluates the variable.
+        if ($this->isNames($issetExpr->var, self::SUPER_GLOBAL_VARIABLE_NAMES)) {
             return null;
         }
 
