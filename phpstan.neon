@@ -28,7 +28,7 @@ parameters:
         - */Fixture/*
         - */Expected/*
 
-    # see https://github.com/rectorphp/type-perfect/
+    # see https://github.com/TomasVotruba/type-coverage
     type_perfect:
         no_mixed: true
         null_over_false: true
