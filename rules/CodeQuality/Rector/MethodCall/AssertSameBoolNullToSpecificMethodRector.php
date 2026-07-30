@@ -24,7 +24,7 @@ final class AssertSameBoolNullToSpecificMethodRector extends AbstractRector
     /**
      * @var ConstantWithAssertMethods[]
      */
-    private array $constantWithAssertMethods = [];
+    private readonly array $constantWithAssertMethods;
 
     public function __construct(
         private readonly IdentifierManipulator $identifierManipulator,
