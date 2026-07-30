@@ -170,7 +170,11 @@ CODE_SAMPLE
 
             if ($callerType instanceof ObjectType && in_array(
                 $callerType->getClassName(),
-                [PHPUnitClassName::INVOCATION_MOCKER, PHPUnitClassName::INVOCATION_STUBBER],
+                [
+                    PHPUnitClassName::INVOCATION_MOCKER,
+                    PHPUnitClassName::INVOCATION_MOCKER_INTERFACE,
+                    PHPUnitClassName::INVOCATION_STUBBER,
+                ],
                 true
             )) {
                 $parentMethodCall = $parentMethodCall->var;
