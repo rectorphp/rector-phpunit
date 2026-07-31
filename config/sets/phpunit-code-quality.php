@@ -89,9 +89,6 @@ return static function (RectorConfig $rectorConfig): void {
         NarrowSingleWillReturnCallbackRector::class,
         SingleWithConsecutiveToWithRector::class,
 
-        // enable once better tested
-        // WillReturnCallbackFallbackToThrowRector::class,
-
         // type declarations
         TypeWillReturnCallableArrowFunctionRector::class,
         VoidMethodWithCallbackToWillReturnCallbackRector::class,
