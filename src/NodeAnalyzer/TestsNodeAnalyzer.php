@@ -35,6 +35,12 @@ final readonly class TestsNodeAnalyzer
             return false;
         }
 
+        // traits have no parent, so the test case check below can never match them;
+        // fall back to the namespace, as test traits live next to the test cases that use them
+        if ($classReflection->isTrait()) {
+            return $this->isInTestsNamespace($classReflection);
+        }
+
         return array_any(
             PHPUnitClassName::TEST_CLASSES,
             fn (string $testCaseObjectClass): bool => $classReflection->is($testCaseObjectClass)
@@ -81,6 +87,19 @@ final readonly class TestsNodeAnalyzer
 
         /** @var StaticCall|MethodCall $node */
         return $this->nodeNameResolver->isName($node->name, $name);
+    }
+
+    private function isInTestsNamespace(ClassReflection $classReflection): bool
+    {
+        $nameParts = explode('\\', $classReflection->getName());
+
+        // drop the short trait name, only the namespace matters here
+        array_pop($nameParts);
+
+        return array_any(
+            $nameParts,
+            static fn (string $namePart): bool => in_array($namePart, ['Test', 'Tests'], true)
+        );
     }
 
     /**
