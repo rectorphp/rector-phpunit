@@ -36,4 +36,6 @@ final class PHPUnitSetList
     public const string PHPUNIT_NARROW_ASSERTS = __DIR__ . '/../../config/sets/phpunit-narrow-asserts.php';
 
     public const string ANNOTATIONS_TO_ATTRIBUTES = __DIR__ . '/../../config/sets/annotations-to-attributes.php';
+
+    public const string COMPOSER_BASED = __DIR__ . '/../../config/sets/composer-based.php';
 }

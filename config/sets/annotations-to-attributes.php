@@ -35,8 +35,7 @@ return static function (RectorConfig $rectorConfig): void {
         DependsAnnotationWithValueToAttributeRector::class,
     ]);
 
-    // all these attributes were added in PHPUnit 10.0
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(AnnotationWithValueToAttributeRector::class, [
+    $rectorConfig->ruleWithConfiguration(AnnotationWithValueToAttributeRector::class, [
         new AnnotationWithValueToAttribute('backupGlobals', 'PHPUnit\Framework\Attributes\BackupGlobals', [
             'enabled' => true,
             'disabled' => false,
@@ -45,14 +44,6 @@ return static function (RectorConfig $rectorConfig): void {
             'enabled' => true,
             'disabled' => false,
         ]),
-        new AnnotationWithValueToAttribute('backupStaticProperties', 'PHPUnit\Framework\Attributes\BackupStaticProperties', [
-            'enabled' => true,
-            'disabled' => false,
-        ]),
-        new AnnotationWithValueToAttribute(
-            'excludeGlobalVariableFromBackup',
-            'PHPUnit\Framework\Attributes\ExcludeGlobalVariableFromBackup'
-        ),
         new AnnotationWithValueToAttribute('preserveGlobalState', 'PHPUnit\Framework\Attributes\PreserveGlobalState', [
             'enabled' => true,
             'disabled' => false,
@@ -63,11 +54,10 @@ return static function (RectorConfig $rectorConfig): void {
         new AnnotationWithValueToAttribute('uses', 'PHPUnit\Framework\Attributes\UsesClass', [], true),
         new AnnotationWithValueToAttribute('testDox', 'PHPUnit\Framework\Attributes\TestDox'),
         new AnnotationWithValueToAttribute('testdox', 'PHPUnit\Framework\Attributes\TestDox'),
-    ], 'phpunit/phpunit', '>=10.0');
+    ]);
 
-    // all these attributes were added in PHPUnit 10.0
-    // @see https://github.com/sebastianbergmann/phpunit/issues/4502
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(AnnotationToAttributeRector::class, [
+    $rectorConfig->ruleWithConfiguration(AnnotationToAttributeRector::class, [
+        // @see https://github.com/sebastianbergmann/phpunit/issues/4502
         new AnnotationToAttribute('after', 'PHPUnit\Framework\Attributes\After'),
         new AnnotationToAttribute('afterClass', 'PHPUnit\Framework\Attributes\AfterClass'),
         new AnnotationToAttribute('before', 'PHPUnit\Framework\Attributes\Before'),
@@ -88,13 +78,5 @@ return static function (RectorConfig $rectorConfig): void {
         ),
         new AnnotationToAttribute('small', 'PHPUnit\Framework\Attributes\Small'),
         new AnnotationToAttribute('test', 'PHPUnit\Framework\Attributes\Test'),
-    ], 'phpunit/phpunit', '>=10.0');
-
-    // the RunClassInSeparateProcess attribute was added in PHPUnit 10.0 and removed in PHPUnit 13.0
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(AnnotationToAttributeRector::class, [
-        new AnnotationToAttribute(
-            'runClassInSeparateProcess',
-            'PHPUnit\Framework\Attributes\RunClassInSeparateProcess'
-        ),
-    ], 'phpunit/phpunit', '>=10.0 <13.0');
+    ]);
 };
