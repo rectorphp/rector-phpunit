@@ -89,6 +89,15 @@ final class PHPUnitSetProvider implements SetProviderInterface
                 __DIR__ . '/../../../config/sets/phpunit130.php'
             ),
 
+            // applies to any installed PHPUnit version, the rules and configuration inside are bound
+            // to the exact version they are available from
+            new ComposerTriggeredSet(
+                SetGroup::PHPUNIT,
+                'phpunit/phpunit',
+                '>=4.0',
+                __DIR__ . '/../../../config/sets/composer-based.php'
+            ),
+
             new Set(SetGroup::PHPUNIT, 'Code Quality', __DIR__ . '/../../../config/sets/phpunit-code-quality.php'),
 
             new Set(
