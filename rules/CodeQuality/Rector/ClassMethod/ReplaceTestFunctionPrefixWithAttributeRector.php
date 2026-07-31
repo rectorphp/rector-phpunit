@@ -5,28 +5,18 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\CodeQuality\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Stmt\ClassMethod;
-use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
-use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
-use Rector\PHPUnit\Enum\PHPUnitAttribute;
-use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\ReplaceTestAnnotationWithPrefixedFunctionRector\ReplaceTestAnnotationWithPrefixedFunctionRectorTest
+ * @deprecated This rule is deprecated as it is not a common upgrade path and it is not part of any set. Implement it as a custom rule instead.
  */
-final class ReplaceTestFunctionPrefixWithAttributeRector extends AbstractRector
+final class ReplaceTestFunctionPrefixWithAttributeRector extends AbstractRector implements DeprecatedInterface
 {
-    public function __construct(
-        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
-        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Replace @test with prefixed function', [
@@ -68,36 +58,9 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
-            return null;
-        }
-
-        if (! str_starts_with($node->name->toString(), 'test')) {
-            return null;
-        }
-
-        if ($this->phpAttributeAnalyzer->hasPhpAttributes($node, [PHPUnitAttribute::TEST])) {
-            return null;
-        }
-
-        if ($node->name->toString() !== 'test' && $node->name->toString() !== 'test_') {
-            if (str_starts_with($node->name->toString(), 'test_')) {
-                $node->name->name = lcfirst(substr($node->name->name, 5));
-            } elseif (str_starts_with($node->name->toString(), 'test')) {
-                $node->name->name = lcfirst(substr($node->name->name, 4));
-            }
-        }
-
-        $coversAttributeGroup = $this->createAttributeGroup();
-        $node->attrGroups = array_merge($node->attrGroups, [$coversAttributeGroup]);
-
-        return $node;
-    }
-
-    private function createAttributeGroup(): AttributeGroup
-    {
-        $attributeClass = 'PHPUnit\\Framework\\Attributes\\Test';
-
-        return $this->phpAttributeGroupFactory->createFromClassWithItems($attributeClass, []);
+        throw new ShouldNotHappenException(sprintf(
+            '"%s" is deprecated and should not be used anymore. Remove it from your config files.',
+            self::class,
+        ));
     }
 }
