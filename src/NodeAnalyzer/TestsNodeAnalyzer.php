@@ -35,10 +35,9 @@ final readonly class TestsNodeAnalyzer
             return false;
         }
 
-        // traits have no parent, so the test case check below can never match them;
-        // fall back to the namespace, as test traits live next to the test cases that use them
+        // traits have no parent, so the test case check below can never match them
         if ($classReflection->isTrait()) {
-            return $this->isInTestsNamespace($classReflection);
+            return $this->isInTestTrait($classReflection, $node);
         }
 
         return array_any(
@@ -87,6 +86,32 @@ final readonly class TestsNodeAnalyzer
 
         /** @var StaticCall|MethodCall $node */
         return $this->nodeNameResolver->isName($node->name, $name);
+    }
+
+    /**
+     * Test traits live next to the test cases that use them, so the namespace is the main hint.
+     * Only public non-static methods can be test methods, and a "test" prefixed one is a test
+     * method even outside a tests namespace.
+     */
+    private function isInTestTrait(ClassReflection $classReflection, Node $node): bool
+    {
+        if (! $node instanceof ClassMethod) {
+            return $this->isInTestsNamespace($classReflection);
+        }
+
+        if (! $node->isPublic()) {
+            return false;
+        }
+
+        if ($node->isStatic()) {
+            return false;
+        }
+
+        if ($this->isInTestsNamespace($classReflection)) {
+            return true;
+        }
+
+        return str_starts_with($node->name->toString(), 'test');
     }
 
     private function isInTestsNamespace(ClassReflection $classReflection): bool
