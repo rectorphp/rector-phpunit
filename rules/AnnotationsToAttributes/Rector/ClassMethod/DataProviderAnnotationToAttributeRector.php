@@ -9,7 +9,6 @@ use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
-use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -20,7 +19,6 @@ use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\PHPUnit\Enum\PHPUnitAttribute;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -35,7 +33,6 @@ final class DataProviderAnnotationToAttributeRector extends AbstractRector imple
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private readonly PhpDocTagRemover $phpDocTagRemover,
-        private readonly ReflectionResolver $reflectionResolver,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ReflectionProvider $reflectionProvider
@@ -116,15 +113,6 @@ CODE_SAMPLE
         /** @var PhpDocTagNode[] $desiredTagValueNodes */
         $desiredTagValueNodes = $phpDocInfo->getTagsByName('dataProvider');
         if ($desiredTagValueNodes === []) {
-            return null;
-        }
-
-        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-        if (! $classReflection instanceof ClassReflection) {
-            return null;
-        }
-
-        if (! $classReflection->isClass()) {
             return null;
         }
 
