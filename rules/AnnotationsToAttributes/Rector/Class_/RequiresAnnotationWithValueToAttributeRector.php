@@ -17,14 +17,16 @@ use Rector\PHPUnit\AnnotationsToAttributes\NodeFactory\RequiresAttributeFactory;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
+use Rector\VersionBonding\ValueObject\ComposerPackageConstraint;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\RequiresAnnotationWithValueToAttributeRector\RequiresAnnotationWithValueToAttributeRectorTest
  */
-final class RequiresAnnotationWithValueToAttributeRector extends AbstractRector implements MinPhpVersionInterface
+final class RequiresAnnotationWithValueToAttributeRector extends AbstractRector implements MinPhpVersionInterface, ComposerPackageConstraintInterface
 {
     public function __construct(
         private readonly PhpDocTagRemover $phpDocTagRemover,
@@ -82,6 +84,11 @@ CODE_SAMPLE
     public function getNodeTypes(): array
     {
         return [Class_::class, ClassMethod::class];
+    }
+
+    public function provideComposerPackageConstraint(): ComposerPackageConstraint
+    {
+        return new ComposerPackageConstraint('phpunit/phpunit', '>=10.0');
     }
 
     public function provideMinPhpVersion(): int
