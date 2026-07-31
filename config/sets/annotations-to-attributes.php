@@ -56,8 +56,9 @@ return static function (RectorConfig $rectorConfig): void {
         new AnnotationWithValueToAttribute('testdox', 'PHPUnit\Framework\Attributes\TestDox'),
     ]);
 
-    $rectorConfig->ruleWithConfiguration(AnnotationToAttributeRector::class, [
-        // @see https://github.com/sebastianbergmann/phpunit/issues/4502
+    // all these attributes were added in PHPUnit 10.0
+    // @see https://github.com/sebastianbergmann/phpunit/issues/4502
+    $rectorConfig->ruleWithConfigurationComposerVersionBound(AnnotationToAttributeRector::class, [
         new AnnotationToAttribute('after', 'PHPUnit\Framework\Attributes\After'),
         new AnnotationToAttribute('afterClass', 'PHPUnit\Framework\Attributes\AfterClass'),
         new AnnotationToAttribute('before', 'PHPUnit\Framework\Attributes\Before'),
@@ -78,5 +79,5 @@ return static function (RectorConfig $rectorConfig): void {
         ),
         new AnnotationToAttribute('small', 'PHPUnit\Framework\Attributes\Small'),
         new AnnotationToAttribute('test', 'PHPUnit\Framework\Attributes\Test'),
-    ]);
+    ], 'phpunit/phpunit', '>=10.0');
 };
