@@ -16,6 +16,7 @@ use Rector\PHPUnit\CodeQuality\Rector\Class_\AddIntersectionVarToMockObjectPrope
 use Rector\PHPUnit\CodeQuality\Rector\Class_\AddStubIntersectionVarToStubPropertyRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\BareCreateMockAssignToDirectUseRector;
 use Rector\PHPUnit\PHPUnit110\Rector\CallLike\AssertContainsOnlyMethodCallRector;
+use Rector\PHPUnit\PHPUnit110\Rector\ClassMethod\ExpectsParamToMockObjectRector;
 use Rector\PHPUnit\PHPUnit110\Rector\ClassMethod\MockObjectArgCreateStubToCreateMockRector;
 use Rector\PHPUnit\PHPUnit120\Rector\CallLike\CreateStubInCoalesceArgRector;
 use Rector\PHPUnit\PHPUnit120\Rector\CallLike\CreateStubOverCreateMockArgRector;
@@ -55,6 +56,7 @@ return static function (RectorConfig $rectorConfig): void {
 
         // mocks back over stubs, where a mock object is required
         MockObjectArgCreateStubToCreateMockRector::class,
+        ExpectsParamToMockObjectRector::class,
 
         // deprecated in PHPUnit 11.5
         AssertContainsOnlyMethodCallRector::class,
