@@ -11,16 +11,20 @@ use PhpParser\Node\Expr\StaticCall;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
+use Rector\VersionBonding\ValueObject\ComposerPackageConstraint;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see https://github.com/sebastianbergmann/phpunit/issues/6053
- * @see https://github.com/sebastianbergmann/phpunit/blob/12.0.0/ChangeLog-12.0.md
+ * The is*() methods were added and isType() deprecated in PHPUnit 11.5
+ *
+ * @see https://github.com/sebastianbergmann/phpunit/issues/6052
+ * @see https://github.com/sebastianbergmann/phpunit/blob/11.5.0/ChangeLog-11.5.md
  *
  * @see \Rector\PHPUnit\Tests\PHPUnit120\Rector\Class_\AssertIsTypeMethodCallRector\AssertIsTypeMethodCallRectorTest
  */
-final class AssertIsTypeMethodCallRector extends AbstractRector
+final class AssertIsTypeMethodCallRector extends AbstractRector implements ComposerPackageConstraintInterface
 {
     /**
      * @var array<string, string>
@@ -49,6 +53,11 @@ final class AssertIsTypeMethodCallRector extends AbstractRector
         private readonly ValueResolver $valueResolver,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
     ) {
+    }
+
+    public function provideComposerPackageConstraint(): ComposerPackageConstraint
+    {
+        return new ComposerPackageConstraint('phpunit/phpunit', '>=11.5');
     }
 
     public function getRuleDefinition(): RuleDefinition
