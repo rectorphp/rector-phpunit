@@ -17,6 +17,8 @@ use Rector\PHPUnit\Enum\PHPUnitClassName;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
+use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
+use Rector\VersionBonding\ValueObject\ComposerPackageConstraint;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -25,7 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see https://github.com/sebastianbergmann/phpunit/commit/24c208d6a340c3071f28a9b5cce02b9377adfd43
  */
-final class PropertyCreateMockToCreateStubRector extends AbstractRector
+final class PropertyCreateMockToCreateStubRector extends AbstractRector implements ComposerPackageConstraintInterface
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
@@ -80,6 +82,11 @@ final class PropertyCreateMockToCreateStubRector extends AbstractRector
         }
 
         return $node;
+    }
+
+    public function provideComposerPackageConstraint(): ComposerPackageConstraint
+    {
+        return new ComposerPackageConstraint('phpunit/phpunit', '>=11.0');
     }
 
     public function getRuleDefinition(): RuleDefinition

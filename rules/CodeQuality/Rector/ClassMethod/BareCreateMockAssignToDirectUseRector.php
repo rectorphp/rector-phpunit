@@ -23,13 +23,15 @@ use Rector\PHPUnit\CodeQuality\NodeAnalyser\AssignedMocksCollector;
 use Rector\PHPUnit\CodeQuality\NodeFinder\VariableFinder;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
+use Rector\VersionBonding\ValueObject\ComposerPackageConstraint;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\BareCreateMockAssignToDirectUseRector\BareCreateMockAssignToDirectUseRectorTest
  */
-final class BareCreateMockAssignToDirectUseRector extends AbstractRector
+final class BareCreateMockAssignToDirectUseRector extends AbstractRector implements ComposerPackageConstraintInterface
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
@@ -38,6 +40,11 @@ final class BareCreateMockAssignToDirectUseRector extends AbstractRector
         private readonly VariableFinder $variableFinder,
         private readonly AssertMethodAnalyzer $assertMethodAnalyzer,
     ) {
+    }
+
+    public function provideComposerPackageConstraint(): ComposerPackageConstraint
+    {
+        return new ComposerPackageConstraint('phpunit/phpunit', '>=11.0');
     }
 
     public function getRuleDefinition(): RuleDefinition

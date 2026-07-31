@@ -19,13 +19,15 @@ use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
+use Rector\VersionBonding\ValueObject\ComposerPackageConstraint;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\PHPUnit\Tests\PHPUnit120\Rector\Property\MockObjectVarToStubRector\MockObjectVarToStubRectorTest
  */
-final class MockObjectVarToStubRector extends AbstractRector
+final class MockObjectVarToStubRector extends AbstractRector implements ComposerPackageConstraintInterface
 {
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
@@ -71,6 +73,11 @@ final class MockObjectVarToStubRector extends AbstractRector
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
         return $node;
+    }
+
+    public function provideComposerPackageConstraint(): ComposerPackageConstraint
+    {
+        return new ComposerPackageConstraint('phpunit/phpunit', '>=11.0');
     }
 
     public function getRuleDefinition(): RuleDefinition
