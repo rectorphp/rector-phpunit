@@ -10,17 +10,28 @@ use PhpParser\Node\Stmt\ClassMethod;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
+use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
+use Rector\VersionBonding\ValueObject\ComposerPackageConstraint;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * The TestCase::__construct() was declared final in PHPUnit 12.0.3, overriding it is a fatal error since then
+ *
  * @see \Rector\PHPUnit\Tests\PHPUnit120\Rector\Class_\RemoveOverrideFinalConstructTestCaseRector\RemoveOverrideFinalConstructTestCaseRectorTest
+ *
+ * @see https://github.com/sebastianbergmann/phpunit/commit/3263f4c62d4af44777ff1c81d093ee88eafccdad
  */
-final class RemoveOverrideFinalConstructTestCaseRector extends AbstractRector
+final class RemoveOverrideFinalConstructTestCaseRector extends AbstractRector implements ComposerPackageConstraintInterface
 {
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
     ) {
+    }
+
+    public function provideComposerPackageConstraint(): ComposerPackageConstraint
+    {
+        return new ComposerPackageConstraint('phpunit/phpunit', '>=12.0.3');
     }
 
     public function getRuleDefinition(): RuleDefinition
