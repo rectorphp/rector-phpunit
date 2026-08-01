@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\PHPUnit\CodeQuality\Rector\Class_\AddIntersectionParamToMockObjectParamRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\AddIntersectionVarToMockObjectPropertyRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\AddStubIntersectionVarToStubPropertyRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\BareCreateMockAssignToDirectUseRector;
@@ -27,5 +28,6 @@ return static function (RectorConfig $rectorConfig): void {
 
         // mocks back over stubs, where mock object is required
         MockObjectArgCreateStubToCreateMockRector::class,
+        AddIntersectionParamToMockObjectParamRector::class,
     ]);
 };
