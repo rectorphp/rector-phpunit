@@ -69,26 +69,6 @@ final class PHPUnitSetProvider implements SetProviderInterface
                 '11.0',
                 __DIR__ . '/../../../config/sets/phpunit110.php'
             ),
-            new ComposerTriggeredSet(
-                SetGroup::PHPUNIT,
-                'phpunit/phpunit',
-                '12.0',
-                __DIR__ . '/../../../config/sets/phpunit120.php'
-            ),
-            new ComposerTriggeredSet(
-                SetGroup::PHPUNIT,
-                'phpunit/phpunit',
-                '12.5',
-                __DIR__ . '/../../../config/sets/phpunit125.php'
-            ),
-
-            new ComposerTriggeredSet(
-                SetGroup::PHPUNIT,
-                'phpunit/phpunit',
-                '13.0',
-                __DIR__ . '/../../../config/sets/phpunit130.php'
-            ),
-
             // applies to any installed PHPUnit version, the rules and configuration inside are bound
             // to the exact version they are available from
             new ComposerTriggeredSet(
