@@ -9,6 +9,7 @@ class BackupStaticPropertiesTest extends TestCase
      */
     public function testSomething()
     {
+        $this->assertTrue(true);
     }
 
     /**
@@ -16,6 +17,7 @@ class BackupStaticPropertiesTest extends TestCase
      */
     public function testSomethingElse()
     {
+        $this->assertTrue(true);
     }
 }
 
@@ -30,11 +32,13 @@ class BackupStaticPropertiesTest extends TestCase
     #[\PHPUnit\Framework\Attributes\BackupStaticProperties(true)]
     public function testSomething()
     {
+        $this->assertTrue(true);
     }
 
     #[\PHPUnit\Framework\Attributes\ExcludeGlobalVariableFromBackup('someGlobalVariable')]
     public function testSomethingElse()
     {
+        $this->assertTrue(true);
     }
 }
 
