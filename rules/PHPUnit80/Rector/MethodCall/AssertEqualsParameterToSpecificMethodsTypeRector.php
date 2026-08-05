@@ -11,6 +11,8 @@ use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\PHPUnit\NodeFactory\AssertCallFactory;
 use Rector\Rector\AbstractRector;
+use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
+use Rector\VersionBonding\ValueObject\ComposerPackageConstraint;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -21,8 +23,16 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\PHPUnit\Tests\PHPUnit80\Rector\MethodCall\AssertEqualsParameterToSpecificMethodsTypeRector\AssertEqualsParameterToSpecificMethodsTypeRectorTest
  */
-final class AssertEqualsParameterToSpecificMethodsTypeRector extends AbstractRector
+final class AssertEqualsParameterToSpecificMethodsTypeRector extends AbstractRector implements ComposerPackageConstraintInterface
 {
+    /**
+     * the assertEqualsWithDelta() family was added in PHPUnit 7.5
+     */
+    public function provideComposerPackageConstraint(): ComposerPackageConstraint
+    {
+        return new ComposerPackageConstraint('phpunit/phpunit', '>=7.5');
+    }
+
     public function __construct(
         private readonly AssertCallFactory $assertCallFactory,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,

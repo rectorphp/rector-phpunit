@@ -20,14 +20,24 @@ use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
+use Rector\VersionBonding\ValueObject\ComposerPackageConstraint;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\PHPUnit\Tests\PHPUnit90\Rector\MethodCall\AssertRegExpRector\AssertRegExpRectorTest
  */
-final class AssertRegExpRector extends AbstractRector
+final class AssertRegExpRector extends AbstractRector implements ComposerPackageConstraintInterface
 {
+    /**
+     * assertMatchesRegularExpression() was added in PHPUnit 9.1
+     */
+    public function provideComposerPackageConstraint(): ComposerPackageConstraint
+    {
+        return new ComposerPackageConstraint('phpunit/phpunit', '>=9.1');
+    }
+
     private const string ASSERT_SAME = 'assertSame';
 
     private const string ASSERT_EQUALS = 'assertEquals';

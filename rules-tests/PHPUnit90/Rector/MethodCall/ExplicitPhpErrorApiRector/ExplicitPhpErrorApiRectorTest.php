@@ -25,4 +25,12 @@ final class ExplicitPhpErrorApiRectorTest extends AbstractRectorTestCase
     {
         return __DIR__ . '/config/configured_rule.php';
     }
+
+    /**
+     * The rule is bound to a PHPUnit version older than the one installed here
+     */
+    protected function provideComposerJsonFilePath(): string
+    {
+        return __DIR__ . '/config/composer.json';
+    }
 }

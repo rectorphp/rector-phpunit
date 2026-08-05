@@ -29,14 +29,24 @@ use Rector\PHPUnit\NodeFinder\MethodCallNodeFinder;
 use Rector\PHPUnit\PHPUnit100\NodeDecorator\WillReturnIfNodeDecorator;
 use Rector\PHPUnit\PHPUnit100\NodeFactory\WillReturnCallbackFactory;
 use Rector\Rector\AbstractRector;
+use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
+use Rector\VersionBonding\ValueObject\ComposerPackageConstraint;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\PHPUnit\Tests\PHPUnit100\Rector\StmtsAwareInterface\WithConsecutiveRector\WithConsecutiveRectorTest
  */
-final class WithConsecutiveRector extends AbstractRector
+final class WithConsecutiveRector extends AbstractRector implements ComposerPackageConstraintInterface
 {
+    /**
+     * inherited from the PHPUnit 10.0 set
+     */
+    public function provideComposerPackageConstraint(): ComposerPackageConstraint
+    {
+        return new ComposerPackageConstraint('phpunit/phpunit', '>=10.0');
+    }
+
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly WillReturnCallbackFactory $willReturnCallbackFactory,

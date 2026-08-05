@@ -16,6 +16,8 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
+use Rector\VersionBonding\ValueObject\ComposerPackageConstraint;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -24,8 +26,16 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @see https://github.com/sebastianbergmann/phpunit/pull/5225
  * @see \Rector\PHPUnit\Tests\PHPUnit100\Rector\Class_\StaticDataProviderClassMethodRector\StaticDataProviderClassMethodRectorTest
  */
-final class NamedArgumentForDataProviderRector extends AbstractRector
+final class NamedArgumentForDataProviderRector extends AbstractRector implements ComposerPackageConstraintInterface
 {
+    /**
+     * inherited from the PHPUnit 11.0 set
+     */
+    public function provideComposerPackageConstraint(): ComposerPackageConstraint
+    {
+        return new ComposerPackageConstraint('phpunit/phpunit', '>=11.0');
+    }
+
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
     ) {
