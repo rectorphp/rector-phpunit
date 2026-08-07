@@ -28,6 +28,7 @@ final class SomeTest extends \PHPUnit\Framework\TestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('fooProvider')]
     #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\DoesNotPerformAssertions]
     public function it_should_do_stuff(string $foo): void
     {
     }
