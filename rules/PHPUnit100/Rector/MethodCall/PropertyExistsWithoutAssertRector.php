@@ -34,16 +34,18 @@ final class PropertyExistsWithoutAssertRector extends AbstractRector implements 
     }
 
     /**
+     * The assertObjectHasAttribute() and assertObjectNotHasAttribute() methods are left out on purpose,
+     * as they have a direct replacement in assertObjectHasProperty() and assertObjectNotHasProperty().
+     * Those renames are handled by RenameMethodRector in the composer-based set.
+     *
      * @var array<string, string>
      */
     private const array RENAME_METHODS_WITH_OBJECT_MAP = [
         'assertClassHasAttribute' => 'assertTrue',
-        'assertObjectHasAttribute' => 'assertTrue',
         'assertClassHasStaticAttribute' => 'assertTrue',
         // false
         'assertClassNotHasStaticAttribute' => 'assertFalse',
         'assertClassNotHasAttribute' => 'assertFalse',
-        'assertObjectNotHasAttribute' => 'assertFalse',
         // no assert
         'objectHasAttribute' => 'assertTrue',
         'classHasAttribute' => 'assertTrue',
