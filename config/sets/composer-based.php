@@ -23,6 +23,7 @@ use Rector\PHPUnit\PHPUnit100\Rector\Class_\AddProphecyTraitRector;
 use Rector\PHPUnit\PHPUnit100\Rector\Class_\ParentTestClassConstructorRector;
 use Rector\PHPUnit\PHPUnit100\Rector\Class_\PublicDataProviderClassMethodRector;
 use Rector\PHPUnit\PHPUnit100\Rector\Class_\StaticDataProviderClassMethodRector;
+use Rector\PHPUnit\PHPUnit100\Rector\MethodCall\PropertyExistsWithoutAssertRector;
 use Rector\PHPUnit\PHPUnit100\Rector\MethodCall\RemoveSetMethodsMethodCallRector;
 use Rector\PHPUnit\PHPUnit100\Rector\StmtsAwareInterface\WithConsecutiveRector;
 use Rector\PHPUnit\PHPUnit110\Rector\CallLike\AssertContainsOnlyMethodCallRector;
@@ -148,6 +149,7 @@ return static function (RectorConfig $rectorConfig): void {
         AddProphecyTraitRector::class,
         WithConsecutiveRector::class,
         RemoveSetMethodsMethodCallRector::class,
+        PropertyExistsWithoutAssertRector::class,
         ParentTestClassConstructorRector::class,
 
         // PHPUnit 11.0
