@@ -8,13 +8,16 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\Reflection\ClassReflection;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
+use Rector\PHPUnit\Enum\PHPUnitClassName;
 use Rector\PHPUnit\NodeAnalyzer\AssertCallAnalyzer;
 use Rector\PHPUnit\NodeAnalyzer\MockedVariableAnalyzer;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ReflectionResolver;
 use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
 use Rector\VersionBonding\ValueObject\ComposerPackageConstraint;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -43,6 +46,7 @@ final class AddDoesNotPerformAssertionToNonAssertingTestRector extends AbstractR
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly ReflectionResolver $reflectionResolver,
     ) {
     }
 
@@ -122,6 +126,11 @@ CODE_SAMPLE
             return true;
         }
 
+        // the parent test case asserts in its own integration methods
+        if ($this->isInTwigIntegrationTestCase($classMethod)) {
+            return true;
+        }
+
         if ($this->hasAssertingAnnotationOrAttribute($classMethod)) {
             return true;
         }
@@ -132,6 +141,16 @@ CODE_SAMPLE
         }
 
         return $this->mockedVariableAnalyzer->containsMockAsUsedVariable($classMethod);
+    }
+
+    private function isInTwigIntegrationTestCase(ClassMethod $classMethod): bool
+    {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        return $classReflection->is(PHPUnitClassName::TWIG_INTEGRATION_TEST_CASE);
     }
 
     private function hasAssertingAnnotationOrAttribute(ClassMethod $classMethod): bool

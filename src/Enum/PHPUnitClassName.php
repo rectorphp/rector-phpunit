@@ -34,6 +34,8 @@ final class PHPUnitClassName
 
     public const string SYMFONY_TYPE_TEST_CASE = 'Symfony\Component\Form\Test\TypeTestCase';
 
+    public const string TWIG_INTEGRATION_TEST_CASE = 'Twig\Test\IntegrationTestCase';
+
     /**
      * @var string[]
      */
