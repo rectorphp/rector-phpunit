@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\PHPUnit60\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Nop;
+use PhpParser\NodeVisitor;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Reflection\ClassReflection;
@@ -104,6 +108,8 @@ CODE_SAMPLE
             return null;
         }
 
+        $this->removeAddToAssertionCountCalls($node);
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         $phpDocInfo->addPhpDocTagNode(new PhpDocTagNode('@doesNotPerformAssertions', new GenericTagValueNode('')));
 
@@ -141,6 +147,49 @@ CODE_SAMPLE
         }
 
         return $this->mockedVariableAnalyzer->containsMockAsUsedVariable($classMethod);
+    }
+
+    /**
+     * The assertion count fakes an assertion, but the "@doesNotPerformAssertions" annotation makes it obsolete
+     */
+    private function removeAddToAssertionCountCalls(ClassMethod $classMethod): void
+    {
+        $hasJustRemovedCall = false;
+
+        $this->traverseNodesWithCallable($classMethod, function (Node $node) use (&$hasJustRemovedCall): ?int {
+            // a comment on the same line as the removed call is parsed as a nop statement right behind it
+            if ($hasJustRemovedCall && $node instanceof Nop) {
+                return NodeVisitor::REMOVE_NODE;
+            }
+
+            $hasJustRemovedCall = false;
+
+            if (! $this->isAddToAssertionCountExpression($node)) {
+                return null;
+            }
+
+            $hasJustRemovedCall = true;
+
+            return NodeVisitor::REMOVE_NODE;
+        });
+    }
+
+    private function isAddToAssertionCountExpression(Node $node): bool
+    {
+        if (! $node instanceof Expression) {
+            return false;
+        }
+
+        if (! $node->expr instanceof MethodCall) {
+            return false;
+        }
+
+        $methodCall = $node->expr;
+        if (! $this->isName($methodCall->var, 'this')) {
+            return false;
+        }
+
+        return $this->isName($methodCall->name, 'addToAssertionCount');
     }
 
     private function isInTwigIntegrationTestCase(ClassMethod $classMethod): bool
