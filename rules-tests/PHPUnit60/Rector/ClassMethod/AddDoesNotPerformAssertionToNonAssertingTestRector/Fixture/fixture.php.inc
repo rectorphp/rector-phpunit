@@ -18,9 +18,7 @@ namespace Rector\PHPUnit\Tests\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAss
 
 class SomeClass extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @doesNotPerformAssertions
-     */
+    #[\PHPUnit\Framework\Attributes\DoesNotPerformAssertions]
     public function test()
     {
         $nothing = 5;
