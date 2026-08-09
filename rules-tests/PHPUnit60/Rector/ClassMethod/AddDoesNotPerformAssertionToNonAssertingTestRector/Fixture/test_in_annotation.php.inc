@@ -23,8 +23,8 @@ class TestInAnnotation extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test
-     * @doesNotPerformAssertions
      */
+    #[\PHPUnit\Framework\Attributes\DoesNotPerformAssertions]
     public function thisIsTest()
     {
         $nothing = 5;

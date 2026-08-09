@@ -19,10 +19,8 @@ namespace Rector\PHPUnit\Tests\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAss
 
 class TestInAnnotationWithTestAttribute extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @doesNotPerformAssertions
-     */
     #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\DoesNotPerformAssertions]
     public function thisIsTest()
     {
         $nothing = 5;
