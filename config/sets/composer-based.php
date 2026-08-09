@@ -30,6 +30,7 @@ use Rector\PHPUnit\PHPUnit110\Rector\CallLike\AssertContainsOnlyMethodCallRector
 use Rector\PHPUnit\PHPUnit110\Rector\Class_\NamedArgumentForDataProviderRector;
 use Rector\PHPUnit\PHPUnit110\Rector\ClassMethod\ExpectsParamToMockObjectRector;
 use Rector\PHPUnit\PHPUnit110\Rector\ClassMethod\MockObjectArgCreateStubToCreateMockRector;
+use Rector\PHPUnit\PHPUnit120\Rector\Assign\AnyMatcherToNewAnyInvokedCountRector;
 use Rector\PHPUnit\PHPUnit120\Rector\CallLike\CreateStubInCoalesceArgRector;
 use Rector\PHPUnit\PHPUnit120\Rector\CallLike\CreateStubOverCreateMockArgRector;
 use Rector\PHPUnit\PHPUnit120\Rector\Class_\AllowMockObjectsForDataProviderRector;
@@ -105,6 +106,9 @@ return static function (RectorConfig $rectorConfig): void {
 
         // the TestCase::__construct() is final since PHPUnit 12.0.3
         RemoveOverrideFinalConstructTestCaseRector::class,
+
+        // the any() matcher was deprecated in PHPUnit 12.5
+        AnyMatcherToNewAnyInvokedCountRector::class,
 
         // the AllowMockObjectsWithoutExpectations attribute exists since PHPUnit 12.5.2
         AllowMockObjectsWhereParentClassRector::class,
