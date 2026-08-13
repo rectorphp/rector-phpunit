@@ -171,8 +171,11 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
     }
 
     /**
-     * The assert methods use different parameter names than the functions they replace,
-     * so named args cannot be moved up. The same goes for spread args, as their count is unknown.
+     * Args are moved up by position, so a named arg only survives when the assert method happens to
+     * use the same parameter name: is_readable(filename:) fits assertIsReadable(), while
+     * is_string(value:) does not fit assertIsString(), whose parameter is $actual. Bail out instead
+     * of tracking a parameter name per mapped function. Spread args cannot be moved up either,
+     * as their count is unknown.
      */
     private function hasUnmovableArgs(FuncCall $funcCall): bool
     {
