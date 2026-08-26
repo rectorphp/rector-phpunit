@@ -42,6 +42,16 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
         'is_nan' => ['is_nan', 'assertNan', ''],
         'is_a' => ['is_a', 'assertInstanceOf', 'assertNotInstanceOf'],
         'str_contains' => ['str_contains', 'assertStringContainsString', 'assertStringNotContainsString'],
+        'is_array' => ['is_array', 'assertIsArray', 'assertIsNotArray'],
+        'is_bool' => ['is_bool', 'assertIsBool', 'assertIsNotBool'],
+        'is_callable' => ['is_callable', 'assertIsCallable', 'assertIsNotCallable'],
+        'is_float' => ['is_float', 'assertIsFloat', 'assertIsNotFloat'],
+        'is_int' => ['is_int', 'assertIsInt', 'assertIsNotInt'],
+        'is_iterable' => ['is_iterable', 'assertIsIterable', 'assertIsNotIterable'],
+        'is_numeric' => ['is_numeric', 'assertIsNumeric', 'assertIsNotNumeric'],
+        'is_object' => ['is_object', 'assertIsObject', 'assertIsNotObject'],
+        'is_scalar' => ['is_scalar', 'assertIsScalar', 'assertIsNotScalar'],
+        'is_string' => ['is_string', 'assertIsString', 'assertIsNotString'],
     ];
 
     /**
@@ -115,6 +125,10 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
             return null;
         }
 
+        if ($firstArgumentValue instanceof FuncCall && $this->hasUnmovableArgs($firstArgumentValue)) {
+            return null;
+        }
+
         if ($firstArgumentName === 'is_a') {
             /** @var FuncCall $firstArgumentValue */
             $args = $firstArgumentValue->getArgs();
@@ -126,6 +140,14 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
 
             $firstArgumentType = $this->nodeTypeResolver->getType($args[0]->value);
             if ($firstArgumentType instanceof StringType) {
+                return null;
+            }
+        }
+
+        // the is_callable() $syntax_only and $callable_name arguments have no counterpart in assertIsCallable()
+        if ($firstArgumentName === 'is_callable') {
+            /** @var FuncCall $firstArgumentValue */
+            if (count($firstArgumentValue->getArgs()) > 1) {
                 return null;
             }
         }
@@ -146,6 +168,32 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
         return $firstArgumentValue instanceof Empty_
             ? 'empty'
             : $this->getName($firstArgumentValue);
+    }
+
+    /**
+     * Args are moved up by position, so a named arg only survives when the assert method happens to
+     * use the same parameter name: is_readable(filename:) fits assertIsReadable(), while
+     * is_string(value:) does not fit assertIsString(), whose parameter is $actual. Bail out instead
+     * of tracking a parameter name per mapped function. Spread args cannot be moved up either,
+     * as their count is unknown.
+     */
+    private function hasUnmovableArgs(FuncCall $funcCall): bool
+    {
+        if ($funcCall->isFirstClassCallable()) {
+            return true;
+        }
+
+        foreach ($funcCall->getArgs() as $arg) {
+            if ($arg->name instanceof Identifier) {
+                return true;
+            }
+
+            if ($arg->unpack) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function renameMethod(
