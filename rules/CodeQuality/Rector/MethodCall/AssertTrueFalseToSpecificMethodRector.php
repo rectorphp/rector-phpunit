@@ -179,6 +179,10 @@ final class AssertTrueFalseToSpecificMethodRector extends AbstractRector
      */
     private function hasUnmovableArgs(FuncCall $funcCall): bool
     {
+        if ($funcCall->isFirstClassCallable()) {
+            return true;
+        }
+
         foreach ($funcCall->getArgs() as $arg) {
             if ($arg->name instanceof Identifier) {
                 return true;

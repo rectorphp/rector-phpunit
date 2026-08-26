@@ -11,6 +11,7 @@ final class SkipNamedAndSpreadArgs extends TestCase
         $this->assertTrue(is_string(value: $value));
         $this->assertTrue(is_readable(filename: $file));
         $this->assertTrue(is_string(...$args));
+        $this->assertTrue(is_string(...));
         $this->assertTrue(in_array(needle: '...', haystack: ['...'], strict: true));
     }
 }
