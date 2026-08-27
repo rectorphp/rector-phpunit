@@ -13,8 +13,7 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name\FullyQualified;
 use Rector\PhpParser\Node\Value\ValueResolver;
-use Rector\PHPStan\ScopeFetcher;
-use Rector\PHPUnit\Enum\PHPUnitClassName;
+use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\Symfony\Enum\SymfonyClass;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -26,7 +25,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DirectInstanceOverMockArgRector extends AbstractRector
 {
     public function __construct(
-        private readonly ValueResolver $valueResolver
+        private readonly ValueResolver $valueResolver,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 
@@ -88,13 +88,8 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): MethodCall|StaticCall|New_|ArrayItem|null
     {
-        $scope = ScopeFetcher::fetch($node);
-        if (! $scope->isInClass()) {
-            return null;
-        }
-
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection->is(PHPUnitClassName::TEST_CASE)) {
+        // run on test classes only, non-test code may lack scope on args and crash the whole run
+        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
             return null;
         }
 
