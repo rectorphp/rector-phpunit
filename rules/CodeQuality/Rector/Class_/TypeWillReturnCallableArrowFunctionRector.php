@@ -263,6 +263,7 @@ CODE_SAMPLE
             }
         });
 
+        // @phpstan-ignore rector.rectorCheaperGuardsFirst ($hasChanged is set by-reference inside the traversal above that holds the expensive calls)
         if (! $hasChanged) {
             return null;
         }
