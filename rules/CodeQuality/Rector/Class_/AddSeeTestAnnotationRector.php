@@ -12,6 +12,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\PHPUnit\Naming\TestClassNameResolver;
 use Rector\Rector\AbstractRector;
@@ -30,6 +31,7 @@ final class AddSeeTestAnnotationRector extends AbstractRector
         private readonly TestClassNameResolver $testClassNameResolver,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly ClassAnnotationMatcher $classAnnotationMatcher,
     ) {
     }
 
@@ -139,6 +141,12 @@ CODE_SAMPLE
             $seeTagClass = ltrim($genericTagValueNode->value, '\\');
 
             if ($this->reflectionProvider->hasClass($seeTagClass)) {
+                return true;
+            }
+
+            // the @see value can be a short name, imported or in the current namespace
+            $resolvedSeeTagClass = $this->classAnnotationMatcher->resolveTagFullyQualifiedName($seeTagClass, $class);
+            if ($this->reflectionProvider->hasClass($resolvedSeeTagClass)) {
                 return true;
             }
         }
