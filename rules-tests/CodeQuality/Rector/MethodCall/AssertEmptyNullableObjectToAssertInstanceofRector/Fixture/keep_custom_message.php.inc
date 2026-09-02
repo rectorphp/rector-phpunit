@@ -11,7 +11,7 @@ final class KeepCustomMessage extends TestCase
     {
         $someObject = mt_rand(0, 1) ? new SomeTypeObject() : null;
 
-        $this->assertNull($someObject, 'some message');
+        $this->assertNotNull($someObject, 'some message');
     }
 }
 
@@ -30,7 +30,7 @@ final class KeepCustomMessage extends TestCase
     {
         $someObject = mt_rand(0, 1) ? new SomeTypeObject() : null;
 
-        $this->assertNotInstanceOf(\CodeQuality\Rector\MethodCall\AssertEmptyNullableObjectToAssertInstanceofRector\Source\SomeTypeObject::class, $someObject, 'some message');
+        $this->assertInstanceOf(\CodeQuality\Rector\MethodCall\AssertEmptyNullableObjectToAssertInstanceofRector\Source\SomeTypeObject::class, $someObject, 'some message');
     }
 }
 
