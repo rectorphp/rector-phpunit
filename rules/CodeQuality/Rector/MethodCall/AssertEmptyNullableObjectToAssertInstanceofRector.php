@@ -84,7 +84,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isNames($node->name, ['assertNotEmpty', 'assertEmpty', 'assertNull', 'assertNotNull'])) {
+        if (! $this->isNames($node->name, ['assertNotEmpty', 'assertNotNull'])) {
             return null;
         }
 
@@ -107,12 +107,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $methodName = $this->isNames(
-            $node->name,
-            ['assertEmpty', 'assertNull']
-        ) ? 'assertNotInstanceOf' : 'assertInstanceOf';
-
-        $node->name = new Identifier($methodName);
+        $node->name = new Identifier('assertInstanceOf');
 
         $fullyQualified = new FullyQualified($pureType->getClassName());
 
