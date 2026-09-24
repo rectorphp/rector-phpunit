@@ -5,11 +5,26 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\NullsafePropertyFetch;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Expr\UnaryMinus;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Scalar;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -26,6 +41,22 @@ final class FlipAssertRector extends AbstractRector
      */
     private const array METHOD_NAMES = [
         'assertSame', 'assertNotSame', 'assertNotEquals', 'assertEquals', 'assertStringContainsString',
+        'assertEqualsCanonicalizing', 'assertNotEqualsCanonicalizing', 'assertEqualsIgnoringCase',
+        'assertNotEqualsIgnoringCase', 'assertEqualsWithDelta', 'assertNotEqualsWithDelta',
+    ];
+
+    /**
+     * @var array<class-string<Expr>>
+     */
+    private const array COMPUTED_EXPR_CLASSES = [
+        MethodCall::class,
+        StaticCall::class,
+        FuncCall::class,
+        PropertyFetch::class,
+        StaticPropertyFetch::class,
+        NullsafeMethodCall::class,
+        NullsafePropertyFetch::class,
+        ArrayDimFetch::class,
     ];
 
     public function __construct(
@@ -97,12 +128,12 @@ CODE_SAMPLE
         $firstArg = $node->getArgs()[0];
         $secondArg = $node->getArgs()[1];
 
-        // correct location
-        if ($this->isScalarValue($firstArg->value)) {
+        // named args keep their meaning regardless of position
+        if ($firstArg->name instanceof Identifier || $secondArg->name instanceof Identifier) {
             return null;
         }
 
-        if (! $this->isScalarValue($secondArg->value)) {
+        if (! $this->isFlipNeeded($firstArg->value, $secondArg->value)) {
             return null;
         }
 
@@ -114,16 +145,100 @@ CODE_SAMPLE
         return $node;
     }
 
+    private function isFlipNeeded(Expr $firstExpr, Expr $secondExpr): bool
+    {
+        // correct location
+        if ($this->isExpectedValue($firstExpr)) {
+            return false;
+        }
+
+        if ($this->isExpectedValue($secondExpr)) {
+            return true;
+        }
+
+        // e.g. assertSame($obj->getValues(), [$a, $b])
+        return $secondExpr instanceof Array_
+            && $this->isComputedExpr($firstExpr)
+            && $this->isLiteralArray($secondExpr, allowVariables: true);
+    }
+
+    /**
+     * @param bool $allowVariables accept variables as array keys and values, not inside concat or new
+     */
+    private function isExpectedValue(Expr $expr, bool $allowVariables = false): bool
+    {
+        if ($this->isScalarValue($expr) || $this->isEnumCaseValue($expr)) {
+            return true;
+        }
+
+        if ($allowVariables && $expr instanceof Variable) {
+            return true;
+        }
+
+        if ($expr instanceof New_) {
+            return $this->isNewWithLiteralArgs($expr);
+        }
+
+        if ($expr instanceof Concat) {
+            return $this->isExpectedValue($expr->left) && $this->isExpectedValue($expr->right);
+        }
+
+        return $expr instanceof Array_ && $this->isLiteralArray($expr, $allowVariables);
+    }
+
+    private function isNewWithLiteralArgs(New_ $new): bool
+    {
+        if (! $new->class instanceof Name) {
+            return false;
+        }
+
+        return array_all(
+            $new->getArgs(),
+            fn (Arg $arg): bool => ! $arg->unpack
+                && ! $arg->name instanceof Identifier
+                && $this->isExpectedValue($arg->value)
+        );
+    }
+
+    private function isLiteralArray(Array_ $array, bool $allowVariables = false): bool
+    {
+        return array_all(
+            $array->items,
+            fn (ArrayItem $arrayItem): bool => ! $arrayItem->unpack
+                && (! $arrayItem->key instanceof Expr || $this->isExpectedValue($arrayItem->key, $allowVariables))
+                && $this->isExpectedValue($arrayItem->value, $allowVariables)
+        );
+    }
+
+    private function isComputedExpr(Expr $expr): bool
+    {
+        return array_any(
+            self::COMPUTED_EXPR_CLASSES,
+            fn (string $computedExprClass): bool => $expr instanceof $computedExprClass
+        );
+    }
+
+    /**
+     * e.g. Status::Active->value, Status::Active->name
+     */
+    private function isEnumCaseValue(Expr $expr): bool
+    {
+        if (! $expr instanceof PropertyFetch || ! $this->isNames($expr->name, ['value', 'name'])) {
+            return false;
+        }
+
+        return $expr->var instanceof ClassConstFetch && ! $this->isName($expr->var->name, 'class');
+    }
+
+    /**
+     * Scalar or constant, optionally negated, e.g. 'value', -1, PHP_INT_MAX, -self::LIMIT
+     */
     private function isScalarValue(Expr $expr): bool
     {
-        if ($expr instanceof Scalar) {
-            return true;
+        if ($expr instanceof UnaryMinus) {
+            return $this->isScalarValue($expr->expr);
         }
 
-        if ($expr instanceof ConstFetch) {
-            return true;
-        }
-
-        return $expr instanceof ClassConstFetch;
+        return $expr instanceof Scalar || $expr instanceof ConstFetch || $expr instanceof ClassConstFetch;
     }
 }
