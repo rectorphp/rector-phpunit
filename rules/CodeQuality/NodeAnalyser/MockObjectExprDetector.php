@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\ObjectType;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\CodeQuality\NodeFinder\VariableFinder;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
@@ -27,6 +28,7 @@ final readonly class MockObjectExprDetector
         private NodeNameResolver $nodeNameResolver,
         private VariableFinder $variableFinder,
         private ReflectionResolver $reflectionResolver,
+        private NodeTypeResolver $nodeTypeResolver,
     ) {
     }
 
@@ -46,6 +48,11 @@ final readonly class MockObjectExprDetector
             }
 
             if ($methodCall->var instanceof MethodCall) {
+                continue;
+            }
+
+            // stubs, e.g. from createStub(), do not need expectations
+            if ($this->isStubOnly($methodCall->var)) {
                 continue;
             }
 
@@ -164,5 +171,19 @@ final readonly class MockObjectExprDetector
         }
 
         return false;
+    }
+
+    private function isStubOnly(Expr $expr): bool
+    {
+        $exprType = $this->nodeTypeResolver->getType($expr);
+
+        $stubObjectType = new ObjectType(PHPUnitClassName::STUB);
+        if (! $stubObjectType->isSuperTypeOf($exprType)->yes()) {
+            return false;
+        }
+
+        $mockObjectType = new ObjectType(PHPUnitClassName::MOCK_OBJECT);
+        return ! $mockObjectType->isSuperTypeOf($exprType)
+            ->yes();
     }
 }
