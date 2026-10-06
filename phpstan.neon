@@ -1,5 +1,6 @@
 includes:
     - vendor/symplify/phpstan-rules/config/rector-rules.neon
+    - phpstan-dead-code-baseline.neon
 
 parameters:
     level: 8
