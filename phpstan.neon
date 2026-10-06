@@ -1,6 +1,5 @@
 includes:
     - vendor/symplify/phpstan-rules/config/rector-rules.neon
-    - phpstan-dead-code-baseline.neon
 
 parameters:
     level: 8
@@ -36,6 +35,11 @@ parameters:
         narrow_return: true
 
     ignoreErrors:
+        # DI container constructors are not dead code
+        -
+            identifier: shipmonk.deadMethod
+            message: '#^Unused .*?::__construct$#'
+
         # phpstan false positive
         - '#Parameter \#1 \$className of method Rector\\PhpParser\\AstResolver\:\:resolveClassMethod\(\) expects class\-string, string given#'
 
