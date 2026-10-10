@@ -5,28 +5,19 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\VarLikeIdentifier;
-use Rector\PHPUnit\CodeQuality\NodeAnalyser\MockObjectPropertyDetector;
-use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
 
 /**
- * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\Class_\SuffixMockObjectPropertyRector\SuffixMockObjectPropertyRectorTest
+ * @deprecated This rule is deprecated, as renaming properties can produce invalid variable names and collide with
+ * existing ones. Use a coding standard to enforce the "Mock" suffix instead.
  */
-final class SuffixMockObjectPropertyRector extends AbstractRector
+final class SuffixMockObjectPropertyRector extends AbstractRector implements DeprecatedInterface
 {
-    public function __construct(
-        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly MockObjectPropertyDetector $mockObjectPropertyDetector
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -88,59 +79,11 @@ CODE_SAMPLE
     /**
      * @param Class_ $node
      */
-    public function refactor(Node $node): ?Class_
+    public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
-            return null;
-        }
-
-        $hasChanged = false;
-
-        foreach ($node->getProperties() as $property) {
-            if (! $this->mockObjectPropertyDetector->detect($property)) {
-                continue;
-            }
-
-            $propertyName = $this->getName($property);
-            if (str_ends_with($propertyName, 'Mock')) {
-                continue;
-            }
-
-            $newPropertyName = $propertyName . 'Mock';
-            $property->props[0]->name = new VarLikeIdentifier($newPropertyName);
-
-            $this->renamePropertyUsagesInClass($node, $propertyName, $newPropertyName);
-            $hasChanged = true;
-        }
-
-        if (! $hasChanged) {
-            return null;
-        }
-
-        return $node;
-    }
-
-    private function renamePropertyUsagesInClass(Class_ $class, string $oldPropertyName, string $newPropertyName): void
-    {
-        $this->traverseNodesWithCallable($class, function (Node $node) use (
-            $oldPropertyName,
-            $newPropertyName
-        ): ?Node {
-            if (! $node instanceof PropertyFetch) {
-                return null;
-            }
-
-            // is local property?
-            if (! $node->var instanceof Variable && ! $this->isName($node->var, 'this')) {
-                return null;
-            }
-
-            if (! $this->isName($node->name, $oldPropertyName)) {
-                return null;
-            }
-
-            $node->name = new Identifier($newPropertyName);
-            return $node;
-        });
+        throw new ShouldNotHappenException(sprintf(
+            '"%s" is deprecated, as renaming properties can produce invalid variable names. Use a coding standard to enforce the "Mock" suffix instead.',
+            self::class,
+        ));
     }
 }
