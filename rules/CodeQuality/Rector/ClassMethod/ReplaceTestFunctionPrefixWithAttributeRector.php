@@ -7,10 +7,10 @@ namespace Rector\PHPUnit\CodeQuality\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
-use Rector\Doc\CodeSample\CodeSample;
-use Rector\Doc\RuleDefinition;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\CodeSample\CodeSample;
+use Rector\RuleDoc\RuleDefinition;
 
 /**
  * @deprecated This rule is deprecated as it is not a common upgrade path and it is not part of any set. Implement it as a custom rule instead.

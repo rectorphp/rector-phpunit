@@ -13,8 +13,6 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\NodeVisitor;
 use PHPStan\Type\ObjectType;
-use Rector\Doc\CodeSample\CodeSample;
-use Rector\Doc\RuleDefinition;
 use Rector\PHPUnit\CodeQuality\NodeAnalyser\NullableObjectAssignCollector;
 use Rector\PHPUnit\CodeQuality\NodeFactory\AssertMethodCallFactory;
 use Rector\PHPUnit\CodeQuality\TypeAnalyzer\MethodCallParameterTypeResolver;
@@ -24,6 +22,8 @@ use Rector\PHPUnit\CodeQuality\ValueObject\VariableNameToTypeCollection;
 use Rector\PHPUnit\NodeAnalyzer\AssertCallAnalyzer;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\CodeSample\CodeSample;
+use Rector\RuleDoc\RuleDefinition;
 
 /**
  * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableArgumentRector\AddInstanceofAssertForNullableArgumentRectorTest

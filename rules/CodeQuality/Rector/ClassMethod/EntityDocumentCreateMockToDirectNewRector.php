@@ -18,11 +18,11 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeFinder;
 use PHPStan\Reflection\ReflectionProvider;
-use Rector\Doc\CodeSample\CodeSample;
-use Rector\Doc\RuleDefinition;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PHPUnit\CodeQuality\NodeAnalyser\AssignedMocksCollector;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\CodeSample\CodeSample;
+use Rector\RuleDoc\RuleDefinition;
 
 /**
  * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\EntityDocumentCreateMockToDirectNewRector\EntityDocumentCreateMockToDirectNewRectorTest

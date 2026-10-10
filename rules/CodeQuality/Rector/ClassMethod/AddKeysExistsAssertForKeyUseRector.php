@@ -12,8 +12,6 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
-use Rector\Doc\CodeSample\CodeSample;
-use Rector\Doc\RuleDefinition;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPUnit\CodeQuality\NodeAnalyser\AssertHasKeyMatcher;
@@ -21,6 +19,8 @@ use Rector\PHPUnit\CodeQuality\NodeFactory\AssertArrayHasKeyCallFactory;
 use Rector\PHPUnit\CodeQuality\ValueObject\VariableAndDimFetch;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\CodeSample\CodeSample;
+use Rector\RuleDoc\RuleDefinition;
 
 /**
  * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\AddKeysExistsAssertForKeyUseRector\AddKeysExistsAssertForKeyUseRectorTest

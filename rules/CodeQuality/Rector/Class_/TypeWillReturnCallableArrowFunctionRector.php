@@ -14,8 +14,6 @@ use PhpParser\NodeFinder;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
-use Rector\Doc\CodeSample\CodeSample;
-use Rector\Doc\RuleDefinition;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPUnit\CodeQuality\NodeAnalyser\MockedMethodTypeResolver;
 use Rector\PHPUnit\CodeQuality\NodeAnalyser\SetUpAssignedMockTypesResolver;
@@ -25,6 +23,8 @@ use Rector\PHPUnit\CodeQuality\ValueObject\ParamTypesAndReturnType;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
+use Rector\RuleDoc\CodeSample\CodeSample;
+use Rector\RuleDoc\RuleDefinition;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 /**

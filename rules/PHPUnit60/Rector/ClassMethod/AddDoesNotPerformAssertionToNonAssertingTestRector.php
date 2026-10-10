@@ -19,8 +19,6 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\Doc\CodeSample\CodeSample;
-use Rector\Doc\RuleDefinition;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PHPUnit\Enum\PHPUnitAttribute;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
@@ -29,6 +27,8 @@ use Rector\PHPUnit\NodeAnalyzer\MockedVariableAnalyzer;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
+use Rector\RuleDoc\CodeSample\CodeSample;
+use Rector\RuleDoc\RuleDefinition;
 use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
 use Rector\VersionBonding\ValueObject\ComposerPackageConstraint;
 

@@ -10,8 +10,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Foreach_;
-use Rector\Doc\CodeSample\CodeSample;
-use Rector\Doc\RuleDefinition;
 use Rector\PHPUnit\CodeQuality\NodeAnalyser\NullableObjectAssignCollector;
 use Rector\PHPUnit\CodeQuality\NodeFactory\AssertMethodCallFactory;
 use Rector\PHPUnit\CodeQuality\TypeAnalyzer\SimpleTypeAnalyzer;
@@ -19,6 +17,8 @@ use Rector\PHPUnit\CodeQuality\ValueObject\VariableNameToType;
 use Rector\PHPUnit\CodeQuality\ValueObject\VariableNameToTypeCollection;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\CodeSample\CodeSample;
+use Rector\RuleDoc\RuleDefinition;
 
 /**
  * @see \Rector\PHPUnit\Tests\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableInstanceRector\AddInstanceofAssertForNullableInstanceRectorTest
