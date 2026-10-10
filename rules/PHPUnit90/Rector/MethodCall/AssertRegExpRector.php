@@ -97,6 +97,14 @@ final class AssertRegExpRector extends AbstractRector implements ComposerPackage
                 continue;
             }
 
+            // cheap name gate before the costly TestCase type resolution below
+            if (! $this->isNames(
+                $stmt->expr->name,
+                [self::ASSERT_SAME, self::ASSERT_EQUALS, self::ASSERT_NOT_SAME, self::ASSERT_NOT_EQUALS]
+            )) {
+                continue;
+            }
+
             if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames(
                 $stmt->expr,
                 [self::ASSERT_SAME, self::ASSERT_EQUALS, self::ASSERT_NOT_SAME, self::ASSERT_NOT_EQUALS]
