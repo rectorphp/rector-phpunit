@@ -28,7 +28,7 @@ final class DelegateExceptionArgumentsRector extends AbstractRector implements C
      */
     public function provideComposerPackageConstraint(): ComposerPackageConstraint
     {
-        return new ComposerPackageConstraint('phpunit/phpunit', '>=5.2');
+        return new ComposerPackageConstraint('phpunit/phpunit', '>=5.2 <8.0');
     }
 
     /**

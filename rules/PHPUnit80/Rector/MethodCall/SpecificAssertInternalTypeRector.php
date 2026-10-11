@@ -29,7 +29,7 @@ final class SpecificAssertInternalTypeRector extends AbstractRector implements C
      */
     public function provideComposerPackageConstraint(): ComposerPackageConstraint
     {
-        return new ComposerPackageConstraint('phpunit/phpunit', '>=7.5');
+        return new ComposerPackageConstraint('phpunit/phpunit', '>=7.5 <11.0');
     }
 
     /**

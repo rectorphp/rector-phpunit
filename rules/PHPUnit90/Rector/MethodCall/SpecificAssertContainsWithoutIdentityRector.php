@@ -28,7 +28,7 @@ final class SpecificAssertContainsWithoutIdentityRector extends AbstractRector i
      */
     public function provideComposerPackageConstraint(): ComposerPackageConstraint
     {
-        return new ComposerPackageConstraint('phpunit/phpunit', '>=9.0');
+        return new ComposerPackageConstraint('phpunit/phpunit', '>=9.0 <11.0');
     }
 
     /**
