@@ -127,6 +127,11 @@ CODE_SAMPLE
         return null;
     }
 
+    /**
+     * @template TCall of StaticCall|MethodCall
+     * @param TCall $call
+     * @return TCall|null
+     */
     private function refactorNew(New_ $new, StaticCall|MethodCall $call): null|MethodCall|StaticCall
     {
         if (! $this->isName($new->class, 'PHPUnit\Framework\MockObject\Stub\ReturnValueMap')) {

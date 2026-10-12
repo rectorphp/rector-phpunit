@@ -86,6 +86,11 @@ final class AssertFalseStrposToContainsRector extends AbstractRector
         return $this->changeArgumentsOrder($node);
     }
 
+    /**
+     * @template TCall of MethodCall|StaticCall
+     * @param TCall $node
+     * @return TCall|null
+     */
     private function changeArgumentsOrder(MethodCall|StaticCall $node): MethodCall|StaticCall|null
     {
         $oldArguments = $node->getArgs();
