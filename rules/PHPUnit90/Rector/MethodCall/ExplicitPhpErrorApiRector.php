@@ -112,6 +112,11 @@ CODE_SAMPLE
         return null;
     }
 
+    /**
+     * @template TCall of MethodCall|StaticCall
+     * @param TCall $node
+     * @return ($node is MethodCall ? MethodCall : StaticCall)|null
+     */
     private function replaceExceptionWith(
         MethodCall|StaticCall $node,
         string $exceptionClass,

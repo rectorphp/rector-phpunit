@@ -146,6 +146,11 @@ CODE_SAMPLE
         return null;
     }
 
+    /**
+     * @template TCall of StaticCall|MethodCall
+     * @param TCall $call
+     * @return ($call is MethodCall ? MethodCall : StaticCall)
+     */
     private function createFirstArgExtraMethodCall(StaticCall|MethodCall $call): MethodCall|StaticCall
     {
         /** @var Identifier $identifierNode */

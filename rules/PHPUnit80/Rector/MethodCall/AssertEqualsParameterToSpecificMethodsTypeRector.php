@@ -125,6 +125,11 @@ CODE_SAMPLE
         return $this->processAssertEqualsWithDelta($node);
     }
 
+    /**
+     * @template TCall of MethodCall|StaticCall
+     * @param TCall $call
+     * @return ($call is MethodCall ? MethodCall : StaticCall)|null
+     */
     private function processAssertEqualsIgnoringCase(MethodCall|StaticCall $call): StaticCall|MethodCall|null
     {
         $args = $call->getArgs();
@@ -149,6 +154,11 @@ CODE_SAMPLE
         return $newMethodCall;
     }
 
+    /**
+     * @template TCall of MethodCall|StaticCall
+     * @param TCall $call
+     * @return ($call is MethodCall ? MethodCall : StaticCall)|null
+     */
     private function processAssertEqualsCanonicalizing(MethodCall|StaticCall $call): MethodCall|StaticCall|null
     {
         $args = $call->getArgs();
@@ -176,6 +186,11 @@ CODE_SAMPLE
         return $newMethodCall;
     }
 
+    /**
+     * @template TCall of MethodCall|StaticCall
+     * @param TCall $call
+     * @return ($call is MethodCall ? MethodCall : StaticCall)|null
+     */
     private function processAssertEqualsWithDelta(MethodCall|StaticCall $call): MethodCall|StaticCall|null
     {
         $args = $call->getArgs();
