@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\Throw_;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Return_;
+use PHPStan\Type\NeverType;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -132,6 +136,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // closure cannot fall through: last statement throws or calls a never-returning method
+        if ($lastStmt instanceof Expression && $this->isNeverReturningExpression($lastStmt->expr)) {
+            return null;
+        }
+
         if (! $this->hasOnlyBoolReturns($closure)) {
             return null;
         }
@@ -160,5 +169,15 @@ CODE_SAMPLE
         }
 
         return true;
+    }
+
+    private function isNeverReturningExpression(Expr $expr): bool
+    {
+        // cheap structural check first, before reflection-based type resolution
+        if ($expr instanceof Throw_) {
+            return true;
+        }
+
+        return $this->getType($expr) instanceof NeverType;
     }
 }
