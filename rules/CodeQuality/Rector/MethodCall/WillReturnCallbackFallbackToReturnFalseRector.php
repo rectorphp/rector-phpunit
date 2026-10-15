@@ -5,11 +5,16 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\CodeQuality\Rector\MethodCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\Throw_;
+use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Return_;
+use PHPStan\Type\NeverType;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -132,6 +137,12 @@ CODE_SAMPLE
             return null;
         }
 
+        // a closure that always throws or ends in a never-returning call
+        // cannot fall through, so no "return false" fallback is needed
+        if ($lastStmt instanceof Stmt && $this->isTerminated($lastStmt)) {
+            return null;
+        }
+
         if (! $this->hasOnlyBoolReturns($closure)) {
             return null;
         }
@@ -139,6 +150,23 @@ CODE_SAMPLE
         $closure->stmts[] = new Return_($this->nodeFactory->createFalse());
 
         return $node;
+    }
+
+    private function isTerminated(Stmt $stmt): bool
+    {
+        if ($stmt instanceof Expression) {
+            $stmt = $stmt->expr;
+        }
+
+        if ($stmt instanceof Throw_) {
+            return true;
+        }
+
+        if (! $stmt instanceof Expr) {
+            return false;
+        }
+
+        return $this->nodeTypeResolver->getNativeType($stmt) instanceof NeverType;
     }
 
     private function hasOnlyBoolReturns(Closure $closure): bool
