@@ -102,7 +102,12 @@ final class AssertComparisonToSpecificMethodRector extends AbstractRector
         return $this->processCallWithBinaryOp($node, $firstArgumentValue);
     }
 
-    private function processCallWithBinaryOp(MethodCall|StaticCall $node, BinaryOp $binaryOp): ?Node
+    /**
+     * @template TNode of MethodCall|StaticCall
+     * @param TNode $node
+     * @return TNode|null
+     */
+    private function processCallWithBinaryOp(MethodCall|StaticCall $node, BinaryOp $binaryOp): MethodCall|StaticCall|null
     {
         $binaryOpClass = $binaryOp::class;
 

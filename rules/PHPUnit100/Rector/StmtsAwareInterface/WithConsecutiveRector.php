@@ -228,7 +228,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return Stmt[]
+     * @return array{Expression, Expression}
      */
     private function refactorToWillReturnCallback(
         MethodCall $withConsecutiveMethodCall,

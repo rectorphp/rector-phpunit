@@ -44,7 +44,7 @@ final class AssertArrayHasKeyCallFactory
     }
 
     /**
-     * @return Arg[]
+     * @return array{Arg, Arg, Arg}
      */
     private function createArgs(Variable $dimFetchVariable, Expr $dimExpr): array
     {
