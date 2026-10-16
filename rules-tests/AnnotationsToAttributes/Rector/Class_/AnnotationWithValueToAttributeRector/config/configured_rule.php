@@ -14,5 +14,6 @@ return static function (RectorConfig $rectorConfig): void {
         ]),
         new AnnotationWithValueToAttribute('dataProvider', 'PHPUnit\Framework\Attributes\DataProvider'),
         new AnnotationWithValueToAttribute('uses', 'PHPUnit\Framework\Attributes\UsesClass', [], true),
+        new AnnotationWithValueToAttribute('testdox', 'PHPUnit\Framework\Attributes\TestDox'),
     ]);
 };
