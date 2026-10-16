@@ -105,21 +105,17 @@ final class AssertRegExpRector extends AbstractRector implements ComposerPackage
                 continue;
             }
 
-            if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames(
-                $stmt->expr,
-                [self::ASSERT_SAME, self::ASSERT_EQUALS, self::ASSERT_NOT_SAME, self::ASSERT_NOT_EQUALS]
-            )) {
-                continue;
-            }
-
             if ($stmt->expr->isFirstClassCallable()) {
                 continue;
             }
 
-            /** @var FuncCall|Node $secondArgumentValue */
-            $secondArgumentValue = $stmt->expr->getArgs()[1]
-                ->value;
+            $callArgs = $stmt->expr->getArgs();
+            if (! isset($callArgs[1])) {
+                continue;
+            }
 
+            // cheap preg_match arg gate before the costly TestCase type resolution below
+            $secondArgumentValue = $callArgs[1]->value;
             if (! $secondArgumentValue instanceof FuncCall) {
                 continue;
             }
@@ -129,6 +125,13 @@ final class AssertRegExpRector extends AbstractRector implements ComposerPackage
             }
 
             if ($secondArgumentValue->isFirstClassCallable()) {
+                continue;
+            }
+
+            if (! $this->testsNodeAnalyzer->isPHPUnitMethodCallNames(
+                $stmt->expr,
+                [self::ASSERT_SAME, self::ASSERT_EQUALS, self::ASSERT_NOT_SAME, self::ASSERT_NOT_EQUALS]
+            )) {
                 continue;
             }
 
