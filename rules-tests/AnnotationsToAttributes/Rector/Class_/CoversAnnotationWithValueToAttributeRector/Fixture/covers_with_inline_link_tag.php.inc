@@ -1,0 +1,31 @@
+<?php
+
+namespace Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Fixture;
+
+use PHPUnit\Framework\TestCase;
+
+/**
+ * @copyright Example {@link https://example.com}
+ * @covers \Tests\BarController
+ */
+class CoversWithInlineLinkTag extends TestCase
+{
+}
+
+?>
+-----
+<?php
+
+namespace Rector\PHPUnit\Tests\AnnotationsToAttributes\Rector\Class_\CoversAnnotationWithValueToAttributeRector\Fixture;
+
+use PHPUnit\Framework\TestCase;
+
+/**
+ * @copyright Example {@link https://example.com}
+ */
+#[\PHPUnit\Framework\Attributes\CoversClass(\Tests\BarController::class)]
+class CoversWithInlineLinkTag extends TestCase
+{
+}
+
+?>
