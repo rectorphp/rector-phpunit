@@ -37,8 +37,15 @@ final readonly class IdentifierManipulator
             return false;
         }
 
-        $node->name = new Identifier($renameMethodMap[$oldNodeMethodName]);
-        return true;
+        // method names are case-insensitive in PHP, match the map the same way
+        foreach ($renameMethodMap as $oldName => $newName) {
+            if (strcasecmp($oldName, $oldNodeMethodName) === 0) {
+                $node->name = new Identifier($newName);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function resolveOldMethodName(
