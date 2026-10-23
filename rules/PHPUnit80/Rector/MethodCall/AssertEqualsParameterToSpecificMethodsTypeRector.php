@@ -117,12 +117,19 @@ CODE_SAMPLE
             return $newMethodCall;
         }
 
+        $hasChanged = false;
         if (isset($node->args[4])) {
             // add new node only in case of non-default value
             unset($node->args[4]);
+            $hasChanged = true;
         }
 
-        return $this->processAssertEqualsWithDelta($node);
+        $newMethodCall = $this->processAssertEqualsWithDelta($node);
+        if ($newMethodCall !== null) {
+            return $newMethodCall;
+        }
+
+        return $hasChanged ? $node : null;
     }
 
     /**
@@ -203,7 +210,8 @@ CODE_SAMPLE
         unset($call->args[3]);
 
         if ($this->valueResolver->isValue($thirdArg->value, 0.0)) {
-            return null;
+            // default delta removed in place, no dedicated method needed
+            return $call;
         }
 
         $newMethodCall = $this->assertCallFactory->createCallWithName($call, 'assertEqualsWithDelta');
