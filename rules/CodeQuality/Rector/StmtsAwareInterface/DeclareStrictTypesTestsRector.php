@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Nop;
-use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\FileNode;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -26,7 +25,6 @@ final class DeclareStrictTypesTestsRector extends AbstractRector implements MinP
     public function __construct(
         private readonly DeclareStrictTypeFinder $declareStrictTypeFinder,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
@@ -101,11 +99,18 @@ CODE_SAMPLE
      */
     private function hasPHPUnitTestClass(array $nodes): bool
     {
-        $class = $this->betterNodeFinder->findFirstNonAnonymousClass($nodes);
-        if (! $class instanceof Class_) {
-            return false;
+        foreach ($nodes as $node) {
+            if (! $node instanceof Class_) {
+                continue;
+            }
+
+            if ($node->isAnonymous()) {
+                continue;
+            }
+
+            return $this->testsNodeAnalyzer->isInTestClass($node);
         }
 
-        return $this->testsNodeAnalyzer->isInTestClass($class);
+        return false;
     }
 }
