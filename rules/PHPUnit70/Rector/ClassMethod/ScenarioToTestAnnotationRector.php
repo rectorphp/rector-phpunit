@@ -6,10 +6,11 @@ namespace Rector\PHPUnit\PHPUnit70\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockTagReplacer;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
@@ -23,7 +24,6 @@ use Rector\VersionBonding\ValueObject\ComposerPackageConstraint;
 final class ScenarioToTestAnnotationRector extends AbstractRector implements ComposerPackageConstraintInterface
 {
     public function __construct(
-        private readonly DocBlockTagReplacer $docBlockTagReplacer,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
@@ -85,7 +85,24 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->docBlockTagReplacer->replaceTagByAnother($phpDocInfo, 'scenario', 'test')) {
+        $phpDocNode = $phpDocInfo->getPhpDocNode();
+
+        $hasChanged = false;
+        foreach ($phpDocNode->children as $key => $phpDocChildNode) {
+            if (! $phpDocChildNode instanceof PhpDocTagNode) {
+                continue;
+            }
+
+            if ($phpDocChildNode->name !== '@scenario') {
+                continue;
+            }
+
+            unset($phpDocNode->children[$key]);
+            $phpDocNode->children[] = new PhpDocTagNode('@test', new GenericTagValueNode(''));
+            $hasChanged = true;
+        }
+
+        if (! $hasChanged) {
             return null;
         }
 
