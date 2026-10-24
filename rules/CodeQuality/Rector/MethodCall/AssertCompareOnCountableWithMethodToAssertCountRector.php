@@ -110,6 +110,8 @@ final class AssertCompareOnCountableWithMethodToAssertCountRector extends Abstra
 
                 $node->args = $args;
                 $this->renameMethod($node);
+
+                return $node;
             }
         }
 
