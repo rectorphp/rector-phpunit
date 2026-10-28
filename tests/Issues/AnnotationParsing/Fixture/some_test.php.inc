@@ -45,7 +45,7 @@ final class SomeTest extends TestCase
     }
 
     /**
-     * @return \Iterator<(int | string), array{(bool | null), string, bool}>
+     * @return \Iterator<int|string, array{bool|null, string, bool}>
      */
     public static function dataProvider(): \Iterator
     {
