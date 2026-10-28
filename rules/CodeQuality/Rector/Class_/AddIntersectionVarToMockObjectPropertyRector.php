@@ -16,7 +16,6 @@ use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareIntersectionTypeNode;
 use Rector\PHPUnit\CodeQuality\NodeAnalyser\MockObjectPropertyDetector;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -84,7 +83,7 @@ final class AddIntersectionVarToMockObjectPropertyRector extends AbstractRector 
                 continue;
             }
 
-            $intersectionTypeNode = new BracketsAwareIntersectionTypeNode([
+            $intersectionTypeNode = new IntersectionTypeNode([
                 new IdentifierTypeNode('\\' . PHPUnitClassName::MOCK_OBJECT),
                 new IdentifierTypeNode('\\' . $mockedClass),
             ]);
