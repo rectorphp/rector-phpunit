@@ -71,10 +71,10 @@ use Rector\ValueObject\MethodName;
  * Thanks to the composer package constraint, these rules can be registered once here, instead of being
  * repeated in every PHPUnit version set to cover a direct upgrade from an older version.
  */
-return static function (RectorConfig $rectorConfig): void {
+return RectorConfig::configure()
     // each of these rules declares the "phpunit/phpunit" version its attributes were added in,
     // @see ComposerPackageConstraintInterface
-    $rectorConfig->rules([
+    ->withRules([
         TicketAnnotationToAttributeRector::class,
         TestWithAnnotationToAttributeRector::class,
         DataProviderAnnotationToAttributeRector::class,
@@ -157,10 +157,10 @@ return static function (RectorConfig $rectorConfig): void {
 
         // PHPUnit 11.0
         NamedArgumentForDataProviderRector::class,
-    ]);
+    ])
 
     // both attributes were added in PHPUnit 10.0
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(AnnotationWithValueToAttributeRector::class, [
+    ->withComposerBasedRule(AnnotationWithValueToAttributeRector::class, [
         // the PHPUnit 10 spelling of the "backupStaticAttributes" annotation
         new AnnotationWithValueToAttribute(
             'backupStaticProperties',
@@ -174,35 +174,35 @@ return static function (RectorConfig $rectorConfig): void {
             'excludeGlobalVariableFromBackup',
             'PHPUnit\Framework\Attributes\ExcludeGlobalVariableFromBackup'
         ),
-    ], 'phpunit/phpunit', '>=10.0');
+    ], 'phpunit/phpunit', '>=10.0')
 
     // the RunClassInSeparateProcess attribute was added in PHPUnit 10.0 and removed in PHPUnit 13.0
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(AnnotationToAttributeRector::class, [
+    ->withComposerBasedRule(AnnotationToAttributeRector::class, [
         new AnnotationToAttribute(
             'runClassInSeparateProcess',
             'PHPUnit\Framework\Attributes\RunClassInSeparateProcess'
         ),
-    ], 'phpunit/phpunit', '>=10.0 <13.0');
+    ], 'phpunit/phpunit', '>=10.0 <13.0')
 
     // the MockBuilder::onlyMethods() method was added in PHPUnit 8.3
     // @see https://github.com/sebastianbergmann/phpunit/pull/3687
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(RenameMethodRector::class, [
+    ->withComposerBasedRule(RenameMethodRector::class, [
         new MethodCallRename('PHPUnit\Framework\MockObject\MockBuilder', 'setMethods', 'onlyMethods'),
-    ], 'phpunit/phpunit', '>=8.3');
+    ], 'phpunit/phpunit', '>=8.3')
 
     // the expectExceptionMessageMatches() method was added in PHPUnit 8.4
     // @see https://github.com/sebastianbergmann/phpunit/issues/3957
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(RenameMethodRector::class, [
+    ->withComposerBasedRule(RenameMethodRector::class, [
         new MethodCallRename(
             'PHPUnit\Framework\TestCase',
             'expectExceptionMessageRegExp',
             'expectExceptionMessageMatches'
         ),
-    ], 'phpunit/phpunit', '>=8.4');
+    ], 'phpunit/phpunit', '>=8.4')
 
     // all these assert methods were added in PHPUnit 9.1
     // @see https://github.com/sebastianbergmann/phpunit/blob/9.1.0/ChangeLog-9.1.md
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(RenameMethodRector::class, [
+    ->withComposerBasedRule(RenameMethodRector::class, [
         new MethodCallRename('PHPUnit\Framework\Assert', 'assertRegExp', 'assertMatchesRegularExpression'),
         new MethodCallRename('PHPUnit\Framework\Assert', 'assertNotRegExp', 'assertDoesNotMatchRegularExpression'),
         new MethodCallRename('PHPUnit\Framework\Assert', 'assertFileNotExists', 'assertFileDoesNotExist'),
@@ -220,49 +220,49 @@ return static function (RectorConfig $rectorConfig): void {
         ),
         new MethodCallRename('PHPUnit\Framework\Assert', 'assertNotIsReadable', 'assertIsNotReadable'),
         new MethodCallRename('PHPUnit\Framework\Assert', 'assertNotIsWritable', 'assertIsNotWritable'),
-    ], 'phpunit/phpunit', '>=9.1');
+    ], 'phpunit/phpunit', '>=9.1')
 
     // the numberOfInvocations() method was added in PHPUnit 10.0
     // @see https://github.com/sebastianbergmann/phpunit/commit/2ba8b7fded44a1a75cf5712a3b7310a8de0b6bb8
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(RenameMethodRector::class, [
+    ->withComposerBasedRule(RenameMethodRector::class, [
         new MethodCallRename(
             'PHPUnit\Framework\MockObject\Rule\InvocationOrder',
             'getInvocationCount',
             'numberOfInvocations'
         ),
-    ], 'phpunit/phpunit', '>=10.0');
+    ], 'phpunit/phpunit', '>=10.0')
 
     // the assertObjectHasProperty() and assertObjectNotHasProperty() methods were added in PHPUnit 10.1
     // @see https://github.com/sebastianbergmann/phpunit/issues/5220
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(RenameMethodRector::class, [
+    ->withComposerBasedRule(RenameMethodRector::class, [
         new MethodCallRename('PHPUnit\Framework\Assert', 'assertObjectHasAttribute', 'assertObjectHasProperty'),
         new MethodCallRename('PHPUnit\Framework\Assert', 'assertObjectNotHasAttribute', 'assertObjectNotHasProperty'),
-    ], 'phpunit/phpunit', '>=10.1');
+    ], 'phpunit/phpunit', '>=10.1')
 
     // the expectExceptionMessageIsOrContains() method was added in PHPUnit 13.2
     // @see https://github.com/sebastianbergmann/phpunit/issues/6560
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(RenameMethodRector::class, [
+    ->withComposerBasedRule(RenameMethodRector::class, [
         new MethodCallRename(
             'PHPUnit\Framework\TestCase',
             'expectExceptionMessage',
             'expectExceptionMessageIsOrContains'
         ),
-    ], 'phpunit/phpunit', '>=13.2');
+    ], 'phpunit/phpunit', '>=13.2')
     // the staticExpects() method was removed in PHPUnit 4.0
     // @see https://github.com/sebastianbergmann/phpunit-mock-objects/issues/137
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(RenameMethodRector::class, [
+    ->withComposerBasedRule(RenameMethodRector::class, [
         new MethodCallRename('PHPUnit_Framework_MockObject_MockObject', 'staticExpects', 'expects'),
-    ], 'phpunit/phpunit', '>=4.0');
+    ], 'phpunit/phpunit', '>=4.0')
 
     // the namespaced class names were introduced in PHPUnit 6.0
     // @see https://github.com/sebastianbergmann/phpunit/compare/5.7.9...6.0.0
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(RenameMethodRector::class, [
+    ->withComposerBasedRule(RenameMethodRector::class, [
         new MethodCallRename('PHPUnit\Framework\TestClass', 'setExpectedException', 'expectedException'),
         new MethodCallRename('PHPUnit\Framework\TestClass', 'setExpectedExceptionRegExp', 'expectedException'),
         new MethodCallRename('PHPUnit\Framework\TestCase', 'createMockBuilder', 'getMockBuilder'),
-    ], 'phpunit/phpunit', '>=6.0');
+    ], 'phpunit/phpunit', '>=6.0')
 
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(RenameClassRector::class, [
+    ->withComposerBasedRule(RenameClassRector::class, [
         // ref. https://github.com/sebastianbergmann/phpunit/compare/5.7.9...6.0.0
         'PHPUnit_Framework_MockObject_Stub' => 'PHPUnit\Framework\MockObject\Stub',
         'PHPUnit_Framework_MockObject_Stub_Return' => 'PHPUnit\Framework\MockObject\Stub\ReturnStub',
@@ -390,15 +390,15 @@ return static function (RectorConfig $rectorConfig): void {
         'PHPUnit_Util_TestSuiteIterator' => 'PHPUnit\Framework\TestSuiteIterator',
         'PHPUnit_Util_Type' => 'PHPUnit\Util\Type',
         'PHPUnit_Util_Test' => 'PHPUnit\Util\Test',
-    ], 'phpunit/phpunit', '>=6.0');
+    ], 'phpunit/phpunit', '>=6.0')
 
     // the TestCase methods were given native types in PHPUnit 8.0
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(AddParamTypeDeclarationRector::class, [
+    ->withComposerBasedRule(AddParamTypeDeclarationRector::class, [
         // @see https://github.com/rectorphp/rector/issues/1024 - no type, $dataName
         new AddParamTypeDeclaration('PHPUnit\Framework\TestCase', MethodName::CONSTRUCT, 2, new MixedType()),
-    ], 'phpunit/phpunit', '>=8.0');
+    ], 'phpunit/phpunit', '>=8.0')
 
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(AddReturnTypeDeclarationRector::class, [
+    ->withComposerBasedRule(AddReturnTypeDeclarationRector::class, [
         new AddReturnTypeDeclaration('PHPUnit\Framework\TestCase', 'setUpBeforeClass', new VoidType()),
         new AddReturnTypeDeclaration('PHPUnit\Framework\TestCase', 'setUp', new VoidType()),
         new AddReturnTypeDeclaration('PHPUnit\Framework\TestCase', 'assertPreConditions', new VoidType()),
@@ -406,12 +406,12 @@ return static function (RectorConfig $rectorConfig): void {
         new AddReturnTypeDeclaration('PHPUnit\Framework\TestCase', 'tearDown', new VoidType()),
         new AddReturnTypeDeclaration('PHPUnit\Framework\TestCase', 'tearDownAfterClass', new VoidType()),
         new AddReturnTypeDeclaration('PHPUnit\Framework\TestCase', 'onNotSuccessfulTest', new VoidType()),
-    ], 'phpunit/phpunit', '>=8.0');
+    ], 'phpunit/phpunit', '>=8.0')
 
     // the expectDeprecationMessage(), expectNoticeMessage(), expectWarningMessage() and expectErrorMessage()
     // methods were removed in PHPUnit 10.0
     // @see https://github.com/sebastianbergmann/phpunit/issues/5062
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(RenameMethodRector::class, [
+    ->withComposerBasedRule(RenameMethodRector::class, [
         new MethodCallRename('PHPUnit\Framework\TestCase', 'expectDeprecationMessage', 'expectExceptionMessage'),
         new MethodCallRename(
             'PHPUnit\Framework\TestCase',
@@ -436,9 +436,9 @@ return static function (RectorConfig $rectorConfig): void {
             'expectErrorMessageMatches',
             'expectExceptionMessageMatches'
         ),
-    ], 'phpunit/phpunit', '>=10.0');
+    ], 'phpunit/phpunit', '>=10.0')
     // the attributes replacing these annotations were all added in PHPUnit 10.0
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(AnnotationWithValueToAttributeRector::class, [
+    ->withComposerBasedRule(AnnotationWithValueToAttributeRector::class, [
         new AnnotationWithValueToAttribute('backupGlobals', 'PHPUnit\Framework\Attributes\BackupGlobals', [
             'enabled' => true,
             'disabled' => false,
@@ -457,9 +457,9 @@ return static function (RectorConfig $rectorConfig): void {
         new AnnotationWithValueToAttribute('uses', 'PHPUnit\Framework\Attributes\UsesClass', [], true),
         new AnnotationWithValueToAttribute('testDox', 'PHPUnit\Framework\Attributes\TestDox'),
         new AnnotationWithValueToAttribute('testdox', 'PHPUnit\Framework\Attributes\TestDox'),
-    ], 'phpunit/phpunit', '>=10.0');
+    ], 'phpunit/phpunit', '>=10.0')
 
-    $rectorConfig->ruleWithConfigurationComposerVersionBound(AnnotationToAttributeRector::class, [
+    ->withComposerBasedRule(AnnotationToAttributeRector::class, [
         // @see https://github.com/sebastianbergmann/phpunit/issues/4502
         new AnnotationToAttribute('after', 'PHPUnit\Framework\Attributes\After'),
         new AnnotationToAttribute('afterClass', 'PHPUnit\Framework\Attributes\AfterClass'),
@@ -482,4 +482,3 @@ return static function (RectorConfig $rectorConfig): void {
         new AnnotationToAttribute('small', 'PHPUnit\Framework\Attributes\Small'),
         new AnnotationToAttribute('test', 'PHPUnit\Framework\Attributes\Test'),
     ], 'phpunit/phpunit', '>=10.0');
-};
