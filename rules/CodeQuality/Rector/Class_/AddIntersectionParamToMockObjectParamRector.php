@@ -19,9 +19,9 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareIntersectionTypeNode;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -156,7 +156,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $intersectionTypeNode = new BracketsAwareIntersectionTypeNode([
+                $intersectionTypeNode = new IntersectionTypeNode([
                     new IdentifierTypeNode('\\' . $mockedClass),
                     new IdentifierTypeNode('\\' . PHPUnitClassName::MOCK_OBJECT),
                 ]);

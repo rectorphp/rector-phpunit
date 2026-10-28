@@ -16,7 +16,6 @@ use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareIntersectionTypeNode;
 use Rector\PHPUnit\CodeQuality\NodeAnalyser\MockObjectPropertyDetector;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -80,7 +79,7 @@ final class AddStubIntersectionVarToStubPropertyRector extends AbstractRector im
                 $propertyNamesToCreateStubCalls,
                 $varTagValueNode
             );
-            if (! $intersectionTypeNode instanceof BracketsAwareIntersectionTypeNode) {
+            if (! $intersectionTypeNode instanceof IntersectionTypeNode) {
                 continue;
             }
 
@@ -174,7 +173,7 @@ CODE_SAMPLE
         Property $property,
         array $propertyNamesToCreateStubCalls,
         ?VarTagValueNode $varTagValueNode
-    ): ?BracketsAwareIntersectionTypeNode {
+    ): ?IntersectionTypeNode {
         $propertyName = $property->props[0]->name->toString();
 
         // 1. prefer the stubbed class from a setUp() createStub() call
@@ -182,7 +181,7 @@ CODE_SAMPLE
         if ($createStubCall !== null) {
             $stubbedClass = $this->resolveStubbedClass($createStubCall);
             if ($stubbedClass !== null) {
-                return new BracketsAwareIntersectionTypeNode([
+                return new IntersectionTypeNode([
                     new IdentifierTypeNode('\\' . PHPUnitClassName::STUB),
                     new IdentifierTypeNode('\\' . $stubbedClass),
                 ]);
@@ -196,7 +195,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            return new BracketsAwareIntersectionTypeNode([
+            return new IntersectionTypeNode([
                 new IdentifierTypeNode('\\' . PHPUnitClassName::STUB),
                 $varTagValueNode->type,
             ]);
