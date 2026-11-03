@@ -14,7 +14,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt\Expression;
-use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeManipulator\StmtsManipulator;
 use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -149,9 +148,10 @@ final class AssertRegExpRector extends AbstractRector implements ComposerPackage
                 continue;
             }
 
-            $oldFirstArgument = $stmt->expr->getArgs()[0]
-                ->value;
-            $oldCondition = $this->resolveOldCondition($oldFirstArgument);
+            $oldCondition = $this->resolveOldCondition($callArgs[0]->value);
+            if ($oldCondition === null) {
+                continue;
+            }
 
             $this->renameMethod($stmt->expr, $oldMethodName, $oldCondition);
             $this->moveFunctionArgumentsUp($stmt->expr);
@@ -166,17 +166,17 @@ final class AssertRegExpRector extends AbstractRector implements ComposerPackage
         return null;
     }
 
-    private function resolveOldCondition(Expr $expr): int
+    private function resolveOldCondition(Expr $expr): ?int
     {
         if ($expr instanceof Int_) {
-            return $expr->value;
+            return in_array($expr->value, [0, 1], true) ? $expr->value : null;
         }
 
         if ($expr instanceof ConstFetch) {
             return $this->valueResolver->isTrue($expr) ? 1 : 0;
         }
 
-        throw new ShouldNotHappenException();
+        return null;
     }
 
     private function renameMethod(MethodCall|StaticCall $node, string $oldMethodName, int $oldCondition): void
