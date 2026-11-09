@@ -36,9 +36,14 @@ final readonly class WillReturnCallbackFactory
         MethodCall $withConsecutiveMethodCall,
         ?Stmt $returnStmt,
         Variable|Expr|null $referenceVariable,
+        ?MethodCall $willReturnOnConsecutiveMethodCall = null,
     ): Closure {
         $matcherVariable = new Variable(ConsecutiveVariable::MATCHER);
-        $usedVariables = $this->usedVariablesResolver->resolveUsedVariables($withConsecutiveMethodCall, $returnStmt);
+        $usedVariables = $this->usedVariablesResolver->resolveUsedVariables(
+            $withConsecutiveMethodCall,
+            $returnStmt,
+            $willReturnOnConsecutiveMethodCall
+        );
 
         $closureStmts = $this->createParametersMatch($withConsecutiveMethodCall);
         if ($returnStmt instanceof Stmt) {
