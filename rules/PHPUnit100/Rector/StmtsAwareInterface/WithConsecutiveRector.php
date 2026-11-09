@@ -242,6 +242,7 @@ CODE_SAMPLE
             $withConsecutiveMethodCall,
             $returnStmt,
             $referenceVariable,
+            $willReturnOnConsecutiveMethodCall,
         );
 
         $withConsecutiveMethodCall->name = new Identifier(ConsecutiveMethodName::WILL_RETURN_CALLBACK);
