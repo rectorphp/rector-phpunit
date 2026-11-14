@@ -5,18 +5,26 @@ declare(strict_types=1);
 namespace Rector\PHPUnit\NodeAnalyzer;
 
 use PhpParser\Comment\Doc;
+use PhpParser\Node;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Enum\ObjectReference;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
+use Rector\PhpParser\AstResolver;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\Enum\PHPUnitAttribute;
-use WeakMap;
+use Rector\PHPUnit\Enum\PHPUnitClassName;
 
 /**
- * PHPUnit counts assertions made in lifecycle methods toward every test of the class
+ * PHPUnit counts assertions made in lifecycle methods of the class and its parents toward every test of the class
  */
-final readonly class LifecycleMethodAssertAnalyzer
+final class LifecycleMethodAssertAnalyzer
 {
     /**
      * @var string[]
@@ -39,47 +47,196 @@ final readonly class LifecycleMethodAssertAnalyzer
     private const array HOOK_ANNOTATIONS = ['before', 'after', 'preCondition', 'postCondition'];
 
     /**
-     * @var WeakMap<Class_, bool>
+     * Every parent class is parsed with full scope, so stop walking deep chains for performance
      */
-    private WeakMap $assertingByClass;
+    private const int MAX_PARENT_CLASS_LEVEL = 5;
+
+    /**
+     * Assert, expectation and mock calls detected by AssertCallAnalyzer, matched in raw file contents
+     */
+    private const string ASSERT_LIKE_TEXT_REGEX = '#assert|expect|should|mockbuilder|prophe#i';
+
+    /**
+     * @var array<string, bool>
+     */
+    private array $assertingByParentClassAndOverriddenHooks = [];
+
+    /**
+     * @var array<string, bool>
+     */
+    private array $hasAssertLikeTextByClassName = [];
 
     public function __construct(
-        private AssertCallAnalyzer $assertCallAnalyzer,
-        private PhpAttributeAnalyzer $phpAttributeAnalyzer,
-        private PhpDocInfoFactory $phpDocInfoFactory,
-        private NodeNameResolver $nodeNameResolver,
+        private readonly AssertCallAnalyzer $assertCallAnalyzer,
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly AstResolver $astResolver,
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
-        $this->assertingByClass = new WeakMap();
     }
 
-    public function hasAssertingLifecycleMethod(Class_ $class): bool
+    public function hasAssertingLifecycleMethod(Class_ $class, Scope $scope): bool
     {
-        // every test method of the class shares the result
-        return $this->assertingByClass[$class] ??= $this->resolveHasAssertingLifecycleMethod($class);
+        $classReflection = $scope->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        return $this->isClassLikeAsserting($class, $classReflection, [], 0);
     }
 
-    private function resolveHasAssertingLifecycleMethod(Class_ $class): bool
-    {
-        foreach ($class->getMethods() as $classMethod) {
-            if (! $this->isLifecycleMethod($classMethod)) {
-                continue;
+    /**
+     * @param string[] $overriddenHookMethodNames
+     */
+    private function isClassLikeAsserting(
+        ?ClassLike $classLike,
+        ClassReflection $classReflection,
+        array $overriddenHookMethodNames,
+        int $parentClassLevel
+    ): bool {
+        $classMethods = $classLike instanceof ClassLike ? $classLike->getMethods() : [];
+
+        foreach ($classMethods as $classMethod) {
+            $hookMethodName = $this->resolveHookMethodName($classMethod);
+
+            if ($this->isRelevantHook($classMethod, $hookMethodName, $overriddenHookMethodNames)
+                && $this->containsAssertCall($classMethod)) {
+                return true;
             }
 
-            $this->assertCallAnalyzer->resetNesting();
-            if ($this->assertCallAnalyzer->containsAssertCall($classMethod)) {
-                return true;
+            // a hook overridden here hides the parent one, unless it calls it through "parent::"
+            if ($hookMethodName !== null && ! $this->hasParentCall($classMethod, $hookMethodName)) {
+                $overriddenHookMethodNames[] = $hookMethodName;
             }
         }
 
-        return false;
+        if ($parentClassLevel >= self::MAX_PARENT_CLASS_LEVEL) {
+            return false;
+        }
+
+        $parentClassReflection = $classReflection->getParentClass();
+        if (! $parentClassReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        // parsing parents with full scope is expensive, skip chains without any assert-like text first
+        if (! $this->hasAssertLikeTextInClassChain($parentClassReflection)) {
+            return false;
+        }
+
+        return $this->isParentClassAsserting($parentClassReflection, $overriddenHookMethodNames, $parentClassLevel + 1);
     }
 
-    private function isLifecycleMethod(ClassMethod $classMethod): bool
+    /**
+     * @param string[] $overriddenHookMethodNames
+     */
+    private function isParentClassAsserting(
+        ClassReflection $classReflection,
+        array $overriddenHookMethodNames,
+        int $parentClassLevel
+    ): bool {
+        // do not analyze PHPUnit and Symfony base test cases, their hooks do not count as test assertions
+        if (in_array($classReflection->getName(), PHPUnitClassName::FRAMEWORK_TEST_CASES, true)) {
+            return false;
+        }
+
+        // the result of a parent only depends on the hooks overridden below it and its level, so test classes share the parent chain
+        $overriddenHookMethodNames = array_unique($overriddenHookMethodNames);
+        sort($overriddenHookMethodNames);
+        $cacheKey = $classReflection->getName() . '|' . implode(',', $overriddenHookMethodNames) . '|' . $parentClassLevel;
+
+        return $this->assertingByParentClassAndOverriddenHooks[$cacheKey] ??= $this->isClassLikeAsserting(
+            $this->astResolver->resolveClassFromClassReflection($classReflection),
+            $classReflection,
+            $overriddenHookMethodNames,
+            $parentClassLevel
+        );
+    }
+
+    private function hasAssertLikeTextInClassChain(ClassReflection $classReflection): bool
     {
-        if ($this->nodeNameResolver->isNames($classMethod->name, self::HOOK_METHOD_NAMES)) {
+        $className = $classReflection->getName();
+        if (in_array($className, PHPUnitClassName::FRAMEWORK_TEST_CASES, true)) {
+            return false;
+        }
+
+        if (isset($this->hasAssertLikeTextByClassName[$className])) {
+            return $this->hasAssertLikeTextByClassName[$className];
+        }
+
+        // hooks can call helpers from used traits or from any parent, so check the whole chain
+        $classReflections = [$classReflection, ...array_values($classReflection->getTraits(true))];
+        $hasAssertLikeText = array_any(
+            $classReflections,
+            fn (ClassReflection $currentClassReflection): bool => $this->hasAssertLikeText(
+                $currentClassReflection->getFileName()
+            )
+        );
+
+        if (! $hasAssertLikeText) {
+            $parentClassReflection = $classReflection->getParentClass();
+            $hasAssertLikeText = $parentClassReflection instanceof ClassReflection
+                && $this->hasAssertLikeTextInClassChain($parentClassReflection);
+        }
+
+        return $this->hasAssertLikeTextByClassName[$className] = $hasAssertLikeText;
+    }
+
+    private function hasAssertLikeText(?string $fileName): bool
+    {
+        // internal classes have no file to parse either
+        if ($fileName === null) {
+            return false;
+        }
+
+        return preg_match(self::ASSERT_LIKE_TEXT_REGEX, (string) file_get_contents($fileName)) === 1;
+    }
+
+    private function containsAssertCall(ClassMethod $classMethod): bool
+    {
+        // every hook gets its own nesting budget, a "parent::" hook call is evaluated again in the parent itself
+        $this->assertCallAnalyzer->resetNesting();
+
+        return $this->assertCallAnalyzer->containsAssertCall($classMethod);
+    }
+
+    private function hasParentCall(ClassMethod $classMethod, string $hookMethodName): bool
+    {
+        return $this->betterNodeFinder->findFirst(
+            (array) $classMethod->stmts,
+            fn (Node $node): bool => $node instanceof StaticCall
+                && $this->nodeNameResolver->isName($node->class, ObjectReference::PARENT)
+                && $this->nodeNameResolver->isName($node->name, $hookMethodName)
+        ) instanceof StaticCall;
+    }
+
+    private function resolveHookMethodName(ClassMethod $classMethod): ?string
+    {
+        $methodName = $classMethod->name->toString();
+
+        foreach (self::HOOK_METHOD_NAMES as $hookMethodName) {
+            if (strcasecmp($hookMethodName, $methodName) === 0) {
+                return $hookMethodName;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string[] $overriddenHookMethodNames
+     */
+    private function isRelevantHook(
+        ClassMethod $classMethod,
+        ?string $hookMethodName,
+        array $overriddenHookMethodNames
+    ): bool {
+        if ($hookMethodName !== null && ! in_array($hookMethodName, $overriddenHookMethodNames, true)) {
             return true;
         }
 
+        // methods marked as hooks run too, also when overridden
         if ($classMethod->attrGroups !== []
             && $this->phpAttributeAnalyzer->hasPhpAttributes($classMethod, self::HOOK_ATTRIBUTES)) {
             return true;

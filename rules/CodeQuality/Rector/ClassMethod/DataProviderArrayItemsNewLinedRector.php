@@ -107,7 +107,7 @@ CODE_SAMPLE
         // find array in data provider - must contain a return node
         /** @var Return_[] $returns */
         $returns = $this->betterNodeFinder->findInstanceOf((array) $node->stmts, Return_::class);
-        $hasChanged = \false;
+        $hasChanged = false;
         foreach ($returns as $return) {
             if (! $return->expr instanceof Array_) {
                 continue;
@@ -123,10 +123,10 @@ CODE_SAMPLE
             }
 
             // ensure newlined printed
-            $array->setAttribute(AttributeKey::NEWLINED_ARRAY_PRINT, \true);
+            $array->setAttribute(AttributeKey::NEWLINED_ARRAY_PRINT, true);
             // invoke reprint
             $array->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-            $hasChanged = \true;
+            $hasChanged = true;
         }
 
         if ($hasChanged) {
