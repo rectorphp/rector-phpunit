@@ -150,6 +150,11 @@ CODE_SAMPLE
             return true;
         }
 
+        // a child class can add asserting lifecycle methods, that count toward the inherited tests
+        if ($this->isInAbstractClass($classMethod)) {
+            return true;
+        }
+
         // the parent test case asserts in its own integration methods
         if ($this->isInTwigIntegrationTestCase($classMethod)) {
             return true;
@@ -218,6 +223,16 @@ CODE_SAMPLE
         }
 
         return $classReflection->isTrait();
+    }
+
+    private function isInAbstractClass(ClassMethod $classMethod): bool
+    {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        return $classReflection->isAbstract();
     }
 
     private function isInTwigIntegrationTestCase(ClassMethod $classMethod): bool
