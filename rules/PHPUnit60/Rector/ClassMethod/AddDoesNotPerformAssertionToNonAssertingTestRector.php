@@ -23,6 +23,7 @@ use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PHPUnit\Enum\PHPUnitAttribute;
 use Rector\PHPUnit\Enum\PHPUnitClassName;
 use Rector\PHPUnit\NodeAnalyzer\AssertCallAnalyzer;
+use Rector\PHPUnit\NodeAnalyzer\LifecycleMethodAssertAnalyzer;
 use Rector\PHPUnit\NodeAnalyzer\MockedVariableAnalyzer;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -57,6 +58,7 @@ final class AddDoesNotPerformAssertionToNonAssertingTestRector extends AbstractR
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ReflectionProvider $reflectionProvider,
+        private readonly LifecycleMethodAssertAnalyzer $lifecycleMethodAssertAnalyzer,
     ) {
     }
 
@@ -161,6 +163,11 @@ CODE_SAMPLE
 
         $this->assertCallAnalyzer->resetNesting();
         if ($this->assertCallAnalyzer->containsAssertCall($classMethod)) {
+            return true;
+        }
+
+        // assertions in lifecycle methods count toward every test of the class
+        if ($this->lifecycleMethodAssertAnalyzer->hasAssertingLifecycleMethod($classMethod)) {
             return true;
         }
 
