@@ -36,6 +36,7 @@ final class AssertCallAnalyzer
         'expectException',
         'setExpectedException',
         'expectOutput',
+        'expectUserDeprecationMessage',
         'should',
     ];
 
