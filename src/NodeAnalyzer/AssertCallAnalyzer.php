@@ -199,7 +199,8 @@ final class AssertCallAnalyzer
                 return $this->containsAssertCall($classMethod);
             }
 
-            return false;
+            // a trait is parsed on its own, so a method of the using class cannot be resolved, assume it asserts
+            return $this->isSelfReferenceInTrait($node);
         });
     }
 
@@ -253,6 +254,11 @@ final class AssertCallAnalyzer
             return $parentClassReflection->getName();
         }
 
+        // "$this" is unknown in a trait that is parsed on its own, but the methods of the trait itself can be found
+        if ($this->isSelfReferenceInTrait($call)) {
+            return $this->resolveClassReflection($call)?->getName();
+        }
+
         $objectType = $call instanceof MethodCall
             ? $this->nodeTypeResolver->getType($call->var)
             : $this->nodeTypeResolver->getType($call->class);
@@ -264,9 +270,25 @@ final class AssertCallAnalyzer
         return $objectType->getClassName();
     }
 
-    private function resolveClassReflection(StaticCall $staticCall): ?ClassReflection
+    private function isSelfReferenceInTrait(StaticCall|MethodCall $call): bool
     {
-        $scope = $staticCall->getAttribute(AttributeKey::SCOPE);
+        $isSelfReference = $call instanceof MethodCall
+            ? $this->nodeNameResolver->isName($call->var, 'this')
+            : $this->nodeNameResolver->isNames(
+                $call->class,
+                [ObjectReference::SELF, ObjectReference::STATIC]
+            );
+
+        if (! $isSelfReference) {
+            return false;
+        }
+
+        return $this->resolveClassReflection($call)?->isTrait() === true;
+    }
+
+    private function resolveClassReflection(Node $node): ?ClassReflection
+    {
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
             return null;
         }
