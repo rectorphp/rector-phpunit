@@ -150,7 +150,7 @@ final readonly class MockObjectExprDetector
     }
 
     /**
-     * The variable is put to an array, assigned to another variable or captured by reference, e.g.
+     * The variable is put to an array, assigned to another variable or captured by a closure, e.g.
      * foreach ([$a, $b] as $mock), $alias = $a or $mocks = [$a]; it can be mocked through the alias, so be safe
      */
     public function isEscapingToAlias(Expr $expr, ClassMethod $classMethod): bool
@@ -191,7 +191,7 @@ final readonly class MockObjectExprDetector
             }
 
             foreach ($node->uses as $closureUse) {
-                if ($closureUse->byRef && $this->nodeNameResolver->isName($closureUse->var, $variableName)) {
+                if ($this->nodeNameResolver->isName($closureUse->var, $variableName)) {
                     return true;
                 }
             }
