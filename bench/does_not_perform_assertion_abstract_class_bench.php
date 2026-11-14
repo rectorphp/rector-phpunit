@@ -5,11 +5,11 @@ declare(strict_types=1);
 /**
  * Benchmark for AddDoesNotPerformAssertionToNonAssertingTestRector on abstract and final test classes.
  *
- * Half of the test classes are abstract, so the abstract class check runs on every test method.
+ * Half of the test classes are abstract, so the abstract class check runs on every test class.
  * Run on both branches to compare. CPU (user+sys) is the reliable metric; wall is noisy.
  */
 
-use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Class_;
 use Rector\DependencyInjection\LazyContainerFactory;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector;
@@ -68,10 +68,10 @@ $betterNodeFinder = $rectorConfig->make(BetterNodeFinder::class);
 
 $rector = $rectorConfig->make(AddDoesNotPerformAssertionToNonAssertingTestRector::class);
 
-$classMethods = [];
+$classes = [];
 foreach ($testFilePaths as $testFilePath) {
     $stmts = $testingParser->parseFileToDecoratedNodes($testFilePath);
-    $classMethods = [...$classMethods, ...$betterNodeFinder->findInstanceOf($stmts, ClassMethod::class)];
+    $classes = [...$classes, ...$betterNodeFinder->findInstanceOf($stmts, Class_::class)];
 }
 
 $cpuSeconds = static function (): float {
@@ -84,8 +84,8 @@ $wallStart = microtime(true);
 $cpuStart = $cpuSeconds();
 
 $changedCount = 0;
-foreach ($classMethods as $classMethod) {
-    if ($rector->refactor($classMethod) instanceof ClassMethod) {
+foreach ($classes as $class) {
+    if ($rector->refactor($class) instanceof Class_) {
         ++$changedCount;
     }
 }
@@ -96,8 +96,8 @@ $wall = microtime(true) - $wallStart;
 array_map('unlink', glob($directory . '/*.php'));
 @rmdir($directory);
 
-printf('test classes: %d, test methods: %d, changed: %d%s', count($testFilePaths), count($classMethods), $changedCount, PHP_EOL);
-printf('CPU:  %.4f s  (%.3f ms/method)%s', $cpu, $cpu / count($classMethods) * 1000, PHP_EOL);
+printf('test classes: %d, changed: %d%s', count($classes), $changedCount, PHP_EOL);
+printf('CPU:  %.4f s  (%.3f ms/class)%s', $cpu, $cpu / count($classes) * 1000, PHP_EOL);
 printf('wall: %.4f s%s', $wall, PHP_EOL);
 
 if ($cpu > MAX_CPU_SECONDS) {
