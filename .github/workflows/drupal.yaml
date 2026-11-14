@@ -1,0 +1,78 @@
+# runs AddDoesNotPerformAssertionToNonAssertingTestRector on Drupal core,
+# then runs Drupal tests to catch wrongly added/removed #[DoesNotPerformAssertions]
+name: Drupal
+
+on:
+    pull_request: null
+    push:
+        branches:
+            - main
+
+env:
+    COMPOSER_ROOT_VERSION: "dev-main"
+    # pinned for deterministic results, bump to test newer Drupal code
+    DRUPAL_REF: "7480c58b75c058f850b45e81664ac1df7d309744"
+
+jobs:
+    drupal:
+        runs-on: ubuntu-latest
+        timeout-minutes: 40
+
+        steps:
+            -   uses: actions/checkout@v4
+
+            -
+                uses: actions/checkout@v4
+                with:
+                    repository: drupal/drupal
+                    ref: ${{ env.DRUPAL_REF }}
+                    path: drupal
+
+            -
+                uses: shivammathur/setup-php@v2
+                with:
+                    # Drupal main requires PHP 8.5
+                    php-version: 8.5
+                    coverage: none
+                    extensions: gd, pdo_sqlite, pdo_mysql, pdo_pgsql
+                    # Drupal tests rely on runtime assert() checks
+                    ini-values: zend.assertions=1
+
+            -   uses: "ramsey/composer-install@v2"
+
+            -
+                uses: "ramsey/composer-install@v2"
+                with:
+                    working-directory: drupal
+
+            -
+                name: "Run Rector on Drupal"
+                working-directory: drupal
+                run: |
+                    php ../vendor/bin/rector process --config ../.github/drupal/rector.php --no-progress-bar
+                    git diff --stat
+
+            -
+                name: "Run Drupal unit tests"
+                working-directory: drupal
+                run: php vendor/bin/phpunit -c core --testsuite unit --no-progress
+
+            # only the Kernel tests Rector changed, functional ones need a web server
+            -
+                name: "Run changed Drupal kernel tests"
+                working-directory: drupal
+                run: |
+                    mkdir -p "$RUNNER_TEMP/kernel"
+                    git diff --name-only | grep -E '/(Kernel|KernelTests)/.*Test\.php$' > "$RUNNER_TEMP/kernel-tests.txt" || true
+                    cat "$RUNNER_TEMP/kernel-tests.txt"
+
+                    # each test file gets its own sqlite database, so they can run in parallel
+                    xargs -P "$(nproc)" -I{} sh -c 'id=$(echo "{}" | md5sum | cut -c1-10); \
+                        SIMPLETEST_DB="sqlite://localhost/$RUNNER_TEMP/kernel/$id.sqlite" SIMPLETEST_BASE_URL=http://localhost \
+                        php vendor/bin/phpunit -c core --no-progress "{}" > "$RUNNER_TEMP/kernel/$id.txt" 2>&1; true' \
+                        < "$RUNNER_TEMP/kernel-tests.txt"
+
+                    # Rector only adds or removes #[DoesNotPerformAssertions], so risky assertion counts are the regression to catch
+                    if grep -h -B1 -E 'not expected to perform assertions|did not perform any assertions' "$RUNNER_TEMP"/kernel/*.txt; then
+                        exit 1
+                    fi
