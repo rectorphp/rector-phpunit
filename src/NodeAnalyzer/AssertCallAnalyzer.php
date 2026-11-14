@@ -12,6 +12,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Enum\ObjectReference;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -61,6 +62,7 @@ final class AssertCallAnalyzer
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeTypeResolver $nodeTypeResolver,
+        private readonly ReflectionProvider $reflectionProvider,
     ) {
     }
 
@@ -221,7 +223,30 @@ final class AssertCallAnalyzer
             return null;
         }
 
+        // e.g. "parent::setUp()" declared in PHPUnit or Symfony, no need to parse their huge classes
+        if ($this->isDeclaredInFrameworkTestCase($className, $methodName)) {
+            return null;
+        }
+
         return $this->astResolver->resolveClassMethod($className, $methodName);
+    }
+
+    private function isDeclaredInFrameworkTestCase(string $className, string $methodName): bool
+    {
+        if (! $this->reflectionProvider->hasClass($className)) {
+            return false;
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($className);
+        if (! $classReflection->hasNativeMethod($methodName)) {
+            return false;
+        }
+
+        $declaringClassName = $classReflection->getNativeMethod($methodName)
+            ->getDeclaringClass()
+            ->getName();
+
+        return in_array($declaringClassName, PHPUnitClassName::FRAMEWORK_TEST_CASES, true);
     }
 
     private function resolveOwnClassName(ClassMethod $classMethod): string
@@ -240,11 +265,6 @@ final class AssertCallAnalyzer
             // "parent" resolves to a union of all ancestors in type resolver, so use the direct parent class instead
             $parentClassReflection = $this->resolveClassReflection($call)?->getParentClass();
             if (! $parentClassReflection instanceof ClassReflection) {
-                return null;
-            }
-
-            // PHPUnit itself has no asserting test methods, no need to parse its huge classes
-            if ($parentClassReflection->getName() === PHPUnitClassName::TEST_CASE) {
                 return null;
             }
 
