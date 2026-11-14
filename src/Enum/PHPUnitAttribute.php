@@ -33,4 +33,12 @@ final class PHPUnitAttribute
     public const string ALLOW_MOCK_OBJECTS_WITHOUT_EXPECTATIONS = 'PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations';
 
     public const string DATA_PROVIDER = 'PHPUnit\Framework\Attributes\DataProvider';
+
+    public const string BEFORE = 'PHPUnit\Framework\Attributes\Before';
+
+    public const string AFTER = 'PHPUnit\Framework\Attributes\After';
+
+    public const string PRE_CONDITION = 'PHPUnit\Framework\Attributes\PreCondition';
+
+    public const string POST_CONDITION = 'PHPUnit\Framework\Attributes\PostCondition';
 }
