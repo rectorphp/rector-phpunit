@@ -115,12 +115,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $scope = ScopeFetcher::fetch($node);
-
         // a child class can add asserting lifecycle methods, that count toward the inherited tests
         if ($node->isAbstract()) {
             return null;
         }
+
+        $scope = ScopeFetcher::fetch($node);
 
         // the parent test case asserts in its own integration methods
         if ($this->isInTwigIntegrationTestCase($scope)) {

@@ -11,13 +11,11 @@ declare(strict_types=1);
  * Run on both branches to compare. CPU (user+sys) is the reliable metric; wall is noisy.
  */
 
-use PhpParser\Node\Stmt\ClassMethod;
-use Rector\Application\Provider\CurrentFileProvider;
+use PhpParser\Node\Stmt\Class_;
 use Rector\DependencyInjection\LazyContainerFactory;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPUnit\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector;
 use Rector\Testing\TestingParser\TestingParser;
-use Rector\ValueObject\Application\File;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -100,17 +98,11 @@ $betterNodeFinder = $rectorConfig->make(BetterNodeFinder::class);
 
 $rector = $rectorConfig->make(AddDoesNotPerformAssertionToNonAssertingTestRector::class);
 
-/** @var CurrentFileProvider $currentFileProvider */
-$currentFileProvider = $rectorConfig->make(CurrentFileProvider::class);
-
 // parse test files up front, parent files are left for the rule to resolve
-// the rule finds the class of a method in the stmts of the current file, as in a real run
-$classMethodsByFile = [];
+$classes = [];
 foreach ($testFilePaths as $testFilePath) {
     $stmts = $testingParser->parseFileToDecoratedNodes($testFilePath);
-    $file = new File($testFilePath, (string) file_get_contents($testFilePath));
-    $file->hydrateStmtsAndTokens($stmts, $stmts, []);
-    $classMethodsByFile[] = [$file, $betterNodeFinder->findInstanceOf($stmts, ClassMethod::class)];
+    $classes = [...$classes, ...$betterNodeFinder->findInstanceOf($stmts, Class_::class)];
 }
 
 $cpuSeconds = static function (): float {
@@ -123,15 +115,9 @@ $wallStart = microtime(true);
 $cpuStart = $cpuSeconds();
 
 $changedCount = 0;
-$classMethodCount = 0;
-foreach ($classMethodsByFile as [$file, $classMethods]) {
-    $currentFileProvider->setFile($file);
-
-    foreach ($classMethods as $classMethod) {
-        ++$classMethodCount;
-        if ($rector->refactor($classMethod) instanceof ClassMethod) {
-            ++$changedCount;
-        }
+foreach ($classes as $class) {
+    if ($rector->refactor($class) instanceof Class_) {
+        ++$changedCount;
     }
 }
 
@@ -141,8 +127,8 @@ $wall = microtime(true) - $wallStart;
 array_map('unlink', glob($directory . '/*.php'));
 @rmdir($directory);
 
-printf('test classes: %d, test methods: %d, changed: %d%s', count($testFilePaths), $classMethodCount, $changedCount, PHP_EOL);
-printf('CPU:  %.4f s  (%.3f ms/method)%s', $cpu, $cpu / $classMethodCount * 1000, PHP_EOL);
+printf('test classes: %d, changed: %d%s', count($classes), $changedCount, PHP_EOL);
+printf('CPU:  %.4f s  (%.3f ms/class)%s', $cpu, $cpu / count($classes) * 1000, PHP_EOL);
 printf('wall: %.4f s%s', $wall, PHP_EOL);
 
 if ($cpu > MAX_CPU_SECONDS) {
