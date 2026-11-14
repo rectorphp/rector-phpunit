@@ -36,6 +36,10 @@ jobs:
                         name: 'Tests'
                         run: vendor/bin/phpunit
 
+                    -
+                        name: 'Bench'
+                        run: php bench/does_not_perform_assertion_lifecycle_bench.php
+
         name: ${{ matrix.actions.name }}
         runs-on: ubuntu-latest
         timeout-minutes: 10

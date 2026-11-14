@@ -24,6 +24,7 @@ const DEPTH = 4;            // abstract parents per chain, between TestCase and 
 const TESTS_PER_CHAIN = 30; // test classes extending the deepest parent of each chain
 const TEST_METHODS = 5;     // non-asserting test methods per test class
 const FILLER_METHODS = 15;  // extra methods per parent class, to make parsing realistic
+const MAX_CPU_SECONDS = 1.0; // fails in CI above this
 
 $directory = sys_get_temp_dir() . '/rector_phpunit_bench_' . getmypid();
 @mkdir($directory);
@@ -129,3 +130,8 @@ array_map('unlink', glob($directory . '/*.php'));
 printf('test classes: %d, test methods: %d, changed: %d%s', count($testFilePaths), count($classMethods), $changedCount, PHP_EOL);
 printf('CPU:  %.4f s  (%.3f ms/method)%s', $cpu, $cpu / count($classMethods) * 1000, PHP_EOL);
 printf('wall: %.4f s%s', $wall, PHP_EOL);
+
+if ($cpu > MAX_CPU_SECONDS) {
+    printf('CPU %.4f s is over the %.1f s limit%s', $cpu, MAX_CPU_SECONDS, PHP_EOL);
+    exit(1);
+}
