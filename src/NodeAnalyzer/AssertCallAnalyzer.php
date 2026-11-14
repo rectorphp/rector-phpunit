@@ -10,12 +10,17 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\TypeWithClassName;
+use Rector\Enum\ObjectReference;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
+use Rector\PHPUnit\Enum\PHPUnitClassName;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class AssertCallAnalyzer
@@ -74,7 +79,10 @@ final class AssertCallAnalyzer
                 return false;
             }
 
-            $cacheHash = md5($this->betterStandardPrinter->prettyPrint([$classMethod]));
+            // the same body means a different method per class, e.g. "$this->helper()" or "parent::test()"
+            $cacheHash = md5(
+                $this->betterStandardPrinter->prettyPrint([$classMethod]) . $this->resolveOwnClassName($classMethod)
+            );
 
             if (isset($this->containsAssertCallByClassMethod[$cacheHash])) {
                 return $this->containsAssertCallByClassMethod[$cacheHash];
@@ -83,7 +91,7 @@ final class AssertCallAnalyzer
             // A. try "->assert" shallow search first for performance
             $hasDirectAssertOrMockCall = $this->hasDirectAssertOrMockCall($classMethod);
             if ($hasDirectAssertOrMockCall) {
-                $this->containsAssertCallByClassMethod[$cacheHash] = $hasDirectAssertOrMockCall;
+                $this->containsAssertCallByClassMethod[$cacheHash] = true;
                 return true;
             }
 
@@ -203,22 +211,64 @@ final class AssertCallAnalyzer
 
     private function resolveClassMethodFromCall(StaticCall|MethodCall $call): ?ClassMethod
     {
-        if ($call instanceof MethodCall) {
-            $objectType = $this->nodeTypeResolver->getType($call->var);
-        } else {
-            // StaticCall
-            $objectType = $this->nodeTypeResolver->getType($call->class);
-        }
-
-        if (! $objectType instanceof TypeWithClassName) {
-            return null;
-        }
-
         $methodName = $this->nodeNameResolver->getName($call->name);
         if ($methodName === null) {
             return null;
         }
 
-        return $this->astResolver->resolveClassMethod($objectType->getClassName(), $methodName);
+        $className = $this->resolveClassName($call);
+        if ($className === null) {
+            return null;
+        }
+
+        return $this->astResolver->resolveClassMethod($className, $methodName);
+    }
+
+    private function resolveOwnClassName(ClassMethod $classMethod): string
+    {
+        $classReflection = $this->resolveClassReflection($classMethod);
+        if (! $classReflection instanceof ClassReflection) {
+            return '';
+        }
+
+        return $classReflection->getName();
+    }
+
+    private function resolveClassName(StaticCall|MethodCall $call): ?string
+    {
+        if ($call instanceof StaticCall && $this->nodeNameResolver->isName($call->class, ObjectReference::PARENT)) {
+            // "parent" resolves to a union of all ancestors in type resolver, so use the direct parent class instead
+            $parentClassReflection = $this->resolveClassReflection($call)?->getParentClass();
+            if (! $parentClassReflection instanceof ClassReflection) {
+                return null;
+            }
+
+            // PHPUnit itself has no asserting test methods, no need to parse its huge classes
+            if ($parentClassReflection->getName() === PHPUnitClassName::TEST_CASE) {
+                return null;
+            }
+
+            return $parentClassReflection->getName();
+        }
+
+        $objectType = $call instanceof MethodCall
+            ? $this->nodeTypeResolver->getType($call->var)
+            : $this->nodeTypeResolver->getType($call->class);
+
+        if (! $objectType instanceof TypeWithClassName) {
+            return null;
+        }
+
+        return $objectType->getClassName();
+    }
+
+    private function resolveClassReflection(Node $node): ?ClassReflection
+    {
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return null;
+        }
+
+        return $scope->getClassReflection();
     }
 }
