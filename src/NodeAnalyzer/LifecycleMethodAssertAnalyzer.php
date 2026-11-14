@@ -94,8 +94,8 @@ final class LifecycleMethodAssertAnalyzer
         array $overriddenHookMethodNames,
         ?Class_ $class = null
     ): bool {
-        // do not analyze PHPUnit itself
-        if ($classReflection->getName() === PHPUnitClassName::TEST_CASE) {
+        // do not analyze PHPUnit or Symfony base test cases, their hooks do not assert
+        if (in_array($classReflection->getName(), PHPUnitClassName::FRAMEWORK_TEST_CASES, true)) {
             return false;
         }
 
