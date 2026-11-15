@@ -55,7 +55,8 @@ jobs:
             -
                 name: "Run Drupal unit tests"
                 working-directory: drupal
-                run: php vendor/bin/phpunit -c core --testsuite unit --no-progress
+                # IconFinderTest asserts an exact PCRE error offset, which differs between PCRE versions
+                run: php vendor/bin/phpunit -c core --testsuite unit --no-progress --exclude-filter 'IconFinderTest::testExtractIconIdFromFilenameWarning'
 
             # only the Kernel tests Rector changed, functional ones need a web server
             -
